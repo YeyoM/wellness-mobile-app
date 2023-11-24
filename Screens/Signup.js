@@ -27,7 +27,7 @@ export default function Signup({ navigation }) {
       <View style={styles.formGroupBtn}>
         <Pressable
           style={styles.btn}
-          onPress={() => alert('Registro exitoso')}
+          onPress={() => navigation.navigate('Acerca de ti (Nombre)')}
         >
           <Text style={styles.btnText}>Empezar</Text>
         </Pressable>
