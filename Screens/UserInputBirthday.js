@@ -1,10 +1,101 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Pressable, Platform, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function UserInputBirthday({ navigation }) {
+
+  const [date, setDate] = useState(new Date());
+  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [showPicker, setShowPicker] = useState(false);
+
+  const togglePicker = () => {
+    setShowPicker(!showPicker);
+  }
+
+  const confirmIOSDate = () => {
+    setDateOfBirth(date.toLocaleDateString());
+    togglePicker();
+  }
+
+  const onChange = ({ type }, selectedDate) => {
+    if (type === 'set') {
+      const currentDate = selectedDate;
+      setDate(currentDate);
+
+      if (Platform.OS === 'android') {
+        togglePicker();
+        setDateOfBirth(currentDate.toLocaleDateString());
+      }
+
+    } else {
+      togglePicker();
+    }
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>¿Cuándo es tu cumpleaños?</Text>
+      <View style={{ width: '85%', marginBottom: 60, backgroundColor: "#ECECEC", padding: 30, borderRadius: 55 }}>
+        <Text style={{ fontWeight: "bold", fontSize: 15}}>🏋🏽‍♀️ Tu edad nos permite adaptar tu plan</Text>
+        <Text style={{ fontWeight: "normal", fontSize: 14}}>Al saber tu edad podemos. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</Text>
+      </View>
+      {
+        !showPicker && (
+          <Pressable
+            onPress={togglePicker}
+          >
+            <TextInput
+              style={styles.input}
+              textAlign={'center'}
+              placeholder="DD/MM/AAAA"
+              placeholderTextColor={'rgba(47, 46, 54, 0.4)'}
+              value={dateOfBirth}
+              onChangeText={(dateOfBirth) => setDateOfBirth(dateOfBirth)}
+              editable={false}
+              onPressIn={togglePicker}
+            />
+          </Pressable>
+        )
+      }
+      {
+        showPicker && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            mode={'date'}
+            is24Hour={true}
+            display="spinner"
+            onChange={onChange}
+            style={{ width: '120' }}
+            maximumDate={new Date()}
+            minimumDate={new Date(1900, 0, 1)}
+          />
+        )
+      }
+
+      {
+        showPicker && Platform.OS === 'ios' && (
+          <View style={{ flexDirection: "row", justifyContent: "space-around"}}>
+
+            <TouchableOpacity
+              onPress={togglePicker}
+              style={{ padding: 20 }}
+            >
+              <Text style={{ color: '#0496FF', fontWeight: 'bold' }}>Cancelar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={confirmIOSDate}
+              style={{ padding: 20 }}
+            >
+              <Text style={{ color: '#0496FF', fontWeight: 'bold' }}>Aceptar</Text>
+            </TouchableOpacity>
+
+          </View>
+        )
+      }
+
       <Pressable
         style={styles.btn}
         onPress={() => navigation.navigate('Acerca de ti (Peso)')}
@@ -17,20 +108,38 @@ export default function UserInputBirthday({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 120,
   },
 
   title: {
-    fontSize: 28,
-    fontWeight: 'semi-bold',
+    fontSize: 32,
+    fontWeight: 'semibold',
     color: 'black',
-    marginBottom: 0,
+    marginBottom: 20,
     marginTop: 0,
     textAlign: 'center',
     width: '85%',
+  },
+
+  input: {
+    width: '60%',
+    height: 48,
+    padding: 20,
+    paddingTop: 10,
+    paddingBottom: 22,
+    fontSize: 22,
+    fontWeight: 'normal',
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
+    borderTopColor: '#fff',
+    borderRightColor: '#fff',
+    borderLeftColor: '#fff',
+    color: '#000',
+    backgroundColor: '#fff',
+    marginBottom: 60,
   },
 
   btn: {
@@ -38,12 +147,10 @@ const styles = StyleSheet.create({
     height: 48,
     backgroundColor: '#0496FF',
     borderRadius: 90,
-    padding: 20,
-    paddingTop: 22,
-    paddingBottom: 22,
     display: 'flex',
     justifyContent: 'center',
     marginBottom: 16,
+    marginTop: 60,
   },
 
   btnText: {

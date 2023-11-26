@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 28,
-    fontWeight: 'semi-bold',
+    fontWeight: 'semibold',
     color: 'black',
     marginBottom: 0,
     marginTop: 0,

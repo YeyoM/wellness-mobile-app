@@ -76,8 +76,6 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderRadius: 90,
     padding: 20,
-    paddingTop: 22,
-    paddingBottom: 22,
     backgroundColor: "#ECECEC"
   },
 
@@ -95,16 +93,13 @@ const styles = StyleSheet.create({
     height: 48,
     backgroundColor: '#0496FF',
     borderRadius: 90,
-    padding: 20,
-    paddingTop: 22,
-    paddingBottom: 22,
     display: 'flex',
     justifyContent: 'center',
     marginBottom: 16,
   },
 
   btnText: {
-    color: '#fff',
+    color: 'white',
     textAlign: 'center',
     fontSize: 16,
     fontWeight: 'normal',

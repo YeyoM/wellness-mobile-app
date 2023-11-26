@@ -5,6 +5,14 @@ export default function UserInputName({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>¿Cuál es tu nombre?</Text>
+      <View style={styles.formGroup}>
+        <TextInput
+          style={styles.input}
+          placeholder="Nombre"
+          placeholderTextColor={'rgba(47, 46, 54, 0.4)'}
+          textAlign={'center'}
+        />
+      </View>
       <Pressable
         style={styles.btn}
         onPress={() => navigation.navigate('Acerca de ti (Género)')}
@@ -17,20 +25,42 @@ export default function UserInputName({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 120,
   },
 
   title: {
-    fontSize: 28,
-    fontWeight: 'semi-bold',
+    fontSize: 32,
+    fontWeight: 'semibold',
     color: 'black',
-    marginBottom: 0,
-    marginTop: 0,
+    marginBottom: 60,
+    marginTop: 60,
     textAlign: 'center',
     width: '85%',
+  },
+
+  formGroup: {
+    width: '85%',
+    marginBottom: 16,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+
+  input: {
+    width: '60%',
+    height: 48,
+    fontSize: 22,
+    fontWeight: 'normal',
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
+    borderTopColor: '#fff',
+    borderRightColor: '#fff',
+    borderLeftColor: '#fff',
+    color: 'black',
+    backgroundColor: '#fff',
+    marginBottom: 60,
   },
 
   btn: {
@@ -38,9 +68,6 @@ const styles = StyleSheet.create({
     height: 48,
     backgroundColor: '#0496FF',
     borderRadius: 90,
-    padding: 20,
-    paddingTop: 22,
-    paddingBottom: 22,
     display: 'flex',
     justifyContent: 'center',
     marginBottom: 16,
