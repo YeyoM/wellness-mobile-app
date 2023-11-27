@@ -5,6 +5,32 @@ export default function UserInputSummary({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>¡Tu plan de entrenamiento está listo!</Text>
+      <Text style={styles.labelTitle}>Nombre</Text>
+      <Text style={styles.labelSubtitle}>Nombre</Text>
+      <Text style={styles.labelTitle}>Género</Text>
+      <Text style={styles.labelSubtitle}>Género</Text>
+      <Text style={styles.labelTitle}>Cumpleaños</Text>
+      <Text style={styles.labelSubtitle}>Cumpleaños</Text>
+      <Text style={styles.labelTitle}>Peso</Text>
+      <Text style={styles.labelSubtitle}>Peso</Text>
+      <Text style={styles.labelTitle}>Peso ideal</Text>
+      <Text style={styles.labelSubtitle}>Peso ideal</Text>
+      <Text style={styles.labelTitle}>Altura</Text>
+      <Text style={styles.labelSubtitle}>Altura</Text>
+      <Text style={styles.labelTitle}>Objetivos</Text>
+      <Text style={styles.labelSubtitle}>Objetivos</Text>
+      <Text style={styles.labelTitle}>Ejercicios</Text>
+      <Text style={styles.labelSubtitle}>Ejercicios</Text>
+      <Text style={styles.labelTitle}>Frecuencia</Text>
+      <Text style={styles.labelSubtitle}>Frecuencia</Text>
+      <Text style={styles.labelTitle}>Días</Text>
+      <Text style={styles.labelSubtitle}>Días</Text>
+      <Text style={styles.labelTitle}>Hora</Text>
+      <Text style={styles.labelSubtitle}>Hora</Text>
+      <Text style={styles.labelTitle}>Nivel de fitness</Text>
+      <Text style={styles.labelSubtitle}>Nivel de fitness</Text>
+      <Text style={styles.labelTitle}>Activo</Text>
+      <Text style={styles.labelSubtitle}>Activo</Text>
       <Pressable
         style={styles.btn}
         onPress={() => navigation.navigate('Signup')}
@@ -17,10 +43,10 @@ export default function UserInputSummary({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 120,
   },
 
   title: {
@@ -38,9 +64,6 @@ const styles = StyleSheet.create({
     height: 48,
     backgroundColor: '#0496FF',
     borderRadius: 90,
-    padding: 20,
-    paddingTop: 22,
-    paddingBottom: 22,
     display: 'flex',
     justifyContent: 'center',
     marginBottom: 16,
