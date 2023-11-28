@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
 
   input: {
     width: '60%',
-    height: 48,
+    height: 64,
     padding: 20,
     paddingTop: 10,
     paddingBottom: 22,

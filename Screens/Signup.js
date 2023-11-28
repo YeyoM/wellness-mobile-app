@@ -1,17 +1,24 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
+import React, { useState } from 'react';
 
 export default function Signup({ navigation }) {
+
+  const [matricula, setMatricula] = useState('');
+  const [password, setPassword] = useState('');
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>wellness</Text>
-      <Text style={styles.subtitle}>Registrate para crear tu rutina</Text>
+      <Text style={styles.subtitle}>Regístrate para crear tu rutina</Text>
       <View style={styles.formGroup}>
-        <Text style={styles.label}>Matricula</Text>
+        <Text style={styles.label}>Matrícula</Text>
         <TextInput
           style={styles.input}
-          placeholder="Matricula"
+          placeholder="Matrícula"
           placeholderTextColor={'rgba(47, 46, 54, 0.4)'}
+          value={matricula}
+          onChangeText={setMatricula}
         />
       </View>
       <View style={styles.formGroup}>
@@ -21,6 +28,8 @@ export default function Signup({ navigation }) {
           style={styles.input}
           placeholder="Contraseña"
           placeholderTextColor={'rgba(47, 46, 54, 0.4)'}
+          value={password}
+          onChangeText={setPassword}
         />
       </View>
       <Text style={styles.label}> ¿Olvidaste tu <Text style={{color: '#0496FF', fontWeight: 'bold'}}>contraseña</Text>?</Text>
@@ -43,7 +52,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
   },
 
   title: {
@@ -51,7 +59,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#0496FF',
     marginBottom: 0,
-    marginTop: 120,
+    marginTop: 60,
   },
 
   subtitle: {
@@ -72,10 +80,10 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    height: 40,
+    height: 50,
     borderWidth: 0,
     borderRadius: 90,
-    padding: 20,
+    paddingHorizontal: 20,
     backgroundColor: "#ECECEC"
   },
 
