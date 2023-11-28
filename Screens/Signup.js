@@ -2,13 +2,51 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
 import React, { useState } from 'react';
 
+import SuccessNotification from '../components/SuccessNotification';
+import ErrorNotification from '../components/ErrorNotification';
+import PrimaryNotification from '../components/PrimaryNotification';
+
 export default function Signup({ navigation }) {
 
   const [matricula, setMatricula] = useState('');
   const [password, setPassword] = useState('');
 
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSignup = () => {
+
+    if (matricula === '') {
+      setTimeout(() => {
+        setError(false);
+      }, 5000);
+      setError('Por favor ingresa tu matrícula');
+      return;
+    }
+
+    if (password === '') {
+      setTimeout(() => {
+        setError(false);
+      }, 5000);
+      setError('Por favor ingresa tu contraseña');
+      return;
+    }
+
+    setTimeout(() => {
+      setSuccess(false);
+    }, 1000);
+    setSuccess('¡Registro exitoso!');
+
+    navigation.navigate('Acerca de ti (Nombre)');
+
+  }
+
   return (
     <View style={styles.container}>
+      { success && <SuccessNotification message={success} /> }
+      { error && <ErrorNotification message={error} /> }
+      { loading && <PrimaryNotification message="Cargando..." /> }
       <Text style={styles.title}>wellness</Text>
       <Text style={styles.subtitle}>Regístrate para crear tu rutina</Text>
       <View style={styles.formGroup}>
@@ -36,7 +74,7 @@ export default function Signup({ navigation }) {
       <View style={styles.formGroupBtn}>
         <Pressable
           style={styles.btn}
-          onPress={() => navigation.navigate('Acerca de ti (Nombre)')}
+          onPress={handleSignup}
         >
           <Text style={styles.btnText}>Empezar</Text>
         </Pressable>

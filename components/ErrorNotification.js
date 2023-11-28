@@ -10,19 +10,20 @@ export default function ErrorNotification({ message }) {
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    height: 56,
+    width: '90%',
+    height: 50,
     backgroundColor: '#FF3333',
     padding: 16,
     borderRadius: 24,
-    marginBottom: 16,
     fontSize: 16,
+    marginTop: 10,
     fontWeight: 'bold',
     color: '#fff',
+    position: 'absolute',
   },
 
   title: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#fff',
   },

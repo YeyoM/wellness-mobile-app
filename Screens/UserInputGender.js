@@ -2,11 +2,15 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
 import React, { useState } from 'react';
 
+import ErrorNotification from '../components/ErrorNotification';
+
 export default function UserInputGender({ navigation }) {
 
   const [selectHombre, setSelectHombre] = useState(false);
   const [selectMujer, setSelectMujer] = useState(false);
   const [selectOtro, setSelectOtro] = useState(false);
+
+  const [error, setError] = useState(false);
 
   const pressSelectHombre = () => {
     setSelectHombre(true);
@@ -26,8 +30,23 @@ export default function UserInputGender({ navigation }) {
     setSelectOtro(true);
   }
 
+  const handleContinue = () => {
+        
+        if (!selectHombre && !selectMujer && !selectOtro) {
+          setTimeout(() => {
+            setError(false);
+          }, 5000);
+          setError('Por favor selecciona tu género');
+          return;
+        }
+    
+        navigation.navigate('Acerca de ti (Cumpleaños)');
+    
+      }
+
   return (
     <View style={styles.container}>
+      { error && <ErrorNotification message={error} /> }
       <Text style={styles.title}>¿Cuál es tu género?</Text>
       <Pressable
         style={selectHombre ? styles.checkboxSelected : styles.checkboxUnselected}
@@ -49,7 +68,7 @@ export default function UserInputGender({ navigation }) {
       </Pressable>
       <Pressable
         style={styles.btn}
-        onPress={() => navigation.navigate('Acerca de ti (Cumpleaños)')}
+        onPress={handleContinue}
       >
         <Text style={styles.btnText}>Continuar</Text>
       </Pressable>
@@ -68,8 +87,8 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'semibold',
     color: 'black',
-    marginBottom: 60,
-    marginTop: 60,
+    marginBottom: 50,
+    marginTop: 70,
     textAlign: 'center',
     width: '85%',
   },

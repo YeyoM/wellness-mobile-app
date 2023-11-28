@@ -1,9 +1,28 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
+import React, { useState } from 'react';
+
+import ErrorNotification from '../components/ErrorNotification';
 
 export default function UserInputFinalWeight({ navigation }) {
+
+  const [error, setError] = useState(false);
+  const [weight, setWeight] = useState('');
+
+  const handleContinue = () => {
+    if (weight === '') {
+      setTimeout(() => {
+        setError(false);
+      }, 5000);
+      setError('Por favor ingresa tu peso');
+      return;
+    }
+    navigation.navigate('Acerca de ti (Altura)');
+  }
+
   return (
     <View style={styles.container}>
+      { error && <ErrorNotification message={error} /> }
       <Text style={styles.title}>¿Cuál es tu peso deseado?</Text>
       <View style={{ width: '85%', marginBottom: 60, backgroundColor: "#ECECEC", padding: 30, borderRadius: 55 }}>
         <Text style={{ fontWeight: "bold", fontSize: 15}}>🤔️ Tu IMC. O tu peso podemos saber blah</Text>
@@ -17,12 +36,14 @@ export default function UserInputFinalWeight({ navigation }) {
         placeholderTextColor={'rgba(47, 46, 54, 0.4)'}
         keyboardType='numeric'
         returnKeyType='done'
+        value={weight}
+        onChangeText={setWeight}
       />
       <Text style={{ fontSize: 20, fontWeight: 'normal', color: '#2F2E36', marginBottom: 40 }}>Kg</Text>
       </View>
       <Pressable
         style={styles.btn}
-        onPress={() => navigation.navigate('Acerca de ti (Altura)')}
+        onPress={handleContinue}
       >
         <Text style={styles.btnText}>Continuar</Text>
       </Pressable>
@@ -42,7 +63,7 @@ const styles = StyleSheet.create({
     fontWeight: 'semibold',
     color: 'black',
     marginBottom: 20,
-    marginTop: 60,
+    marginTop: 80,
     textAlign: 'center',
     width: '85%',
   },

@@ -3,11 +3,14 @@ import { StyleSheet, Text, View, TextInput, Pressable, Platform, TouchableOpacit
 import React, { useState } from 'react';
 import DateTimePicker from "@react-native-community/datetimepicker";
 
+import ErrorNotification from '../components/ErrorNotification';
+
 export default function UserInputBirthday({ navigation }) {
 
   const [date, setDate] = useState(new Date());
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [showPicker, setShowPicker] = useState(false);
+  const [error, setError] = useState(false);
 
   const togglePicker = () => {
     setShowPicker(!showPicker);
@@ -33,8 +36,20 @@ export default function UserInputBirthday({ navigation }) {
     }
   }
 
+  const handleContinue = () => {
+    if (dateOfBirth === '') {
+      setTimeout(() => {
+        setError(false);
+      }, 5000);
+      setError('Por favor ingresa tu fecha de nacimiento');
+      return;
+    }
+    navigation.navigate('Acerca de ti (Peso)');
+  }
+
   return (
     <View style={styles.container}>
+      { error && <ErrorNotification message={error} /> }
       <Text style={styles.title}>¿Cuándo es tu cumpleaños?</Text>
       <View style={{ width: '85%', marginBottom: 60, backgroundColor: "#ECECEC", padding: 30, borderRadius: 55 }}>
         <Text style={{ fontWeight: "bold", fontSize: 15}}>🏋🏽‍♀️ Tu edad nos permite adaptar tu plan</Text>
@@ -98,7 +113,7 @@ export default function UserInputBirthday({ navigation }) {
 
       <Pressable
         style={styles.btn}
-        onPress={() => navigation.navigate('Acerca de ti (Peso)')}
+        onPress={handleContinue}
       >
         <Text style={styles.btnText}>Continuar</Text>
       </Pressable>
@@ -111,7 +126,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
   },
 
   title: {
@@ -119,7 +133,7 @@ const styles = StyleSheet.create({
     fontWeight: 'semibold',
     color: 'black',
     marginBottom: 20,
-    marginTop: 0,
+    marginTop: 80,
     textAlign: 'center',
     width: '85%',
   },

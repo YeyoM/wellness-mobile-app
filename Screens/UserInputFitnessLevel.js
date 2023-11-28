@@ -2,11 +2,15 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
 import React, { useState } from 'react';
 
+import ErrorNotification from '../components/ErrorNotification';
+
 export default function UserInputFitnessLevel({ navigation }) {
 
   const [selectPrincipiante, setSelectPrincipiante] = useState(false);
   const [selectIntermedio, setSelectIntermedio] = useState(false);
   const [selectAvanzado, setSelectAvanzado] = useState(false);
+
+  const [error, setError] = useState(false);
 
   const pressSelectPrincipiante = () => {
     setSelectPrincipiante(true);
@@ -26,8 +30,20 @@ export default function UserInputFitnessLevel({ navigation }) {
     setSelectAvanzado(true);
   }
 
+  const handleContinue = () => {
+    if (!selectPrincipiante && !selectIntermedio && !selectAvanzado) {
+      setTimeout(() => {
+        setError(false);
+      }, 5000);
+      setError('Por favor selecciona tu nivel de fitness');
+      return;
+    }
+    navigation.navigate('Acerca de ti (Activo)');
+  }
+
   return (
     <View style={styles.container}>
+      { error && <ErrorNotification message={error} /> }
       <Text style={styles.title}>¿Cuál es tu nivel de fitness?</Text>
       <Pressable
         style={selectPrincipiante ? styles.checkboxSelected : styles.checkboxUnselected}
@@ -52,7 +68,7 @@ export default function UserInputFitnessLevel({ navigation }) {
       </Pressable>
       <Pressable
         style={styles.btn}
-        onPress={() => navigation.navigate('Acerca de ti (Activo)')}
+        onPress={handleContinue}
       >
         <Text style={styles.btnText}>Continuar</Text>
       </Pressable>
@@ -72,7 +88,7 @@ const styles = StyleSheet.create({
     fontWeight: 'semibold',
     color: 'black',
     marginBottom: 60,
-    marginTop: 60,
+    marginTop: 80,
     textAlign: 'center',
     width: '85%',
   },

@@ -2,6 +2,8 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
 import React, { useState } from 'react';
 
+import ErrorNotification from '../components/ErrorNotification';
+
 export default function UserInputExercises({ navigation }) {
  
   const [selectHIIT, setSelectHIIT] = useState(false);
@@ -12,8 +14,22 @@ export default function UserInputExercises({ navigation }) {
   const [selectGym, setSelectGym] = useState(false);
   const [selectYoga, setSelectYoga] = useState(false);
 
+  const [error, setError] = useState(false);
+
+  const handleContinue = () => {
+    if (!selectHIIT && !selectGAP && !selectZumba && !selectBox && !selectCrossFit && !selectGym && !selectYoga) {
+      setTimeout(() => {
+        setError(false);
+      }, 5000);
+      setError('Por favor selecciona al menos un ejercicio');
+      return;
+    }
+    navigation.navigate('Acerca de ti (Frecuencia)');
+  }
+
   return (
     <View style={styles.container}>
+      { error && <ErrorNotification message={error} /> }
       <Text style={styles.title}>¿En que ejercicios estás interesado?</Text>
       <View style={styles.objectives}>
         <Pressable
@@ -61,7 +77,7 @@ export default function UserInputExercises({ navigation }) {
       </View>
       <Pressable
         style={styles.btn}
-        onPress={() => navigation.navigate('Acerca de ti (Frecuencia)')}
+        onPress={handleContinue}
       >
         <Text style={styles.btnText}>Continuar</Text>
       </Pressable>
@@ -81,7 +97,7 @@ const styles = StyleSheet.create({
     fontWeight: 'semibold',
     color: 'black',
     marginBottom: 30,
-    marginTop: 40,
+    marginTop: 80,
     textAlign: 'center',
     width: '85%',
   },

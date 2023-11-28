@@ -1,9 +1,31 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
+import React, { useState } from 'react';
+
+import ErrorNotification from '../components/ErrorNotification';
 
 export default function UserInputName({ navigation }) {
+
+  const [error, setError] = useState(false);
+  const [name, setName] = useState('');
+
+  const handleContinue = () => {
+      
+      if (name === '') {
+        setTimeout(() => {
+          setError(false);
+        }, 5000);
+        setError('Por favor ingresa tu nombre');
+        return;
+      }
+  
+      navigation.navigate('Acerca de ti (Género)');
+  
+    }
+
   return (
     <View style={styles.container}>
+      { error && <ErrorNotification message={error} /> }
       <Text style={styles.title}>¿Cuál es tu nombre?</Text>
       <View style={styles.formGroup}>
         <TextInput
@@ -11,11 +33,13 @@ export default function UserInputName({ navigation }) {
           placeholder="Nombre"
           placeholderTextColor={'rgba(47, 46, 54, 0.4)'}
           textAlign={'center'}
+          value={name}
+          onChangeText={setName}
         />
       </View>
       <Pressable
         style={styles.btn}
-        onPress={() => navigation.navigate('Acerca de ti (Género)')}
+        onPress={handleContinue}
       >
         <Text style={styles.btnText}>Continuar</Text>
       </Pressable>
@@ -35,7 +59,7 @@ const styles = StyleSheet.create({
     fontWeight: 'semibold',
     color: 'black',
     marginBottom: 60,
-    marginTop: 60,
+    marginTop: 70,
     textAlign: 'center',
     width: '85%',
   },

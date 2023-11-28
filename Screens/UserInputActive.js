@@ -2,11 +2,15 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
 import React, { useState } from 'react';
 
+import ErrorNotification from '../components/ErrorNotification';
+
 export default function UserInputActive({ navigation }) {
 
   const [selectSedentario, setSelectSedentario] = useState(false);
   const [selectModeradamenteActivo, setSelectModeradamenteActivo] = useState(false);
   const [selectMuyActivo, setSelectMuyActivo] = useState(false);
+
+  const [error, setError] = useState(false);
 
   const pressSelectSedentario = () => {
     setSelectSedentario(true);
@@ -26,8 +30,20 @@ export default function UserInputActive({ navigation }) {
     setSelectMuyActivo(true);
   }
 
+  const handleContinue = () => {
+    if (!selectSedentario && !selectModeradamenteActivo && !selectMuyActivo) {
+      setTimeout(() => {
+        setError(false);
+      }, 5000);
+      setError('Por favor selecciona tu nivel de actividad');
+      return;
+    }
+    navigation.navigate('Acerca de ti (Resumen)');
+  }
+
   return (
     <View style={styles.container}>
+      { error && <ErrorNotification message={error} /> }
       <Text style={styles.title}>¿Qué tan activo eres?</Text>
       <Pressable
         style={selectSedentario ? styles.checkboxSelected : styles.checkboxUnselected}
@@ -52,7 +68,7 @@ export default function UserInputActive({ navigation }) {
       </Pressable>
       <Pressable
         style={styles.btn}
-        onPress={() => navigation.navigate('Acerca de ti (Resumen)')}
+        onPress={handleContinue}
       >
         <Text style={styles.btnText}>Continuar</Text>
       </Pressable>
@@ -72,7 +88,7 @@ const styles = StyleSheet.create({
     fontWeight: 'semibold',
     color: 'black',
     marginBottom: 60,
-    marginTop: 60,
+    marginTop: 80,
     textAlign: 'center',
     width: '85%',
   },

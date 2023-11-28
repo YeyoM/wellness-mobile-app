@@ -2,6 +2,8 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable, Switch } from 'react-native';
 import React, { useState } from 'react';
 
+import ErrorNotification from '../components/ErrorNotification';
+
 export default function UserInputDays({ navigation }) {
 
   const [reminder, setReminder] = useState(false);
@@ -14,8 +16,22 @@ export default function UserInputDays({ navigation }) {
   const [selectVie, setSelectVie] = useState(false);
   const [selectSab, setSelectSab] = useState(false);
 
+  const [error, setError] = useState(false);
+
+  const handleContinue = () => {
+    if (!selectDom && !selectLun && !selectMar && !selectMie && !selectJue && !selectVie && !selectSab) {
+      setTimeout(() => {
+        setError(false);
+      }, 5000);
+      setError('Por favor selecciona al menos un día');
+      return;
+    }
+    navigation.navigate('Acerca de ti (Hora)');
+  }
+
   return (
     <View style={styles.container}>
+      { error && <ErrorNotification message={error} /> }
       <Text style={styles.title}>¿Qué días quieres entrenar?</Text>
       <View style={styles.objectives}>
         <Pressable
@@ -77,7 +93,7 @@ export default function UserInputDays({ navigation }) {
       </View>
       <Pressable
         style={styles.btn}
-        onPress={() => navigation.navigate('Acerca de ti (Hora)')}
+        onPress={handleContinue}
       >
         <Text style={styles.btnText}>Continuar</Text>
       </Pressable>
@@ -97,7 +113,7 @@ const styles = StyleSheet.create({
     fontWeight: 'semibold',
     color: 'black',
     marginBottom: 30,
-    marginTop: 40,
+    marginTop: 80,
     textAlign: 'center',
     width: '85%',
   },
