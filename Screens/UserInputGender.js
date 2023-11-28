@@ -4,26 +4,46 @@ import React, { useState } from 'react';
 
 export default function UserInputGender({ navigation }) {
 
-  const [isSelected, setSelection] = useState(false);
+  const [selectHombre, setSelectHombre] = useState(false);
+  const [selectMujer, setSelectMujer] = useState(false);
+  const [selectOtro, setSelectOtro] = useState(false);
+
+  const pressSelectHombre = () => {
+    setSelectHombre(true);
+    setSelectMujer(false);
+    setSelectOtro(false);
+  }
+
+  const pressSelectMujer = () => {
+    setSelectHombre(false);
+    setSelectMujer(true);
+    setSelectOtro(false);
+  }
+
+  const pressSelectOtro = () => {
+    setSelectHombre(false);
+    setSelectMujer(false);
+    setSelectOtro(true);
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>¿Cuál es tu género?</Text>
       <Pressable
-        style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-        onPress={() => setSelection(!isSelected)}
+        style={selectHombre ? styles.checkboxSelected : styles.checkboxUnselected}
+        onPress={pressSelectHombre}
       >
         <Text style={styles.label}>Hombre</Text>
       </Pressable>
       <Pressable
-        style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-        onPress={() => setSelection(!isSelected)}
+        style={selectMujer ? styles.checkboxSelected : styles.checkboxUnselected}
+        onPress={pressSelectMujer}
       >
         <Text style={styles.label}>Mujer</Text>
       </Pressable>
       <Pressable
-        style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-        onPress={() => setSelection(!isSelected)}
+        style={selectOtro ? styles.checkboxSelected : styles.checkboxUnselected}
+        onPress={pressSelectOtro}
       >
         <Text style={styles.label}>Otro</Text>
       </Pressable>
@@ -83,6 +103,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#ECECEC',
   },
 
   btn: {

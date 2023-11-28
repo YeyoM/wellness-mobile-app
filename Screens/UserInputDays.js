@@ -4,52 +4,59 @@ import React, { useState } from 'react';
 
 export default function UserInputDays({ navigation }) {
 
-  const [isSelected, setSelection] = useState(false);
   const [reminder, setReminder] = useState(false);
+
+  const [selectDom, setSelectDom] = useState(false);
+  const [selectLun, setSelectLun] = useState(false);
+  const [selectMar, setSelectMar] = useState(false);
+  const [selectMie, setSelectMie] = useState(false);
+  const [selectJue, setSelectJue] = useState(false);
+  const [selectVie, setSelectVie] = useState(false);
+  const [selectSab, setSelectSab] = useState(false);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>¿Qué días quieres entrenar?</Text>
       <View style={styles.objectives}>
         <Pressable
-          style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelection(!isSelected)}
+          style={selectDom ? styles.checkboxSelected : styles.checkboxUnselected}
+          onPress={() => setSelectDom(!selectDom)}
         >
           <Text style={styles.label}>Dom</Text>
         </Pressable>
         <Pressable
-          style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelection(!isSelected)}
+          style={selectLun ? styles.checkboxSelected : styles.checkboxUnselected}
+          onPress={() => setSelectLun(!selectLun)}
         >
           <Text style={styles.label}>Lun</Text>
         </Pressable>
         <Pressable
-          style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelection(!isSelected)}
+          style={selectMar ? styles.checkboxSelected : styles.checkboxUnselected}
+          onPress={() => setSelectMar(!selectMar)}
         >
           <Text style={styles.label}>Mar</Text>
         </Pressable>
         <Pressable
-          style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelection(!isSelected)}
+          style={selectMie ? styles.checkboxSelected : styles.checkboxUnselected}
+          onPress={() => setSelectMie(!selectMie)}
         >
           <Text style={styles.label}>Mie</Text>
         </Pressable>
         <Pressable
-          style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelection(!isSelected)}
+          style={selectJue ? styles.checkboxSelected : styles.checkboxUnselected}
+          onPress={() => setSelectJue(!selectJue)}
         >
           <Text style={styles.label}>Jue</Text>
         </Pressable>
         <Pressable
-          style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelection(!isSelected)}
+          style={selectVie ? styles.checkboxSelected : styles.checkboxUnselected}
+          onPress={() => setSelectVie(!selectVie)}
         >
           <Text style={styles.label}>Vie</Text>
         </Pressable>
         <Pressable
-          style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelection(!isSelected)}
+          style={selectSab ? styles.checkboxSelected : styles.checkboxUnselected}
+          onPress={() => setSelectSab(!selectSab)}
         >
           <Text style={styles.label}>Sab</Text>
         </Pressable>
@@ -62,7 +69,6 @@ export default function UserInputDays({ navigation }) {
         <View styles={styles.recordatoriosRight}>
           <Switch
             trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={isSelected ? "#0496FF" : "#f4f3f4"}
             ios_backgroundColor="#3e3e3e"
             onValueChange={setReminder}
             value={reminder}
@@ -138,6 +144,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingHorizontal: 20,
     marginRight: 5,
+    borderWidth: 1,
+    borderColor: '#ECECEC',
   },
 
   recordatorios: {

@@ -4,28 +4,48 @@ import React, { useState } from 'react';
 
 export default function UserInputActive({ navigation }) {
 
-  const [isSelected, setSelection] = useState(false);
+  const [selectSedentario, setSelectSedentario] = useState(false);
+  const [selectModeradamenteActivo, setSelectModeradamenteActivo] = useState(false);
+  const [selectMuyActivo, setSelectMuyActivo] = useState(false);
+
+  const pressSelectSedentario = () => {
+    setSelectSedentario(true);
+    setSelectModeradamenteActivo(false);
+    setSelectMuyActivo(false);
+  }
+
+  const pressSelectModeradamenteActivo = () => {
+    setSelectSedentario(false);
+    setSelectModeradamenteActivo(true);
+    setSelectMuyActivo(false);
+  }
+
+  const pressSelectMuyActivo = () => {
+    setSelectSedentario(false);
+    setSelectModeradamenteActivo(false);
+    setSelectMuyActivo(true);
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>¿Qué tan activo eres?</Text>
       <Pressable
-        style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-        onPress={() => setSelection(!isSelected)}
+        style={selectSedentario ? styles.checkboxSelected : styles.checkboxUnselected}
+        onPress={pressSelectSedentario}
       >
         <Text style={styles.labelTitle}>Sedentario</Text>
         <Text style={styles.labelSubtitle}>Tus entrenamientos durarán 1 hora en promedio</Text>
       </Pressable>
       <Pressable
-        style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-        onPress={() => setSelection(!isSelected)}
+        style={selectModeradamenteActivo ? styles.checkboxSelected : styles.checkboxUnselected}
+        onPress={pressSelectModeradamenteActivo}
       >
         <Text style={styles.labelTitle}>Moderadamente activo</Text>
         <Text style={styles.labelSubtitle}>Tus entrenamientos durarán 1 hora en promedio</Text>
       </Pressable>
       <Pressable
-        style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-        onPress={() => setSelection(!isSelected)}
+        style={selectMuyActivo ? styles.checkboxSelected : styles.checkboxUnselected}
+        onPress={pressSelectMuyActivo}
       >
         <Text style={styles.labelTitle}>Muy activo</Text>
         <Text style={styles.labelSubtitle}>Tus entrenamientos durarán 1 hora en promedio</Text>
@@ -95,6 +115,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingHorizontal: 25,
     paddingVertical: 15,
+    borderWidth: 1,
+    borderColor: '#ECECEC',
   },
 
   btn: {

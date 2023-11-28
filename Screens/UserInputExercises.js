@@ -4,51 +4,57 @@ import React, { useState } from 'react';
 
 export default function UserInputExercises({ navigation }) {
  
-  const [isSelected, setSelection] = useState(false);
+  const [selectHIIT, setSelectHIIT] = useState(false);
+  const [selectGAP, setSelectGAP] = useState(false);
+  const [selectZumba, setSelectZumba] = useState(false);
+  const [selectBox, setSelectBox] = useState(false);
+  const [selectCrossFit, setSelectCrossFit] = useState(false);
+  const [selectGym, setSelectGym] = useState(false);
+  const [selectYoga, setSelectYoga] = useState(false);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>¿En que ejercicios estás interesado?</Text>
       <View style={styles.objectives}>
         <Pressable
-          style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelection(!isSelected)}
+          style={selectHIIT ? styles.checkboxSelected : styles.checkboxUnselected}
+          onPress={() => setSelectHIIT(!selectHIIT)}
         >
           <Text style={styles.label}>HIIT</Text>
         </Pressable>
         <Pressable
-          style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelection(!isSelected)}
+          style={selectGAP ? styles.checkboxSelected : styles.checkboxUnselected}
+          onPress={() => setSelectGAP(!selectGAP)}
         >
           <Text style={styles.label}>GAP</Text>
         </Pressable>
         <Pressable
-          style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelection(!isSelected)}
+          style={selectZumba ? styles.checkboxSelected : styles.checkboxUnselected}
+          onPress={() => setSelectZumba(!selectZumba)}
         >
           <Text style={styles.label}>Zumba</Text>
         </Pressable>
         <Pressable
-          style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelection(!isSelected)}
+          style={selectBox ? styles.checkboxSelected : styles.checkboxUnselected}
+          onPress={() => setSelectBox(!selectBox)}
         >
           <Text style={styles.label}>Box</Text>
         </Pressable>
         <Pressable
-          style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelection(!isSelected)}
+          style={selectCrossFit ? styles.checkboxSelected : styles.checkboxUnselected}
+          onPress={() => setSelectCrossFit(!selectCrossFit)}
         >
           <Text style={styles.label}>CrossFit </Text>
         </Pressable>
         <Pressable
-          style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelection(!isSelected)}
+          style={selectGym ? styles.checkboxSelected : styles.checkboxUnselected}
+          onPress={() => setSelectGym(!selectGym)}
         >
           <Text style={styles.label}>Gym</Text>
         </Pressable>
         <Pressable
-          style={isSelected ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelection(!isSelected)}
+          style={selectYoga ? styles.checkboxSelected : styles.checkboxUnselected}
+          onPress={() => setSelectYoga(!selectYoga)}
         >
           <Text style={styles.label}>Yoga</Text>
         </Pressable>
@@ -122,6 +128,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingHorizontal: 20,
     marginRight: 5,
+    borderWidth: 1,
+    borderColor: '#ECECEC',
   },
 
   btn: {
