@@ -18,9 +18,7 @@ npm start --reset-cache
 yarn start --reset-cache
 ```
 
-#### `npm test`
-
-Runs the [jest](https://github.com/facebook/jest) test runner on your tests.
+Once you run this command, in your terminal there should appear a couple options, for example to run it on a mobile device, to achieve this, just download the Expo Go app in your device and scan the qr code displayed when running the above command.
 
 #### `npm run ios`
 
