@@ -16,10 +16,11 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 24,
     fontSize: 16,
-    marginTop: 10,
     fontWeight: 'bold',
     color: '#fff',
     position: 'absolute',
+    top: 80,
+    zIndex: 999,
   },
 
   title: {

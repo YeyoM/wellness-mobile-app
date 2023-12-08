@@ -15,11 +15,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#98ff8c',
     padding: 16,
     borderRadius: 24,
-    marginTop: 10,
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#fff',
     position: 'absolute',
+    top: 80,
+    zIndex: 999,
   },
 
   title: {
