@@ -82,14 +82,17 @@ export default function Signup({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
       { success && <SuccessNotification message={success} /> }
       { error && <ErrorNotification message={error} /> }
       { loading && <PrimaryNotification message="Cargando..." /> }
+      <View style={{width: '100%', alignItems: 'center'}}>
       <Text style={styles.title}>wellness</Text>
       <Text style={styles.subtitle}>Regístrate para crear tu rutina</Text>
       <View style={styles.formGroup}>
-        <KeyboardAvoidingView behavior="padding">
           <Text style={styles.label}>Email</Text>
           <TextInput
             style={styles.input}
@@ -99,10 +102,8 @@ export default function Signup({ navigation }) {
             onChangeText={setEmail}
             keyboardType='email-address'
           />
-        </KeyboardAvoidingView>
       </View>
       <View style={styles.formGroup}>
-        <KeyboardAvoidingView behavior="padding">
           <Text style={styles.label}>Contraseña</Text>
           <TextInput
             secureTextEntry={true}
@@ -112,20 +113,18 @@ export default function Signup({ navigation }) {
             value={password}
             onChangeText={setPassword}
           />
-        </KeyboardAvoidingView>
       </View>
       <Text style={styles.label}> ¿Olvidaste tu <Text style={{color: '#0496FF', fontWeight: 'bold'}}>contraseña</Text>?</Text>
-      <View style={styles.formGroupBtn}>
-        <Pressable
-          style={styles.btn}
-          onPress={handleSignup}
-        >
-          <Text style={styles.btnText}>Empezar</Text>
-        </Pressable>
-        <Text style={styles.label}>¿Ya tienes una cuenta? <Text style={{color: '#0496FF', fontWeight: 'bold'}}>Inicia sesión</Text></Text>
-      </View>
+      <Pressable
+        style={styles.btn}
+        onPress={handleSignup}
+      >
+        <Text style={styles.btnText}>Empezar</Text>
+      </Pressable>
+      <Text style={styles.label}>¿Ya tienes una cuenta? <Text style={{color: '#0496FF', fontWeight: 'bold'}}>Inicia sesión</Text></Text>
       <StatusBar style="auto" />
-    </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -133,7 +132,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    flexDirection: "column",
     alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
   },
 
   title: {
@@ -141,7 +143,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#0496FF',
     marginBottom: 0,
-    marginTop: 60,
   },
 
   subtitle: {
@@ -174,12 +175,10 @@ const styles = StyleSheet.create({
     width: '85%',
     marginBottom: 40,
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    flex: 1,
   },
 
   btn: {
-    width: '100%',
+    width: '85%',
     height: 48,
     backgroundColor: '#0496FF',
     borderRadius: 90,

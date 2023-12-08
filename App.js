@@ -25,7 +25,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Signup" component={Signup} />
+        <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
         <Stack.Screen name="Acerca de ti (Nombre)" component={UserInputName} />
         <Stack.Screen name="Acerca de ti (Género)" component={UserInputGender} />
         <Stack.Screen name="Acerca de ti (Cumpleaños)" component={UserInputBirthday} />
