@@ -1,9 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
+import TopNavigationBar from '../components/TopNavigationBar';
 
 export default function UserInputSummary({ navigation }) {
   return (
     <View style={styles.container}>
+      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={1} back={false}/>
       <Text style={styles.title}>¡Tu plan de entrenamiento está listo!</Text>
       <Text style={styles.labelTitle}>Nombre</Text>
       <Text style={styles.labelSubtitle}>Nombre</Text>

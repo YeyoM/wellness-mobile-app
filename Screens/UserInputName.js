@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView } from 'react-native';
 import React, { useState } from 'react';
+import TopNavigationBar from '../components/TopNavigationBar';
 
 import ErrorNotification from '../components/ErrorNotification';
 
@@ -24,8 +25,10 @@ export default function UserInputName({ navigation }) {
     }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container}>
       { error && <ErrorNotification message={error} /> }
+      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.076} back={false}/>
+      <View style={{width: '100%', alignItems: 'center'}}>
       <Text style={styles.title}>¿Cuál es tu nombre?</Text>
       <View style={styles.formGroup}>
         <TextInput
@@ -43,7 +46,8 @@ export default function UserInputName({ navigation }) {
       >
         <Text style={styles.btnText}>Continuar</Text>
       </Pressable>
-    </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -52,6 +56,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
+    justifyContent: 'center'
   },
 
   title: {

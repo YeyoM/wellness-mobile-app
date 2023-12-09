@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
 import React, { useState } from 'react';
+import TopNavigationBar from '../components/TopNavigationBar';
 
 import ErrorNotification from '../components/ErrorNotification';
 
@@ -35,7 +36,7 @@ export default function UserInputGender({ navigation }) {
         if (!selectHombre && !selectMujer && !selectOtro) {
           setTimeout(() => {
             setError(false);
-          }, 5000);
+          }, 3000);
           setError('Por favor selecciona tu género');
           return;
         }
@@ -46,6 +47,7 @@ export default function UserInputGender({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.153} back={true} previousScreen={'Acerca de ti (Nombre)'}/>
       { error && <ErrorNotification message={error} /> }
       <Text style={styles.title}>¿Cuál es tu género?</Text>
       <Pressable
@@ -81,6 +83,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
+    justifyContent:'center'
   },
 
   title: {

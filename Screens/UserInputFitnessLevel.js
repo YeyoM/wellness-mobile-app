@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
 import React, { useState } from 'react';
+import TopNavigationBar from '../components/TopNavigationBar';
 
 import ErrorNotification from '../components/ErrorNotification';
 
@@ -43,6 +44,7 @@ export default function UserInputFitnessLevel({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.836} back={true}/>
       { error && <ErrorNotification message={error} /> }
       <Text style={styles.title}>¿Cuál es tu nivel de fitness?</Text>
       <Pressable
@@ -81,6 +83,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
+    justifyContent:'center' 
   },
 
   title: {
@@ -88,7 +91,7 @@ const styles = StyleSheet.create({
     fontWeight: 'semibold',
     color: 'black',
     marginBottom: 60,
-    marginTop: 80,
+    marginTop: 30,
     textAlign: 'center',
     width: '85%',
   },
