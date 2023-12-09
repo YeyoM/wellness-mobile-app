@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView, Image } from 'react-native';
 import React, { useState } from 'react';
 import { FIREBASE_AUTH } from '../firebaseConfig';
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -17,7 +17,13 @@ export default function Signup({ navigation }) {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const auth = FIREBASE_AUTH;
+
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  }
 
   const handleSignin = async () => {
 
@@ -54,7 +60,7 @@ export default function Signup({ navigation }) {
 
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
-      console.log(response);
+      // console.log(response);
       setLoading(false);
       setTimeout(() => {
         setSuccess(false);
@@ -62,7 +68,7 @@ export default function Signup({ navigation }) {
       }, 3000);
       setSuccess('Se ha iniciado sesión correctamente');
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       setTimeout(() => {
         setError(false);
       }, 3000);
@@ -97,13 +103,22 @@ export default function Signup({ navigation }) {
       <View style={styles.formGroup}>
           <Text style={styles.label}>Contraseña</Text>
           <TextInput
-            secureTextEntry={true}
             style={styles.input}
-            placeholder="Contraseña"
+            placeholder="********"
             placeholderTextColor={'rgba(47, 46, 54, 0.4)'}
             value={password}
             onChangeText={setPassword}
+            secureTextEntry={!showPassword}
           />
+          <Pressable onPress={handleShowPassword} style={{position: 'absolute', right: 0, height: 25, width: 25, zIndex: 999}}>
+            {
+              showPassword ? (
+                <Image style={styles.showHide} source={require('../assets/eye-off.png')} />
+              ) : (
+                <Image style={styles.showHide} source={require('../assets/eye.png')} />
+              )
+            }
+          </Pressable>
       </View>
       <Text style={styles.label}> ¿Olvidaste tu <Text style={{color: '#0496FF', fontWeight: 'bold'}}>contraseña</Text>?</Text>
       <Pressable
@@ -176,6 +191,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     marginBottom: 16,
+    marginTop: 70,
   },
 
   btnText: {
@@ -185,6 +201,15 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     alignSelf: 'center',
     marginTop: 4,
+  },
+
+  showHide: {
+    width: 25,
+    height: 25,
+    resizeMode: 'contain',
+    position: 'absolute',
+    right: 15,
+    top: 40,
   }
 
 });
