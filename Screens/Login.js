@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView } from 'react-native';
 import React, { useState } from 'react';
 import { FIREBASE_AUTH } from '../firebaseConfig';
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 import SuccessNotification from '../components/SuccessNotification';
 import ErrorNotification from '../components/ErrorNotification';
@@ -19,7 +19,7 @@ export default function Signup({ navigation }) {
 
   const auth = FIREBASE_AUTH;
 
-  const handleSignup = async () => {
+  const handleSignin = async () => {
 
     setLoading(true);
 
@@ -52,30 +52,21 @@ export default function Signup({ navigation }) {
       return;
     }
 
-    if (password.length < 8) {
-      setLoading(false);
-      setTimeout(() => {
-        setError(false);
-      }, 3000);
-      setError('La contraseña debe tener al menos 8 caracteres');
-      return;
-    }
-
     try {
-      const response = await createUserWithEmailAndPassword(auth, email, password);
+      const response = await signInWithEmailAndPassword(auth, email, password);
       console.log(response);
       setLoading(false);
       setTimeout(() => {
         setSuccess(false);
-        navigation.navigate('Acerca de ti (Nombre)')
+        navigation.navigate('Home')
       }, 3000);
-      setSuccess('Usuario creado con éxito');
+      setSuccess('Se ha iniciado sesión correctamente');
     } catch (error) {
       console.log(error);
       setTimeout(() => {
         setError(false);
       }, 3000);
-      setError('Hubo un error al crear cuenta! Por favor intenta de nuevo más tarde');
+      setError('Hubo un error al iniciar sesión');
       return;
     }
 
@@ -91,7 +82,7 @@ export default function Signup({ navigation }) {
       { loading && <PrimaryNotification message="Cargando..." /> }
       <View style={{width: '100%', alignItems: 'center'}}>
       <Text style={styles.title}>wellness</Text>
-      <Text style={styles.subtitle}>Regístrate para crear tu rutina</Text>
+      <Text style={styles.subtitle}>Inicia sesión para continuar</Text>
       <View style={styles.formGroup}>
           <Text style={styles.label}>Email</Text>
           <TextInput
@@ -114,13 +105,14 @@ export default function Signup({ navigation }) {
             onChangeText={setPassword}
           />
       </View>
+      <Text style={styles.label}> ¿Olvidaste tu <Text style={{color: '#0496FF', fontWeight: 'bold'}}>contraseña</Text>?</Text>
       <Pressable
         style={styles.btn}
-        onPress={handleSignup}
+        onPress={handleSignin}
       >
-        <Text style={styles.btnText}>Empezar</Text>
+        <Text style={styles.btnText}>Entrar</Text>
       </Pressable>
-      <Text style={styles.label}>¿Ya tienes una cuenta? <Text style={{color: '#0496FF', fontWeight: 'bold'}} onPress={() => navigation.navigate('Login')}>Inicia sesión</Text></Text>
+      <Text style={styles.label}>¿No tienes una cuenta? <Text style={{color: '#0496FF', fontWeight: 'bold'}} onPress={() => navigation.navigate('Signup')}>Regístrate</Text></Text>
       <StatusBar style="auto" />
       </View>
     </KeyboardAvoidingView>

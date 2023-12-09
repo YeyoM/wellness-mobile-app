@@ -3,6 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Signup from './Screens/Signup';
+import Login from './Screens/Login';
+import Home from './Screens/Home';
 
 import UserInputName from './Screens/UserInputName';
 import UserInputGender from './Screens/UserInputGender';
@@ -26,6 +28,8 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
         <Stack.Screen name="Acerca de ti (Nombre)" component={UserInputName} options={{ headerShown: false }} />
         <Stack.Screen name="Acerca de ti (Género)" component={UserInputGender} options={{ headerShown: false }} />
         <Stack.Screen name="Acerca de ti (Cumpleaños)" component={UserInputBirthday} options={{ headerShown: false }} />
