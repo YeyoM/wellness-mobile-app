@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 import ErrorNotification from '../components/ErrorNotification';
+import TopNavigationBar from '../components/TopNavigationBar';
 
 export default function UserInputBirthday({ navigation }) {
 
@@ -49,6 +50,7 @@ export default function UserInputBirthday({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.228} back={true}/>
       { error && <ErrorNotification message={error} /> }
       <Text style={styles.title}>¿Cuándo es tu cumpleaños?</Text>
       <View style={{ width: '85%', marginBottom: 60, backgroundColor: "#ECECEC", padding: 30, borderRadius: 55 }}>
@@ -126,6 +128,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
+    justifyContent: 'center',
   },
 
   title: {

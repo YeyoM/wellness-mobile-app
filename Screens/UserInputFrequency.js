@@ -4,6 +4,7 @@ import { useSharedValue } from 'react-native-reanimated';
 import { Slider, HapticModeEnum } from 'react-native-awesome-slider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
+import TopNavigationBar from '../components/TopNavigationBar';
 
 import React, { useState } from 'react';
 
@@ -17,6 +18,7 @@ export default function UserInputExercises({ navigation }) {
 
   return (
     <GestureHandlerRootView style={styles.container}>
+      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.684} back={true}/>
       <Text style={styles.title}>¿Con qué frecuencia te gustaría hacer ejercicio?</Text>
       <Text style={{ color: '#0496FF', fontSize: 80, fontWeight: 'normal', marginTop: 8, marginBottom: 8 }}>
         {value}x

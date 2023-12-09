@@ -26,20 +26,20 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
-        <Stack.Screen name="Acerca de ti (Nombre)" component={UserInputName} />
-        <Stack.Screen name="Acerca de ti (Género)" component={UserInputGender} />
-        <Stack.Screen name="Acerca de ti (Cumpleaños)" component={UserInputBirthday} />
-        <Stack.Screen name="Acerca de ti (Peso)" component={UserInputInitialWeight} />
-        <Stack.Screen name="Acerca de ti (Peso ideal)" component={UserInputFinalWeight} />
-        <Stack.Screen name="Acerca de ti (Altura)" component={UserInputHeight} />
-        <Stack.Screen name="Acerca de ti (Objetivos)" component={UserInputObjectives} />
-        <Stack.Screen name="Acerca de ti (Ejercicios)" component={UserInputExercises} />
-        <Stack.Screen name="Acerca de ti (Frecuencia)" component={UserInputFrequency} />
-        <Stack.Screen name="Acerca de ti (Días)" component={UserInputDays} />
-        <Stack.Screen name="Acerca de ti (Hora)" component={UserInputTime} />
-        <Stack.Screen name="Acerca de ti (Nivel de fitness)" component={UserInputFitnessLevel} />
-        <Stack.Screen name="Acerca de ti (Activo)" component={UserInputActive} />
-        <Stack.Screen name="Acerca de ti (Resumen)" component={UserInputSummary} />
+        <Stack.Screen name="Acerca de ti (Nombre)" component={UserInputName} options={{ headerShown: false }} />
+        <Stack.Screen name="Acerca de ti (Género)" component={UserInputGender} options={{ headerShown: false }} />
+        <Stack.Screen name="Acerca de ti (Cumpleaños)" component={UserInputBirthday} options={{ headerShown: false }} />
+        <Stack.Screen name="Acerca de ti (Peso)" component={UserInputInitialWeight} options={{ headerShown: false }} />
+        <Stack.Screen name="Acerca de ti (Peso ideal)" component={UserInputFinalWeight} options={{ headerShown: false }} />
+        <Stack.Screen name="Acerca de ti (Altura)" component={UserInputHeight} options={{ headerShown: false }} />
+        <Stack.Screen name="Acerca de ti (Objetivos)" component={UserInputObjectives} options={{ headerShown: false }} />
+        <Stack.Screen name="Acerca de ti (Ejercicios)" component={UserInputExercises} options={{ headerShown: false }} />
+        <Stack.Screen name="Acerca de ti (Frecuencia)" component={UserInputFrequency} options={{ headerShown: false }} />
+        <Stack.Screen name="Acerca de ti (Días)" component={UserInputDays} options={{ headerShown: false }} />
+        <Stack.Screen name="Acerca de ti (Hora)" component={UserInputTime} options={{ headerShown: false }} />
+        <Stack.Screen name="Acerca de ti (Nivel de fitness)" component={UserInputFitnessLevel} options={{ headerShown: false }} />
+        <Stack.Screen name="Acerca de ti (Activo)" component={UserInputActive} options={{ headerShown: false }} />
+        <Stack.Screen name="Acerca de ti (Resumen)" component={UserInputSummary} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
