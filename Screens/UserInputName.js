@@ -1,28 +1,36 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import TopNavigationBar from '../components/TopNavigationBar';
-
 import ErrorNotification from '../components/ErrorNotification';
+
+import { InitialScreensContext } from '../context/InitialScreensContext';
 
 export default function UserInputName({ navigation }) {
 
+  const { setName } = useContext(InitialScreensContext);
+
   const [error, setError] = useState(false);
-  const [name, setName] = useState('');
+  const [name_, setName_] = useState('');
+
+  // prevent user from going back to previous screen
+  useEffect(() => {
+    navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+    });
+  }, [navigation]);
 
   const handleContinue = () => {
-      
-      if (name === '') {
-        setTimeout(() => {
-          setError(false);
-        }, 5000);
-        setError('Por favor ingresa tu nombre');
-        return;
-      }
-  
-      navigation.navigate('Acerca de ti (Género)');
-  
+    if (name_ === '') {
+      setTimeout(() => {
+        setError(false);
+      }, 5000);
+      setError('Por favor ingresa tu nombre');
+      return;
     }
+    setName(name_);
+    navigation.navigate('Acerca de ti (Género)');
+  }
 
   return (
     <KeyboardAvoidingView style={styles.container}>
@@ -36,8 +44,8 @@ export default function UserInputName({ navigation }) {
           placeholder="Nombre"
           placeholderTextColor={'rgba(47, 46, 54, 0.4)'}
           textAlign={'center'}
-          value={name}
-          onChangeText={setName}
+          value={name_}
+          onChangeText={setName_}
         />
       </View>
       <Pressable

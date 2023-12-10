@@ -5,16 +5,26 @@ import { Slider, HapticModeEnum } from 'react-native-awesome-slider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
 import TopNavigationBar from '../components/TopNavigationBar';
+import { useContext } from 'react';
+
+import { InitialScreensContext } from '../context/InitialScreensContext';
 
 import React, { useState } from 'react';
 
-export default function UserInputExercises({ navigation }) {
+export default function UserInputFrequency({ navigation }) {
+
+  const { setExerciseFrequency } = useContext(InitialScreensContext);
 
   const [value, onChangeText] = useState('3');
 
   const progress = useSharedValue(3);
   const min = useSharedValue(1);
   const max = useSharedValue(7);
+
+  const handleContinue = () => {
+    setExerciseFrequency(value);
+    navigation.navigate('Acerca de ti (Días)');
+  }
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -55,7 +65,7 @@ export default function UserInputExercises({ navigation }) {
       </View>
       <Pressable
         style={styles.btn}
-        onPress={() => navigation.navigate('Acerca de ti (Días)')}
+        onPress={handleContinue}
       >
         <Text style={styles.btnText}>Continuar</Text>
       </Pressable>

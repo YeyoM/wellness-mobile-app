@@ -1,11 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView } from 'react-native';
 import TopNavigationBar from '../components/TopNavigationBar';
-
 import ErrorNotification from '../components/ErrorNotification';
 
+import { InitialScreensContext } from '../context/InitialScreensContext';
+
 export default function UserInputInitialWeight({ navigation }) {
+
+  const { setInitialWeight } = useContext(InitialScreensContext);
 
   const [error, setError] = useState(false);
   const [weight, setWeight] = useState('');
@@ -18,6 +21,9 @@ export default function UserInputInitialWeight({ navigation }) {
       setError('Por favor ingresa tu peso');
       return;
     }
+
+    setInitialWeight(weight);
+    
     navigation.navigate('Acerca de ti (Peso ideal)');
   }
 

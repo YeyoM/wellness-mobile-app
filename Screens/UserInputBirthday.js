@@ -1,12 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable, Platform, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import DateTimePicker from "@react-native-community/datetimepicker";
-
-import ErrorNotification from '../components/ErrorNotification';
 import TopNavigationBar from '../components/TopNavigationBar';
+import ErrorNotification from '../components/ErrorNotification';
+
+import { InitialScreensContext } from '../context/InitialScreensContext';
 
 export default function UserInputBirthday({ navigation }) {
+
+  const { setBirthDate } = useContext(InitialScreensContext);
 
   const [date, setDate] = useState(new Date());
   const [dateOfBirth, setDateOfBirth] = useState('');
@@ -19,6 +22,7 @@ export default function UserInputBirthday({ navigation }) {
 
   const confirmIOSDate = () => {
     setDateOfBirth(date.toLocaleDateString());
+    setBirthDate(date.toLocaleDateString());
     togglePicker();
   }
 
@@ -30,6 +34,7 @@ export default function UserInputBirthday({ navigation }) {
       if (Platform.OS === 'android') {
         togglePicker();
         setDateOfBirth(currentDate.toLocaleDateString());
+        setBirthDate(currentDate.toLocaleDateString());
       }
 
     } else {

@@ -1,41 +1,52 @@
 import { StatusBar } from 'expo-status-bar';
+import React, { useContext } from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
 import TopNavigationBar from '../components/TopNavigationBar';
 
+import { InitialScreensContext } from '../context/InitialScreensContext';
+
 export default function UserInputSummary({ navigation }) {
+
+  const {
+    name, 
+    gender,
+    birthDate,
+    preferredMetric,
+    initialWeight,
+    goalWeight,
+    height,
+    objectives,
+    exercises,
+    exerciseFrequency,
+    exerciseDays,
+    reminders,
+    exerciseDuration,
+    fitnessLevel,
+    activityLevel
+  } = useContext(InitialScreensContext);
+
   return (
     <View style={styles.container}>
-      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={1} back={false}/>
-      <Text style={styles.title}>¡Tu plan de entrenamiento está listo!</Text>
-      <Text style={styles.labelTitle}>Nombre</Text>
-      <Text style={styles.labelSubtitle}>Nombre</Text>
-      <Text style={styles.labelTitle}>Género</Text>
-      <Text style={styles.labelSubtitle}>Género</Text>
-      <Text style={styles.labelTitle}>Cumpleaños</Text>
-      <Text style={styles.labelSubtitle}>Cumpleaños</Text>
-      <Text style={styles.labelTitle}>Peso</Text>
-      <Text style={styles.labelSubtitle}>Peso</Text>
-      <Text style={styles.labelTitle}>Peso ideal</Text>
-      <Text style={styles.labelSubtitle}>Peso ideal</Text>
-      <Text style={styles.labelTitle}>Altura</Text>
-      <Text style={styles.labelSubtitle}>Altura</Text>
-      <Text style={styles.labelTitle}>Objetivos</Text>
-      <Text style={styles.labelSubtitle}>Objetivos</Text>
-      <Text style={styles.labelTitle}>Ejercicios</Text>
-      <Text style={styles.labelSubtitle}>Ejercicios</Text>
-      <Text style={styles.labelTitle}>Frecuencia</Text>
-      <Text style={styles.labelSubtitle}>Frecuencia</Text>
-      <Text style={styles.labelTitle}>Días</Text>
-      <Text style={styles.labelSubtitle}>Días</Text>
-      <Text style={styles.labelTitle}>Hora</Text>
-      <Text style={styles.labelSubtitle}>Hora</Text>
-      <Text style={styles.labelTitle}>Nivel de fitness</Text>
-      <Text style={styles.labelSubtitle}>Nivel de fitness</Text>
-      <Text style={styles.labelTitle}>Activo</Text>
-      <Text style={styles.labelSubtitle}>Activo</Text>
+      <TopNavigationBar navigation={navigation} actualScreen={'Tu Resumen'} progress={1} back={false}/>
+      <Text style={styles.title}>Resumen</Text>
+      <Text style={styles.summary}>Nombre: {name}</Text>
+      <Text style={styles.summary}>Genero: {gender}</Text>
+      <Text style={styles.summary}>Fecha de nacimiento: {birthDate}</Text>
+      <Text style={styles.summary}>Pesos: {preferredMetric}</Text>
+      <Text style={styles.summary}>Peso inicial: {initialWeight}</Text>
+      <Text style={styles.summary}>Peso objetivo: {goalWeight}</Text>
+      <Text style={styles.summary}>Altura: {height}</Text>
+      <Text style={styles.summary}>Objetivos: {objectives}</Text>
+      <Text style={styles.summary}>Ejercicios: {exercises}</Text>
+      <Text style={styles.summary}>Frecuencia de ejercicio: {exerciseFrequency}</Text>
+      <Text style={styles.summary}>Días de ejercicio: {exerciseDays}</Text>
+      <Text style={styles.summary}>Recordatorios: {reminders}</Text>
+      <Text style={styles.summary}>Duración del ejercicio: {exerciseDuration}</Text>
+      <Text style={styles.summary}>Nivel de fitness: {fitnessLevel}</Text>
+      <Text style={styles.summary}>Nivel de actividad: {activityLevel}</Text>
       <Pressable
         style={styles.btn}
-        onPress={() => navigation.navigate('Signup')}
+        onPress={() => navigation.navigate('Home')}
       >
         <Text style={styles.btnText}>Continuar</Text>
       </Pressable>

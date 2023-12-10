@@ -1,11 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import TopNavigationBar from '../components/TopNavigationBar';
-
 import ErrorNotification from '../components/ErrorNotification';
 
+import { InitialScreensContext } from '../context/InitialScreensContext';
+
 export default function UserInputExercises({ navigation }) {
+
+  const { setExercises } = useContext(InitialScreensContext);
  
   const [selectHIIT, setSelectHIIT] = useState(false);
   const [selectGAP, setSelectGAP] = useState(false);
@@ -25,6 +28,39 @@ export default function UserInputExercises({ navigation }) {
       setError('Por favor selecciona al menos un ejercicio');
       return;
     }
+
+    let exercises = [];
+
+    if (selectHIIT) {
+      exercises.push('HIIT');
+    }
+
+    if (selectGAP) {
+      exercises.push('GAP');
+    }
+
+    if (selectZumba) {
+      exercises.push('Zumba');
+    }
+
+    if (selectBox) {
+      exercises.push('Box');
+    }
+
+    if (selectCrossFit) {
+      exercises.push('CrossFit');
+    }
+
+    if (selectGym) {
+      exercises.push('Gym');
+    }
+
+    if (selectYoga) {
+      exercises.push('Yoga');
+    }
+
+    setExercises(exercises);
+
     navigation.navigate('Acerca de ti (Frecuencia)');
   }
 
