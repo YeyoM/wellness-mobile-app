@@ -64,7 +64,6 @@ export default function Signup({ navigation }) {
       setLoading(false);
       setTimeout(() => {
         setSuccess(false);
-        navigation.navigate('Home')
       }, 3000);
       setSuccess('Se ha iniciado sesión correctamente');
     } catch (error) {
