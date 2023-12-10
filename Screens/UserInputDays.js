@@ -1,11 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable, Switch } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import TopNavigationBar from '../components/TopNavigationBar';
-
 import ErrorNotification from '../components/ErrorNotification';
 
+import { InitialScreensContext } from '../context/InitialScreensContext';
+
 export default function UserInputDays({ navigation }) {
+
+  const { setExerciseDays } = useContext(InitialScreensContext);
 
   const [reminder, setReminder] = useState(false);
 
@@ -27,6 +30,39 @@ export default function UserInputDays({ navigation }) {
       setError('Por favor selecciona al menos un día');
       return;
     }
+
+    let days = [];
+
+    if (selectDom) {
+      days.push('Domingo');
+    }
+
+    if (selectLun) {
+      days.push('Lunes');
+    }
+
+    if (selectMar) {
+      days.push('Martes');
+    }
+
+    if (selectMie) {
+      days.push('Miércoles');
+    }
+
+    if (selectJue) {
+      days.push('Jueves');
+    }
+
+    if (selectVie) {
+      days.push('Viernes');
+    }
+
+    if (selectSab) {
+      days.push('Sábado');
+    }
+
+    setExerciseDays(days);
+
     navigation.navigate('Acerca de ti (Hora)');
   }
 

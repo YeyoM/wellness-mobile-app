@@ -1,11 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import TopNavigationBar from '../components/TopNavigationBar';
-
 import ErrorNotification from '../components/ErrorNotification';
 
+import { InitialScreensContext } from '../context/InitialScreensContext';
+
 export default function UserInputGender({ navigation }) {
+
+  const { setGender } = useContext(InitialScreensContext);
 
   const [selectHombre, setSelectHombre] = useState(false);
   const [selectMujer, setSelectMujer] = useState(false);
@@ -32,18 +35,24 @@ export default function UserInputGender({ navigation }) {
   }
 
   const handleContinue = () => {
-        
-        if (!selectHombre && !selectMujer && !selectOtro) {
-          setTimeout(() => {
-            setError(false);
-          }, 3000);
-          setError('Por favor selecciona tu género');
-          return;
-        }
-    
-        navigation.navigate('Acerca de ti (Cumpleaños)');
-    
-      }
+    if (!selectHombre && !selectMujer && !selectOtro) {
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+      setError('Por favor selecciona tu género');
+      return;
+    }
+
+    if (selectHombre) {
+      setGender('Hombre');
+    } else if (selectMujer) {
+      setGender('Mujer');
+    } else if (selectOtro) {
+      setGender('Otro');
+    }
+
+    navigation.navigate('Acerca de ti (Cumpleaños)');    
+  }
 
   return (
     <View style={styles.container}>

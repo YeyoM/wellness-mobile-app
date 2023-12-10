@@ -6,9 +6,13 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
 import TopNavigationBar from '../components/TopNavigationBar';
 
-import React, { useState } from 'react';
+import { InitialScreensContext } from '../context/InitialScreensContext';
+
+import React, { useState, useContext } from 'react';
 
 export default function UserInputTime({ navigation }) {
+
+  const { setExerciseDuration } = useContext(InitialScreensContext);
 
   const [value, onChangeText] = useState('3');
   const [realTime, setRealTime] = useState('3h 0min');
@@ -21,6 +25,11 @@ export default function UserInputTime({ navigation }) {
     const hours = Math.floor(value);
     const minutes = Math.round((value - hours) * 60);
     setRealTime(`${hours}h ${minutes}min`);
+  }
+
+  const handleContinue = () => {
+    setExerciseDuration(realTime);
+    navigation.navigate('Acerca de ti (Nivel de fitness)');
   }
 
   return (
@@ -62,7 +71,7 @@ export default function UserInputTime({ navigation }) {
       </View>
       <Pressable
         style={styles.btn}
-        onPress={() => navigation.navigate('Acerca de ti (Nivel de fitness)')}
+        onPress={handleContinue}
       >
         <Text style={styles.btnText}>Continuar</Text>
       </Pressable>

@@ -1,11 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import TopNavigationBar from '../components/TopNavigationBar';
-
 import ErrorNotification from '../components/ErrorNotification';
 
+import { InitialScreensContext } from '../context/InitialScreensContext';
+
 export default function UserInputFitnessLevel({ navigation }) {
+
+  const { setFitnessLevel } = useContext(InitialScreensContext);
 
   const [selectPrincipiante, setSelectPrincipiante] = useState(false);
   const [selectIntermedio, setSelectIntermedio] = useState(false);
@@ -39,6 +42,23 @@ export default function UserInputFitnessLevel({ navigation }) {
       setError('Por favor selecciona tu nivel de fitness');
       return;
     }
+
+    let fitnessLevel = '';
+
+    if (selectPrincipiante) {
+      fitnessLevel = 'Principiante';
+    }
+
+    if (selectIntermedio) {
+      fitnessLevel = 'Intermedio';
+    }
+
+    if (selectAvanzado) {
+      fitnessLevel = 'Avanzado';
+    }
+
+    setFitnessLevel(fitnessLevel);
+
     navigation.navigate('Acerca de ti (Activo)');
   }
 

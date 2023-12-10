@@ -1,11 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import TopNavigationBar from '../components/TopNavigationBar';
-
 import ErrorNotification from '../components/ErrorNotification';
 
+import { InitialScreensContext } from '../context/InitialScreensContext';
+
 export default function UserInputObjectives({ navigation }) {
+
+  const { setObjectives } = useContext(InitialScreensContext);
 
   const [selectFormaFisica, setSelectFormaFisica] = useState(false);
   const [selectQuemarGrasa, setSelectQuemarGrasa] = useState(false);
@@ -27,6 +30,47 @@ export default function UserInputObjectives({ navigation }) {
       setError('Por favor selecciona al menos un objetivo');
       return;
     }
+
+    let objectives = [];
+
+    if (selectFormaFisica) {
+      objectives.push('Mejorar mi forma física');
+    }
+
+    if (selectQuemarGrasa) {
+      objectives.push('Quemar grasa');
+    }
+
+    if (selectDesarrollarMusculo) {
+      objectives.push('Desarrollar músculo');
+    }
+
+    if (selectAumentarResistencia) {
+      objectives.push('Aumentar resistencia');
+    }
+
+    if (selectFortalecerMente) {
+      objectives.push('Fortalecer la mente');
+    }
+
+    if (selectPerdidaPeso) {
+      objectives.push('Pérdida de peso');
+    }
+
+    if (selectManejarEstes) {
+      objectives.push('Manejar el estés');
+    }
+
+    if (selectFlexibilidad) {
+      objectives.push('Flexibilidad');
+    }
+
+    if (selectOptimizarEntrenamientos) {
+      objectives.push('Optimizar mis entrenamientos');
+    }
+
+    setObjectives(objectives);
+
     navigation.navigate('Acerca de ti (Ejercicios)');
   }
 

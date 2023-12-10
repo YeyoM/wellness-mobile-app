@@ -73,10 +73,11 @@ export default function Signup({ navigation }) {
       setLoading(false);
       setTimeout(() => {
         setSuccess(false);
-        navigation.navigate('Acerca de ti (Nombre)')
       }, 3000);
       setSuccess('Usuario creado con éxito');
+      navigation.navigate('Acerca de ti (Nombre)');
     } catch (error) {
+      setLoading(false);
       console.log(error);
       setTimeout(() => {
         setError(false);

@@ -1,23 +1,29 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import TopNavigationBar from '../components/TopNavigationBar';
-
 import ErrorNotification from '../components/ErrorNotification';
+
+import { InitialScreensContext } from '../context/InitialScreensContext';
 
 export default function UserInputHeight({ navigation }) {
 
+  const { setHeight } = useContext(InitialScreensContext);
+
   const [error, setError] = useState(false);
-  const [height, setHeight] = useState('');
+  const [height_, setHeight_] = useState('');
 
   const handleContinue = () => {
-    if (height === '') {
+    if (height_ === '') {
       setTimeout(() => {
         setError(false);
       }, 5000);
       setError('Por favor ingresa tu altura');
       return;
     }
+
+    setHeight(height_);
+
     navigation.navigate('Acerca de ti (Objetivos)');
   }
 
@@ -38,8 +44,8 @@ export default function UserInputHeight({ navigation }) {
         placeholderTextColor={'rgba(47, 46, 54, 0.4)'}
         keyboardType='numeric'
         returnKeyType='done'
-        value={height}
-        onChangeText={setHeight}
+        value={height_}
+        onChangeText={setHeight_}
       />
       <Text style={{ fontSize: 20, fontWeight: 'normal', color: '#2F2E36', marginBottom: 40 }}>cm</Text>
       </View>

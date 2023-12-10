@@ -1,11 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import TopNavigationBar from '../components/TopNavigationBar';
-
 import ErrorNotification from '../components/ErrorNotification';
 
+import { InitialScreensContext } from '../context/InitialScreensContext';
+
 export default function UserInputFinalWeight({ navigation }) {
+
+  const { setGoalWeight } = useContext(InitialScreensContext);
 
   const [error, setError] = useState(false);
   const [weight, setWeight] = useState('');
@@ -18,6 +21,9 @@ export default function UserInputFinalWeight({ navigation }) {
       setError('Por favor ingresa tu peso');
       return;
     }
+
+    setGoalWeight(weight);
+
     navigation.navigate('Acerca de ti (Altura)');
   }
 

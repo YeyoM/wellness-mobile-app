@@ -19,7 +19,6 @@ export default function ManageAccount ({ navigation }) {
       setLoading(false);
       setTimeout(() => {
         setSuccess(false);
-        navigation.navigate('Login')
       }, 3000);
       setSuccess('Cerrando sesión...');
     } catch (error) {
@@ -37,6 +36,9 @@ export default function ManageAccount ({ navigation }) {
       {error && <ErrorNotification message={error} />}
       {loading && <PrimaryNotification message={loading} />}
       <Text style={styles.text}>Manage Account</Text>
+      <Pressable onPress={() => navigation.navigate('Acerca de ti (Nombre)')} style={styles.button}>
+        <Text style={{ color: 'white' }}>Actualizar datos</Text>
+      </Pressable>
       <Pressable onPress={handleSignOut} style={styles.button}>
         <Text style={{ color: 'white' }}>Sign Out</Text>
       </Pressable>
@@ -65,6 +67,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0496FF',
     borderRadius: 90,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginBottom: 16,
   }
 })
