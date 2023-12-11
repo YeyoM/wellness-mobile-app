@@ -12,18 +12,29 @@ export default function TopNavigationBar({ navigation, actualScreen, previousScr
           </Pressable>
         )
       }
+      {
+        previousScreen && (
+          <Pressable onPress={() => navigation.navigate(previousScreen)} style={{position: 'absolute', left: 0, height: 25, width: 25, top: 35, left: 25, zIndex: 999}}>
+            <Image style={styles.backIcon} source={require('../assets/back.png')} />
+          </Pressable>
+        )
+      }
       <View style={{flex: 1, alignItems: 'center'}}>
         <Text style={styles.title}>{actualScreen}</Text>
-        <Progress.Bar 
-          progress={progress} 
-          width={100} 
-          height={4} 
-          color={'#0496FF'} 
-          unfilledColor={'#F9F9F9'}
-          borderWidth={0}
-          borderRadius={8}
-          style={styles.progressBar}
-        />
+        {
+          progress && (
+            <Progress.Bar 
+              progress={progress} 
+              width={100} 
+              height={4} 
+              color={'#0496FF'} 
+              unfilledColor={'#F9F9F9'}
+              borderWidth={0}
+              borderRadius={8}
+              style={styles.progressBar}
+            />
+          )
+        }
       </View>
     </View>
   )

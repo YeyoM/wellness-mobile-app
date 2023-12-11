@@ -54,7 +54,7 @@ export default function App() {
             ? (
               <>
                 <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-                <Stack.Screen name="ManageAccount" component={ManageAccount} options={{ headerShown: false }} />
+                <Stack.Screen name="ManageAccount" component={ManageAccount} options={{ headerShown: false, gestureEnabled: false }} />
                 <Stack.Screen name="Acerca de ti (Nombre)" component={UserInputName} options={{ headerShown: false, gestureEnabled: false }} />
                 <Stack.Screen name="Acerca de ti (Género)" component={UserInputGender} options={{ headerShown: false }} />
                 <Stack.Screen name="Acerca de ti (Cumpleaños)" component={UserInputBirthday} options={{ headerShown: false }} />

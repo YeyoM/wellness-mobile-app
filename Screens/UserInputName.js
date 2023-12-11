@@ -13,13 +13,6 @@ export default function UserInputName({ navigation }) {
   const [error, setError] = useState(false);
   const [name_, setName_] = useState('');
 
-  // prevent user from going back to previous screen
-  useEffect(() => {
-    navigation.addListener('beforeRemove', (e) => {
-      e.preventDefault();
-    });
-  }, [navigation]);
-
   const handleContinue = () => {
     if (name_ === '') {
       setTimeout(() => {
