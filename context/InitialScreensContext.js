@@ -7,7 +7,7 @@ export const InitialScreensProvider = ({ children }) => {
   const [ name, setName ] = useState("")
   const [ gender, setGender ] = useState("")
   const [ birthDate, setBirthDate ] = useState("")
-  const [ preferredMetric, setPreferredMetric ] = useState("")
+  const [ preferredSystem, setpreferredSystem ] = useState("")
   const [ initialWeight, setInitialWeight ] = useState("")
   const [ goalWeight, setGoalWeight ] = useState("")
   const [ height, setHeight ] = useState("")
@@ -29,8 +29,8 @@ export const InitialScreensProvider = ({ children }) => {
         setGender,
         birthDate,
         setBirthDate,
-        preferredMetric,
-        setPreferredMetric,
+        preferredSystem,
+        setpreferredSystem,
         initialWeight,
         setInitialWeight,
         goalWeight,

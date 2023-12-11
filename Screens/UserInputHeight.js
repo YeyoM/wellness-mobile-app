@@ -8,7 +8,7 @@ import { InitialScreensContext } from '../context/InitialScreensContext';
 
 export default function UserInputHeight({ navigation }) {
 
-  const { setHeight } = useContext(InitialScreensContext);
+  const { setHeight, preferredSystem } = useContext(InitialScreensContext);
 
   const [error, setError] = useState(false);
   const [height_, setHeight_] = useState('');
@@ -40,14 +40,14 @@ export default function UserInputHeight({ navigation }) {
       <TextInput
         style={styles.input}
         textAlign={'center'}
-        placeholder="170"
+        placeholder="00.0"
         placeholderTextColor={'rgba(47, 46, 54, 0.4)'}
         keyboardType='numeric'
         returnKeyType='done'
         value={height_}
         onChangeText={setHeight_}
       />
-      <Text style={{ fontSize: 20, fontWeight: 'normal', color: '#2F2E36', marginBottom: 40 }}>cm</Text>
+      <Text style={{ fontSize: 20, fontWeight: 'normal', color: '#2F2E36', marginBottom: 40 }}>{preferredSystem === 'Metrico' ? 'cm' : 'in'}</Text>
       </View>
       <Pressable
         style={styles.btn}

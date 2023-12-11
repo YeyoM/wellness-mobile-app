@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     top: 0,
     marginTop: 20,
     paddingVertical: 10,   
-    zIndex: 999,
+    zIndex: 900,
     backgroundColor: '#fff', 
   },
 
