@@ -10,10 +10,9 @@ export default function SuccessNotification({ message }) {
 
 const styles = StyleSheet.create({
   container: {
-    width: '90%',
-    height: 50,
     backgroundColor: '#98ff8c',
-    padding: 16,
+    width: '90%',
+    paddingVertical: 16,
     borderRadius: 24,
     fontSize: 16,
     fontWeight: 'bold',
@@ -21,11 +20,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 110,
     zIndex: 999,
+    display: 'flex',
+    flexDirection: 'row',
   },
 
   title: {
     fontSize: 14,
     fontWeight: 'bold',
+    flex: 1,
+    textAlign: 'center',
+    flexWrap: 'wrap',
     color: '#000',
   },
 });
