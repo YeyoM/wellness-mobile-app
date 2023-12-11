@@ -10,6 +10,7 @@ import ManageAccount from './Screens/ManageAccount';
 import UserInputName from './Screens/UserInputName';
 import UserInputGender from './Screens/UserInputGender';
 import UserInputBirthday from './Screens/UserInputBirthday';
+import UserInputSystem from './Screens/UserInputSystem';
 import UserInputInitialWeight from './Screens/UserInputInitialWeight';
 import UserInputFinalWeight from './Screens/UserInputFinalWeight';
 import UserInputHeight from './Screens/UserInputHeight';
@@ -57,6 +58,7 @@ export default function App() {
                 <Stack.Screen name="Acerca de ti (Nombre)" component={UserInputName} options={{ headerShown: false, gestureEnabled: false }} />
                 <Stack.Screen name="Acerca de ti (Género)" component={UserInputGender} options={{ headerShown: false }} />
                 <Stack.Screen name="Acerca de ti (Cumpleaños)" component={UserInputBirthday} options={{ headerShown: false }} />
+                <Stack.Screen name="Acerca de ti (Sistema de preferencia)" component={UserInputSystem} options={{ headerShown: false }} />
                 <Stack.Screen name="Acerca de ti (Peso)" component={UserInputInitialWeight} options={{ headerShown: false }} />
                 <Stack.Screen name="Acerca de ti (Peso ideal)" component={UserInputFinalWeight} options={{ headerShown: false }} />
                 <Stack.Screen name="Acerca de ti (Altura)" component={UserInputHeight} options={{ headerShown: false }} />

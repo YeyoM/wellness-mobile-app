@@ -11,7 +11,7 @@ export default function UserInputSummary({ navigation }) {
     name, 
     gender,
     birthDate,
-    preferredMetric,
+    preferredSystem,
     initialWeight,
     goalWeight,
     height,
@@ -27,12 +27,12 @@ export default function UserInputSummary({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <TopNavigationBar navigation={navigation} actualScreen={'Tu Resumen'} progress={1} back={false}/>
+      <TopNavigationBar navigation={navigation} actualScreen={'Tu Resumen'} progress={1} back={true}/>
       <Text style={styles.title}>Resumen</Text>
       <Text style={styles.summary}>Nombre: {name}</Text>
       <Text style={styles.summary}>Genero: {gender}</Text>
       <Text style={styles.summary}>Fecha de nacimiento: {birthDate}</Text>
-      <Text style={styles.summary}>Pesos: {preferredMetric}</Text>
+      <Text style={styles.summary}>Sistema de unidades: {preferredSystem}</Text>
       <Text style={styles.summary}>Peso inicial: {initialWeight}</Text>
       <Text style={styles.summary}>Peso objetivo: {goalWeight}</Text>
       <Text style={styles.summary}>Altura: {height}</Text>

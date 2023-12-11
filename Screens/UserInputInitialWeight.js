@@ -8,7 +8,7 @@ import { InitialScreensContext } from '../context/InitialScreensContext';
 
 export default function UserInputInitialWeight({ navigation }) {
 
-  const { setInitialWeight } = useContext(InitialScreensContext);
+  const { setInitialWeight, preferredSystem } = useContext(InitialScreensContext);
 
   const [error, setError] = useState(false);
   const [weight, setWeight] = useState('');
@@ -50,7 +50,7 @@ export default function UserInputInitialWeight({ navigation }) {
         value={weight}
         onChangeText={setWeight}
       />
-      <Text style={{ fontSize: 20, fontWeight: 'normal', color: '#2F2E36', marginBottom: 40 }}>Kg</Text>
+      <Text style={{ fontSize: 20, fontWeight: 'normal', color: '#2F2E36', marginBottom: 40 }}>{preferredSystem === 'Metrico' ? 'kg' : 'lb'}</Text>
       </View>
       <Pressable
         style={styles.btn}

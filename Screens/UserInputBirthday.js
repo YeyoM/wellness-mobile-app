@@ -50,7 +50,7 @@ export default function UserInputBirthday({ navigation }) {
       setError('Por favor ingresa tu fecha de nacimiento');
       return;
     }
-    navigation.navigate('Acerca de ti (Peso)');
+    navigation.navigate('Acerca de ti (Sistema de preferencia)');
   }
 
   return (
