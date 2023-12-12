@@ -31,11 +31,21 @@ export default function UserUpdateHeight({ route, navigation }) {
     setLoading("Guardando...");
     let height_ = height;
 
-    const docRef = doc(FIRESTORE, 'users', FIREBASE_AUTH.currentUser.uid);
-    await setDoc(docRef, { height: height_ }, { merge: true });
-
-    setSuccess('Altura guardada correctamente');
-    setLoading(false);
+    try {
+      await setDoc(doc(FIRESTORE, "users", FIREBASE_AUTH.currentUser.uid), { height: height_ }, { merge: true });
+      setLoading(false);
+      setTimeout(() => {
+        setSuccess(false);
+        navigation.goBack();
+      }, 2000);
+      setSuccess('Altura actualizada correctamente');
+    } catch (error) {
+      setLoading(false);
+      setTimeout(() => {
+        setError(false);
+      }, 5000);
+      setError('Error al actualizar la altura');
+    }
   }
 
   const handleCancelar = () => {

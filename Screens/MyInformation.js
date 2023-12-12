@@ -10,7 +10,6 @@ import { FIRESTORE, FIREBASE_AUTH } from '../firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 
 import ErrorNotification from   '../components/ErrorNotification';
-import SuccessNotification from '../components/SuccessNotification';
 import PrimaryNotification from '../components/PrimaryNotification';
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -114,7 +113,7 @@ export default function MyInformation({ navigation }) {
           Altura: {userData && userData.height}{userData && userData.preferredSystem === 'Metrico' ? 'cm' : 'in'}
         </Text>
         <Text style={styles.text}>
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate('Actualizar información (Objetivos)', { objectives_: userData && userData.objectives })}>
             <Image source={require('../assets/edit.png')} style={{ width: 15, height: 15, marginRight: 8, marginTop: 11 }} />
           </Pressable>
           Objetivos: {userData && userData.objectives.join(', ')}

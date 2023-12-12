@@ -26,6 +26,7 @@ import UserInputSummary from './Screens/InitialScreens/UserInputSummary';
 
 import UserUpdateSystem from './Screens/UpdateUserInfo/UserUpdateSystem';
 import UserUpdateHeight from './Screens/UpdateUserInfo/UserUpdateHeight';
+import UserUpdateObjectives from './Screens/UpdateUserInfo/UserUpdateObjectives';
 
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged } from "firebase/auth";
@@ -79,6 +80,7 @@ export default function App() {
 
                   <Stack.Screen name="Actualizar información (Sistema de preferencia)" component={UserUpdateSystem} options={{ headerShown: false }} />
                   <Stack.Screen name="Actualizar información (Altura)" component={UserUpdateHeight} options={{ headerShown: false }} />
+                  <Stack.Screen name="Actualizar información (Objetivos)" component={UserUpdateObjectives} options={{ headerShown: false }} />
                 </>
               )
               : (
