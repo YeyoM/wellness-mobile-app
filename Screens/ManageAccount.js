@@ -39,10 +39,13 @@ export default function ManageAccount ({ navigation }) {
       {error && <ErrorNotification message={error} />}
       {loading && <PrimaryNotification message={loading} />}
       <Pressable onPress={() => navigation.navigate('Acerca de ti (Nombre)')} style={styles.button}>
-        <Text style={{ color: 'white' }}>Actualizar datos</Text>
+        <Text style={{ color: 'white' }}>Agregar mis Datos</Text>
       </Pressable>
       <Pressable onPress={handleSignOut} style={styles.button}>
-        <Text style={{ color: 'white' }}>Sign Out</Text>
+        <Text style={{ color: 'white' }}>Salir de la cuenta</Text>
+      </Pressable>
+      <Pressable onPress={() => navigation.navigate('MyInformation')} style={styles.button}>
+        <Text style={{ color: 'white' }}>Mi información</Text>
       </Pressable>
     </View>
   )
@@ -51,7 +54,7 @@ export default function ManageAccount ({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f1f1f1',
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center'
   },

@@ -4,56 +4,50 @@ import { useSharedValue } from 'react-native-reanimated';
 import { Slider, HapticModeEnum } from 'react-native-awesome-slider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
-import TopNavigationBar from '../components/TopNavigationBar';
+import TopNavigationBar from '../../components/TopNavigationBar';
+import { useContext } from 'react';
 
-import { InitialScreensContext } from '../context/InitialScreensContext';
+import { InitialScreensContext } from '../../context/InitialScreensContext';
 
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 
-export default function UserInputTime({ navigation }) {
+export default function UserInputFrequency({ navigation }) {
 
-  const { setExerciseDuration } = useContext(InitialScreensContext);
+  const { setExerciseFrequency } = useContext(InitialScreensContext);
 
   const [value, onChangeText] = useState('3');
-  const [realTime, setRealTime] = useState('3h 0min');
 
-  const progress = useSharedValue(1.5);
-  const min = useSharedValue(0.25);
-  const max = useSharedValue(5);
-
-  const valueToTime = (value) => {
-    const hours = Math.floor(value);
-    const minutes = Math.round((value - hours) * 60);
-    setRealTime(`${hours}h ${minutes}min`);
-  }
+  const progress = useSharedValue(3);
+  const min = useSharedValue(1);
+  const max = useSharedValue(7);
 
   const handleContinue = () => {
-    setExerciseDuration(realTime);
-    navigation.navigate('Acerca de ti (Nivel de fitness)');
+    setExerciseFrequency(value);
+    navigation.navigate('Acerca de ti (Días)');
   }
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.912} back={true}/>
-      <Text style={styles.title}>¿Cuánto tiempo te gustaría estar en el gym?</Text>
+      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.684} back={true}/>
+      <Text style={styles.title}>¿Con qué frecuencia te gustaría hacer ejercicio?</Text>
       <Text style={{ color: '#0496FF', fontSize: 80, fontWeight: 'normal', marginTop: 8, marginBottom: 8 }}>
-        {realTime}
+        {value}x
       </Text>
       <Text style={{ color: '#A0A0A3', fontSize: 16, fontWeight: 'bold', marginTop: 16, marginBottom: 40 }}>
-        Tus entrenamientos durarán {realTime} en promedio
+        {value} entrenamientos por semana
       </Text>
       <Slider
         progress={progress}
         minimumValue={min}
         maximumValue={max}
         style={styles.slider}
-        step={19}
+        step={6}
         onHapticFeedback={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         }}
         onSlidingComplete={(e) => {
+          console.log(e);
           onChangeText(e);
-          valueToTime(e);
         }}
         thumbWidth={14}
         hapticMode={HapticModeEnum.STEP}

@@ -1,14 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView } from 'react-native';
 import React, { useState, useContext } from 'react';
-import TopNavigationBar from '../components/TopNavigationBar';
-import ErrorNotification from '../components/ErrorNotification';
+import { StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView } from 'react-native';
+import TopNavigationBar from '../../components/TopNavigationBar';
+import ErrorNotification from '../../components/ErrorNotification';
 
-import { InitialScreensContext } from '../context/InitialScreensContext';
+import { InitialScreensContext } from '../../context/InitialScreensContext';
 
-export default function UserInputFinalWeight({ navigation }) {
+export default function UserInputInitialWeight({ navigation }) {
 
-  const { setGoalWeight, preferredSystem } = useContext(InitialScreensContext);
+  const { setInitialWeight, preferredSystem } = useContext(InitialScreensContext);
 
   const [error, setError] = useState(false);
   const [weight, setWeight] = useState('');
@@ -22,9 +22,9 @@ export default function UserInputFinalWeight({ navigation }) {
       return;
     }
 
-    setGoalWeight(weight);
-
-    navigation.navigate('Acerca de ti (Altura)');
+    setInitialWeight(weight);
+    
+    navigation.navigate('Acerca de ti (Peso ideal)');
   }
 
   return (
@@ -32,9 +32,9 @@ export default function UserInputFinalWeight({ navigation }) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.380} back={true}/>
+      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.304} back={true}/>
       { error && <ErrorNotification message={error} /> }
-      <Text style={styles.title}>¿Cuál es tu peso deseado?</Text>
+      <Text style={styles.title}>¿Cuál es tu peso actual?</Text>
       <View style={{ width: '85%', marginBottom: 60, backgroundColor: "#ECECEC", padding: 30, borderRadius: 55 }}>
         <Text style={{ fontWeight: "bold", fontSize: 15}}>🤔️ Tu IMC. O tu peso podemos saber blah</Text>
         <Text style={{ fontWeight: "normal", fontSize: 14}}>Al saber tu edad podemos. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</Text>
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent:'center'
+    justifyContent:'center',
   },
 
   title: {

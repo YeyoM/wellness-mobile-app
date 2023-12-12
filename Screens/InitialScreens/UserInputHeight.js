@@ -1,10 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView } from 'react-native';
 import React, { useState, useContext } from 'react';
-import TopNavigationBar from '../components/TopNavigationBar';
-import ErrorNotification from '../components/ErrorNotification';
+import TopNavigationBar from '../../components/TopNavigationBar';
+import ErrorNotification from '../../components/ErrorNotification';
 
-import { InitialScreensContext } from '../context/InitialScreensContext';
+import { InitialScreensContext } from '../../context/InitialScreensContext';
 
 export default function UserInputHeight({ navigation }) {
 
@@ -28,7 +28,10 @@ export default function UserInputHeight({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
       <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.456} back={true}/>
       { error && <ErrorNotification message={error} /> }
       <Text style={styles.title}>¿Cuál es tu altura?</Text>
@@ -55,7 +58,7 @@ export default function UserInputHeight({ navigation }) {
       >
         <Text style={styles.btnText}>Continuar</Text>
       </Pressable>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

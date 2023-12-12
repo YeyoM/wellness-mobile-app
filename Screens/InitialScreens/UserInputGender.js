@@ -1,10 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
 import React, { useState, useContext } from 'react';
-import TopNavigationBar from '../components/TopNavigationBar';
-import ErrorNotification from '../components/ErrorNotification';
+import TopNavigationBar from '../../components/TopNavigationBar';
+import ErrorNotification from '../../components/ErrorNotification';
 
-import { InitialScreensContext } from '../context/InitialScreensContext';
+import { InitialScreensContext } from '../../context/InitialScreensContext';
 
 export default function UserInputGender({ navigation }) {
 
@@ -39,7 +39,7 @@ export default function UserInputGender({ navigation }) {
       setTimeout(() => {
         setError(false);
       }, 3000);
-      setError('Por favor selecciona tu género');
+      setError('Por favor ingresa tu género');
       return;
     }
 

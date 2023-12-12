@@ -1,17 +1,35 @@
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import React, { useState, useContext, useEffect } from 'react';
-import TopNavigationBar from '../components/TopNavigationBar';
-import ErrorNotification from '../components/ErrorNotification';
+import TopNavigationBar from '../../components/TopNavigationBar';
 
-import { InitialScreensContext } from '../context/InitialScreensContext';
+import ErrorNotification from '../../components/ErrorNotification';
+import SuccessNotification from '../../components/SuccessNotification';
+import PrimaryNotification from '../../components/PrimaryNotification';
 
-export default function UserInputSystem({ navigation }) {
+import { FIRESTORE, FIREBASE_AUTH } from '../../firebaseConfig';
+import { doc, setDoc } from "firebase/firestore";
 
-  const { setpreferredSystem } = useContext(InitialScreensContext);
+export default function UserUpdateSystem({ route, navigation }) {
+
+  const { system } = route.params;
 
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [metricSystem, setMetricSystem] = useState(false);
   const [imperialSystem, setImperialSystem] = useState(false);
+
+  useEffect(() => {
+    if (system === 'Metrico') {
+      setMetricSystem(true);
+      setImperialSystem(false);
+    }
+
+    if (system === 'Imperial') {
+      setMetricSystem(false);
+      setImperialSystem(true);
+    }
+  }, []);
 
   const pressSelectMetricSystem = () => {
     setMetricSystem(true);
@@ -23,7 +41,7 @@ export default function UserInputSystem({ navigation }) {
     setImperialSystem(true);
   }
 
-  const handleContinue = () => {
+  const handleGuardar = async () => {
     if (!metricSystem && !imperialSystem) {
       setTimeout(() => {
         setError(false);
@@ -32,6 +50,7 @@ export default function UserInputSystem({ navigation }) {
       return;
     }
     
+    setLoading("Guardando...");
     let preferredSystem = '';
 
     if (metricSystem) {
@@ -42,15 +61,43 @@ export default function UserInputSystem({ navigation }) {
       preferredSystem = 'Imperial';
     }
 
-    setpreferredSystem(preferredSystem);
+    const userId = FIREBASE_AUTH.currentUser.uid;
 
-    navigation.navigate('Acerca de ti (Peso)');
+    const docRef = doc(FIRESTORE, 'users', userId);
+
+    try {
+      await setDoc(docRef, {
+        preferredSystem: preferredSystem,
+      }, { merge: true });
+
+      setTimeout(() => {
+        setSuccess(false);
+        navigation.navigate('MyInformation'); 
+      }, 2000);
+      setSuccess('Tu información se ha actualizado!');
+      setLoading(false);
+    } catch (error) {
+      setTimeout(() => {
+        setError(false);
+      }, 2000);
+      setError('Hubo un error');
+      setLoading(false);
+      return;
+    }
+
+  }
+
+  const handleCancelar = () => {
+    // go back
+    navigation.goBack();
   }
 
   return (
     <View style={styles.container}>
       { error && <ErrorNotification message={error} /> }
-      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.270} back={false}/>
+      { success && <SuccessNotification message={success} /> }
+      { loading && <PrimaryNotification message={loading} /> }
+      <TopNavigationBar navigation={navigation} actualScreen={'Actualizar sistema de medida'} back={false}/>
       <View style={{width: '100%', alignItems: 'center'}}>
       <Text style={styles.title}>¿Cuál es tu sistema de medida preferido?</Text>
       <Pressable
@@ -68,10 +115,18 @@ export default function UserInputSystem({ navigation }) {
         <Text style={styles.labelSubtitle}>Libras, pulgadas, etc.</Text>
       </Pressable>
       <Pressable
-        style={styles.btn}
-        onPress={handleContinue}
+        style={ loading || success ? styles.btnDisabled : styles.btn }
+        onPress={handleGuardar}
+        disabled={loading || success}
       >
-        <Text style={styles.btnText}>Continuar</Text>
+        <Text style={styles.btnText}>Guardar</Text>
+      </Pressable>
+      <Pressable
+        style={ loading || success ? styles.btnDisabled : styles.btnCancelar }
+        onPress={handleCancelar}
+        disabled={loading || success}
+      >
+        <Text style={styles.btnText}>Cancelar</Text>
       </Pressable>
       </View>
     </View>
@@ -125,7 +180,7 @@ const styles = StyleSheet.create({
     borderRadius: 35,
     display: 'flex',
     justifyContent: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
     borderWidth: 1,
     borderColor: '#0496FF',
     paddingHorizontal: 25,
@@ -139,7 +194,7 @@ const styles = StyleSheet.create({
     borderRadius: 35,
     display: 'flex',
     justifyContent: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
     paddingHorizontal: 25,
     paddingVertical: 15,
     borderWidth: 1,
@@ -154,7 +209,26 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     marginBottom: 16,
-    marginTop: 60,
+  },
+
+  btnCancelar: {
+    width: '85%',
+    height: 48,
+    backgroundColor: '#FF3333',
+    borderRadius: 90,
+    display: 'flex',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+
+  btnDisabled: {
+    width: '85%',
+    height: 48,
+    backgroundColor: '#ECECEC',
+    borderRadius: 90,
+    display: 'flex',
+    justifyContent: 'center',
+    marginBottom: 16,
   },
 
   btnText: {

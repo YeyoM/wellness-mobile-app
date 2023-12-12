@@ -1,16 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
-import TopNavigationBar from '../components/TopNavigationBar';
+import TopNavigationBar from '../../components/TopNavigationBar';
 
-import { InitialScreensContext } from '../context/InitialScreensContext';
+import { InitialScreensContext } from '../../context/InitialScreensContext';
 
-import { FIRESTORE, FIREBASE_AUTH } from '../firebaseConfig';
+import { FIRESTORE, FIREBASE_AUTH } from '../../firebaseConfig';
 import { doc, setDoc } from "firebase/firestore";
 
-import ErrorNotification from '../components/ErrorNotification';
-import SuccessNotification from '../components/SuccessNotification';
-import PrimaryNotification from '../components/PrimaryNotification';
+import ErrorNotification from '../../components/ErrorNotification';
+import SuccessNotification from '../../components/SuccessNotification';
+import PrimaryNotification from '../../components/PrimaryNotification';
 
 export default function UserInputSummary({ navigation }) {
 
