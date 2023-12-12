@@ -2,31 +2,37 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Pressable, Switch } from 'react-native';
 import React, { useState, useContext } from 'react';
 import TopNavigationBar from '../../components/TopNavigationBar';
+
 import ErrorNotification from '../../components/ErrorNotification';
+import PrimaryNotification from '../../components/PrimaryNotification';
+import SuccessNotification from '../../components/SuccessNotification';
 
-import { InitialScreensContext } from '../../context/InitialScreensContext';
+import { FIRESTORE, FIREBASE_AUTH } from '../../firebaseConfig';
+import { doc, setDoc } from "firebase/firestore";
 
-export default function UserInputDays({ navigation }) {
+export default function UserInputDays({ route, navigation }) {
 
-  const { setExerciseDays } = useContext(InitialScreensContext);
+  const { exerciseDays, reminder_ } = route.params;
 
-  const [reminder, setReminder] = useState(false);
+  const [reminder, setReminder] = useState(reminder_);
 
-  const [selectDom, setSelectDom] = useState(false);
-  const [selectLun, setSelectLun] = useState(false);
-  const [selectMar, setSelectMar] = useState(false);
-  const [selectMie, setSelectMie] = useState(false);
-  const [selectJue, setSelectJue] = useState(false);
-  const [selectVie, setSelectVie] = useState(false);
-  const [selectSab, setSelectSab] = useState(false);
+  const [selectDom, setSelectDom] = useState(exerciseDays.includes('Domingo'));
+  const [selectLun, setSelectLun] = useState(exerciseDays.includes('Lunes'));
+  const [selectMar, setSelectMar] = useState(exerciseDays.includes('Martes'));
+  const [selectMie, setSelectMie] = useState(exerciseDays.includes('Miercoles'));
+  const [selectJue, setSelectJue] = useState(exerciseDays.includes('Jueves'));
+  const [selectVie, setSelectVie] = useState(exerciseDays.includes('Viernes'));
+  const [selectSab, setSelectSab] = useState(exerciseDays.includes('Sabado'));
 
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleSwitch = () => {
     setReminder(!reminder);
   }
 
-  const handleContinue = () => {
+  const handleGuardar = async () => {
     if (!selectDom && !selectLun && !selectMar && !selectMie && !selectJue && !selectVie && !selectSab) {
       setTimeout(() => {
         setError(false);
@@ -65,15 +71,36 @@ export default function UserInputDays({ navigation }) {
       days.push('Sábado');
     }
 
-    setExerciseDays(days);
+    setLoading("Guardando...");
 
-    navigation.navigate('Acerca de ti (Hora)');
+    try {
+      await setDoc(doc(FIRESTORE, "users", FIREBASE_AUTH.currentUser.uid), { trainingDays: days, reminder: reminder }, { merge: true });
+      setLoading(false);
+      setTimeout(() => {
+        setSuccess(false);
+        navigation.goBack();
+      }, 3000);
+      setSuccess('Días de entrenamiento actualizados correctamente');
+    } catch (error) {
+      setLoading(false);
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+      setError('Error al actualizar los días de entrenamiento');
+    }
+  }
+
+  const handleCancelar = () => {
+    // go back
+    navigation.goBack();
   }
 
   return (
     <View style={styles.container}>
-      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.76} back={true}/>
+      <TopNavigationBar navigation={navigation} actualScreen={'Actualizar días de entrenamiento'} />
       { error && <ErrorNotification message={error} /> }
+      { success && <SuccessNotification message={success} /> }
+      { loading && <PrimaryNotification message={loading} /> }
       <Text style={styles.title}>¿Qué días quieres entrenar?</Text>
       <View style={styles.objectives}>
         <Pressable
@@ -134,10 +161,18 @@ export default function UserInputDays({ navigation }) {
         </View>
       </View>
       <Pressable
-        style={styles.btn}
-        onPress={handleContinue}
+        style={ loading || success ? styles.btnDisabled : styles.btn }
+        onPress={handleGuardar}
+        disabled={loading || success}
       >
-        <Text style={styles.btnText}>Continuar</Text>
+        <Text style={styles.btnText}>Guardar</Text>
+      </Pressable>
+      <Pressable
+        style={ loading || success ? styles.btnDisabled : styles.btnCancelar }
+        onPress={handleCancelar}
+        disabled={loading || success}
+      >
+        <Text style={styles.btnText}>Cancelar</Text>
       </Pressable>
     </View>
   );
@@ -246,7 +281,26 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     marginBottom: 16,
-    marginTop: 20,
+  },
+
+  btnCancelar: {
+    width: '85%',
+    height: 48,
+    backgroundColor: '#FF3333',
+    borderRadius: 90,
+    display: 'flex',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+
+  btnDisabled: {
+    width: '85%',
+    height: 48,
+    backgroundColor: '#ECECEC',
+    borderRadius: 90,
+    display: 'flex',
+    justifyContent: 'center',
+    marginBottom: 16,
   },
 
   btnText: {

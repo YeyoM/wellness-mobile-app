@@ -119,43 +119,43 @@ export default function MyInformation({ navigation }) {
           Objetivos: {userData && userData.objectives.join(', ')}
         </Text>
         <Text style={styles.text}>
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate('Actualizar información (Ejercicios)', { exercises: userData && userData.exercises })}>
             <Image source={require('../assets/edit.png')} style={{ width: 15, height: 15, marginRight: 8, marginTop: 11 }} />
           </Pressable> 
           Ejercicios: {userData && userData.exercises.join(', ')}
         </Text>
         <Text style={styles.text}>
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate('Actualizar información (Frecuencia)', { exerciseFrequency: userData && userData.trainingFrequency })}>
             <Image source={require('../assets/edit.png')} style={{ width: 15, height: 15, marginTop: 11, marginRight: 8 }} />
           </Pressable>
           Frecuencia de entrenamiento: {userData && userData.trainingFrequency} veces por semana
         </Text>
         <Text style={styles.text}>
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate('Actualizar información (Días)', { exerciseDays: userData && userData.trainingDays, reminder_: userData && userData.reminder })}>
             <Image source={require('../assets/edit.png')} style={{ width: 15, height: 15, marginTop: 11, marginRight: 8 }} />
           </Pressable>
           Días de entrenamiento: {userData && userData.trainingDays.join(', ')}
         </Text>
         <Text style={styles.text}>
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate('Actualizar información (Días)', { exerciseDays: userData && userData.trainingDays, reminder_: userData && userData.reminder })}>
             <Image source={require('../assets/edit.png')} style={{ width: 15, height: 15, marginTop: 11, marginRight: 8 }} />
           </Pressable>
           Recordatorios: {userData && userData.reminder ? 'Si' : 'No'}
         </Text>
         <Text style={styles.text}>
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate('Actualizar información (Hora)', { exerciseTime: userData && userData.trainingDuration })}>
             <Image source={require('../assets/edit.png')} style={{ width: 15, height: 15, marginTop: 11, marginRight: 8 }} />
           </Pressable>
           Duración del entrenamiento: {userData && userData.trainingDuration}
         </Text>
         <Text style={styles.text}>
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate('Actualizar información (Nivel de fitness)', { fitnessLevel: userData && userData.fitnessLevel })}>
             <Image source={require('../assets/edit.png')} style={{ width: 15, height: 15, marginTop: 11, marginRight: 8 }} />
           </Pressable>
           Nivel de fitness: {userData && userData.fitnessLevel}
         </Text>
         <Text style={styles.text}>
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate('Actualizar información (Activo)', { activityLevel: userData && userData.activityLevel })}>
             <Image source={require('../assets/edit.png')} style={{ width: 15, height: 15, marginTop: 11, marginRight: 8 }} />
           </Pressable>
           Nivel de actividad: {userData && userData.activityLevel}
