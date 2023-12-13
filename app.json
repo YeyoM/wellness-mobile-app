@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "wellness-mobile-app",
-    "slug": "wellness-mobile-app",
+    "slug": "wellness",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,16 +15,24 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yeyom.wellness"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.yeyom.wellness"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "792a556e-9fbf-48c1-887c-2c53c62d96d9"
+      }
+    },
+    "owner": "yeyom"
   }
 }
