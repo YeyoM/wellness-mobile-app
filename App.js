@@ -88,8 +88,8 @@ export default function App() {
                   <Stack.Screen name="Actualizar información (Altura)" component={UserUpdateHeight} options={{ headerShown: false }} />
                   <Stack.Screen name="Actualizar información (Objetivos)" component={UserUpdateObjectives} options={{ headerShown: false }} />
                   <Stack.Screen name="Actualizar información (Ejercicios)" component={UserUpdateExercises} options={{ headerShown: false }} />
-                  <Stack.Screen name="Actualizar información (Frecuencia)" component={UserUpdateFrequency} options={{ headerShown: false }} />
-                  <Stack.Screen name="Actualizar información (Días)" component={UserUpdateDays} options={{ headerShown: false }} />
+                  <Stack.Screen name="Actualizar información (Frecuencia)" component={UserUpdateFrequency} options={{ headerShown: false, gestureEnabled: false }} />
+                  <Stack.Screen name="Actualizar información (Días)" component={UserUpdateDays} options={{ headerShown: false, gestureEnabled: false }} />
                   <Stack.Screen name="Actualizar información (Hora)" component={UserUpdateTime} options={{ headerShown: false }} />
                   <Stack.Screen name="Actualizar información (Nivel de fitness)" component={UserUpdateFitnessLevel} options={{ headerShown: false }} />
                   <Stack.Screen name="Actualizar información (Activo)" component={UserUpdateActive} options={{ headerShown: false }} />
