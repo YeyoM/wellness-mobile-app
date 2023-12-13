@@ -8,7 +8,7 @@ import { InitialScreensContext } from '../../context/InitialScreensContext';
 
 export default function UserInputDays({ navigation }) {
 
-  const { setExerciseDays } = useContext(InitialScreensContext);
+  const { setExerciseDays, exerciseFrequency } = useContext(InitialScreensContext);
 
   const [reminder, setReminder] = useState(false);
 
@@ -63,6 +63,14 @@ export default function UserInputDays({ navigation }) {
 
     if (selectSab) {
       days.push('Sábado');
+    }
+
+    if (days.length !== exerciseFrequency) {
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+      setError('Por favor selecciona la misma cantidad de días que seleccionaste en la pregunta anterior');
+      return;
     }
 
     setExerciseDays(days);
