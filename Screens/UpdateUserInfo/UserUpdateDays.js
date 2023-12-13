@@ -8,7 +8,7 @@ import PrimaryNotification from '../../components/PrimaryNotification';
 import SuccessNotification from '../../components/SuccessNotification';
 
 import { FIRESTORE, FIREBASE_AUTH } from '../../firebaseConfig';
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 export default function UserInputDays({ route, navigation }) {
 
@@ -19,10 +19,10 @@ export default function UserInputDays({ route, navigation }) {
   const [selectDom, setSelectDom] = useState(exerciseDays.includes('Domingo'));
   const [selectLun, setSelectLun] = useState(exerciseDays.includes('Lunes'));
   const [selectMar, setSelectMar] = useState(exerciseDays.includes('Martes'));
-  const [selectMie, setSelectMie] = useState(exerciseDays.includes('Miercoles'));
+  const [selectMie, setSelectMie] = useState(exerciseDays.includes('Miércoles'));
   const [selectJue, setSelectJue] = useState(exerciseDays.includes('Jueves'));
   const [selectVie, setSelectVie] = useState(exerciseDays.includes('Viernes'));
-  const [selectSab, setSelectSab] = useState(exerciseDays.includes('Sabado'));
+  const [selectSab, setSelectSab] = useState(exerciseDays.includes('Sábado'));
 
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -74,11 +74,37 @@ export default function UserInputDays({ route, navigation }) {
     setLoading("Guardando...");
 
     try {
+
+      // get trainingFrequency and check if it's the same as the days selected
+      const docRef = doc(FIRESTORE, 'users', FIREBASE_AUTH.currentUser.uid);
+
+      const docSnap = await getDoc(docRef);
+
+      if (!docSnap.exists()) {
+        setTimeout(() => {
+          setError(false);
+        }, 3000);
+        setLoading(false);
+        setError('No se encontró información del usuario');
+        return;
+      }
+
+      const data = docSnap.data();
+
+      if (data.trainingFrequency !== days.length) {
+        setTimeout(() => {
+          setError(false);
+        }, 3000);
+        setLoading(false);
+        setError(`El número de días de entrenamiento no coincide con la frecuencia de entrenamiento, deben ser ${data.trainingFrequency} días`);
+        return;
+      }
+    
       await setDoc(doc(FIRESTORE, "users", FIREBASE_AUTH.currentUser.uid), { trainingDays: days, reminder: reminder }, { merge: true });
       setLoading(false);
       setTimeout(() => {
         setSuccess(false);
-        navigation.goBack();
+        navigation.navigate("MyInformation");
       }, 3000);
       setSuccess('Días de entrenamiento actualizados correctamente');
     } catch (error) {
@@ -90,9 +116,36 @@ export default function UserInputDays({ route, navigation }) {
     }
   }
 
-  const handleCancelar = () => {
+  const handleCancelar = async () => {
     // go back
-    navigation.goBack();
+
+    // check if the days and the frequency are the same in the database
+
+    const docRef = doc(FIRESTORE, 'users', FIREBASE_AUTH.currentUser.uid);
+
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+      setLoading(false);
+      setError('No se encontró información del usuario');
+      return;
+    }
+
+    const data = docSnap.data();
+
+    if (data.trainingFrequency !== exerciseDays.length) {
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+      setLoading(false);
+      setError(`El número de días de entrenamiento no coincide con la frecuencia de entrenamiento, deben ser ${data.trainingFrequency} días`);
+      return;
+    }
+
+    navigation.navigate("MyInformation");
   }
 
   return (

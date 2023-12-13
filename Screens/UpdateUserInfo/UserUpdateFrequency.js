@@ -13,7 +13,7 @@ import SuccessNotification from '../../components/SuccessNotification';
 import PrimaryNotification from '../../components/PrimaryNotification';
 
 import { FIRESTORE, FIREBASE_AUTH } from '../../firebaseConfig';
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export default function UserUpdateFrequency({ route, navigation }) {
 
@@ -33,14 +33,30 @@ export default function UserUpdateFrequency({ route, navigation }) {
     setLoading("Guardando...");
     let exerciseFrequency_ = value;
 
+    // get the days and the reminder
+    const docRef = doc(FIRESTORE, 'users', FIREBASE_AUTH.currentUser.uid);
+
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+      setLoading(false);
+      setError('No se encontró información del usuario');
+      return;
+    }
+
+    const { trainingDays, reminder } = docSnap.data();
+
     try {
       await setDoc(doc(FIRESTORE, "users", FIREBASE_AUTH.currentUser.uid), { trainingFrequency: exerciseFrequency_ }, { merge: true });
       setLoading(false);
       setTimeout(() => {
         setSuccess(false);
-        navigation.goBack();
+        navigation.navigate('Actualizar información (Días)', { exerciseDays: trainingDays, reminder_: reminder });
       }, 2000);
-      setSuccess('Frecuencia de ejercicio actualizada correctamente');
+      setSuccess('Frecuencia de ejercicio actualizada correctamente, actualiza los días de entrenamiento');
     } catch (error) {
       setLoading(false);
       setTimeout(() => {

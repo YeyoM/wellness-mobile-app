@@ -7,7 +7,7 @@ import SuccessNotification from '../../components/SuccessNotification';
 import PrimaryNotification from '../../components/PrimaryNotification';
 
 import { FIRESTORE, FIREBASE_AUTH } from '../../firebaseConfig';
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 export default function UserUpdateSystem({ route, navigation }) {
 
@@ -66,8 +66,42 @@ export default function UserUpdateSystem({ route, navigation }) {
     const docRef = doc(FIRESTORE, 'users', userId);
 
     try {
+
+      // get the goalWeight, initialWeight and height and make the conversion
+      const docSnap = await getDoc(docRef);
+
+      if (!docSnap.exists()) {
+        setTimeout(() => {
+          setError(false);
+        }, 2000);
+        setError('No se encontró información del usuario');
+        setLoading(false);
+        return;
+      }
+
+      const userData = docSnap.data();
+
+      let goalWeight = userData.goalWeight;
+      let initialWeight = userData.initialWeight;
+      let height = userData.height;
+
+      if (preferredSystem === 'Imperial' && userData.preferredSystem === 'Metrico') {
+        goalWeight = Math.round(goalWeight * 2.20462);
+        initialWeight = Math.round(initialWeight * 2.20462);
+        height = Math.round(height * 0.393701);
+      }
+
+      if (preferredSystem === 'Metrico' && userData.preferredSystem === 'Imperial') {
+        goalWeight = Math.round(goalWeight * 0.453592);
+        initialWeight = Math.round(initialWeight * 0.453592);
+        height = Math.round(height * 2.54);
+      }
+
       await setDoc(docRef, {
         preferredSystem: preferredSystem,
+        goalWeight: goalWeight,
+        initialWeight: initialWeight,
+        height: height,
       }, { merge: true });
 
       setTimeout(() => {
@@ -77,6 +111,7 @@ export default function UserUpdateSystem({ route, navigation }) {
       setSuccess('Tu información se ha actualizado!');
       setLoading(false);
     } catch (error) {
+      console.log(error);
       setTimeout(() => {
         setError(false);
       }, 2000);

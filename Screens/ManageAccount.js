@@ -38,9 +38,6 @@ export default function ManageAccount ({ navigation }) {
       {success && <SuccessNotification message={success} />}
       {error && <ErrorNotification message={error} />}
       {loading && <PrimaryNotification message={loading} />}
-      <Pressable onPress={() => navigation.navigate('Acerca de ti (Nombre)')} style={styles.button}>
-        <Text style={{ color: 'white' }}>Agregar mis Datos</Text>
-      </Pressable>
       <Pressable onPress={handleSignOut} style={styles.button}>
         <Text style={{ color: 'white' }}>Salir de la cuenta</Text>
       </Pressable>
