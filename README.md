@@ -1,5 +1,13 @@
 # Wellness Mobile App
 
+## Requirements
+
+To execute the app locally you need to have installed node and npm on your computer. If you have already installed them on your computer the next step is to clone the repository on on your computer and install the dependencies using
+
+```
+npm install
+```
+
 ## Available Scripts
 
 If Yarn was installed when the project was initialized, then dependencies will have been installed via Yarn, and you should probably use it to run these commands as well. Unlike dependency installation, command running syntax is identical for Yarn and NPM at the time of this writing.
