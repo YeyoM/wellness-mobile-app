@@ -82,7 +82,7 @@ export default function UserInputSummary({ navigation }) {
       setLoading(false);
       setTimeout(() => {
         setSuccess(false);
-        navigation.navigate('ManageAccount');
+        navigation.navigate('Main Tabs');
       }, 2000);
       setSuccess(true);
       // navigate to the home screen

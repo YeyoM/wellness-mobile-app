@@ -27,11 +27,10 @@ export default function Home ({ navigation }) {
           // console.log('Document data:', docSnap.data())
           setMessage(false)
         } else {
-          console.log('No such document!')
           setMessage(true)
           setTimeout(() => {
             setMessage(false)
-            navigation.navigate('Acerca de ti (Nombre)')
+            navigation.navigate('User Input')
           }, 3000)
         }
       })
@@ -44,9 +43,6 @@ export default function Home ({ navigation }) {
     <View style={styles.container}>
       {message && <PrimaryNotification message='Por favor, completa tu información inicial, redirigiendo...' />}
       <Text style={styles.text}>Home</Text>
-      <Pressable onPress={() => navigation.navigate('ManageAccount')} style={styles.button}>
-        <Text style={{ color: 'white' }}>Manage Account</Text>
-      </Pressable>
     </View>
   )
 }

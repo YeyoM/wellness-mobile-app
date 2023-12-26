@@ -4,35 +4,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Signup from './Screens/Signup';
 import Login from './Screens/Login';
-import Home from './Screens/Home';
-import ManageAccount from './Screens/ManageAccount';
 import MyInformation from './Screens/MyInformation';
 
-import UserInputName from './Screens/InitialScreens/UserInputName';
-import UserInputGender from './Screens/InitialScreens/UserInputGender';
-import UserInputBirthday from './Screens/InitialScreens/UserInputBirthday';
-import UserInputSystem from './Screens/InitialScreens/UserInputSystem';
-import UserInputInitialWeight from './Screens/InitialScreens/UserInputInitialWeight';
-import UserInputFinalWeight from './Screens/InitialScreens/UserInputFinalWeight';
-import UserInputHeight from './Screens/InitialScreens/UserInputHeight';
-import UserInputObjectives from './Screens/InitialScreens/UserInputObjectives';
-import UserInputExercises from './Screens/InitialScreens/UserInputExercises';
-import UserInputFrequency from './Screens/InitialScreens/UserInputFrequency';
-import UserInputDays from './Screens/InitialScreens/UserInputDays';
-import UserInputTime from './Screens/InitialScreens/UserInputTime';
-import UserInputFitnessLevel from './Screens/InitialScreens/UserInputFitnessLevel';
-import UserInputActive from './Screens/InitialScreens/UserInputActive';
-import UserInputSummary from './Screens/InitialScreens/UserInputSummary';
+import InputUserInfoStack from './Stacks/InputUserInfoStack';
+import UpdateUserInfoStack from './Stacks/UpdateUserInfoStack';
 
-import UserUpdateSystem from './Screens/UpdateUserInfo/UserUpdateSystem';
-import UserUpdateHeight from './Screens/UpdateUserInfo/UserUpdateHeight';
-import UserUpdateObjectives from './Screens/UpdateUserInfo/UserUpdateObjectives';
-import UserUpdateExercises from './Screens/UpdateUserInfo/UserUpdateExercises';
-import UserUpdateFrequency from './Screens/UpdateUserInfo/UserUpdateFrequency';
-import UserUpdateDays from './Screens/UpdateUserInfo/UserUpdateDays';
-import UserUpdateTime from './Screens/UpdateUserInfo/UserUpdateTime';
-import UserUpdateFitnessLevel from './Screens/UpdateUserInfo/UserUpdateFitnessLevel';
-import UserUpdateActive from './Screens/UpdateUserInfo/UserUpdateActive';
+import MainTabs from './Stacks/MainTabs';
 
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged } from "firebase/auth";
@@ -63,43 +40,18 @@ export default function App() {
           {
             user
               ? (
-                <>
-                  <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-                  <Stack.Screen name="ManageAccount" component={ManageAccount} options={{ headerShown: false, gestureEnabled: false }} />
-                  <Stack.Screen name="MyInformation" component={MyInformation} options={{ headerShown: false }} />
-
-                  <Stack.Screen name="Acerca de ti (Nombre)" component={UserInputName} options={{ headerShown: false, gestureEnabled: false }} />
-                  <Stack.Screen name="Acerca de ti (Género)" component={UserInputGender} options={{ headerShown: false }} />
-                  <Stack.Screen name="Acerca de ti (Cumpleaños)" component={UserInputBirthday} options={{ headerShown: false }} />
-                  <Stack.Screen name="Acerca de ti (Sistema de preferencia)" component={UserInputSystem} options={{ headerShown: false }} />
-                  <Stack.Screen name="Acerca de ti (Peso)" component={UserInputInitialWeight} options={{ headerShown: false }} />
-                  <Stack.Screen name="Acerca de ti (Peso ideal)" component={UserInputFinalWeight} options={{ headerShown: false }} />
-                  <Stack.Screen name="Acerca de ti (Altura)" component={UserInputHeight} options={{ headerShown: false }} />
-                  <Stack.Screen name="Acerca de ti (Objetivos)" component={UserInputObjectives} options={{ headerShown: false }} />
-                  <Stack.Screen name="Acerca de ti (Ejercicios)" component={UserInputExercises} options={{ headerShown: false }} />
-                  <Stack.Screen name="Acerca de ti (Frecuencia)" component={UserInputFrequency} options={{ headerShown: false }} />
-                  <Stack.Screen name="Acerca de ti (Días)" component={UserInputDays} options={{ headerShown: false }} />
-                  <Stack.Screen name="Acerca de ti (Hora)" component={UserInputTime} options={{ headerShown: false }} />
-                  <Stack.Screen name="Acerca de ti (Nivel de fitness)" component={UserInputFitnessLevel} options={{ headerShown: false }} />
-                  <Stack.Screen name="Acerca de ti (Activo)" component={UserInputActive} options={{ headerShown: false }} />
-                  <Stack.Screen name="Acerca de ti (Resumen)" component={UserInputSummary} options={{ headerShown: false }} />
-
-                  <Stack.Screen name="Actualizar información (Sistema de preferencia)" component={UserUpdateSystem} options={{ headerShown: false }} />
-                  <Stack.Screen name="Actualizar información (Altura)" component={UserUpdateHeight} options={{ headerShown: false }} />
-                  <Stack.Screen name="Actualizar información (Objetivos)" component={UserUpdateObjectives} options={{ headerShown: false }} />
-                  <Stack.Screen name="Actualizar información (Ejercicios)" component={UserUpdateExercises} options={{ headerShown: false }} />
-                  <Stack.Screen name="Actualizar información (Frecuencia)" component={UserUpdateFrequency} options={{ headerShown: false, gestureEnabled: false }} />
-                  <Stack.Screen name="Actualizar información (Días)" component={UserUpdateDays} options={{ headerShown: false, gestureEnabled: false }} />
-                  <Stack.Screen name="Actualizar información (Hora)" component={UserUpdateTime} options={{ headerShown: false }} />
-                  <Stack.Screen name="Actualizar información (Nivel de fitness)" component={UserUpdateFitnessLevel} options={{ headerShown: false }} />
-                  <Stack.Screen name="Actualizar información (Activo)" component={UserUpdateActive} options={{ headerShown: false }} />
-                </>
+                <Stack.Group>
+                  <Stack.Screen name="Main Tabs" component={MainTabs} options={{ headerShown: false }} />
+                  <Stack.Screen name="User Information" component={MyInformation} options={{ headerShown: false }} />
+                  <Stack.Screen name="User Input" component={InputUserInfoStack} options={{ headerShown: false }} />
+                  <Stack.Screen name="User Update" component={UpdateUserInfoStack} options={{ headerShown: false }} />
+                </Stack.Group>
               )
               : (
-                <>
+                <Stack.Group>
                   <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
                   <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
-                </>
+                </Stack.Group>
               )
           }
         </Stack.Navigator>

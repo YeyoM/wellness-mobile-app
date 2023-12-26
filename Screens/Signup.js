@@ -75,7 +75,7 @@ export default function Signup({ navigation }) {
         setSuccess(false);
       }, 3000);
       setSuccess('Usuario creado con éxito');
-      navigation.navigate('Acerca de ti (Nombre)');
+      navigation.navigate('User Input');
     } catch (error) {
       setLoading(false);
       console.log(error);

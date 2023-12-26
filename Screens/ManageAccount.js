@@ -7,8 +7,6 @@ import SuccessNotification from '../components/SuccessNotification';
 import ErrorNotification from '../components/ErrorNotification';
 import PrimaryNotification from '../components/PrimaryNotification';
 
-import TopNavigationBar from '../components/TopNavigationBar';
-
 export default function ManageAccount ({ navigation }) {
 
   const [success, setSuccess] = useState(false);
@@ -34,14 +32,13 @@ export default function ManageAccount ({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <TopNavigationBar actualScreen='ManageAccount' navigation={navigation} previousScreen={"Home"} />
       {success && <SuccessNotification message={success} />}
       {error && <ErrorNotification message={error} />}
       {loading && <PrimaryNotification message={loading} />}
       <Pressable onPress={handleSignOut} style={styles.button}>
         <Text style={{ color: 'white' }}>Salir de la cuenta</Text>
       </Pressable>
-      <Pressable onPress={() => navigation.navigate('MyInformation')} style={styles.button}>
+      <Pressable onPress={() => navigation.navigate(routeName='User Information')} style={styles.button}>
         <Text style={{ color: 'white' }}>Mi información</Text>
       </Pressable>
     </View>
