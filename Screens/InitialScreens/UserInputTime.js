@@ -39,7 +39,7 @@ export default function UserInputTime({ navigation }) {
       <Text style={{ color: '#0496FF', fontSize: 80, fontWeight: 'normal', marginTop: 8, marginBottom: 8 }}>
         {realTime}
       </Text>
-      <Text style={{ color: '#A0A0A3', fontSize: 16, fontWeight: 'bold', marginTop: 16, marginBottom: 40 }}>
+      <Text style={{ color: '#5f5f5f', fontSize: 16, fontWeight: 'bold', marginTop: 16, marginBottom: 40 }}>
         Tus entrenamientos durarán {realTime} en promedio
       </Text>
       <Slider
@@ -66,8 +66,8 @@ export default function UserInputTime({ navigation }) {
         }}
       />
       <View style={{ width: '80%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text>Menos</Text>
-        <Text>Más</Text>
+        <Text style={{color: 'white'}}>Menos</Text>
+        <Text style={{color: 'white'}}>Más</Text>
       </View>
       <Pressable
         style={styles.btn}
@@ -82,7 +82,7 @@ export default function UserInputTime({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#0B0B0B',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'semibold',
-    color: 'black',
+    color: 'white',
     marginBottom: 40,
     marginTop: 0,
     textAlign: 'center',

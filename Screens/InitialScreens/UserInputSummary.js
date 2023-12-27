@@ -135,7 +135,7 @@ export default function UserInputSummary({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#0b0b0b',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'semibold',
-    color: 'black',
+    color: 'white',
     marginBottom: 20,
     marginTop: 0,
     textAlign: 'center',
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   summaryLabel: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: 'black',
+    color: 'white',
     marginBottom: 5,
     marginTop: 0,
     textAlign: 'left',
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   summaryContent: {
     fontSize: 14,
     fontWeight: 'normal',
-    color: 'black',
+    color: 'white',
     marginBottom: 5,
     marginTop: 0,
     textAlign: 'left',

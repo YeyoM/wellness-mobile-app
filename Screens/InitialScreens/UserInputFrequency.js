@@ -60,8 +60,8 @@ export default function UserInputFrequency({ navigation }) {
         }}
       />
       <View style={{ width: '80%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text>Menos</Text>
-        <Text>Más</Text>
+        <Text style={{color: 'white'}}>Menos</Text>
+        <Text style={{color: 'white'}}>Más</Text>
       </View>
       <Pressable
         style={styles.btn}
@@ -76,7 +76,7 @@ export default function UserInputFrequency({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#0B0B0B',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'semibold',
-    color: 'black',
+    color: 'white',
     marginBottom: 40,
     marginTop: 0,
     textAlign: 'center',
