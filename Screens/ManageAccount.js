@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import { FIREBASE_AUTH } from '../firebaseConfig'
 import { signOut } from 'firebase/auth';
 
+import { Ionicons } from '@expo/vector-icons';
+
 import SuccessNotification from '../components/SuccessNotification';
 import ErrorNotification from '../components/ErrorNotification';
 import PrimaryNotification from '../components/PrimaryNotification';
@@ -35,11 +37,43 @@ export default function ManageAccount ({ navigation }) {
       {success && <SuccessNotification message={success} />}
       {error && <ErrorNotification message={error} />}
       {loading && <PrimaryNotification message={loading} />}
-      <Pressable onPress={handleSignOut} style={styles.button}>
-        <Text style={{ color: 'white' }}>Salir de la cuenta</Text>
+      <Pressable onPress={() => navigation.navigate(routeName='User Information')} style={styles.buttonLarge}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Ionicons name="person-circle-outline" size={30} color="white" />
+          <Text style={{ color: 'white', marginLeft: 12 }}>My Profile</Text>
+        </View>
+        <Ionicons name="chevron-forward-outline" size={24} color="white" />
       </Pressable>
-      <Pressable onPress={() => navigation.navigate(routeName='User Information')} style={styles.button}>
-        <Text style={{ color: 'white' }}>Mi información</Text>
+      <Pressable style={styles.button}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Ionicons name="notifications-outline" size={24} color="white" />
+          <Text style={{ color: 'white', marginLeft: 12 }}>Notifications</Text>
+        </View>
+        <Ionicons name="chevron-forward-outline" size={24} color="white" />
+      </Pressable>
+      <Pressable style={styles.button}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Ionicons name="lock-closed-outline" size={24} color="white" />
+          <Text style={{ color: 'white', marginLeft: 12 }}>Privacy</Text>
+        </View>
+        <Ionicons name="chevron-forward-outline" size={24} color="white" />
+      </Pressable>
+      <Pressable style={styles.button}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Ionicons name="barbell-outline" size={24} color="white" />
+          <Text style={{ color: 'white', marginLeft: 12 }}>Workout Preferences</Text>
+        </View>
+        <Ionicons name="chevron-forward-outline" size={24} color="white" />
+      </Pressable>
+      <Pressable  style={styles.button}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Ionicons name="help-buoy-outline" size={24} color="white" />
+          <Text style={{ color: 'white', marginLeft: 12 }}>Help & Support</Text>
+        </View>
+        <Ionicons name="chevron-forward-outline" size={24} color="white" />
+      </Pressable>
+      <Pressable onPress={handleSignOut} style={styles.signOutButton}>
+        <Text style={{ color: 'white' }}>Sign Out</Text>
       </Pressable>
     </View>
   )
@@ -60,13 +94,35 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
-  button: {
+  buttonLarge: {
     width: '85%',
-    height: 48,
+    backgroundColor: '#313231',
+    borderRadius: 90,
+    alignItems: 'center',
+    marginBottom: 34,
+    padding: 25,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+
+  button: {
+    width: '75%',
+    backgroundColor: '#313231',
+    borderRadius: 90,
+    alignItems: 'center',
+    marginBottom: 16,
+    padding: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+
+  signOutButton: {
+    width: '65%',
     backgroundColor: '#0496FF',
     borderRadius: 90,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 16,
+    marginTop: 24,
+    padding: 20,
   }
 })

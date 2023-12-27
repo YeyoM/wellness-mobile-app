@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingVertical: 10,   
     zIndex: 900,
-    backgroundColor: '#fff', 
+    backgroundColor: '#0B0B0B', 
   },
 
   backIcon: {
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'normal',
-    color: '#000',
+    color: '#fff',
     textAlign: 'center',
     paddingVertical: 5,
     marginTop: 15,

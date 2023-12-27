@@ -93,7 +93,7 @@ export default function Signup({ navigation }) {
           <TextInput
             style={styles.input}
             placeholder="email@example.com"
-            placeholderTextColor={'rgba(47, 46, 54, 0.4)'}
+            placeholderTextColor={'rgba(147, 146, 154, 0.8)'}
             value={email}
             onChangeText={setEmail}
             keyboardType='email-address'
@@ -104,7 +104,7 @@ export default function Signup({ navigation }) {
           <TextInput
             style={styles.input}
             placeholder="********"
-            placeholderTextColor={'rgba(47, 46, 54, 0.4)'}
+            placeholderTextColor={'rgba(147, 146, 154, 0.8)'}
             value={password}
             onChangeText={setPassword}
             secureTextEntry={!showPassword}
@@ -136,7 +136,7 @@ export default function Signup({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#0B0B0B',
     flexDirection: "column",
     alignItems: 'center',
     justifyContent: 'center',
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
 
   subtitle: {
     fontSize: 19,
-    color: '#59585E',
+    color: '#fff',
     marginBottom: 40,
   },
 
@@ -163,16 +163,17 @@ const styles = StyleSheet.create({
 
   label: {
     fontSize: 14,
-    color: 'rgba(47, 46, 54, 0.8)',
+    color: 'rgba(147, 146, 154, 1)',
     marginBottom: 10,
   },
 
   input: {
     height: 50,
     borderWidth: 0,
-    borderRadius: 90,
+    borderRadius: 20,
     paddingHorizontal: 20,
-    backgroundColor: "#ECECEC"
+    backgroundColor: "#1F1F1F",
+    color: '#fff',
   },
 
   // send to bottom

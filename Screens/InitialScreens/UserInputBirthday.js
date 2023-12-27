@@ -58,9 +58,9 @@ export default function UserInputBirthday({ navigation }) {
       <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.228} back={true}/>
       { error && <ErrorNotification message={error} /> }
       <Text style={styles.title}>¿Cuándo es tu cumpleaños?</Text>
-      <View style={{ width: '85%', marginBottom: 60, backgroundColor: "#ECECEC", padding: 30, borderRadius: 55 }}>
-        <Text style={{ fontWeight: "bold", fontSize: 15}}>🏋🏽‍♀️ Tu edad nos permite adaptar tu plan</Text>
-        <Text style={{ fontWeight: "normal", fontSize: 14}}>Al saber tu edad podemos. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</Text>
+      <View style={{ width: '85%', marginBottom: 60, backgroundColor: "#1F1F1F", padding: 30, borderRadius: 55 }}>
+        <Text style={{ color: 'white', fontWeight: "bold", fontSize: 15}}>🏋🏽‍♀️ Tu edad nos permite adaptar tu plan</Text>
+        <Text style={{ color: 'white', fontWeight: "normal", fontSize: 14}}>Al saber tu edad podemos. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</Text>
       </View>
       {
         !showPicker && (
@@ -71,7 +71,7 @@ export default function UserInputBirthday({ navigation }) {
               style={styles.input}
               textAlign={'center'}
               placeholder="DD/MM/AAAA"
-              placeholderTextColor={'rgba(47, 46, 54, 0.4)'}
+              placeholderTextColor={'rgba(147, 146, 154, 0.8)'}
               value={dateOfBirth}
               onChangeText={(dateOfBirth) => setDateOfBirth(dateOfBirth)}
               editable={false}
@@ -89,7 +89,8 @@ export default function UserInputBirthday({ navigation }) {
             is24Hour={true}
             display="spinner"
             onChange={onChange}
-            style={{ width: '120' }}
+            style={{ width: '120', color: 'white' }}
+            textColor={'white'}
             maximumDate={new Date()}
             minimumDate={new Date(1900, 0, 1)}
           />
@@ -131,7 +132,7 @@ export default function UserInputBirthday({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#0B0B0B',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'semibold',
-    color: 'black',
+    color: 'white',
     marginBottom: 20,
     marginTop: 80,
     textAlign: 'center',
@@ -156,11 +157,11 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     borderWidth: 1,
     borderColor: '#E5E5E5',
-    borderTopColor: '#fff',
-    borderRightColor: '#fff',
-    borderLeftColor: '#fff',
-    color: '#000',
-    backgroundColor: '#fff',
+    borderTopColor: '#0B0B0B',
+    borderRightColor: '#0B0B0B',
+    borderLeftColor: '#0B0B0B',
+    color: '#fff',
+    backgroundColor: '#0B0B0B',
     marginBottom: 60,
   },
 

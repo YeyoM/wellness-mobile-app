@@ -90,7 +90,7 @@ export default function UserInputGender({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#0B0B0B',
     alignItems: 'center',
     justifyContent:'center'
   },
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'semibold',
-    color: 'black',
+    color: 'white',
     marginBottom: 50,
     marginTop: 70,
     textAlign: 'center',
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    color: 'black',
+    color: 'white',
     textAlign: 'center',
     fontSize: 16,
     fontWeight: 'normal',
@@ -129,13 +129,13 @@ const styles = StyleSheet.create({
   checkboxUnselected: {
     width: '85%',
     height: 48,
-    backgroundColor: '#ECECEC',
+    backgroundColor: '#1F1F1F',
     borderRadius: 90,
     display: 'flex',
     justifyContent: 'center',
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#ECECEC',
+    borderColor: '#1F1F1F',
   },
 
   btn: {

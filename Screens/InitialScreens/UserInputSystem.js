@@ -81,7 +81,7 @@ export default function UserInputSystem({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#0B0B0B',
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'semibold',
-    color: 'black',
+    color: 'white',
     marginBottom: 60,
     marginTop: 70,
     textAlign: 'center',
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
 
   labelTitle: {
-    color: 'black',
+    color: 'white',
     fontSize: 20,
     fontWeight: 'normal',
     marginBottom: 4,
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   checkboxUnselected: {
     width: '85%',
     height: 100,
-    backgroundColor: '#ECECEC',
+    backgroundColor: '#1F1F1F',
     borderRadius: 35,
     display: 'flex',
     justifyContent: 'center',
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     paddingVertical: 15,
     borderWidth: 1,
-    borderColor: '#ECECEC',
+    borderColor: '#1F1F1F',
   },
 
   btn: {

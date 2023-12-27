@@ -35,7 +35,7 @@ export default function UserInputName({ navigation }) {
         <TextInput
           style={styles.input}
           placeholder="Nombre"
-          placeholderTextColor={'rgba(47, 46, 54, 0.4)'}
+          placeholderTextColor={'rgba(147, 146, 154, 0.8)'}
           textAlign={'center'}
           value={name_}
           onChangeText={setName_}
@@ -55,7 +55,7 @@ export default function UserInputName({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#0B0B0B',
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'semibold',
-    color: 'black',
+    color: 'white',
     marginBottom: 60,
     marginTop: 70,
     textAlign: 'center',
@@ -85,11 +85,11 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     borderWidth: 1,
     borderColor: '#E5E5E5',
-    borderTopColor: '#fff',
-    borderRightColor: '#fff',
-    borderLeftColor: '#fff',
-    color: 'black',
-    backgroundColor: '#fff',
+    borderTopColor: '#0B0B0B',
+    borderRightColor: '#0B0B0B',
+    borderLeftColor: '#0B0B0B',
+    color: 'white',
+    backgroundColor: '#0B0B0B',
     marginBottom: 60,
   },
 

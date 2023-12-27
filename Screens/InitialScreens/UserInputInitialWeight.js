@@ -35,22 +35,22 @@ export default function UserInputInitialWeight({ navigation }) {
       <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.304} back={true}/>
       { error && <ErrorNotification message={error} /> }
       <Text style={styles.title}>¿Cuál es tu peso actual?</Text>
-      <View style={{ width: '85%', marginBottom: 60, backgroundColor: "#ECECEC", padding: 30, borderRadius: 55 }}>
-        <Text style={{ fontWeight: "bold", fontSize: 15}}>🤔️ Tu IMC. O tu peso podemos saber blah</Text>
-        <Text style={{ fontWeight: "normal", fontSize: 14}}>Al saber tu edad podemos. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</Text>
+      <View style={{ width: '85%', marginBottom: 60, backgroundColor: "#1F1F1F", padding: 30, borderRadius: 55 }}>
+        <Text style={{ color: 'white', fontWeight: "bold", fontSize: 15}}>🤔️ Tu IMC. O tu peso podemos saber blah</Text>
+        <Text style={{ color: 'white', fontWeight: "normal", fontSize: 14}}>Al saber tu edad podemos. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</Text>
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
       <TextInput
         style={styles.input}
         textAlign={'center'}
         placeholder="00.0"
-        placeholderTextColor={'rgba(47, 46, 54, 0.4)'}
+        placeholderTextColor={'rgba(147, 146, 154, 0.8)'}
         keyboardType='numeric'
         returnKeyType='done'
         value={weight}
         onChangeText={setWeight}
       />
-      <Text style={{ fontSize: 20, fontWeight: 'normal', color: '#2F2E36', marginBottom: 40 }}>{preferredSystem === 'Metrico' ? 'kg' : 'lb'}</Text>
+      <Text style={{ fontSize: 20, fontWeight: 'normal', color: '#fff', marginBottom: 40 }}>{preferredSystem === 'Metrico' ? 'kg' : 'lb'}</Text>
       </View>
       <Pressable
         style={styles.btn}
@@ -65,7 +65,7 @@ export default function UserInputInitialWeight({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#0B0B0B',
     alignItems: 'center',
     justifyContent:'center',
   },
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'semibold',
-    color: 'black',
+    color: 'white',
     marginBottom: 20,
     textAlign: 'center',
     width: '85%',
@@ -86,11 +86,11 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     borderWidth: 1,
     borderColor: '#E5E5E5',
-    borderTopColor: '#fff',
-    borderRightColor: '#fff',
-    borderLeftColor: '#fff',
-    color: '#000',
-    backgroundColor: '#fff',
+    borderTopColor: '#0B0B0B',
+    borderRightColor: '#0B0B0B',
+    borderLeftColor: '#0B0B0B',
+    color: '#fff',
+    backgroundColor: '#0B0B0B',
     marginBottom: 40,
     marginRight: 10,
     paddingHorizontal: 30,
