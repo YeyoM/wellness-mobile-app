@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, TouchableOpacity, Image, StyleSheet, Pressable } from 'react-native'
 import * as Progress from 'react-native-progress'
+import { Ionicons } from '@expo/vector-icons'
 
 export default function TopNavigationBar({ navigation, actualScreen, previousScreen, progress, back }) {
   return (
@@ -8,7 +9,7 @@ export default function TopNavigationBar({ navigation, actualScreen, previousScr
       {
         back && (
           <Pressable onPress={() => navigation.goBack()} style={{position: 'absolute', left: 0, height: 25, width: 25, top: 35, left: 25, zIndex: 999}}>
-            <Image style={styles.backIcon} source={require('../assets/back.png')} />
+            <Ionicons name="arrow-back" size={24} color="white" />
           </Pressable>
         )
       }

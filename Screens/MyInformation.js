@@ -1,5 +1,4 @@
 
-import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Pressable, Image } from 'react-native';
 import TopNavigationBar from '../components/TopNavigationBar';
@@ -39,30 +38,6 @@ export default function MyInformation({ navigation }) {
     return unsubscribe;
 
   }, [ navigation ]);
-
-  {
-    /**
-     Document data: 
-      {
-        "activityLevel": "Moderadamente activo", 
-        "birthDate": "25/2/2003", 
-        "email": "yeyo@gmail.com", 
-        "exercises": ["HIIT", "CrossFit", "Gym"], 
-        "fitnessLevel": "Intermedio", 
-        "gender": "Hombre", 
-        "goalWeight": "70", 
-        "height": "172", 
-        "initialWeight": "60", 
-        "name": "Yeyo", 
-        "objectives": ["Mejorar mi forma física", "Desarrollar músculo", "Aumentar resistencia", "Fortalecer la mente", "Manejar el estés", "Flexibilidad", "Optimizar mis entrenamientos"], 
-        "preferredSystem": "Metrico", 
-        "reminder": false, 
-        "trainingDays": ["Lunes", "Martes", "Jueves", "Viernes"], 
-        "trainingDuration": "1h 30min", 
-        "trainingFrequency": 4
-      }
-    */
-  }
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -265,7 +240,6 @@ export default function MyInformation({ navigation }) {
           Nivel de actividad: {userData && userData.activityLevel}
         </Text>
       </ScrollView>
-      <StatusBar style="auto" />
     </GestureHandlerRootView>
   );
 }
@@ -285,7 +259,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     fontWeight: 'normal',
-    color: 'black',
+    color: 'white',
     marginBottom: 5,
     marginTop: 0,
     textAlign: 'left',

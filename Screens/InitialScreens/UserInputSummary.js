@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Pressable, Image } from 'react-native';
 import TopNavigationBar from '../../components/TopNavigationBar';
 
 import { InitialScreensContext } from '../../context/InitialScreensContext';
@@ -106,27 +106,17 @@ export default function UserInputSummary({ navigation }) {
       { loading && <PrimaryNotification message={'Guardando tu información'} /> }
       { success && <SuccessNotification message={'Tu información se guardó correctamente'} /> }
       <TopNavigationBar navigation={navigation} actualScreen={'Tu Resumen'} progress={1} back={true} />
-      <Text style={styles.title}>Tu resumen</Text>
-      <Text style={styles.summaryLabel}>Nombre: <Text style={styles.summaryContent}>{name}</Text></Text>
-      <Text style={styles.summaryLabel}>Genero: <Text style={styles.summaryContent}>{gender}</Text></Text>
-      <Text style={styles.summaryLabel}>Fecha de nacimiento: <Text style={styles.summaryContent}>{birthDate}</Text></Text>
-      <Text style={styles.summaryLabel}>Sistema de unidades: <Text style={styles.summaryContent}>{preferredSystem}</Text></Text>
-      <Text style={styles.summaryLabel}>Peso inicial: <Text style={styles.summaryContent}>{initialWeight}{preferredSystem === 'Metrico' ? 'kg' : 'lb'}</Text></Text>
-      <Text style={styles.summaryLabel}>Peso objetivo: <Text style={styles.summaryContent}>{goalWeight}{preferredSystem === 'Metrico' ? 'kg' : 'lb'}</Text></Text>
-      <Text style={styles.summaryLabel}>Altura: <Text style={styles.summaryContent}>{height}{preferredSystem === 'Metrico' ? 'cm' : 'in'}</Text></Text>
-      <Text style={styles.summaryLabel}>Objetivos: <Text style={styles.summaryContent}>{objectives.join(', ')}</Text></Text>
-      <Text style={styles.summaryLabel}>Ejercicios: <Text style={styles.summaryContent}>{exercises.join(', ')}</Text></Text>
-      <Text style={styles.summaryLabel}>Frecuencia de ejercicio: <Text style={styles.summaryContent}>{exerciseFrequency} dias por semana</Text></Text>
-      <Text style={styles.summaryLabel}>Días de ejercicio: <Text style={styles.summaryContent}>{exerciseDays.join(', ')}</Text></Text>
-      <Text style={styles.summaryLabel}>Recordatorios: <Text style={styles.summaryContent}>{reminders ? 'Si' : 'No'}</Text></Text>
-      <Text style={styles.summaryLabel}>Duración del ejercicio: <Text style={styles.summaryContent}>{exerciseDuration}</Text></Text>
-      <Text style={styles.summaryLabel}>Nivel de fitness: <Text style={styles.summaryContent}>{fitnessLevel}</Text></Text>
-      <Text style={styles.summaryLabel}>Nivel de actividad: <Text style={styles.summaryContent}>{activityLevel}</Text></Text>
+      <Text style={styles.title}>Tu rutina se ha completado</Text>
+      <Text style={styles.label}>Da click en finalizar para visualizar tu rutina</Text>
+      <Image
+        style={styles.image}
+        source={require('../../assets/icon.png')}
+      />
       <Pressable
         style={styles.btn}
         onPress={() => saveUserInput()}
       >
-        <Text style={styles.btnText}>Guardar y continuar</Text>
+        <Text style={styles.btnText}>Finalizar</Text>
       </Pressable>
     </View>
   );
@@ -141,7 +131,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 28,
+    fontSize: 38,
     fontWeight: 'semibold',
     color: 'white',
     marginBottom: 20,
@@ -150,24 +140,11 @@ const styles = StyleSheet.create({
     width: '85%',
   },
 
-  summaryLabel: {
+  label: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 5,
-    marginTop: 0,
-    textAlign: 'left',
+    color: '#f1f1f1',
     width: '80%',
-  },
-
-  summaryContent: {
-    fontSize: 14,
-    fontWeight: 'normal',
-    color: 'white',
-    marginBottom: 5,
-    marginTop: 0,
-    textAlign: 'left',
-    width: '80%',
+    textAlign: 'center',
   },
 
   btn: {
@@ -188,5 +165,12 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     alignSelf: 'center',
     marginTop: 4,
+  },
+
+  image: {
+    width: 200,
+    height: 200,
+    resizeMode: 'contain',
+    marginVertical: 30,
   }
 });

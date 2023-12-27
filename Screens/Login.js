@@ -127,7 +127,6 @@ export default function Signup({ navigation }) {
         <Text style={styles.btnText}>Entrar</Text>
       </Pressable>
       <Text style={styles.label}>¿No tienes una cuenta? <Text style={{color: '#0496FF', fontWeight: 'bold'}} onPress={() => navigation.navigate('Signup')}>Regístrate</Text></Text>
-      <StatusBar style="auto" />
       </View>
     </KeyboardAvoidingView>
   );
