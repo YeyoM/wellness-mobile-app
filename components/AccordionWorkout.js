@@ -42,7 +42,7 @@ const Accordion = ({ routine }) => {
         }}
         style={styles.viewContainer}>
           <Image 
-            source={require('../assets/push_day.png')} 
+            source={require('../assets/leg_day.png')}
             style={{width: "100%", resizeMode: 'contain', borderRadius: 14}}
           />
           <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
