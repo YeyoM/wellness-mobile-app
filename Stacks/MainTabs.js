@@ -35,6 +35,7 @@ export default function MainTabs() {
           height: 85,
         },
       })}
+      style={{ backgroundColor: "#0B0B0B" }}
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Saved Routines" component={SavedRoutines} />

@@ -1,6 +1,8 @@
 import React from 'react'
-import { View, Text, StyleSheet, ScrollView } from 'react-native'
+import { TextInput, View, Text, StyleSheet, ScrollView, Pressable } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+
+import Constants from 'expo-constants'
 
 import Accordion from '../components/AccordionWorkout'
 
@@ -64,8 +66,27 @@ const routines = [
 export default function SavedRoutines() {
   return (
     <View style={styles.container}>
-      <ScrollView style={{ width: '100%', marginTop: 70 }}>
+      <ScrollView style={{ width: '100%', marginTop: Constants.statusBarHeight }}>
         <View style={{ display: 'flex', alignItems: 'center' }}>
+          <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '90%', justifyContent: 'space-between' }}>
+            <TextInput
+              placeholder='Search'
+              placeholderTextColor='rgba(147, 146, 154, 1)'
+              style={{
+                height: 50,
+                borderWidth: 0,
+                borderRadius: 14,
+                paddingHorizontal: 20,
+                backgroundColor: '#1F1F1F',
+                color: '#fff',
+                width: '84%',
+                marginBottom: 20,
+              }}
+            />
+            <Pressable style={styles.button}>
+              <Ionicons name='filter-outline' size={30} color='#0496FF' />
+            </Pressable>
+          </View>
           <View style={styles.createContainer}>
             <Text style={styles.create}>Create Routine</Text>
             <Ionicons name='add-circle-outline' size={30} color='#0496FF' />
@@ -108,5 +129,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#0496FF',
     marginBottom: 30,
-  }
+  },
+
+  button: {
+    height: 50,
+    width: "15%",
+    borderRadius: 45,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
 })

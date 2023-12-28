@@ -1,20 +1,41 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Pressable, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Image, useWindowDimensions } from 'react-native'
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
 import { FIREBASE_AUTH } from '../firebaseConfig'
 import { FIRESTORE } from '../firebaseConfig'
+
+import Constants from 'expo-constants';
 
 import { doc, getDoc } from 'firebase/firestore'
 
 import PrimaryNotification from '../components/PrimaryNotification'
 
-export default function Home ({ navigation }) {
+import { Ionicons } from '@expo/vector-icons'
+import * as Progress from 'react-native-progress'
 
-  const [message, setMessage] = useState(false)
+import MyPlan from '../components/MyPlan';
+import Crowdmeter from '../components/Crowdmeter';
 
-  // Check if the user has registered their initial information
-  // on the database (/users/{userId}) and if not, redirect them
-  // to the initial screens
+import { renderTabBar } from '../components/RenderTabs'
+
+const renderScene = SceneMap({
+  first: MyPlan,
+  second: Crowdmeter,
+});
+
+export default function Home({ navigation }) {
+
+  const [ message, setMessage ] = useState(false)
+  const [ user, setUser ] = useState({})
+
+  const layout = useWindowDimensions();
+
+  const [ index, setIndex ] = React.useState(0);
+  const [ routes ] = React.useState([
+    { key: 'first', title: 'My Plan' },
+    { key: 'second', title: 'Crowdmeter' },
+  ]);
 
   useEffect(() => {
     const userId = FIREBASE_AUTH.currentUser.uid
@@ -24,8 +45,8 @@ export default function Home ({ navigation }) {
     getDoc(docRef)
       .then((docSnap) => {
         if (docSnap.exists()) {
-          // console.log('Document data:', docSnap.data())
           setMessage(false)
+          setUser(docSnap.data())
         } else {
           setMessage(true)
           setTimeout(() => {
@@ -41,8 +62,42 @@ export default function Home ({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {message && <PrimaryNotification message='Por favor, completa tu información inicial, redirigiendo...' />}
-      <Text style={styles.text}>Home</Text>
+      <View style={styles.home}>
+        {message && <PrimaryNotification message='Por favor, completa tu información inicial, redirigiendo...' />}
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.headerText}>Hello {user.name}!</Text>
+            <Text style={styles.headerText_}>Get ready to level up your fitness</Text>
+          </View>
+          <Image source={require('../assets/icon.png')} style={{ width: 70, height: 70, position: 'absolute', right: 20, top: 20 }} />
+        </View>
+        <View style={styles.accomplishments}>
+          <View>
+            <Text style={styles.accomplishmentsText}>You have completed 3 workouts this week</Text>
+            <Text style={styles.accomplishmentsText_}>You're 75% closer to reaching your weekly goal</Text>
+            <Progress.Bar
+              progress={0.75}
+              width={200}
+              height={4}
+              color={'#0496FF'}
+              unfilledColor={'#fff'}
+              borderWidth={0}
+              borderRadius={8}
+              style={styles.progressBar}
+            />
+          </View>
+          <Ionicons name='trophy' size={30} color='#0496FF' />
+        </View>
+        <View style={{ width: '100%', minHeight: 500 }}>
+          <TabView
+            navigationState={{ index, routes }}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            initialLayout={{ width: layout.width }}
+            renderTabBar={renderTabBar}
+          />
+        </View>
+      </View>
     </View>
   )
 }
@@ -52,7 +107,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0B0B0B',
     alignItems: 'center',
-    justifyContent: 'center'
+    paddingTop: Constants.statusBarHeight,
+  },
+
+  home: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+  },
+
+  header: {
+    width: '100%',
+    height: 100,
+    backgroundColor: '#323743',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+
+  headerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff'
+  },
+
+  headerText_: {
+    fontSize: 12,
+    color: '#fff'
   },
 
   text: {
@@ -62,12 +142,31 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
-  button: {
-    width: '85%',
-    height: 48,
-    backgroundColor: '#0496FF',
-    borderRadius: 90,
+  accomplishments: {
+    display: 'flex',
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'space-between',
+    width: '90%',
+    backgroundColor: '#323743',
+    padding: 20,
+    borderRadius: 14,
+    marginBottom: 20,
+    marginTop: 20,
+  },
+
+  accomplishmentsText: {
+    color: '#fff',
+    fontSize: 12,
+  },
+
+  accomplishmentsText_: {
+    color: '#fff',
+    fontSize: 10,
+  },
+
+  progressBar: {
+    marginTop: 15,
   }
+
 })
