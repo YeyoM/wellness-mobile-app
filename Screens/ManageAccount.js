@@ -65,6 +65,13 @@ export default function ManageAccount ({ navigation }) {
         </View>
         <Ionicons name="chevron-forward-outline" size={24} color="white" />
       </Pressable>
+      <Pressable style={styles.button} onPress={() => navigation.navigate(routeName='User Goals')}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Ionicons name="ribbon-outline" size={24} color="white" />
+          <Text style={{ color: 'white', marginLeft: 12 }}>My Goals</Text>
+        </View>
+        <Ionicons name="chevron-forward-outline" size={24} color="white" />
+      </Pressable>
       <Pressable  style={styles.button}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Ionicons name="help-buoy-outline" size={24} color="white" />
@@ -99,7 +106,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#313231',
     borderRadius: 90,
     alignItems: 'center',
-    marginBottom: 34,
+    marginBottom: 24,
     padding: 25,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -110,8 +117,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#313231',
     borderRadius: 90,
     alignItems: 'center',
-    marginBottom: 16,
-    padding: 20,
+    marginBottom: 14,
+    padding: 18,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -122,7 +129,7 @@ const styles = StyleSheet.create({
     borderRadius: 90,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 24,
+    marginTop: 20,
     padding: 20,
   }
 })
