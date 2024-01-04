@@ -86,7 +86,7 @@ export default function WorkoutInProgress({ route, navigation }) {
               />
             </NestableScrollContainer>
           </View>
-          <Pressable style={{ backgroundColor: '#FF0431', width: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, borderRadius: 20, marginBottom: 60 }} onPress={() => navigation.navigate('WorkoutComplete', { routine: routine })}>
+          <Pressable style={{ backgroundColor: '#FF0431', width: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, borderRadius: 20, marginBottom: 60 }} onPress={() => navigation.navigate('Workout Finished 1', { routine: routine })}>
             <Text style={{ color: 'white', fontSize: 20 }}>End Workout</Text>
           </Pressable>
         </View>
