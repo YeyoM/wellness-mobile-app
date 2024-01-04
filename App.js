@@ -6,6 +6,7 @@ import Signup from './Screens/Signup';
 import Login from './Screens/Login';
 import MyInformation from './Screens/MyInformation';
 import MyGoals from './Screens/MyGoals';
+import WorkoutInProgress from './Screens/WorkoutInProgress';
 
 import InputUserInfoStack from './Stacks/InputUserInfoStack';
 import UpdateUserInfoStack from './Stacks/UpdateUserInfoStack';
@@ -47,6 +48,7 @@ export default function App() {
                   <Stack.Screen name="User Goals" component={MyGoals} options={{ headerShown: false }} />
                   <Stack.Screen name="User Input" component={InputUserInfoStack} options={{ headerShown: false }} />
                   <Stack.Screen name="User Update" component={UpdateUserInfoStack} options={{ headerShown: false }} />
+                  <Stack.Screen name="Workout In Progress" component={WorkoutInProgress} options={{ headerShown: false }} />
                 </Stack.Group>
               )
               : (

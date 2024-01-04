@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, Image, useWindowDimensions } from 'react-native'
-import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+const Tab = createMaterialTopTabNavigator();
 
 import { FIREBASE_AUTH } from '../firebaseConfig'
 import { FIRESTORE } from '../firebaseConfig'
@@ -17,25 +18,10 @@ import * as Progress from 'react-native-progress'
 import MyPlan from '../components/MyPlan';
 import Crowdmeter from '../components/Crowdmeter';
 
-import { renderTabBar } from '../components/RenderTabs'
-
-const renderScene = SceneMap({
-  first: MyPlan,
-  second: Crowdmeter,
-});
-
 export default function Home({ navigation }) {
 
   const [ message, setMessage ] = useState(false)
   const [ user, setUser ] = useState({})
-
-  const layout = useWindowDimensions();
-
-  const [ index, setIndex ] = React.useState(0);
-  const [ routes ] = React.useState([
-    { key: 'first', title: 'My Plan' },
-    { key: 'second', title: 'Crowdmeter' },
-  ]);
 
   useEffect(() => {
     const userId = FIREBASE_AUTH.currentUser.uid
@@ -58,7 +44,7 @@ export default function Home({ navigation }) {
       .catch((error) => {
         console.log('Error getting document:', error)
       })
-  })
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -89,13 +75,20 @@ export default function Home({ navigation }) {
           <Ionicons name='trophy' size={30} color='#0496FF' />
         </View>
         <View style={{ width: '100%', minHeight: 500 }}>
-          <TabView
-            navigationState={{ index, routes }}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            initialLayout={{ width: layout.width }}
-            renderTabBar={renderTabBar}
-          />
+          <Tab.Navigator
+            screenOptions={{
+              tabBarActiveTintColor: '#0496FF',
+              tabBarInactiveTintColor: '#D9E6FF',
+              tabBarStyle: {
+                backgroundColor: '#0b0b0b',
+                borderTopWidth: 0,
+              },
+              headerShown: false,
+            }}
+          >
+            <Tab.Screen name='My Plan' component={MyPlan} />
+            <Tab.Screen name='Crowdmeter' component={Crowdmeter} />
+          </Tab.Navigator>
         </View>
       </View>
     </View>
