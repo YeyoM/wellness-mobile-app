@@ -1,7 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 
-export default function PreviewWorkout({ routine }) {
+export default function PreviewWorkout({ routine, navigation }) {
+
+  // console.log(routine)
+
   return (
     <View style={styles.container}>
       <View style={styles.viewContainer}>
@@ -18,7 +21,7 @@ export default function PreviewWorkout({ routine }) {
               <Text style={styles.routineInfo}>{routine.sets} sets</Text>
             </View>
           </View>
-          <Pressable style={styles.buttonStart}>
+          <Pressable style={styles.buttonStart} onPress={() => navigation.navigate('Workout In Progress', { routine: routine })}>
             <Text style={{ color: 'white' }}>Start</Text>
           </Pressable>
         </View>

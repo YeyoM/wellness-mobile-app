@@ -7,7 +7,7 @@ import SavedRoutines from "../Screens/SavedRoutines";
 
 const Tab = createBottomTabNavigator();
 
-export default function MainTabs() {
+export default function MainTabs({ navigation }) {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
