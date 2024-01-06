@@ -64,7 +64,7 @@ const routines = [
 ]
 
 
-export default function SavedRoutines() {
+export default function SavedRoutines({ navigation }) {
   return (
     <View style={styles.container}>
       <ScrollView style={{ width: '100%', marginTop: Constants.statusBarHeight }}>
@@ -88,7 +88,7 @@ export default function SavedRoutines() {
               <Ionicons name='filter-outline' size={30} color='#0496FF' />
             </Pressable>
           </View>
-          <Pressable style={styles.createContainer}>
+          <Pressable style={styles.createContainer} onPress={() => navigation.navigate('Add Routine')}>
             <Text style={styles.create}>Add new routine</Text>
             <Ionicons name='create-outline' size={30} color='#0496FF' />
           </Pressable>

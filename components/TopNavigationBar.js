@@ -3,37 +3,46 @@ import { View, Text, TouchableOpacity, Image, StyleSheet, Pressable } from 'reac
 import * as Progress from 'react-native-progress'
 import { Ionicons } from '@expo/vector-icons'
 
-export default function TopNavigationBar({ navigation, actualScreen, previousScreen, progress, back }) {
+import Constants from 'expo-constants'
+
+export default function TopNavigationBar({ navigation, actualScreen, previousScreen, progress, back, steps, currentStep }) {
   return (
     <View style={styles.topBar}>
       {
         back && (
-          <Pressable onPress={() => navigation.goBack()} style={{position: 'absolute', left: 0, height: 25, width: 25, top: 35, left: 25, zIndex: 999}}>
-            <Ionicons name="arrow-back" size={24} color="white" />
+          <Pressable onPress={() => navigation.goBack()} style={{ position: 'absolute', top: 10, left: 20, height: 36, width: 36, zIndex: 999, backgroundColor: "#24262B", borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
+            <Ionicons name="chevron-back-outline" size={36} color="white" />
           </Pressable>
         )
       }
-      {
+      { 
         previousScreen && (
-          <Pressable onPress={() => navigation.navigate(previousScreen)} style={{position: 'absolute', left: 0, height: 25, width: 25, top: 35, left: 25, zIndex: 999}}>
-            <Image style={styles.backIcon} source={require('../assets/back.png')} />
-          </Pressable>
-        )
+          <Pressable onPress={() => navigation.navigate(previousScreen)} style={{ position: 'absolute', top: 10, left: 20, height: 36, width: 36, zIndex: 999, backgroundColor: "#24262B", borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
+          <Ionicons name="chevron-back-outline" size={36} color="white" />
+        </Pressable>
+        ) 
       }
-      <View style={{flex: 1, alignItems: 'center'}}>
+      <View style={{ flex: 1, alignItems: 'center' }}>
         <Text style={styles.title}>{actualScreen}</Text>
         {
           progress && (
-            <Progress.Bar 
-              progress={progress} 
-              width={100} 
-              height={4} 
-              color={'#0496FF'} 
+            <Progress.Bar
+              progress={progress}
+              width={100}
+              height={4}
+              color={'#0496FF'}
               unfilledColor={'#F9F9F9'}
               borderWidth={0}
               borderRadius={8}
               style={styles.progressBar}
             />
+          )
+        }
+        {
+          steps && (
+            <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: "#142749", borderRadius: 10, paddingHorizontal: 10, paddingVertical: 2, marginBottom: 10 }}>
+              <Text style={{ color: '#fff', fontSize: 12 }}>{currentStep} of {steps}</Text>
+            </View>
           )
         }
       </View>
@@ -44,24 +53,14 @@ export default function TopNavigationBar({ navigation, actualScreen, previousScr
 const styles = StyleSheet.create({
   topBar: {
     width: '100%',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ECECEC',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
     alignContent: 'center',
-    position: 'absolute',
     top: 0,
-    marginTop: 20,
-    paddingVertical: 10,   
+    marginTop: Constants.statusBarHeight + 10,
     zIndex: 900,
-    backgroundColor: '#0B0B0B', 
-  },
-
-  backIcon: {
-    width: 25,
-    height: 25,
-    resizeMode: 'contain',
+    backgroundColor: '#0B0B0B',
   },
 
   title: {
@@ -70,7 +69,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     paddingVertical: 5,
-    marginTop: 15,
+    marginTop: 10,
+    marginBottom: 5,
   },
 
   progressBar: {

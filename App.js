@@ -12,6 +12,7 @@ import WorkoutFinished2 from './Screens/WorkoutFinished2';
 
 import InputUserInfoStack from './Stacks/InputUserInfoStack';
 import UpdateUserInfoStack from './Stacks/UpdateUserInfoStack';
+import AddRoutineStack from './Stacks/AddRoutineStack';
 
 import MainTabs from './Stacks/MainTabs';
 
@@ -50,6 +51,7 @@ export default function App() {
                   <Stack.Screen name="User Goals" component={MyGoals} options={{ headerShown: false }} />
                   <Stack.Screen name="User Input" component={InputUserInfoStack} options={{ headerShown: false }} />
                   <Stack.Screen name="User Update" component={UpdateUserInfoStack} options={{ headerShown: false }} />
+                  <Stack.Screen name="Add Routine" component={AddRoutineStack} options={{ headerShown: false }} />
                   <Stack.Screen name="Workout In Progress" component={WorkoutInProgress} options={{ headerShown: false }} />
                   <Stack.Screen name="Workout Finished 1" component={WorkoutFinished1} options={{ headerShown: false }} />
                   <Stack.Screen name="Workout Finished 2" component={WorkoutFinished2} options={{ headerShown: false }} />
