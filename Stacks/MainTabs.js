@@ -23,16 +23,17 @@ export default function MainTabs({ navigation }) {
             iconName = focused ? "heart" : "heart-outline";
           }
 
-          return <Ionicons name={iconName} size={size} color={color} />;
+          return <Ionicons name={iconName} size={28} color={color} />;
         },
         tabBarActiveTintColor: "#0496FF",
         tabBarInactiveTintColor: "#D9E6FF",
         headerShown: false,
+        tabBarShowLabel: false,
         tabBarStyle: {
           // backgroundColor: "#2b2d42",
-          backgroundColor: "#323743",
+          backgroundColor: "#0b0b0b",
           borderTopWidth: 0,
-          height: 85,
+          height: 80,
         },
       })}
       style={{ backgroundColor: "#0B0B0B" }}

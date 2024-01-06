@@ -27,7 +27,7 @@ export default function CurrentCapacity() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#323743',
+    backgroundColor: '#24262B',
     borderRadius: 14,
     overflow: 'hidden',
     width: '100%',

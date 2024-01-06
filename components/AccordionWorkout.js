@@ -42,8 +42,8 @@ const Accordion = ({ routine }) => {
         }}
         style={styles.viewContainer}>
           <Image 
-            source={require('../assets/leg_day.png')}
-            style={{width: "100%", resizeMode: 'contain', borderRadius: 14}}
+            source={{ uri: routine.image }}
+            style={{width: "100%", height: 200, resizeMode: 'cover', borderRadius: 14}}
           />
           <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
             <Text style={styles.textTitle}>{routine.routineName}</Text>
@@ -87,7 +87,7 @@ export default Accordion;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#323743',
+    backgroundColor: '#24262B',
     marginHorizontal: 10,
     marginVertical: 10,
     borderRadius: 14,

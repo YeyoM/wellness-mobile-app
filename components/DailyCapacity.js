@@ -26,9 +26,9 @@ export default function DailyCapacity() {
           width={width}
           height={290}
           chartConfig={{
-            backgroundColor: '#323743',
-            backgroundGradientFrom: '#323743',
-            backgroundGradientTo: '#323743',
+            backgroundColor: '#24262B',
+            backgroundGradientFrom: '#24262B',
+            backgroundGradientTo: '#24262B',
             decimalPlaces: 0,
             color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
             barPercentage: 0.6,
@@ -50,7 +50,7 @@ export default function DailyCapacity() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#323743',
+    backgroundColor: '#24262B',
     borderRadius: 14,
     overflow: 'hidden',
     width: '100%',

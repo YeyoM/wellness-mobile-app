@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
 
   buttonLarge: {
     width: '85%',
-    backgroundColor: '#313231',
+    backgroundColor: '#24262B',
     borderRadius: 90,
     alignItems: 'center',
     marginBottom: 24,
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
 
   button: {
     width: '75%',
-    backgroundColor: '#313231',
+    backgroundColor: '#24262B',
     borderRadius: 90,
     alignItems: 'center',
     marginBottom: 14,

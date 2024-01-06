@@ -12,7 +12,7 @@ const routines = [
     duration: '70',
     calories: '100',
     sets: '12',
-    image: '../assets/push_day.png',
+    image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGd5bXxlbnwwfHwwfHx8MA%3D%3D',
     exercises: [
       {
         exerciseName: 'Push Up',
@@ -39,7 +39,7 @@ const routines = [
     duration: '70',
     calories: '100',
     sets: '12',
-    image: '../assets/leg_day.png',
+    image: 'https://images.unsplash.com/photo-1556817411-31ae72fa3ea0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHNxdWF0fGVufDB8fDB8fHww',
     exercises: [
       {
         exerciseName: 'Squat',
@@ -62,6 +62,7 @@ const routines = [
     ],
   }
 ]
+
 
 export default function SavedRoutines() {
   return (
@@ -87,10 +88,10 @@ export default function SavedRoutines() {
               <Ionicons name='filter-outline' size={30} color='#0496FF' />
             </Pressable>
           </View>
-          <View style={styles.createContainer}>
-            <Text style={styles.create}>Create Routine</Text>
-            <Ionicons name='add-circle-outline' size={30} color='#0496FF' />
-          </View>
+          <Pressable style={styles.createContainer}>
+            <Text style={styles.create}>Add new routine</Text>
+            <Ionicons name='create-outline' size={30} color='#0496FF' />
+          </Pressable>
           {routines.map((routine, index) => (
             <Accordion routine={routine} key={index} />
           ))}
@@ -113,15 +114,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '90%',
     marginBottom: 10,
-    backgroundColor: '#323743',
+    backgroundColor: '#24262B',
     padding: 10,
     borderRadius: 14,
   },
 
   create: {
     color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 16,
+    marginLeft: 5,
   },
 
   text: {

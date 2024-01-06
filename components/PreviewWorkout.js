@@ -9,8 +9,8 @@ export default function PreviewWorkout({ routine, navigation }) {
     <View style={styles.container}>
       <View style={styles.viewContainer}>
         <Image
-          source={require('../assets/leg_day.png')}
-          style={{ width: "100%", resizeMode: 'contain', borderRadius: 14 }}
+          source={{ uri: routine.image }}
+          style={{ width: "100%", height: 150, resizeMode: 'cover', borderRadius: 14 }}
         />
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
           <View style={{ flexDirection: 'column', width: '70%' }}>
@@ -33,7 +33,7 @@ export default function PreviewWorkout({ routine, navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#323743',
+    backgroundColor: '#24262B',
     borderRadius: 14,
     overflow: 'hidden',
     width: '100%',

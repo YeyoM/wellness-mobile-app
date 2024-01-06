@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   header: {
     width: '100%',
     height: 100,
-    backgroundColor: '#323743',
+    backgroundColor: '#0b0b0b',
     justifyContent: 'center',
     paddingHorizontal: 20,
   },
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '90%',
-    backgroundColor: '#323743',
+    backgroundColor: '#24262B',
     padding: 20,
     borderRadius: 14,
     marginBottom: 20,
