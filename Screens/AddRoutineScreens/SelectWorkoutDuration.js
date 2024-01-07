@@ -13,16 +13,16 @@ import TopNavigationBar from "../../components/TopNavigationBar";
 export default function SelectWorkoutDuration({ navigation }) {
 
   const [ value, onChangeText ] = useState('3');
-  const [ realTime, setRealTime ] = useState('1h 30min');
+  const [ realTime, setRealTime ] = useState('1h 30m');
 
   const progress = useSharedValue(1.5);
   const min = useSharedValue(0.25);
-  const max = useSharedValue(5);
+  const max = useSharedValue(3);
 
   const valueToTime = (value) => {
     const hours = Math.floor(value);
     const minutes = Math.round((value - hours) * 60);
-    setRealTime(`${hours}h ${minutes}min`);
+    setRealTime(`${hours}h ${minutes}m`);
   }
 
   return (
@@ -31,12 +31,12 @@ export default function SelectWorkoutDuration({ navigation }) {
       <View style={styles.content}>
         <Text style={{ color: '#fff', fontSize: 28, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' }}>How long do you like your workouts to last?</Text>
         <View style={{ width: '80%', marginBottom: 40, height: 300, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20 }}>
-          <View style={{ transform: [ { rotate: "-90deg" } ], display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', height: 50, width: 240, marginLeft: -70 }}>
+          <View style={{ transform: [ { rotate: "-90deg" } ], display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', height: 50, width: 240, marginLeft: -80 }}>
             <Slider
               progress={progress}
               minimumValue={min}
               maximumValue={max}
-              step={19}
+              step={11}
               onHapticFeedback={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               }}
@@ -44,7 +44,7 @@ export default function SelectWorkoutDuration({ navigation }) {
                 onChangeText(e);
                 valueToTime(e);
               }}
-              thumbWidth={30}
+              thumbWidth={50}
               hapticMode={HapticModeEnum.STEP}
               theme={{
                 disableMinTrackTintColor: '#157AFF',
@@ -55,18 +55,19 @@ export default function SelectWorkoutDuration({ navigation }) {
               }}
               markStyle={{
                 width: 1,
-                height: 5,
+                height: 10,
                 backgroundColor: '#fff',
               }}
               renderBubble={(props) => {return}}
               renderThumb={(props) => {
                 return (
-                  <Image source={require('../../assets/thumb.png')} style={{ width: 30, height: 30 }} />
+                  <Image source={require('../../assets/thumb.png')} style={{ width: 50, height: 50 }} />
                 )
               }}
+              sliderHeight={10}
             />
           </View>
-          <Text style={{ color: '#fff', fontSize: 45, fontWeight: 'bold', marginLeft: -100, textAlign: 'left', alignSelf: "flex-end"}}> {realTime}</Text>
+          <Text style={{ color: '#fff', fontSize: 60, fontWeight: 'bold', marginLeft: -100, textAlign: 'justify', alignSelf: "flex-end"}}> {realTime}</Text>
         </View>
         <Pressable onPress={() => navigation.navigate('Add Routine')} style={styles.btnContinue}>
           <Text style={styles.btnContinueText}>Continue</Text>
