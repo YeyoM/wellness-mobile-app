@@ -34,7 +34,7 @@ export default function SelectNUmberDaysPerWeek({ navigation }) {
           </Pressable>
         </View>
         <Text style={{ color: '#fff', fontSize: 16, marginVertical: 20, textAlign: 'center' }}>I’m commited to exercising {days}x weekly</Text>
-        <Pressable onPress={() => navigation.navigate('Add Routine')} style={styles.btnContinue}>
+        <Pressable onPress={() => navigation.navigate('Select Workout Duration')} style={styles.btnContinue}>
           <Text style={styles.btnContinueText}>Continue</Text>
         </Pressable>
         
