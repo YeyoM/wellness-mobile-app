@@ -107,7 +107,7 @@ export default function SelectWorkoutDuration({ navigation }) {
             }
           </View>
         </View>
-        <Pressable onPress={() => navigation.navigate('Add Routine')} style={styles.btnContinue}>
+        <Pressable onPress={() => navigation.navigate('Select Split Preference')} style={styles.btnContinue}>
           <Text style={styles.btnContinueText}>Continue</Text>
         </Pressable>
       </View>

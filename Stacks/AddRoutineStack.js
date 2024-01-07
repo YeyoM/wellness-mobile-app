@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SelectAI from "../Screens/AddRoutineScreens/SelectAI";
 import SelectNUmberDaysPerWeek from "../Screens/AddRoutineScreens/SelectNumberDaysPerWeek";
 import SelectWorkoutDuration from "../Screens/AddRoutineScreens/SelectWorkoutDuration";
+import SelectSplitPreference from "../Screens/AddRoutineScreens/SelectSplitPreference";
 
 export default function AddRoutineStack() {
   
@@ -18,6 +19,7 @@ export default function AddRoutineStack() {
         <Stack.Screen name="Select AI" component={SelectAI} options={{ headerShown: false, gestureEnabled: false }} />
         <Stack.Screen name="Select Number Days Per Week" component={SelectNUmberDaysPerWeek} options={{ headerShown: false, gestureEnabled: false }} />
         <Stack.Screen name="Select Workout Duration" component={SelectWorkoutDuration} options={{ headerShown: false, gestureEnabled: false }} />
+        <Stack.Screen name="Select Split Preference" component={SelectSplitPreference} options={{ headerShown: false, gestureEnabled: false }} />
       </Stack.Navigator>
     )
   }
