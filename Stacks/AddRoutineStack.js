@@ -5,7 +5,6 @@ import SelectNUmberDaysPerWeek from "../Screens/AddRoutineScreens/SelectNumberDa
 import SelectWorkoutDuration from "../Screens/AddRoutineScreens/SelectWorkoutDuration";
 import SelectSplitPreference from "../Screens/AddRoutineScreens/SelectSplitPreference";
 import CreatingRoutineAI from "../Screens/AddRoutineScreens/CreatingRoutineAI";
-import EditNewRoutine from "../Screens/AddRoutineScreens/EditNewRoutine";
 
 export default function AddRoutineStack() {
   
@@ -23,7 +22,6 @@ export default function AddRoutineStack() {
         <Stack.Screen name="Select Workout Duration" component={SelectWorkoutDuration} options={{ headerShown: false, gestureEnabled: false }} />
         <Stack.Screen name="Select Split Preference" component={SelectSplitPreference} options={{ headerShown: false, gestureEnabled: false }} />
         <Stack.Screen name="Creating Routine AI" component={CreatingRoutineAI} options={{ headerShown: false, gestureEnabled: false }} />
-        <Stack.Screen name="Edit New Routine" component={EditNewRoutine} options={{ headerShown: false, gestureEnabled: false }} />
       </Stack.Navigator>
     )
   }
