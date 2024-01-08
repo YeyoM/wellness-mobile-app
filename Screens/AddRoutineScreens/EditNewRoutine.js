@@ -135,7 +135,6 @@ export default function EditNewRoutine({ route, navigation }) {
           <View style={styles.containerExercises}>
             <ScrollView style={{ width: '100%', minHeight: 600 }}>
               <View style={styles.exercises}>
-                <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold', marginBottom: 20 }}>Exercises</Text>
                 <EditingRoutineExerciseList />
               </View>
             </ScrollView>
@@ -192,9 +191,10 @@ const styles = StyleSheet.create({
   exercises: {
     width: '100%',
     backgroundColor: '#0b0b0b',
+    display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 60,
-    paddingHorizontal: 16,
   },
 })
