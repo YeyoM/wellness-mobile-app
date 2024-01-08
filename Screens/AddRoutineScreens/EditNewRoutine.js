@@ -1,21 +1,112 @@
-import React from "react"
-import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native"
-
+import React, { useEffect } from "react"
+import { View, Text, StyleSheet, Pressable, ScrollView, Dimensions } from "react-native"
 import { useState } from "react"
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import Constants from 'expo-constants'
 import { Ionicons } from '@expo/vector-icons'
 
+import CarouselDays from "../../components/CarouselDays"
+import EditingRoutineExerciseList from "../../components/EditingRoutineExerciseList"
+
 export default function EditNewRoutine({ route, navigation }) {
 
-  const { routine } = route.params;
+  // const { routine } = route.params;
+
+  const routine = {
+    name: 'My new routine',
+    numberOfDays: 4,
+    days: [
+      {
+        name: 'Push Day',
+        exercises: [
+          {
+            name: 'Bench Press',
+            sets: 3,
+            reps: 10,
+            weight: 50,
+            rest: 60,
+          },
+          {
+            name: 'Bench Press',
+            sets: 3,
+            reps: 10,
+            weight: 50,
+            rest: 60,
+          },
+        ],
+      },
+      {
+        name: 'Push Day 2',
+        exercises: [
+          {
+            name: 'Bench Press',
+            sets: 3,
+            reps: 10,
+            weight: 50,
+            rest: 60,
+          },
+          {
+            name: 'Bench Press',
+            sets: 3,
+            reps: 10,
+            weight: 50,
+            rest: 60,
+          },
+        ],
+      },
+      {
+        name: 'Push Day 3',
+        exercises: [
+          {
+            name: 'Bench Press',
+            sets: 3,
+            reps: 10,
+            weight: 50,
+            rest: 60,
+          },
+          {
+            name: 'Bench Press',
+            sets: 3,
+            reps: 10,
+            weight: 50,
+            rest: 60,
+          },
+        ],
+      },
+      {
+        name: 'Push Day 4',
+        exercises: [
+          {
+            name: 'Bench Press',
+            sets: 3,
+            reps: 10,
+            weight: 50,
+            rest: 60,
+          },
+          {
+            name: 'Bench Press',
+            sets: 3,
+            reps: 10,
+            weight: 50,
+            rest: 60,
+          },
+        ],
+      },
+    ],
+  }
 
   const [ routine_, setRoutine_ ] = useState(routine);
   const [ routineName, setRoutineName ] = useState(routine.name);
 
+  const [ currentDay, setCurrentDay ] = useState(0);
+
+  useEffect(() => {
+    setRoutineName(routine_.name);
+  }, []);
 
   return (
-    <View style={styles.container}>
+    <GestureHandlerRootView style={styles.container}>
       <View style={styles.home}>
         {/*aqui la parte de arriba*/}
         <View style={styles.topBar}>
@@ -28,25 +119,30 @@ export default function EditNewRoutine({ route, navigation }) {
           </View>
         </View>
         {/* Carrousel de los dias */}
-        <View style={{ width: '100%', minHeight: 600, backgroundColor: '#0B0B0B', borderTopLeftRadius: 20, borderTopRightRadius: 20, marginTop: 20 }}>
+        <CarouselDays currentDay={currentDay} setCurrentDay={setCurrentDay} />
+        <View style={{ width: '100%', minHeight: 600, backgroundColor: '#0B0B0B', borderTopLeftRadius: 20, borderTopRightRadius: 20, marginTop: 20, paddingTop: 16 }}>
           {/*aqui la parte de abajo (editar nombre dia y agregar ejercicios)*/}
-          <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingTop: 16 }}>
-            <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Monday</Text>
-            <Pressable onPress={() => navigation.navigate('Edit Day', { day: { name: 'Monday', exercises: [] } })}>
-              <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Edit</Text>
+          <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 10, marginBottom: 20 }}>
+            <View style={{ alignItems: 'center', display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+              <Text style={{ color: '#fff', fontSize: 24, fontWeight: 'bold' }}>{routine_.days[ currentDay ].name}</Text>
+              <Ionicons name="pencil-outline" size={20} color="white" style={{ marginLeft: 5 }} />
+            </View>
+            <Pressable style={{ alignItems: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <Ionicons name="add-outline" size={34} color="white" />
+              <Text style={{ color: '#9095A1', fontSize: 10, textAlign: 'center' }}>Add Lift</Text>
             </Pressable>
           </View>
           <View style={styles.containerExercises}>
             <ScrollView style={{ width: '100%', minHeight: 600 }}>
               <View style={styles.exercises}>
                 <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold', marginBottom: 20 }}>Exercises</Text>
-                
+                <EditingRoutineExerciseList />
               </View>
             </ScrollView>
           </View>
         </View>
       </View>
-    </View>
+    </GestureHandlerRootView>
   )
 }
 
@@ -71,7 +167,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     marginTop: 20,
-    marginBottom: 100,
+    marginBottom: 40,
     top: 0,
     zIndex: 900,
     backgroundColor: '#24262B',

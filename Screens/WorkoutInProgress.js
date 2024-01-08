@@ -5,7 +5,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { Ionicons } from '@expo/vector-icons'
 import DraggableFlatList, {
   ScaleDecorator, NestableDraggableFlatList, NestableScrollContainer
-} from "react-native-draggable-flatlist"; import { Dimensions } from 'react-native';
+} from "react-native-draggable-flatlist"; 
+import { Dimensions } from 'react-native';
 import Constants from 'expo-constants';
 
 import CurrentExercise from '../components/CurrentExercise'
