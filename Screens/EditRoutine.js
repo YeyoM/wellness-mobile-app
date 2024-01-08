@@ -6,10 +6,10 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Constants from 'expo-constants'
 import { Ionicons } from '@expo/vector-icons'
 
-import CarouselDays from "../../components/CarouselDays"
-import EditingRoutineExerciseList from "../../components/EditingRoutineExerciseList"
+import CarouselDays from "../components/CarouselDays"
+import EditingRoutineExerciseList from "../components/EditingRoutineExerciseList"
 
-export default function EditNewRoutine({ route, navigation }) {
+export default function EditRoutine({ route, navigation }) {
 
   // const { routine } = route.params;
 

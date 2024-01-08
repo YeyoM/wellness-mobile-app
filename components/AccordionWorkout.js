@@ -10,7 +10,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-const Accordion = ({ routine }) => {
+const Accordion = ({ routine, navigation }) => {
 
   const listRef = useAnimatedRef();
   const heightValue = useSharedValue(0);
@@ -69,10 +69,10 @@ const Accordion = ({ routine }) => {
               </View>
             ))}
             <View style={styles.buttonContainer}>
-              <Pressable style={styles.buttonEdit}>
+              <Pressable style={styles.buttonEdit} onPress={() => navigation.navigate('Edit Routine', { routine: routine })}>
                 <Text style={{color: 'white'}}>Edit</Text>
               </Pressable>
-              <Pressable style={styles.buttonStart}>
+              <Pressable style={styles.buttonStart} onPress={() => navigation.navigate('Workout In Progress', { routine: routine })}>
                 <Text style={{color: 'white'}}>Start</Text>
               </Pressable>
             </View>

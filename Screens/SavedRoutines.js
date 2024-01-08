@@ -93,7 +93,7 @@ export default function SavedRoutines({ navigation }) {
             <Ionicons name='create-outline' size={30} color='#0496FF' />
           </Pressable>
           {routines.map((routine, index) => (
-            <Accordion routine={routine} key={index} />
+            <Accordion routine={routine} key={index} navigation={navigation} />
           ))}
         </View>
       </ScrollView>

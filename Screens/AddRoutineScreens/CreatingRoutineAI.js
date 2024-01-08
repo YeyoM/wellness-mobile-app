@@ -38,7 +38,7 @@ export default function CreatingRoutineAI({ navigation }) {
                 <Pressable style={styles.btn} onPress={() => navigation.navigate('Home')}>
                   <Text style={styles.btnText}>I’ll see it later</Text>
                 </Pressable>
-                <Pressable style={styles.btnContinue} onPress={() => navigation.navigate('Edit New Routine', { routine: { name: 'My new routine', days: [] } })}>
+                <Pressable style={styles.btnContinue} onPress={() => navigation.navigate('Edit Routine', { routine: { name: 'My new routine', days: [] } })}>
                   <Text style={styles.btnContinueText}>View now!</Text>
                 </Pressable>
                 </View>
