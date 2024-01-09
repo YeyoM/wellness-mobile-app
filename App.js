@@ -14,6 +14,7 @@ import InputUserInfoStack from './Stacks/InputUserInfoStack';
 import UpdateUserInfoStack from './Stacks/UpdateUserInfoStack';
 import AddRoutineStack from './Stacks/AddRoutineStack';
 import EditRoutine from './Screens/EditRoutine';
+import EditExercise from './Screens/EditExercise';
 
 import MainTabs from './Stacks/MainTabs';
 
@@ -57,6 +58,7 @@ export default function App() {
                   <Stack.Screen name="Workout Finished 1" component={WorkoutFinished1} options={{ headerShown: false }} />
                   <Stack.Screen name="Workout Finished 2" component={WorkoutFinished2} options={{ headerShown: false }} />
                   <Stack.Screen name="Edit Routine" component={EditRoutine} options={{ headerShown: false }} />
+                  <Stack.Screen name="Edit Exercise" component={EditExercise} options={{ headerShown: false }} />
                 </Stack.Group>
               )
               : (

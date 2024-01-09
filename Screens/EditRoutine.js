@@ -59,7 +59,7 @@ export default function EditRoutine({ route, navigation }) {
           <View style={styles.containerExercises}>
             <ScrollView style={{ width: '100%', minHeight: 600 }}>
               <View style={styles.exercises}>
-                <EditingRoutineExerciseList exercices={routine_.days[ currentDay ].exercises} currentDay={currentDay} routine={routine_} setRoutine={setRoutine_} />
+                <EditingRoutineExerciseList exercices={routine_.days[ currentDay ].exercises} currentDay={currentDay} routine={routine_} setRoutine={setRoutine_} navigation={navigation} />
               </View>
             </ScrollView>
           </View>

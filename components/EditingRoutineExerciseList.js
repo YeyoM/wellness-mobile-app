@@ -14,7 +14,7 @@ import SwipeableItem, {
 
 import { Ionicons } from "@expo/vector-icons";
 
-export default function EditingRoutineExerciseList({ exercices, currentDay, routine, setRoutine }) {
+export default function EditingRoutineExerciseList({ exercices, currentDay, routine, setRoutine, navigation }) {
 
   const NUM_ITEMS = exercices.length;
 
@@ -38,8 +38,8 @@ export default function EditingRoutineExerciseList({ exercices, currentDay, rout
       <SwipeableItem
         key={item.key}
         item={item}
-        renderUnderlayLeft={() => <UnderlayLeft item={item} initialData={initialData} deleteExercise={deleteExercise} />}
-        snapPointsLeft={[150]}
+        renderUnderlayLeft={() => <UnderlayLeft item={item} initialData={initialData} deleteExercise={deleteExercise} navigation={navigation} />}
+        snapPointsLeft={[ 150 ]}
       >
         <View
           style={[
@@ -83,12 +83,12 @@ export default function EditingRoutineExerciseList({ exercices, currentDay, rout
   );
 }
 
-const UnderlayLeft = ({ item, initialData, deleteExercise }) => {
+const UnderlayLeft = ({ item, deleteExercise, navigation }) => {
   const { close } = useSwipeableItemParams();
   const id = item.exercise.id;
   return (
-    <View style={[styles.row_, styles.underlayLeft]}>
-      <TouchableOpacity 
+    <View style={[ styles.row_, styles.underlayLeft ]}>
+      <TouchableOpacity
         onPress={() => {
           close()
           setTimeout(() => {
@@ -96,10 +96,18 @@ const UnderlayLeft = ({ item, initialData, deleteExercise }) => {
           }, 200)
         }}
         style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#FF0431", padding: 20, borderRadius: 20, width: "20%", marginRight: "2%" }}
-        >
+      >
         <Ionicons name="trash-outline" size={30} color="white" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => close()} style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#316ADA", padding: 20, borderRadius: 20, width: "20%" }}>
+      <TouchableOpacity
+        onPress={() => {
+          close()
+          setTimeout(() => {
+            navigation.navigate("Edit Exercise", { exercise: item.exercise })
+          }, 200)
+        }}
+        style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#316ADA", padding: 20, borderRadius: 20, width: "20%" }}
+      >
         <Ionicons name="create-outline" size={30} color="white" />
       </TouchableOpacity>
     </View>
