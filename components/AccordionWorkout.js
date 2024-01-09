@@ -10,7 +10,9 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-const Accordion = ({ routine, navigation }) => {
+const Accordion = ({ routine_, navigation }) => {
+
+  const [ routine, setRoutine ] = useState(routine_);
 
   const listRef = useAnimatedRef();
   const heightValue = useSharedValue(0);
@@ -46,7 +48,7 @@ const Accordion = ({ routine, navigation }) => {
             style={{width: "100%", height: 200, resizeMode: 'cover', borderRadius: 14}}
           />
           <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-            <Text style={styles.textTitle}>{routine.routineName}</Text>
+            <Text style={styles.textTitle}>{routine.name}</Text>
           </View>
           <View style={{flexDirection: 'row', width: '100%'}}>
             <Text style={styles.routineInfo}>{routine.duration} min</Text>
@@ -58,14 +60,19 @@ const Accordion = ({ routine, navigation }) => {
       <Animated.View style={heightAnimationStyle}>
         <Animated.View style={styles.contentContainer} ref={listRef}>
           <Animated.View style={[styles.content, {opacity: progress}]}>
-            {routine.exercises.map((exercise, index) => (
-              <View key={index} style={styles.singleExercise}>
-                <Text style={styles.textContent_}>{exercise.exerciseName}</Text>
-                <View style={{flexDirection: 'row', justifyContent: '', width: '100%'}}>
-                  <Text style={styles.textContent}>{exercise.sets} sets</Text>
-                  <Text style={styles.textContent}>{exercise.reps} reps</Text>
-                  <Text style={styles.textContent}>{exercise.weight} lbs</Text>
+            {routine.days.map((day, index) => (
+              <View style={styles.singleDay} key={index}>
+                <Text style={{ color: '#fff', fontSize: 20, marginBottom: 10 }}>{day.name}</Text>
+                {day.exercises.map((exercise, index) => (
+                  <View key={index} style={styles.singleExercise}>
+                  <Text style={styles.textContent_}>{exercise.name}</Text>
+                  <View style={{flexDirection: 'row', justifyContent: '', width: '100%'}}>
+                    <Text style={styles.textContent}>{exercise.sets} sets</Text>
+                    <Text style={styles.textContent}>{exercise.reps} reps</Text>
+                    <Text style={styles.textContent}>{exercise.weight} lbs</Text>
+                  </View>
                 </View>
+                ))}
               </View>
             ))}
             <View style={styles.buttonContainer}>
@@ -130,6 +137,13 @@ const styles = StyleSheet.create({
     color: 'white',
     marginTop: 10,
     alignSelf: 'flex-end',
+  },
+
+  singleDay: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 10,
   },
   
   singleExercise: {

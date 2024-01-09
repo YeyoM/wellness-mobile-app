@@ -11,99 +11,23 @@ import EditingRoutineExerciseList from "../components/EditingRoutineExerciseList
 
 export default function EditRoutine({ route, navigation }) {
 
-  // const { routine } = route.params;
-
-  const routine = {
-    name: 'My new routine',
-    numberOfDays: 4,
-    days: [
-      {
-        name: 'Push Day',
-        exercises: [
-          {
-            name: 'Bench Press',
-            sets: 3,
-            reps: 10,
-            weight: 50,
-            rest: 60,
-          },
-          {
-            name: 'Bench Press',
-            sets: 3,
-            reps: 10,
-            weight: 50,
-            rest: 60,
-          },
-        ],
-      },
-      {
-        name: 'Push Day 2',
-        exercises: [
-          {
-            name: 'Bench Press',
-            sets: 3,
-            reps: 10,
-            weight: 50,
-            rest: 60,
-          },
-          {
-            name: 'Bench Press',
-            sets: 3,
-            reps: 10,
-            weight: 50,
-            rest: 60,
-          },
-        ],
-      },
-      {
-        name: 'Push Day 3',
-        exercises: [
-          {
-            name: 'Bench Press',
-            sets: 3,
-            reps: 10,
-            weight: 50,
-            rest: 60,
-          },
-          {
-            name: 'Bench Press',
-            sets: 3,
-            reps: 10,
-            weight: 50,
-            rest: 60,
-          },
-        ],
-      },
-      {
-        name: 'Push Day 4',
-        exercises: [
-          {
-            name: 'Bench Press',
-            sets: 3,
-            reps: 10,
-            weight: 50,
-            rest: 60,
-          },
-          {
-            name: 'Bench Press',
-            sets: 3,
-            reps: 10,
-            weight: 50,
-            rest: 60,
-          },
-        ],
-      },
-    ],
+  if (route.params === undefined) {
+    navigation.navigate('Home');
+    return null;
   }
+
+  // if we already have the routine, we don't need to fetch it
+  const { routine } = route.params;
 
   const [ routine_, setRoutine_ ] = useState(routine);
   const [ routineName, setRoutineName ] = useState(routine.name);
 
+  const [ totalDays, setTotalDays ] = useState(routine_.numberOfDays);
+
   const [ currentDay, setCurrentDay ] = useState(0);
 
-  useEffect(() => {
-    setRoutineName(routine_.name);
-  }, []);
+  console.log("routine");
+  console.log("routine_", routine_.days[ 0 ].exercises);
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -119,7 +43,7 @@ export default function EditRoutine({ route, navigation }) {
           </View>
         </View>
         {/* Carrousel de los dias */}
-        <CarouselDays currentDay={currentDay} setCurrentDay={setCurrentDay} />
+        <CarouselDays currentDay={currentDay} setCurrentDay={setCurrentDay} totalDays={totalDays} />
         <View style={{ width: '100%', minHeight: 600, backgroundColor: '#0B0B0B', borderTopLeftRadius: 20, borderTopRightRadius: 20, marginTop: 20, paddingTop: 16 }}>
           {/*aqui la parte de abajo (editar nombre dia y agregar ejercicios)*/}
           <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 10, marginBottom: 20 }}>
@@ -135,7 +59,7 @@ export default function EditRoutine({ route, navigation }) {
           <View style={styles.containerExercises}>
             <ScrollView style={{ width: '100%', minHeight: 600 }}>
               <View style={styles.exercises}>
-                <EditingRoutineExerciseList />
+                <EditingRoutineExerciseList exercices={routine_.days[ currentDay ].exercises} currentDay={currentDay} routine={routine_} setRoutine={setRoutine_} />
               </View>
             </ScrollView>
           </View>

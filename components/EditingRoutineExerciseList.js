@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -14,15 +14,31 @@ import SwipeableItem, {
 
 import { Ionicons } from "@expo/vector-icons";
 
-const NUM_ITEMS = 4;
+export default function EditingRoutineExerciseList({ exercices, currentDay, routine, setRoutine }) {
 
-export default function EditingRoutineExerciseList() {
+  const NUM_ITEMS = exercices.length;
+
+  const initialData = Array.from({ length: NUM_ITEMS }, (_, index) => ({
+    key: `item-${exercices[ index ].id}`,
+    exercise: exercices[ index ],
+    day: currentDay,
+  }));
+
+  const deleteExercise = (id, day) => {
+    console.log("id", id);
+    console.log("day", day);
+    let routine_ = JSON.parse(JSON.stringify(routine));
+    routine_.days[ day ].exercises = routine_.days[ day ].exercises.filter((exercise) => exercise.id !== id);
+    console.log("routine_", routine_.days[ day ].exercises);
+    setRoutine(routine_);
+  }
+
   const renderItem = useCallback(({ item }) => {
     return (
       <SwipeableItem
         key={item.key}
         item={item}
-        renderUnderlayLeft={() => <UnderlayLeft />}
+        renderUnderlayLeft={() => <UnderlayLeft item={item} initialData={initialData} deleteExercise={deleteExercise} />}
         snapPointsLeft={[150]}
       >
         <View
@@ -37,10 +53,10 @@ export default function EditingRoutineExerciseList() {
             </View>
             <View style={{ display: "flex", flexDirection: "column" }}>
               <Text style={{ color: "#fff", fontSize: 20, marginLeft: 16 }}>
-                Bench Press
+                {item.exercise.name}
               </Text>
               <Text style={{ color: "#9095A1", fontSize: 12, marginLeft: 16 }}>
-                4 sets of 10 reps
+                {item.exercise.sets} sets of {item.exercise.reps} reps, {item.exercise.weight} lbs
               </Text>
             </View>
           </View>
@@ -67,11 +83,20 @@ export default function EditingRoutineExerciseList() {
   );
 }
 
-const UnderlayLeft = () => {
+const UnderlayLeft = ({ item, initialData, deleteExercise }) => {
   const { close } = useSwipeableItemParams();
+  const id = item.exercise.id;
   return (
     <View style={[styles.row_, styles.underlayLeft]}>
-      <TouchableOpacity onPress={() => close()} style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#FF0431", padding: 20, borderRadius: 20, width: "20%", marginRight: "2%" }}>
+      <TouchableOpacity 
+        onPress={() => {
+          close()
+          setTimeout(() => {
+            deleteExercise(id, item.day)
+          }, 200)
+        }}
+        style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#FF0431", padding: 20, borderRadius: 20, width: "20%", marginRight: "2%" }}
+        >
         <Ionicons name="trash-outline" size={30} color="white" />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => close()} style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#316ADA", padding: 20, borderRadius: 20, width: "20%" }}>
@@ -80,20 +105,6 @@ const UnderlayLeft = () => {
     </View>
   );
 };
-
-function getColor(i) {
-  const multiplier = 255 / (NUM_ITEMS - 1);
-  const colorVal = i * multiplier;
-  return `rgb(${colorVal}, ${Math.abs(128 - colorVal)}, ${255 - colorVal})`;
-}
-
-const initialData = [...Array(NUM_ITEMS)].fill(0).map((d, index) => {
-  const backgroundColor = getColor(index);
-  return {
-    text: `${index}`,
-    key: `key-${backgroundColor}`,
-  };
-});
 
 const styles = StyleSheet.create({
   container: {

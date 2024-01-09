@@ -6,65 +6,10 @@ import Constants from 'expo-constants'
 
 import Accordion from '../components/AccordionWorkout'
 
-const routines = [
-  {
-    routineName: 'Push Day',
-    duration: '70',
-    calories: '100',
-    sets: '12',
-    image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGd5bXxlbnwwfHwwfHx8MA%3D%3D',
-    exercises: [
-      {
-        exerciseName: 'Push Up',
-        sets: '4',
-        reps: '10',
-        weight: '0',
-      },
-      {
-        exerciseName: 'Bench Press',
-        sets: '4',
-        reps: '10',
-        weight: '0',
-      },
-      {
-        exerciseName: 'Overhead Press',
-        sets: '4',
-        reps: '10',
-        weight: '0',
-      },
-    ],
-  },
-  {
-    routineName: 'Leg Day',
-    duration: '70',
-    calories: '100',
-    sets: '12',
-    image: 'https://images.unsplash.com/photo-1556817411-31ae72fa3ea0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHNxdWF0fGVufDB8fDB8fHww',
-    exercises: [
-      {
-        exerciseName: 'Squat',
-        sets: '4',
-        reps: '10',
-        weight: '0',
-      },
-      {
-        exerciseName: 'Lunge',
-        sets: '4',
-        reps: '10',
-        weight: '0',
-      },
-      {
-        exerciseName: 'Deadlift',
-        sets: '4',
-        reps: '10',
-        weight: '0',
-      },
-    ],
-  }
-]
-
+import { routines } from '../routines'
 
 export default function SavedRoutines({ navigation }) {
+
   return (
     <View style={styles.container}>
       <ScrollView style={{ width: '100%', marginTop: Constants.statusBarHeight }}>
@@ -93,7 +38,7 @@ export default function SavedRoutines({ navigation }) {
             <Ionicons name='create-outline' size={30} color='#0496FF' />
           </Pressable>
           {routines.map((routine, index) => (
-            <Accordion routine={routine} key={index} navigation={navigation} />
+            <Accordion routine_={routine} key={index} navigation={navigation} />
           ))}
         </View>
       </ScrollView>
