@@ -2,9 +2,6 @@ export const routines = [
   {
     name: 'New Routine',
     numberOfDays: 4,
-    duration: '70',
-    calories: '100',
-    sets: '12',
     image: 'https://images.unsplash.com/photo-1556817411-31ae72fa3ea0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHNxdWF0fGVufDB8fDB8fHww',
     days: [
       {

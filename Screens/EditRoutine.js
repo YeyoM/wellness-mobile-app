@@ -1,6 +1,5 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { View, Text, StyleSheet, Pressable, ScrollView, Dimensions } from "react-native"
-import { useState } from "react"
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import Constants from 'expo-constants'
@@ -19,15 +18,31 @@ export default function EditRoutine({ route, navigation }) {
   // if we already have the routine, we don't need to fetch it
   const { routine } = route.params;
 
+  if (routine === undefined) {
+    navigation.navigate('Home');
+    return null;
+  }
+
+  /*
+    routine 
+  {
+    "createdAt": {"nanoseconds": 325000000, "seconds": 1704917024}, 
+    "days": ["iJfZvInNxKQ1TJpyjiG0", "E7iTccGBXMIOykYNZcFj", "aGfWX7jsCugv2oVBcink", "rj7TlkhqIHO1g8gVUJiJ"], 
+    "generatedAI": false, 
+    "image": "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGd5bXxlbnwwfHwwfHx8MA%3D%3D", 
+    "numberOfDays": 4, 
+    "routineName": "New Routine", 
+    "updatedAt": {"nanoseconds": 325000000, "seconds": 1704917024}, 
+    "userId": "9L3D0ftBtpbxHpx67nctWY7zNl83"
+  }
+  */
+
   const [ routine_, setRoutine_ ] = useState(routine);
-  const [ routineName, setRoutineName ] = useState(routine.name);
+  const [ routineName, setRoutineName ] = useState(routine.routineName);
 
   const [ totalDays, setTotalDays ] = useState(routine_.numberOfDays);
 
   const [ currentDay, setCurrentDay ] = useState(0);
-
-  console.log("routine");
-  console.log("routine_", routine_.days[ 0 ].exercises);
 
   return (
     <GestureHandlerRootView style={styles.container}>

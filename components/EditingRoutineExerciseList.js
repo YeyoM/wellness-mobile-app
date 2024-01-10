@@ -16,6 +16,10 @@ import { Ionicons } from "@expo/vector-icons";
 
 export default function EditingRoutineExerciseList({ exercices, currentDay, routine, setRoutine, navigation }) {
 
+  if (!exercices) {
+    return null;
+  }
+
   const NUM_ITEMS = exercices.length;
 
   const initialData = Array.from({ length: NUM_ITEMS }, (_, index) => ({

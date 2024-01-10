@@ -23,6 +23,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { FIREBASE_AUTH } from './firebaseConfig';
 
 import { InitialScreensProvider } from './context/InitialScreensContext';
+import { CreateRoutineProvider } from './context/CreateRoutineContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,34 +43,36 @@ export default function App() {
 
   return (
     <InitialScreensProvider>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
-          {
-            user
-              ? (
-                <Stack.Group>
-                  <Stack.Screen name="Main Tabs" component={MainTabs} options={{ headerShown: false }} />
-                  <Stack.Screen name="User Information" component={MyInformation} options={{ headerShown: false }} />
-                  <Stack.Screen name="User Goals" component={MyGoals} options={{ headerShown: false }} />
-                  <Stack.Screen name="User Input" component={InputUserInfoStack} options={{ headerShown: false }} />
-                  <Stack.Screen name="User Update" component={UpdateUserInfoStack} options={{ headerShown: false }} />
-                  <Stack.Screen name="Add Routine" component={AddRoutineStack} options={{ headerShown: false }} />
-                  <Stack.Screen name="Workout In Progress" component={WorkoutInProgress} options={{ headerShown: false }} />
-                  <Stack.Screen name="Workout Finished 1" component={WorkoutFinished1} options={{ headerShown: false }} />
-                  <Stack.Screen name="Workout Finished 2" component={WorkoutFinished2} options={{ headerShown: false }} />
-                  <Stack.Screen name="Edit Routine" component={EditRoutine} options={{ headerShown: false }} />
-                  <Stack.Screen name="Edit Exercise" component={EditExercise} options={{ headerShown: false }} />
-                </Stack.Group>
-              )
-              : (
-                <Stack.Group>
-                  <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-                  <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
-                </Stack.Group>
-              )
-          }
-        </Stack.Navigator>
-      </NavigationContainer>
+      <CreateRoutineProvider>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Login">
+            {
+              user
+                ? (
+                  <Stack.Group>
+                    <Stack.Screen name="Main Tabs" component={MainTabs} options={{ headerShown: false }} />
+                    <Stack.Screen name="User Information" component={MyInformation} options={{ headerShown: false }} />
+                    <Stack.Screen name="User Goals" component={MyGoals} options={{ headerShown: false }} />
+                    <Stack.Screen name="User Input" component={InputUserInfoStack} options={{ headerShown: false }} />
+                    <Stack.Screen name="User Update" component={UpdateUserInfoStack} options={{ headerShown: false }} />
+                    <Stack.Screen name="Add Routine" component={AddRoutineStack} options={{ headerShown: false }} />
+                    <Stack.Screen name="Workout In Progress" component={WorkoutInProgress} options={{ headerShown: false }} />
+                    <Stack.Screen name="Workout Finished 1" component={WorkoutFinished1} options={{ headerShown: false }} />
+                    <Stack.Screen name="Workout Finished 2" component={WorkoutFinished2} options={{ headerShown: false }} />
+                    <Stack.Screen name="Edit Routine" component={EditRoutine} options={{ headerShown: false }} />
+                    <Stack.Screen name="Edit Exercise" component={EditExercise} options={{ headerShown: false }} />
+                  </Stack.Group>
+                )
+                : (
+                  <Stack.Group>
+                    <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+                    <Stack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
+                  </Stack.Group>
+                )
+            }
+          </Stack.Navigator>
+        </NavigationContainer>
+      </CreateRoutineProvider>
     </InitialScreensProvider>
   );
 }

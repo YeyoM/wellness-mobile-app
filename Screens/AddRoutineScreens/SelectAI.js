@@ -2,11 +2,14 @@ import React from "react"
 import { View, Text, StyleSheet, Pressable } from "react-native"
 import { Ionicons } from '@expo/vector-icons'
 
-import { useState } from "react"
+import { useState, useContext } from "react"
 
 import TopNavigationBar from "../../components/TopNavigationBar"
+import { CreateRoutineContext } from "../../context/CreateRoutineContext"
 
 export default function SelectAI({ navigation }) {
+
+  const { setGeneratedAI } = useContext(CreateRoutineContext);
 
   const [selectAI, setSelectAI] = useState(true);
   const [selectNoAI, setSelectNoAI] = useState(false);
@@ -31,11 +34,13 @@ export default function SelectAI({ navigation }) {
     }
 
     if (selectAI) {
-      navigation.navigate('AI')
+      setGeneratedAI(true);
+      navigation.navigate('Select Number Days Per Week AI')
     }
 
     if (selectNoAI) {
-      navigation.navigate('Add Routine')
+      setGeneratedAI(false);
+      navigation.navigate('Select Number Days Per Week')
     }
   }
 
@@ -53,7 +58,7 @@ export default function SelectAI({ navigation }) {
           <Ionicons name='hammer-outline' size={20} color='#fff' style={{ marginRight: 5 }} />
           <Text style={styles.btnText}>No thanks, I’ll do it by myself</Text>
         </Pressable>
-        <Pressable onPress={() => navigation.navigate('Select Number Days Per Week')} style={styles.btnContinue}>
+        <Pressable onPress={() => handleContinue()} style={styles.btnContinue}>
           <Text style={styles.btnContinueText}>Continue</Text>
         </Pressable>
       </View>

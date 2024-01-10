@@ -1,7 +1,7 @@
 import React from "react"
 import { View, Text, StyleSheet, Pressable, ActivityIndicator, Image } from "react-native"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
 
 export default function CreatingRoutineAI({ navigation }) {
 
