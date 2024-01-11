@@ -48,12 +48,10 @@ const Accordion = ({ routine_, navigation }) => {
             style={{width: "100%", height: 200, resizeMode: 'cover', borderRadius: 14}}
           />
           <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-            <Text style={styles.textTitle}>{routine.name}</Text>
+            <Text style={styles.textTitle}>{routine.routineName}</Text>
           </View>
           <View style={{flexDirection: 'row', width: '100%'}}>
-            <Text style={styles.routineInfo}>{routine.duration} min</Text>
-            <Text style={styles.routineInfo}>{routine.calories} cal</Text>
-            <Text style={styles.routineInfo}>{routine.sets} sets</Text>
+            <Text style={styles.routineInfo}>{routine.numberOfDays} days</Text>
           </View>
           <Text style={styles.textTap}>Tap to {isOpen ? 'close' : 'open'}</Text>
       </Pressable>
@@ -62,8 +60,14 @@ const Accordion = ({ routine_, navigation }) => {
           <Animated.View style={[styles.content, {opacity: progress}]}>
             {routine.days.map((day, index) => (
               <View style={styles.singleDay} key={index}>
-                <Text style={{ color: '#fff', fontSize: 20, marginBottom: 10 }}>{day.name}</Text>
-                {day.exercises.map((exercise, index) => (
+                <Text style={{ color: '#fff', fontSize: 20, marginBottom: 10 }}>{day.dayName}</Text>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+                  <Text style={styles.routineInfo}>{day.exercises.length} exercises</Text>
+                  <Text style={styles.routineInfo}>{day.totalSets} sets</Text>
+                  <Text style={styles.routineInfo}>{day.totalCalories} calories</Text>
+                  <Text style={styles.routineInfo}>{day.totalDuration} minutes</Text>
+                </View>
+                {routine.days.exercises && day.exercises.map((exercise, index) => (
                   <View key={index} style={styles.singleExercise}>
                   <Text style={styles.textContent_}>{exercise.name}</Text>
                   <View style={{flexDirection: 'row', justifyContent: '', width: '100%'}}>
@@ -180,6 +184,7 @@ const styles = StyleSheet.create({
     borderRadius: 90,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 30,
   },
 
   buttonStart: {
@@ -189,5 +194,7 @@ const styles = StyleSheet.create({
     borderRadius: 90,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 30,
   },
+
 });

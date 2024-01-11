@@ -1,17 +1,44 @@
-import React from 'react'
-import { TextInput, View, Text, StyleSheet, ScrollView, Pressable } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { TextInput, View, Text, StyleSheet, ScrollView, Pressable, ActivityIndicator} from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 
 import Constants from 'expo-constants'
 
 import Accordion from '../components/AccordionWorkout'
 
-import { routines } from '../routines'
+import ErrorNotification from '../components/ErrorNotification'
+
+import { getRoutines } from '../firebaseFunctions.js'
+import { FIREBASE_AUTH } from '../firebaseConfig.js'
 
 export default function SavedRoutines({ navigation }) {
 
+  const [routines, setRoutines] = useState(null) 
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+
+  useEffect(() => {
+
+    // get the user id, to get the user's routines   
+    const user = FIREBASE_AUTH.currentUser
+
+    if (user) {
+      setUser(user)
+    }
+
+    else {
+      navigation.navigate('Login')
+    }
+
+    // get the user's routines
+    getRoutines(user.uid, setRoutines, setError, setLoading)
+  }
+  , [])
+
   return (
     <View style={styles.container}>
+      {error ? <ErrorNotification error="Couldn't get your routines" /> : null}
       <ScrollView style={{ width: '100%', marginTop: Constants.statusBarHeight }}>
         <View style={{ display: 'flex', alignItems: 'center' }}>
           <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '90%', justifyContent: 'space-between' }}>
@@ -37,9 +64,19 @@ export default function SavedRoutines({ navigation }) {
             <Text style={styles.create}>Add new routine</Text>
             <Ionicons name='create-outline' size={30} color='#0496FF' />
           </Pressable>
-          {routines.map((routine, index) => (
-            <Accordion routine_={routine} key={index} navigation={navigation} />
-          ))}
+          {
+            loading && <ActivityIndicator size='large' color='#fff' style={{ marginTop: 20 }} />
+          }
+
+          {
+            routines !== null && routines.length === 0 
+            ? <Text style={{ color: '#fff', fontSize: 20 }}>You don't have any routines yet</Text>
+            : routines && routines.map((routine, index) => {
+              return (
+                <Accordion key={index} routine_={routine} navigation={navigation} />
+              )
+            })
+          }
         </View>
       </ScrollView>
     </View>
