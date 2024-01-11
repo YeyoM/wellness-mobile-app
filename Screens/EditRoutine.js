@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react"
-import { View, Text, StyleSheet, Pressable, ScrollView, Dimensions } from "react-native"
+import React, { useState, useRef } from "react"
+import { View, Text, StyleSheet, Pressable, ScrollView, TextInput } from "react-native"
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import Constants from 'expo-constants'
@@ -10,39 +10,18 @@ import EditingRoutineExerciseList from "../components/EditingRoutineExerciseList
 
 export default function EditRoutine({ route, navigation }) {
 
-  if (route.params === undefined) {
+  // Redirect if params are undefined or routine is undefined
+  if (route.params === undefined || route.params.routine === undefined) {
     navigation.navigate('Home');
     return null;
   }
 
-  // if we already have the routine, we don't need to fetch it
-  const { routine } = route.params;
-
-  if (routine === undefined) {
-    navigation.navigate('Home');
-    return null;
-  }
-
-  /*
-    routine 
-  {
-    "createdAt": {"nanoseconds": 325000000, "seconds": 1704917024}, 
-    "days": ["iJfZvInNxKQ1TJpyjiG0", "E7iTccGBXMIOykYNZcFj", "aGfWX7jsCugv2oVBcink", "rj7TlkhqIHO1g8gVUJiJ"], 
-    "generatedAI": false, 
-    "image": "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGd5bXxlbnwwfHwwfHx8MA%3D%3D", 
-    "numberOfDays": 4, 
-    "routineName": "New Routine", 
-    "updatedAt": {"nanoseconds": 325000000, "seconds": 1704917024}, 
-    "userId": "9L3D0ftBtpbxHpx67nctWY7zNl83"
-  }
-  */
-
-  const [ routine_, setRoutine_ ] = useState(routine);
-  const [ routineName, setRoutineName ] = useState(routine.routineName);
-
-  const [ totalDays, setTotalDays ] = useState(routine_.numberOfDays);
-
+  const [ routine, setRoutine ] = useState(route.params.routine);
   const [ currentDay, setCurrentDay ] = useState(0);
+  const [ totalDays, setTotalDays ] = useState(routine.numberOfDays);
+
+  const refInputRoutineName = useRef(null);
+  const refInputDayName = useRef(null);
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -53,8 +32,20 @@ export default function EditRoutine({ route, navigation }) {
             <Ionicons name="chevron-back-outline" size={36} color="white" />
           </Pressable>
           <View style={{ alignItems: 'center', display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'center' }}>
-            <Text style={styles.title}>{routineName}</Text>
-            <Ionicons name="pencil-outline" size={16} color="white" style={{ marginLeft: 5 }} />
+            {/*<When pressing the pencil, activate the textinput*/}
+            <TextInput
+              style={{ color: '#fff', fontSize: 24, textAlign: 'center' }}
+              value={routine.name}
+              ref={refInputRoutineName}
+              onChangeText={(text) => setRoutine((prevRoutine) => {
+                const newRoutine = { ...prevRoutine };
+                newRoutine.name = text;
+                return newRoutine;
+              })}
+            />
+            <Pressable onPress={() => refInputRoutineName.current.focus()}>
+              <Ionicons name="pencil-outline" size={20} color="white" style={{ marginLeft: 5 }} />
+            </Pressable>
           </View>
         </View>
         {/* Carrousel de los dias */}
@@ -63,10 +54,21 @@ export default function EditRoutine({ route, navigation }) {
           {/*aqui la parte de abajo (editar nombre dia y agregar ejercicios)*/}
           <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 10, marginBottom: 20 }}>
             <View style={{ alignItems: 'center', display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-              <Text style={{ color: '#fff', fontSize: 24, fontWeight: 'bold' }}>{routine_.days[ currentDay ].name}</Text>
-              <Ionicons name="pencil-outline" size={20} color="white" style={{ marginLeft: 5 }} />
+              <TextInput
+                style={{ color: '#fff', fontSize: 20, textAlign: 'center' }}
+                value={routine.days[currentDay].name}
+                ref={refInputDayName}
+                onChangeText={(text) => setRoutine((prevRoutine) => {
+                  const newRoutine = { ...prevRoutine };
+                  newRoutine.days[currentDay].name = text;
+                  return newRoutine;
+                })}
+              />
+              <Pressable onPress={() => refInputDayName.current.focus()}>
+                <Ionicons name="pencil-outline" size={20} color="white" style={{ marginLeft: 5 }} />
+              </Pressable>
             </View>
-            <Pressable style={{ alignItems: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <Pressable style={{ alignItems: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'center' }} onPress={() => navigation.navigate('Add Lift', { routine, currentDay, setRoutine })}>
               <Ionicons name="add-outline" size={34} color="white" />
               <Text style={{ color: '#9095A1', fontSize: 10, textAlign: 'center' }}>Add Lift</Text>
             </Pressable>
@@ -74,7 +76,7 @@ export default function EditRoutine({ route, navigation }) {
           <View style={styles.containerExercises}>
             <ScrollView style={{ width: '100%', minHeight: 600 }}>
               <View style={styles.exercises}>
-                <EditingRoutineExerciseList exercices={routine_.days[ currentDay ].exercises} currentDay={currentDay} routine={routine_} setRoutine={setRoutine_} navigation={navigation} />
+                <EditingRoutineExerciseList exercices={routine.days[currentDay].exercises} currentDay={currentDay} routine={routine} setRoutine={setRoutine} navigation={navigation} />
               </View>
             </ScrollView>
           </View>

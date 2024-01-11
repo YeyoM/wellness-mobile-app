@@ -56,7 +56,6 @@ export default function EditExercise({ route, navigation }) {
             <Text style={styles.title}>{exercise.name}</Text>
           </View>
         </View>
-        {/* Carrousel de los dias */}
         <View style={{ width: '100%', minHeight: 600, backgroundColor: '#0B0B0B', borderTopLeftRadius: 20, borderTopRightRadius: 20, marginTop: 20, paddingTop: 16 }}>
           <View style={styles.containerExercises}>
             <ScrollView style={{ width: '100%', minHeight: 600 }}>

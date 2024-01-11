@@ -22,6 +22,8 @@ export default function EditingRoutineExerciseList({ exercices, currentDay, rout
 
   const NUM_ITEMS = exercices.length;
 
+  console.log("exercices", exercices);  
+
   const initialData = Array.from({ length: NUM_ITEMS }, (_, index) => ({
     key: `item-${exercices[ index ].id}`,
     exercise: exercices[ index ],
@@ -29,13 +31,14 @@ export default function EditingRoutineExerciseList({ exercices, currentDay, rout
   }));
 
   const deleteExercise = (id, day) => {
-    console.log("id", id);
-    console.log("day", day);
-    let routine_ = JSON.parse(JSON.stringify(routine));
-    routine_.days[ day ].exercises = routine_.days[ day ].exercises.filter((exercise) => exercise.id !== id);
-    console.log("routine_", routine_.days[ day ].exercises);
-    setRoutine(routine_);
-  }
+    setRoutine((prevRoutine) => {
+      const newRoutine = { ...prevRoutine };
+      newRoutine.days[day].exercises = newRoutine.days[day].exercises.filter(
+        (exercise) => exercise.id !== id
+      );
+      return newRoutine;
+    });
+  };
 
   const renderItem = useCallback(({ item }) => {
     return (
@@ -82,6 +85,7 @@ export default function EditingRoutineExerciseList({ exercices, currentDay, rout
         data={initialData}
         renderItem={renderItem}
         style={{ width: "100%" }}
+        extraData={routine}
       />
     </View>
   );
