@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function SuccessNotification({ message }) {
+export default function PrimaryNotification({ message }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{ message }</Text>

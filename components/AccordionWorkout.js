@@ -10,7 +10,9 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-const Accordion = ({ routine }) => {
+const Accordion = ({ routine_, navigation }) => {
+
+  const [ routine, setRoutine ] = useState(routine_);
 
   const listRef = useAnimatedRef();
   const heightValue = useSharedValue(0);
@@ -49,30 +51,39 @@ const Accordion = ({ routine }) => {
             <Text style={styles.textTitle}>{routine.routineName}</Text>
           </View>
           <View style={{flexDirection: 'row', width: '100%'}}>
-            <Text style={styles.routineInfo}>{routine.duration} min</Text>
-            <Text style={styles.routineInfo}>{routine.calories} cal</Text>
-            <Text style={styles.routineInfo}>{routine.sets} sets</Text>
+            <Text style={styles.routineInfo}>{routine.numberOfDays} days</Text>
           </View>
           <Text style={styles.textTap}>Tap to {isOpen ? 'close' : 'open'}</Text>
       </Pressable>
       <Animated.View style={heightAnimationStyle}>
         <Animated.View style={styles.contentContainer} ref={listRef}>
           <Animated.View style={[styles.content, {opacity: progress}]}>
-            {routine.exercises.map((exercise, index) => (
-              <View key={index} style={styles.singleExercise}>
-                <Text style={styles.textContent_}>{exercise.exerciseName}</Text>
-                <View style={{flexDirection: 'row', justifyContent: '', width: '100%'}}>
-                  <Text style={styles.textContent}>{exercise.sets} sets</Text>
-                  <Text style={styles.textContent}>{exercise.reps} reps</Text>
-                  <Text style={styles.textContent}>{exercise.weight} lbs</Text>
+            {routine.days.map((day, index) => (
+              <View style={styles.singleDay} key={index}>
+                <Text style={{ color: '#fff', fontSize: 20, marginBottom: 10 }}>{day.dayName}</Text>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
+                  <Text style={styles.routineInfo}>{day.exercises.length} exercises</Text>
+                  <Text style={styles.routineInfo}>{day.totalSets} sets</Text>
+                  <Text style={styles.routineInfo}>{day.totalCalories} calories</Text>
+                  <Text style={styles.routineInfo}>{day.totalDuration} minutes</Text>
                 </View>
+                {routine.days.exercises && day.exercises.map((exercise, index) => (
+                  <View key={index} style={styles.singleExercise}>
+                  <Text style={styles.textContent_}>{exercise.name}</Text>
+                  <View style={{flexDirection: 'row', justifyContent: '', width: '100%'}}>
+                    <Text style={styles.textContent}>{exercise.sets} sets</Text>
+                    <Text style={styles.textContent}>{exercise.reps} reps</Text>
+                    <Text style={styles.textContent}>{exercise.weight} lbs</Text>
+                  </View>
+                </View>
+                ))}
               </View>
             ))}
             <View style={styles.buttonContainer}>
-              <Pressable style={styles.buttonEdit}>
+              <Pressable style={styles.buttonEdit} onPress={() => navigation.navigate('Edit Routine', { routine: routine })}>
                 <Text style={{color: 'white'}}>Edit</Text>
               </Pressable>
-              <Pressable style={styles.buttonStart}>
+              <Pressable style={styles.buttonStart} onPress={() => navigation.navigate('Workout In Progress', { routine: routine })}>
                 <Text style={{color: 'white'}}>Start</Text>
               </Pressable>
             </View>
@@ -131,6 +142,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignSelf: 'flex-end',
   },
+
+  singleDay: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 10,
+  },
   
   singleExercise: {
     flexDirection: 'column',
@@ -166,6 +184,7 @@ const styles = StyleSheet.create({
     borderRadius: 90,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 30,
   },
 
   buttonStart: {
@@ -175,5 +194,7 @@ const styles = StyleSheet.create({
     borderRadius: 90,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 30,
   },
+
 });

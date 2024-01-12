@@ -1,72 +1,44 @@
-import React from 'react'
-import { TextInput, View, Text, StyleSheet, ScrollView, Pressable } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { TextInput, View, Text, StyleSheet, ScrollView, Pressable, ActivityIndicator} from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 
 import Constants from 'expo-constants'
 
 import Accordion from '../components/AccordionWorkout'
 
-const routines = [
-  {
-    routineName: 'Push Day',
-    duration: '70',
-    calories: '100',
-    sets: '12',
-    image: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGd5bXxlbnwwfHwwfHx8MA%3D%3D',
-    exercises: [
-      {
-        exerciseName: 'Push Up',
-        sets: '4',
-        reps: '10',
-        weight: '0',
-      },
-      {
-        exerciseName: 'Bench Press',
-        sets: '4',
-        reps: '10',
-        weight: '0',
-      },
-      {
-        exerciseName: 'Overhead Press',
-        sets: '4',
-        reps: '10',
-        weight: '0',
-      },
-    ],
-  },
-  {
-    routineName: 'Leg Day',
-    duration: '70',
-    calories: '100',
-    sets: '12',
-    image: 'https://images.unsplash.com/photo-1556817411-31ae72fa3ea0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHNxdWF0fGVufDB8fDB8fHww',
-    exercises: [
-      {
-        exerciseName: 'Squat',
-        sets: '4',
-        reps: '10',
-        weight: '0',
-      },
-      {
-        exerciseName: 'Lunge',
-        sets: '4',
-        reps: '10',
-        weight: '0',
-      },
-      {
-        exerciseName: 'Deadlift',
-        sets: '4',
-        reps: '10',
-        weight: '0',
-      },
-    ],
+import ErrorNotification from '../components/ErrorNotification'
+
+import { getRoutines } from '../firebaseFunctions.js'
+import { FIREBASE_AUTH } from '../firebaseConfig.js'
+
+export default function SavedRoutines({ navigation }) {
+
+  const [routines, setRoutines] = useState(null) 
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+
+  useEffect(() => {
+
+    // get the user id, to get the user's routines   
+    const user = FIREBASE_AUTH.currentUser
+
+    if (user) {
+      setUser(user)
+    }
+
+    else {
+      navigation.navigate('Login')
+    }
+
+    // get the user's routines
+    getRoutines(user.uid, setRoutines, setError, setLoading)
   }
-]
+  , [])
 
-
-export default function SavedRoutines() {
   return (
     <View style={styles.container}>
+      {error ? <ErrorNotification error="Couldn't get your routines" /> : null}
       <ScrollView style={{ width: '100%', marginTop: Constants.statusBarHeight }}>
         <View style={{ display: 'flex', alignItems: 'center' }}>
           <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '90%', justifyContent: 'space-between' }}>
@@ -88,13 +60,23 @@ export default function SavedRoutines() {
               <Ionicons name='filter-outline' size={30} color='#0496FF' />
             </Pressable>
           </View>
-          <Pressable style={styles.createContainer}>
+          <Pressable style={styles.createContainer} onPress={() => navigation.navigate('Add Routine')}>
             <Text style={styles.create}>Add new routine</Text>
             <Ionicons name='create-outline' size={30} color='#0496FF' />
           </Pressable>
-          {routines.map((routine, index) => (
-            <Accordion routine={routine} key={index} />
-          ))}
+          {
+            loading && <ActivityIndicator size='large' color='#fff' style={{ marginTop: 20 }} />
+          }
+
+          {
+            routines !== null && routines.length === 0 
+            ? <Text style={{ color: '#fff', fontSize: 20 }}>You don't have any routines yet</Text>
+            : routines && routines.map((routine, index) => {
+              return (
+                <Accordion key={index} routine_={routine} navigation={navigation} />
+              )
+            })
+          }
         </View>
       </ScrollView>
     </View>
