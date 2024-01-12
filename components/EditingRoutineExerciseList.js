@@ -25,7 +25,7 @@ export default function EditingRoutineExerciseList({ exercices, currentDay, rout
   console.log("exercices", exercices);  
 
   const initialData = Array.from({ length: NUM_ITEMS }, (_, index) => ({
-    key: `item-${exercices[ index ].id}`,
+    key: `item-${Math.random()}`,
     exercise: exercices[ index ],
     day: currentDay,
   }));
@@ -60,10 +60,10 @@ export default function EditingRoutineExerciseList({ exercices, currentDay, rout
             </View>
             <View style={{ display: "flex", flexDirection: "column" }}>
               <Text style={{ color: "#fff", fontSize: 20, marginLeft: 16 }}>
-                {item.exercise.name}
+                {item.exercise.exerciseName}
               </Text>
               <Text style={{ color: "#9095A1", fontSize: 12, marginLeft: 16 }}>
-                {item.exercise.sets} sets of {item.exercise.reps} reps, {item.exercise.weight} lbs
+                {item.exercise.numberOfSets} sets of {item.exercise.numberOfReps} reps, {item.exercise.weight} lbs
               </Text>
             </View>
           </View>

@@ -1,35 +1,10 @@
-import React, { useState } from "react"
-import { View, Text, StyleSheet, Pressable, ScrollView, TextInput } from "react-native"
+import React, { useState, useEffect, useMemo } from "react"
+import { View, Text, StyleSheet, Pressable, ScrollView, TextInput, ActivityIndicator } from "react-native"
 
 import Constants from 'expo-constants'
 import { Ionicons } from '@expo/vector-icons'
 
-const lifts = [
-  {
-    id: Math.random(),
-    name: 'Bench Press',
-    reps: 10,
-    sets: 3,
-    weight: 100,
-    rest: 60,
-  },
-  {
-    id: Math.random(),
-    name: 'Leg Press',
-    reps: 10,
-    sets: 3,
-    weight: 100,
-    rest: 60,
-  },
-  {
-    id: Math.random(),
-    name: 'Lateral raises',
-    reps: 10,
-    sets: 3,
-    weight: 100,
-    rest: 60,
-  },
-]
+import { userSavedExercises } from "../firebaseFunctions.js"; 
 
 export default function AddLift({ route, navigation }) {
 
@@ -45,11 +20,38 @@ export default function AddLift({ route, navigation }) {
     return null;
   }
 
-  const handleAddLift = ({ lift }) => {
+  const [ exercises, setExercises ] = useState(null);
+  const [ loading, setLoading ] = useState(false);
+  const [ error, setError ] = useState(null);
+
+  useEffect(() => {
+    userSavedExercises(routine.userId, setExercises, setError, setLoading);
+  }, []);
+
+  const handleAddLift = async ({ lift }) => {
+    
+    console.log('adding lift');
+
+    // check if the lift is already in the exercise list of the current day
+    // if it is, don't add it
+    const isAlreadyInList = routine.days[currentDay].exercises.find((exercise) => exercise.exerciseId === lift.id);
+    if (isAlreadyInList) {
+      return;
+    }
+
+    const newLift = {
+      exerciseId: lift.id,
+      exerciseName: lift.exerciseName,
+      numberOfSets: lift.defaultNumberOfSets,
+      numberOfReps: lift.defaultNumberOfReps,
+      weight: lift.defaultWeight,
+      restTime: lift.defaultRestTime,
+    };
+
     // add lift to the exercise list of the current day
     setRoutine((prevRoutine) => {
       const newRoutine = { ...prevRoutine };
-      newRoutine.days[currentDay].exercises.push(lift);
+      newRoutine.days[currentDay].exercises.push(newLift);
       return newRoutine;
     });
 
@@ -81,55 +83,27 @@ export default function AddLift({ route, navigation }) {
                   style={{ color: '#fff', fontSize: 20, textAlign: 'center', marginBottom: 20, backgroundColor: '#4A4A4B', padding: 14, borderRadius: 20 }}
                   placeholder="Search for a lift"
                 />
-                {/** Example lifts*/}
-                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, backgroundColor: '#313231', padding: 14, borderRadius: 20 }}>
+                {/** User's saved lifts */}
+                { loading && <ActivityIndicator size="large" color="#fff" /> }
+                { error && <Text style={{ color: '#fff', fontSize: 16, textAlign: 'center' }}>{error.message}</Text> }
+                { exercises && !loading && exercises.map((lift) => (
+                   <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, backgroundColor: '#313231', padding: 14, borderRadius: 20 }} key={lift.id}>
                   <Pressable
                     style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#157AFF', padding: 14, borderRadius: 20, width: 80 }}
-                    onPress={() => handleAddLift({ lift: lifts[0] })}
+                    onPress={() => handleAddLift({ lift: lift })}
                   >
                     <Text style={{ color: '#fff', fontSize: 20, textAlign: 'center', fontWeight: 'bold' }}>Add</Text>
                     <Ionicons name="add-outline" size={26} color="white" />
                   </Pressable>
-                  <Text style={{ color: '#fff', fontSize: 20, textAlign: 'center', width: '48%' }}>Bench Press</Text>
+                  <Text style={{ color: '#fff', fontSize: 20, textAlign: 'center', width: '48%' }}>{lift.exerciseName}</Text>
                   <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Pressable onPress={() => navigation.navigate('Workout')}>
+                    <Pressable onPress={() => navigation.navigate('Workout')}> 
                       <Ionicons name="play-circle-outline" size={32} color="white" />
                     </Pressable>
                     <Text style={{ color: '#a0a0a0', fontSize: 12, marginTop: 0 }}>Tutorial</Text>
                   </View>
                 </View>
-                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, backgroundColor: '#313231', padding: 14, borderRadius: 20 }}>
-                  <Pressable
-                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#157AFF', padding: 14, borderRadius: 20, width: 80 }}
-                    onPress={() => handleAddLift({ lift: lifts[1] })}
-                  >
-                    <Text style={{ color: '#fff', fontSize: 20, textAlign: 'center', fontWeight: 'bold' }}>Add</Text>
-                    <Ionicons name="add-outline" size={26} color="white" />
-                  </Pressable>
-                  <Text style={{ color: '#fff', fontSize: 20, textAlign: 'center', width: '48%' }}>Leg Press</Text>
-                  <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Pressable onPress={() => navigation.navigate('Workout')}>
-                      <Ionicons name="play-circle-outline" size={32} color="white" />
-                    </Pressable>
-                    <Text style={{ color: '#a0a0a0', fontSize: 12, marginTop: 0 }}>Tutorial</Text>
-                  </View>
-                </View>
-                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, backgroundColor: '#313231', padding: 14, borderRadius: 20 }}>
-                  <Pressable
-                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#157AFF', padding: 14, borderRadius: 20, width: 80 }}
-                    onPress={() => handleAddLift({ lift: lifts[2] })}
-                  >
-                    <Text style={{ color: '#fff', fontSize: 20, textAlign: 'center', fontWeight: 'bold' }}>Add</Text>
-                    <Ionicons name="add-outline" size={26} color="white" />
-                  </Pressable>
-                  <Text style={{ color: '#fff', fontSize: 20, textAlign: 'center', width: '48%' }}>Lateral raises</Text>
-                  <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Pressable onPress={() => navigation.navigate('Workout')}>
-                      <Ionicons name="play-circle-outline" size={32} color="white" />
-                    </Pressable>
-                    <Text style={{ color: '#a0a0a0', fontSize: 12, marginTop: 0 }}>Tutorial</Text>
-                  </View>
-                </View>
+                )) }
               </View>
             </ScrollView>
           </View>
