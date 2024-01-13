@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react"
-import { View, Text, StyleSheet, Pressable, ScrollView, TextInput, ActivityIndicator } from "react-native"
-
+import React, { useState, useEffect } from "react"
+import { View, Text, StyleSheet, Pressable, ScrollView, TextInput, RefreshControl } from "react-native"
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants'
 import { Ionicons } from '@expo/vector-icons'
 
@@ -21,11 +21,43 @@ export default function AddLift({ route, navigation }) {
   }
 
   const [ exercises, setExercises ] = useState(null);
-  const [ loading, setLoading ] = useState(false);
+  const [refreshing, setRefreshing] = useState(false)
   const [ error, setError ] = useState(null);
 
+  const saveExercisesStorage = async (exercises) => {
+    try {
+      const jsonValue = JSON.stringify(exercises)
+      await AsyncStorage.setItem('@exercises', jsonValue)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const getExercisesStorage = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('@exercises')
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch(e) {
+      console.log(e)
+    }
+  }
+
   useEffect(() => {
-    userSavedExercises(routine.userId, setExercises, setError, setLoading);
+
+    // Check in the async storage if the user has saved excercises
+    // If the user has saved exercises, set them in the state
+    // If the user doesn't have saved exercises, fetch them from the API
+    // and save them in the async storage
+   
+    getExercisesStorage().then((exercises) => {
+      if (exercises) {
+        setExercises(exercises);
+      } else {
+        userSavedExercises(routine.userId, setExercises, setError, setRefreshing);
+        saveExercisesStorage(exercises);
+      }
+    });
+
   }, []);
 
   const handleAddLift = async ({ lift }) => {
@@ -77,16 +109,23 @@ export default function AddLift({ route, navigation }) {
         </View>
         <View style={{ width: '100%', minHeight: 600, backgroundColor: '#0B0B0B', borderTopLeftRadius: 20, borderTopRightRadius: 20, marginTop: 20, paddingTop: 16 }}>
           <View style={styles.containerExercises}>
-            <ScrollView style={{ width: '100%', minHeight: 600 }}>
+            <ScrollView 
+              style={{ width: '100%', minHeight: 600 }}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={() => {userSavedExercises(routine.userId, setExercises, setError, setRefreshing)}}
+                />
+              }
+            >
               <View style={styles.exercises}>
                 <TextInput
                   style={{ color: '#fff', fontSize: 20, textAlign: 'center', marginBottom: 20, backgroundColor: '#4A4A4B', padding: 14, borderRadius: 20 }}
                   placeholder="Search for a lift"
                 />
                 {/** User's saved lifts */}
-                { loading && <ActivityIndicator size="large" color="#fff" /> }
                 { error && <Text style={{ color: '#fff', fontSize: 16, textAlign: 'center' }}>{error.message}</Text> }
-                { exercises && !loading && exercises.map((lift) => (
+                { exercises && !refreshing && exercises.map((lift) => (
                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, backgroundColor: '#313231', padding: 14, borderRadius: 20 }} key={lift.id}>
                   <Pressable
                     style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#157AFF', padding: 14, borderRadius: 20, width: 80 }}

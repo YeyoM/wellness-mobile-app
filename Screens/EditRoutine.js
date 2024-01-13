@@ -67,7 +67,7 @@ export default function EditRoutine({ route, navigation }) {
     }
 
     // go back to the previous screen and refresh the data
-    navigation.goBack();
+    navigation.navigate('Saved Routines', { refresh: true });
   }
 
   return (

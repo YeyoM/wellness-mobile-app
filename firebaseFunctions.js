@@ -2,9 +2,9 @@ import { FIRESTORE } from './firebaseConfig'
 
 import { collection, query, where, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
 
-export const getRoutines = async (userId, setRoutines, setError, setLoading) => {
+export const getRoutines = async (userId, setRoutines, setError, setRefreshing) => {
 
-  setLoading(true)
+  setRefreshing(true)
   console.log('getting routines')
 
   // get the user's routines' ids, they are stored in the user's document
@@ -17,6 +17,7 @@ export const getRoutines = async (userId, setRoutines, setError, setLoading) => 
 
     if (userRoutinesIds.length === 0) {
       setRoutines([])
+      setRefreshing(false)
       return
     }
 
@@ -69,11 +70,11 @@ export const getRoutines = async (userId, setRoutines, setError, setLoading) => 
     
 
     setRoutines(routines)
-    setLoading(false)
+    setRefreshing(false)
     return
   } catch (err) {
     setError(err)
-    setLoading(false)
+    setRefreshing(false)
     console.log(err)
     return
   }
@@ -126,12 +127,12 @@ export const saveEditedRoutine = async (userId, routine, setError, setLoading) =
 }
 
 
-export const userSavedExercises = async (userId, setExercises, setError, setLoading) => {
+export const userSavedExercises = async (userId, setExercises, setError, setRefreshing) => {
 
   // from the user document, get the ids of the exercises
   // and then get the exercises from the exercises collection
   
-  setLoading(true)
+  setRefreshing(true)
   setError(null)
 
   try {
@@ -142,7 +143,7 @@ export const userSavedExercises = async (userId, setExercises, setError, setLoad
 
     if (userExercisesIds.length === 0) {
       setExercises([])
-      setLoading(false)
+      setRefreshing(false)
       return
     }
 
@@ -160,14 +161,12 @@ export const userSavedExercises = async (userId, setExercises, setError, setLoad
       exercises.push(exercise)
     }
 
-    console.log(exercises)
-
     setExercises(exercises)
-    setLoading(false)
+    setRefreshing(false)
     return
   } catch (err) {
     setError(err)
-    setLoading(false)
+    setRefreshing(false)
     return
   }
 

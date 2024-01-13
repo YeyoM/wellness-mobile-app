@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { TextInput, View, Text, StyleSheet, ScrollView, Pressable, ActivityIndicator} from 'react-native'
+import React, { useState, useEffect, useCallback } from 'react'
+import { TextInput, View, Text, StyleSheet, ScrollView, Pressable, RefreshControl } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Constants from 'expo-constants'
 
@@ -11,12 +13,41 @@ import ErrorNotification from '../components/ErrorNotification'
 import { getRoutines } from '../firebaseFunctions.js'
 import { FIREBASE_AUTH } from '../firebaseConfig.js'
 
-export default function SavedRoutines({ navigation }) {
+export default function SavedRoutines({ navigation, route }) {
+
+  // check if in the route.params there is a 
+  // variable called refresh, if there is,
+  // go and get the routines again
+ 
+  const [refreshing, setRefreshing] = useState(false)
 
   const [routines, setRoutines] = useState(null) 
   const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
+
+  if (route.params && route.params.refresh) {
+    console.log('refreshing')
+    const user = FIREBASE_AUTH.currentUser
+    getRoutines(user.uid, setRoutines, setError, setRefreshing)
+    route.params.refresh = false
+  }
+
+  const saveRoutinesStorage = async (routines) => {
+    try {
+      await AsyncStorage.setItem('@routines', JSON.stringify(routines))
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const getRoutinesStorage = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@routines')
+      return value !== null ? JSON.parse(value) : null
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   useEffect(() => {
 
@@ -31,15 +62,42 @@ export default function SavedRoutines({ navigation }) {
       navigation.navigate('Login')
     }
 
-    // get the user's routines
-    getRoutines(user.uid, setRoutines, setError, setLoading)
+    // before getting the routines, check if there routines in the async storage
+    // if there is, get them from there, if not, get them from the database
+  
+    getRoutinesStorage().then((routines) => {
+      if (routines) {
+        setRoutines(routines)
+      }
+      else {
+        getRoutines(user.uid, setRoutines, setError, setRefreshing)
+        saveRoutinesStorage(routines)
+      }
+    })
+
   }
   , [])
+
+  const onRefresh = useCallback(() => {
+    const user = FIREBASE_AUTH.currentUser
+    setRefreshing(true)
+    getRoutines(user.uid, setRoutines, setError, setRefreshing)
+    setRefreshing(false)
+  }, [])
+
 
   return (
     <View style={styles.container}>
       {error ? <ErrorNotification error="Couldn't get your routines" /> : null}
-      <ScrollView style={{ width: '100%', marginTop: Constants.statusBarHeight }}>
+      <ScrollView 
+        style={{ width: '100%', marginTop: Constants.statusBarHeight }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+      >
         <View style={{ display: 'flex', alignItems: 'center' }}>
           <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '90%', justifyContent: 'space-between' }}>
             <TextInput
@@ -64,10 +122,6 @@ export default function SavedRoutines({ navigation }) {
             <Text style={styles.create}>Add new routine</Text>
             <Ionicons name='create-outline' size={30} color='#0496FF' />
           </Pressable>
-          {
-            loading && <ActivityIndicator size='large' color='#fff' style={{ marginTop: 20 }} />
-          }
-
           {
             routines !== null && routines.length === 0 
             ? <Text style={{ color: '#fff', fontSize: 20 }}>You don't have any routines yet</Text>
