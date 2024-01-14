@@ -71,7 +71,7 @@ export const getRoutines = async (userId, setRoutines, setError, setRefreshing) 
 
     setRoutines(routines)
     setRefreshing(false)
-    return
+    return routines
   } catch (err) {
     setError(err)
     setRefreshing(false)
