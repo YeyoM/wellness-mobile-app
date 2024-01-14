@@ -43,6 +43,7 @@ export default function SavedRoutines({ navigation, route }) {
   const getRoutinesStorage = async () => {
     try {
       const value = await AsyncStorage.getItem('@routines')
+      console.log(JSON.parse(value))
       return value !== null ? JSON.parse(value) : null
     } catch (e) {
       console.log(e)
@@ -70,8 +71,9 @@ export default function SavedRoutines({ navigation, route }) {
         setRoutines(routines)
       }
       else {
-        getRoutines(user.uid, setRoutines, setError, setRefreshing)
-        saveRoutinesStorage(routines)
+        getRoutines(user.uid, setRoutines, setError, setRefreshing).then((routines) => {
+          saveRoutinesStorage(routines)
+        })
       }
     })
 
