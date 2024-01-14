@@ -41,14 +41,6 @@ export default function EditExercise({ route, navigation }) {
   const max_restTime = useSharedValue(8);
 
   const handleReset = () => {
-    setReps(exercise.numberOfReps);
-    setSets(exercise.numberOfSets);
-    setWeight(exercise.weight);
-    setRestTime(exercise.restTime / 60);
-    progress_reps.value = exercise.numberOfReps;
-    progress_sets.value = exercise.numberOfSets;
-    progress_weight.value = exercise.weight;
-    progress_restTime.value = exercise.restTime / 60;
   }
 
   const handleApply = () => {
