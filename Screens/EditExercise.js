@@ -16,30 +16,60 @@ export default function EditExercise({ route, navigation }) {
   }
 
   // if we already have the routine, we don't need to fetch it
-  const { exercise } = route.params;
-  console.log("exercise", exercise);
+  const { exercise, routine, setRoutine, currentDay } = route.params;
 
-  const [ reps, setReps ] = useState(exercise.reps);
-  const [ sets, setSets ] = useState(exercise.sets);
+  const [ reps, setReps ] = useState(exercise.numberOfReps);
+  const [ sets, setSets ] = useState(exercise.numberOfSets);
   const [ weight, setWeight ] = useState(exercise.weight);
-  const [ restTime, setRestTime ] = useState(1);
+  const [ restTime, setRestTime ] = useState(exercise.restTime / 60);
   const [ system, setSystem ] = useState('lbs');
 
-  const progress_reps = useSharedValue(10);
+  const progress_reps = useSharedValue(exercise.numberOfReps);
   const min_reps = useSharedValue(1);
   const max_reps = useSharedValue(20);
 
-  const progress_sets = useSharedValue(4);
+  const progress_sets = useSharedValue(exercise.numberOfSets);
   const min_sets = useSharedValue(1);
   const max_sets = useSharedValue(8);
 
-  const progress_weight = useSharedValue(25);
+  const progress_weight = useSharedValue(exercise.weight);
   const min_weight = useSharedValue(1);
   const max_weight = useSharedValue(300);
 
-  const progress_restTime = useSharedValue(1);
+  const progress_restTime = useSharedValue(exercise.restTime / 60);
   const min_restTime = useSharedValue(0);
   const max_restTime = useSharedValue(8);
+
+  const handleReset = () => {
+    setReps(exercise.numberOfReps);
+    setSets(exercise.numberOfSets);
+    setWeight(exercise.weight);
+    setRestTime(exercise.restTime / 60);
+    progress_reps.value = exercise.numberOfReps;
+    progress_sets.value = exercise.numberOfSets;
+    progress_weight.value = exercise.weight;
+    progress_restTime.value = exercise.restTime / 60;
+  }
+
+  const handleApply = () => {
+    setRoutine((prevRoutine) => {
+      const newRoutine = { ...prevRoutine };
+      newRoutine.days[currentDay].exercises = newRoutine.days[currentDay].exercises.map((ex) => {
+        if (ex.id === exercise.id) {
+          return {
+            ...ex,
+            numberOfReps: reps,
+            numberOfSets: sets,
+            weight: weight,
+            restTime: restTime * 60,
+          }
+        }
+        return ex;
+      });
+      return newRoutine;
+    });
+    navigation.goBack();
+  }
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -53,7 +83,7 @@ export default function EditExercise({ route, navigation }) {
             <View style={{ display: "flex", flexDirection: "row", backgroundColor: "#4A4A4B", padding: 14, borderRadius: 20, marginBottom: 10 }}>
               <Ionicons name="barbell-outline" size={36} color="white" />
             </View>
-            <Text style={styles.title}>{exercise.name}</Text>
+            <Text style={styles.title}>{exercise.exerciseName}</Text>
           </View>
         </View>
         <View style={{ width: '100%', minHeight: 600, backgroundColor: '#0B0B0B', borderTopLeftRadius: 20, borderTopRightRadius: 20, marginTop: 20, paddingTop: 16 }}>
@@ -104,9 +134,6 @@ export default function EditExercise({ route, navigation }) {
                     borderRadius: 10,
                   }}
                 />
-
-
-
 
                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', width: '100%', marginBottom: 20 }}>
                   <Text style={{ color: '#fff', fontSize: 23 }}>Number of Reps</Text>
@@ -251,20 +278,16 @@ export default function EditExercise({ route, navigation }) {
 
                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginBottom: 20, alignSelf: 'center', }}>
                 <Pressable
-                  onPress={() => {
-                    navigation.navigate('Home');
-                  }}
+                  onPress={() => handleReset()}
                   style={{ width: '46%', height: 60, backgroundColor: '#24262B', borderRadius: 20, display: 'flex', justifyContent: 'center', alignItems: 'center', alignSelf: 'center', marginTop: 20 }}
                 >
                   <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Reset</Text>
                 </Pressable>
                 <Pressable
-                  onPress={() => {
-                    navigation.navigate('Home');
-                  }}
+                  onPress={() => handleApply()}
                   style={{ width: '46%', height: 60, backgroundColor: '#157AFF', borderRadius: 20, display: 'flex', justifyContent: 'center', alignItems: 'center', alignSelf: 'center', marginTop: 20 }}
                 >
-                  <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Save</Text>
+                  <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Apply</Text>
                 </Pressable>
                 </View>
               </View>

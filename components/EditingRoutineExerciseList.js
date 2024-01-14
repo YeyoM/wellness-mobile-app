@@ -45,7 +45,7 @@ export default function EditingRoutineExerciseList({ exercices, currentDay, rout
       <SwipeableItem
         key={item.key}
         item={item}
-        renderUnderlayLeft={() => <UnderlayLeft item={item} initialData={initialData} deleteExercise={deleteExercise} navigation={navigation} />}
+        renderUnderlayLeft={() => <UnderlayLeft item={item} initialData={initialData} deleteExercise={deleteExercise} navigation={navigation} currentDay={currentDay} routine={routine} setRoutine={setRoutine} />}
         snapPointsLeft={[ 150 ]}
       >
         <View
@@ -91,7 +91,7 @@ export default function EditingRoutineExerciseList({ exercices, currentDay, rout
   );
 }
 
-const UnderlayLeft = ({ item, deleteExercise, navigation }) => {
+const UnderlayLeft = ({ item, deleteExercise, navigation, currentDay, routine, setRoutine }) => {
   const { close } = useSwipeableItemParams();
   const id = item.exercise.id;
   return (
@@ -111,7 +111,7 @@ const UnderlayLeft = ({ item, deleteExercise, navigation }) => {
         onPress={() => {
           close()
           setTimeout(() => {
-            navigation.navigate("Edit Exercise", { exercise: item.exercise })
+            navigation.navigate("Edit Exercise", { exercise: item.exercise, currentDay: currentDay, routine: routine, setRoutine: setRoutine })
           }, 200)
         }}
         style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#316ADA", padding: 20, borderRadius: 20, width: "20%" }}
