@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   FlatList,
   ListRenderItem,
-  Pressable
+  Pressable,
 } from "react-native";
 import SwipeableItem, {
   useSwipeableItemParams,
@@ -14,19 +14,22 @@ import SwipeableItem, {
 
 import { Ionicons } from "@expo/vector-icons";
 
-export default function EditingRoutineExerciseList({ exercices, currentDay, routine, setRoutine, navigation }) {
-
+export default function EditingRoutineExerciseList({
+  exercices,
+  currentDay,
+  routine,
+  setRoutine,
+  navigation,
+}) {
   if (!exercices) {
     return null;
   }
 
   const NUM_ITEMS = exercices.length;
 
-  console.log("exercices", exercices);  
-
   const initialData = Array.from({ length: NUM_ITEMS }, (_, index) => ({
     key: `item-${Math.random()}`,
-    exercise: exercices[ index ],
+    exercise: exercices[index],
     day: currentDay,
   }));
 
@@ -34,7 +37,7 @@ export default function EditingRoutineExerciseList({ exercices, currentDay, rout
     setRoutine((prevRoutine) => {
       const newRoutine = { ...prevRoutine };
       newRoutine.days[day].exercises = newRoutine.days[day].exercises.filter(
-        (exercise) => exercise.id !== id
+        (exercise) => exercise.exerciseId !== id,
       );
       return newRoutine;
     });
@@ -45,17 +48,36 @@ export default function EditingRoutineExerciseList({ exercices, currentDay, rout
       <SwipeableItem
         key={item.key}
         item={item}
-        renderUnderlayLeft={() => <UnderlayLeft item={item} initialData={initialData} deleteExercise={deleteExercise} navigation={navigation} currentDay={currentDay} routine={routine} setRoutine={setRoutine} />}
-        snapPointsLeft={[ 150 ]}
+        renderUnderlayLeft={() => (
+          <UnderlayLeft
+            item={item}
+            initialData={initialData}
+            deleteExercise={deleteExercise}
+            navigation={navigation}
+            currentDay={currentDay}
+            routine={routine}
+            setRoutine={setRoutine}
+          />
+        )}
+        snapPointsLeft={[150]}
       >
-        <View
-          style={[
-            styles.row,
-            { height: 100 },
-          ]}
-        >
-          <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-            <View style={{ display: "flex", flexDirection: "row", backgroundColor: "#4A4A4B", padding: 14, borderRadius: 20 }}>
+        <View style={[styles.row, { height: 100 }]}>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                backgroundColor: "#4A4A4B",
+                padding: 14,
+                borderRadius: 20,
+              }}
+            >
               <Ionicons name="barbell-outline" size={40} color="white" />
             </View>
             <View style={{ display: "flex", flexDirection: "column" }}>
@@ -63,15 +85,21 @@ export default function EditingRoutineExerciseList({ exercices, currentDay, rout
                 {item.exercise.exerciseName}
               </Text>
               <Text style={{ color: "#9095A1", fontSize: 12, marginLeft: 16 }}>
-                {item.exercise.numberOfSets} sets of {item.exercise.numberOfReps} reps, {item.exercise.weight} lbs
+                {item.exercise.numberOfSets} sets of{" "}
+                {item.exercise.numberOfReps} reps, {item.exercise.weight} lbs
               </Text>
             </View>
           </View>
-          <Pressable style={{ display: "flex", flexDirection: "column", alignItems: "center", marginRight: 6 }}>
+          <Pressable
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              marginRight: 6,
+            }}
+          >
             <Ionicons name="play-circle-outline" size={36} color="white" />
-            <Text style={{ color: "#9095A1", fontSize: 10 }}>
-              Tutorial
-            </Text>
+            <Text style={{ color: "#9095A1", fontSize: 10 }}>Tutorial</Text>
           </Pressable>
         </View>
       </SwipeableItem>
@@ -91,30 +119,59 @@ export default function EditingRoutineExerciseList({ exercices, currentDay, rout
   );
 }
 
-const UnderlayLeft = ({ item, deleteExercise, navigation, currentDay, routine, setRoutine }) => {
+const UnderlayLeft = ({
+  item,
+  deleteExercise,
+  navigation,
+  currentDay,
+  routine,
+  setRoutine,
+}) => {
   const { close } = useSwipeableItemParams();
-  const id = item.exercise.id;
+  const id = item.exercise.exerciseId;
   return (
-    <View style={[ styles.row_, styles.underlayLeft ]}>
+    <View style={[styles.row_, styles.underlayLeft]}>
       <TouchableOpacity
         onPress={() => {
-          close()
+          close();
           setTimeout(() => {
-            deleteExercise(id, item.day)
-          }, 200)
+            deleteExercise(id, item.day);
+          }, 200);
         }}
-        style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#FF0431", padding: 20, borderRadius: 20, width: "20%", marginRight: "2%" }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          backgroundColor: "#FF0431",
+          padding: 20,
+          borderRadius: 20,
+          width: "20%",
+          marginRight: "2%",
+        }}
       >
         <Ionicons name="trash-outline" size={30} color="white" />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
-          close()
+          close();
           setTimeout(() => {
-            navigation.navigate("Edit Exercise", { exercise: item.exercise, currentDay: currentDay, routine: routine, setRoutine: setRoutine })
-          }, 200)
+            navigation.navigate("Edit Exercise", {
+              exercise: item.exercise,
+              currentDay: currentDay,
+              routine: routine,
+              setRoutine: setRoutine,
+            });
+          }, 200);
         }}
-        style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#316ADA", padding: 20, borderRadius: 20, width: "20%" }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          backgroundColor: "#316ADA",
+          padding: 20,
+          borderRadius: 20,
+          width: "20%",
+        }}
       >
         <Ionicons name="create-outline" size={30} color="white" />
       </TouchableOpacity>

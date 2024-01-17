@@ -11,6 +11,8 @@ import Animated, {
 } from "react-native-reanimated";
 
 const Accordion = ({ routine_, navigation }) => {
+  const [routine, setRoutine] = useState(routine_);
+
   const listRef = useAnimatedRef();
   const heightValue = useSharedValue(0);
   const open = useSharedValue(false);
@@ -24,9 +26,10 @@ const Accordion = ({ routine_, navigation }) => {
     height: heightValue.value,
   }));
 
-  const handleEdit = () => {
-    navigation.push("Edit Routine", { routine: { ...routine_ } });
-  };
+  useEffect(() => {
+    console.log("accordion");
+    console.log(routine_);
+  }, [routine_]);
 
   return (
     <View style={styles.container}>
@@ -46,7 +49,7 @@ const Accordion = ({ routine_, navigation }) => {
         style={styles.viewContainer}
       >
         <Image
-          source={{ uri: routine_.image }}
+          source={{ uri: routine.image }}
           style={{
             width: "100%",
             height: 200,
@@ -61,17 +64,17 @@ const Accordion = ({ routine_, navigation }) => {
             width: "100%",
           }}
         >
-          <Text style={styles.textTitle}>{routine_.routineName}</Text>
+          <Text style={styles.textTitle}>{routine.routineName}</Text>
         </View>
         <View style={{ flexDirection: "row", width: "100%" }}>
-          <Text style={styles.routineInfo}>{routine_.numberOfDays} days</Text>
+          <Text style={styles.routineInfo}>{routine.numberOfDays} days</Text>
         </View>
         <Text style={styles.textTap}>Tap to {isOpen ? "close" : "open"}</Text>
       </Pressable>
       <Animated.View style={heightAnimationStyle}>
         <Animated.View style={styles.contentContainer} ref={listRef}>
           <Animated.View style={[styles.content, { opacity: progress }]}>
-            {routine_.days.map((day, index) => (
+            {routine.days.map((day, index) => (
               <View style={styles.singleDay} key={index}>
                 <Text style={{ color: "#fff", fontSize: 20, marginBottom: 10 }}>
                   {day.dayName}
@@ -94,7 +97,7 @@ const Accordion = ({ routine_, navigation }) => {
                     {day.totalDuration} minutes
                   </Text>
                 </View>
-                {routine_.days.exercises &&
+                {routine.days.exercises &&
                   day.exercises.map((exercise, index) => (
                     <View key={index} style={styles.singleExercise}>
                       <Text style={styles.textContent_}>{exercise.name}</Text>
@@ -120,14 +123,19 @@ const Accordion = ({ routine_, navigation }) => {
               </View>
             ))}
             <View style={styles.buttonContainer}>
-              <Pressable style={styles.buttonEdit} onPress={() => handleEdit()}>
+              <Pressable
+                style={styles.buttonEdit}
+                onPress={() =>
+                  navigation.navigate("Edit Routine", { routine: routine })
+                }
+              >
                 <Text style={{ color: "white" }}>Edit</Text>
               </Pressable>
               <Pressable
                 style={styles.buttonStart}
                 onPress={() =>
                   navigation.navigate("Workout In Progress", {
-                    routine: { ...routine_ },
+                    routine: routine,
                   })
                 }
               >
