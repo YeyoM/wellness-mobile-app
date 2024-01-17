@@ -241,8 +241,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#0B0B0B",
     alignItems: "center",
     width: "100%",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
   },
 
   exercises: {

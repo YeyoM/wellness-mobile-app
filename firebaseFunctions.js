@@ -1,16 +1,6 @@
 import { FIRESTORE } from "./firebaseConfig";
 
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  doc,
-  getDoc,
-  updateDoc,
-  setDoc,
-  addDoc,
-} from "firebase/firestore";
+import { collection, doc, getDoc, updateDoc, addDoc } from "firebase/firestore";
 
 export const getRoutines = async (
   userId,

@@ -6,6 +6,7 @@ import {
   ScrollView,
   Pressable,
   Text,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -17,7 +18,7 @@ import { addExerciseToUser } from "../firebaseFunctions";
 import { FIREBASE_AUTH } from "../firebaseConfig";
 
 export default function SearchLift({ navigation }) {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [exercises, setExercises] = useState(null);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -29,9 +30,9 @@ export default function SearchLift({ navigation }) {
   const handleSearch = async (text) => {
     if (text === "") {
       setTimeout(() => {
-        setError("Please enter a lift");
+        setError(null);
       }, 2000);
-      setError(null);
+      setError("Please enter a lift");
       return;
     }
 
@@ -68,9 +69,9 @@ export default function SearchLift({ navigation }) {
       console.log(error);
       setLoading(false);
       setTimeout(() => {
-        setError("Something went wrong. Please try again later.");
+        setError(null);
       }, 2000);
-      setError(null);
+      setError("Something went wrong. Please try again later.");
     }
   };
 
@@ -104,9 +105,9 @@ export default function SearchLift({ navigation }) {
     if (exists) {
       console.log("Lift already saved");
       setTimeout(() => {
-        setError("This lift is already saved");
+        setError(null);
       }, 2000);
-      setError(null);
+      setError("Lift already saved");
       return;
     }
 
@@ -114,9 +115,9 @@ export default function SearchLift({ navigation }) {
     const user = FIREBASE_AUTH.currentUser;
     if (!user) {
       setTimeout(() => {
-        setError("Please login to save a lift");
+        setError(null);
       }, 2000);
-      setError(null);
+      setError("Please login to save a lift");
       return;
     }
 
@@ -154,9 +155,9 @@ export default function SearchLift({ navigation }) {
         try {
           await AsyncStorage.setItem("@exercises", JSON.stringify(response));
           setTimeout(() => {
-            setSuccess("Lift saved");
+            setSuccess(null);
           }, 2000);
-          setSuccess(null);
+          setSuccess("Lift saved");
         } catch (error) {
           console.log(error);
         }
@@ -164,22 +165,52 @@ export default function SearchLift({ navigation }) {
     } catch (error) {
       console.log(error);
       setTimeout(() => {
-        setError("Something went wrong. Please try again later.");
+        setError(null);
       }, 2000);
-      setError(null);
+      setError("Something went wrong. Please try again later.");
     }
   };
 
   return (
     <View style={styles.containerExercises}>
       <ScrollView style={{ width: "100%", minHeight: 600 }}>
+        {loading && (
+          <ActivityIndicator
+            size="large"
+            color="#fff"
+            style={{ marginTop: 15 }}
+          />
+        )}
+        {error && (
+          <Text
+            style={{
+              color: "#fff",
+              fontSize: 20,
+              textAlign: "center",
+              marginTop: 15,
+            }}
+          >
+            {error}
+          </Text>
+        )}
+        {success && (
+          <Text
+            style={{
+              color: "#fff",
+              fontSize: 20,
+              textAlign: "center",
+              marginTop: 15,
+            }}
+          >
+            {success}
+          </Text>
+        )}
         <View style={styles.search}>
           <TextInput
             style={{
               color: "#fff",
               fontSize: 20,
               textAlign: "center",
-              marginBottom: 20,
               backgroundColor: "#4A4A4B",
               padding: 14,
               borderRadius: 20,
@@ -194,7 +225,6 @@ export default function SearchLift({ navigation }) {
               flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
-              marginBottom: 20,
               backgroundColor: "#313231",
               padding: 14,
               borderRadius: 30,
@@ -218,7 +248,7 @@ export default function SearchLift({ navigation }) {
                   padding: 14,
                   borderRadius: 20,
                 }}
-                key={lift.name}
+                key={lift.exerciseName}
               >
                 <Pressable
                   style={{
@@ -288,8 +318,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#0B0B0B",
     alignItems: "center",
     width: "100%",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
   },
 
   search: {
