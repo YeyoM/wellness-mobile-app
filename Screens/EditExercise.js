@@ -50,7 +50,6 @@ export default function EditExercise({ route, navigation }) {
 
   const handleApply = () => {
     setRoutine((prevRoutine) => {
-      console.log(prevRoutine.days[currentDay].exercises);
       const newRoutine = { ...prevRoutine };
       newRoutine.days[currentDay].exercises = newRoutine.days[
         currentDay

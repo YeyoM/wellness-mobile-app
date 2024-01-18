@@ -161,7 +161,6 @@ export default function SavedRoutines({ navigation, route }) {
               marginBottom: 20,
             }}
           >
-            {" "}
             Scroll down to refresh{" "}
           </Text>
           <Pressable
