@@ -1,12 +1,5 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  ScrollView,
-  Dimensions,
-} from "react-native";
+import React, { useState, useContext } from "react";
+import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useSharedValue } from "react-native-reanimated";
 import { Slider, HapticModeEnum } from "react-native-awesome-slider";
@@ -15,14 +8,17 @@ import * as Haptics from "expo-haptics";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 
+import { EditRoutineContext } from "../context/EditRoutineContext";
+
 export default function EditExercise({ route, navigation }) {
   if (route.params === undefined) {
     navigation.navigate("Home");
     return null;
   }
 
-  // if we already have the routine, we don't need to fetch it
-  const { exercise, routine, setRoutine, currentDay } = route.params;
+  const { setRoutine, currentDay } = useContext(EditRoutineContext);
+
+  const { exercise } = route.params;
 
   const [reps, setReps] = useState(exercise.numberOfReps);
   const [sets, setSets] = useState(exercise.numberOfSets);
@@ -49,6 +45,8 @@ export default function EditExercise({ route, navigation }) {
   const handleReset = () => {};
 
   const handleApply = () => {
+    console.log("apply");
+    console.log(exercise);
     setRoutine((prevRoutine) => {
       const newRoutine = { ...prevRoutine };
       newRoutine.days[currentDay].exercises = newRoutine.days[

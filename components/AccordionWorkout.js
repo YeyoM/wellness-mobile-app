@@ -1,5 +1,5 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import Animated, {
   useAnimatedRef,
   useSharedValue,
@@ -10,22 +10,27 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-const Accordion = ({ routine_, navigation }) => {
+import { EditRoutineContext } from "../context/EditRoutineContext.js";
+
+const Accordion = ({ routine_, navigation, index }) => {
   const listRef = useAnimatedRef();
   const heightValue = useSharedValue(0);
   const open = useSharedValue(false);
   const progress = useDerivedValue(() =>
     open.value ? withTiming(1) : withTiming(0),
   );
-
   const [isOpen, setIsOpen] = useState(false);
+
+  const { initializeEditRoutine } = useContext(EditRoutineContext);
 
   const heightAnimationStyle = useAnimatedStyle(() => ({
     height: heightValue.value,
   }));
 
   const handleEdit = () => {
-    navigation.push("Edit Routine", { routine: { ...routine_ } });
+    // initialize the edit routine context with the routine
+    initializeEditRoutine(routine_, index);
+    navigation.push("Edit Routine");
   };
 
   return (

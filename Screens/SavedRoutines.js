@@ -182,6 +182,7 @@ export default function SavedRoutines({ navigation, route }) {
                   key={index}
                   routine_={routine}
                   navigation={navigation}
+                  index={index}
                 />
               );
             })

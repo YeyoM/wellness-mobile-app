@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -13,18 +13,10 @@ import { userSavedExercises } from "../firebaseFunctions.js";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function SavedLifts({ navigation, route }) {
-  if (route.params === undefined) {
-    navigation.navigate("Home");
-    return null;
-  }
+import { EditRoutineContext } from "../context/EditRoutineContext";
 
-  const { routine, setRoutine, currentDay } = route.params;
-
-  if (!routine || !setRoutine || currentDay === undefined) {
-    navigation.navigate("Home");
-    return null;
-  }
+export default function SavedLifts({ navigation }) {
+  const { routine, setRoutine, currentDay } = useContext(EditRoutineContext);
 
   const [exercises, setExercises] = useState(null);
   const [refreshing, setRefreshing] = useState(false);

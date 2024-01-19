@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
@@ -9,18 +9,10 @@ const Tab = createMaterialTopTabNavigator();
 import SavedLifts from "./SavedLifts.js";
 import SearchLift from "./SearchLift.js";
 
-export default function AddLift({ route, navigation }) {
-  if (route.params === undefined) {
-    navigation.navigate("Home");
-    return null;
-  }
+import { EditRoutineContext } from "../context/EditRoutineContext";
 
-  const { routine, setRoutine, currentDay } = route.params;
-
-  if (!routine || !setRoutine || currentDay === undefined) {
-    navigation.navigate("Home");
-    return null;
-  }
+export default function AddLift({ navigation }) {
+  const { routine, setRoutine, currentDay } = useContext(EditRoutineContext);
 
   return (
     <View style={styles.container}>

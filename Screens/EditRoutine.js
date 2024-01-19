@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import {
   View,
   Text,
@@ -16,27 +16,26 @@ import { Ionicons } from "@expo/vector-icons";
 import CarouselDays from "../components/CarouselDays";
 import EditingRoutineExerciseList from "../components/EditingRoutineExerciseList";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import { FIREBASE_AUTH } from "../firebaseConfig.js";
 import { saveEditedRoutine } from "../firebaseFunctions.js";
 
-export default function EditRoutine({ route, navigation }) {
-  // Redirect if params are undefined or routine is undefined
-  if (route.params === undefined || route.params.routine === undefined) {
-    navigation.navigate("Home");
-    return null;
-  }
+import { EditRoutineContext } from "../context/EditRoutineContext";
 
-  const [routine, setRoutine] = useState({ ...route.params.routine });
-  const [currentDay, setCurrentDay] = useState(0);
-  const [totalDays, setTotalDays] = useState(routine.numberOfDays);
-
-  const [routineName, setRoutineName] = useState(routine.routineName);
-
-  const [daysNames, setDaysNames] = useState(
-    routine.days.map((day) => day.dayName),
-  );
+export default function EditRoutine({ navigation }) {
+  const {
+    routine,
+    setRoutine,
+    currentDay,
+    setCurrentDay,
+    totalDays,
+    routineName,
+    setRoutineName,
+    daysNames,
+    setDaysNames,
+    routineBeforeEditIndex,
+    getRoutineBeforeEdit,
+    clenUpEditRoutine,
+  } = useContext(EditRoutineContext);
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -59,44 +58,32 @@ export default function EditRoutine({ route, navigation }) {
   const handleSave = async () => {
     // update the name of the routine and the names of the days
     updateRoutineNames(routineName, daysNames, setRoutine);
-
     const user = FIREBASE_AUTH.currentUser;
-
     // check if the user is logged in
     if (!user) {
       navigation.navigate("Login");
       return;
     }
-
     // save the routine to the database
     await saveEditedRoutine(user.uid, routine, setError, setLoading);
-
     if (error) {
       console.log(error);
       return;
     }
-
     // go back to the previous screen and refresh the data
     navigation.navigate("Saved Routines", { refresh: true });
   };
 
   const handleGoBack = async () => {
-    // get the routine before the edit
-    // and set it as the current routine
-    const asyncStorageRoutines = await AsyncStorage.getItem("@routines");
-    const routines = JSON.parse(asyncStorageRoutines);
-    const routineBeforeEditIndex = routines.findIndex(
-      (r) => r.id === routine.id,
-    );
-
-    const routineBeforeEdit = routines[routineBeforeEditIndex];
-
-    setRoutine(routineBeforeEdit);
+    // get the routine before edit from the async async-storage
+    const routineBeforeEdit = await getRoutineBeforeEdit();
+    console.log(routineBeforeEdit);
     navigation.navigate("Saved Routines", {
       beforeEdit: true,
       beforeEditIndex: routineBeforeEditIndex,
       routineBeforeEdit: routineBeforeEdit,
     });
+    await clenUpEditRoutine();
   };
 
   return (
@@ -232,13 +219,7 @@ export default function EditRoutine({ route, navigation }) {
                 flexDirection: "column",
                 justifyContent: "center",
               }}
-              onPress={() =>
-                navigation.navigate("Add Lift", {
-                  routine,
-                  currentDay,
-                  setRoutine,
-                })
-              }
+              onPress={() => navigation.navigate("Add Lift")}
             >
               <Ionicons name="add-outline" size={34} color="white" />
               <Text
@@ -253,9 +234,6 @@ export default function EditRoutine({ route, navigation }) {
               <View style={styles.exercises}>
                 <EditingRoutineExerciseList
                   exercices={routine.days[currentDay].exercises}
-                  currentDay={currentDay}
-                  routine={routine}
-                  setRoutine={setRoutine}
                   navigation={navigation}
                 />
               </View>
