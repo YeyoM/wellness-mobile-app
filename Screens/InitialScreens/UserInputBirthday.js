@@ -1,129 +1,145 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Pressable, Platform, TouchableOpacity } from 'react-native';
-import React, { useState, useContext } from 'react';
-import DateTimePicker from "@react-native-community/datetimepicker";
-import TopNavigationBar from '../../components/TopNavigationBar';
-import ErrorNotification from '../../components/ErrorNotification';
+import { StyleSheet, Text, View, Pressable, Dimensions } from "react-native";
+import React, { useState, useContext } from "react";
+import TopNavigationBar from "../../components/TopNavigationBar";
+import ErrorNotification from "../../components/ErrorNotification";
 
-import { InitialScreensContext } from '../../context/InitialScreensContext';
+import { interpolate } from "react-native-reanimated";
+import Carousel from "react-native-reanimated-carousel";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function UserInputBirthday({ navigation }) {
+import { InitialScreensContext } from "../../context/InitialScreensContext";
 
-  const { setBirthDate } = useContext(InitialScreensContext);
+export default function UserInputAge({ navigation }) {
+  const { age, setAge } = useContext(InitialScreensContext);
 
-  const [date, setDate] = useState(new Date());
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [showPicker, setShowPicker] = useState(false);
   const [error, setError] = useState(false);
 
-  const togglePicker = () => {
-    setShowPicker(!showPicker);
-  }
-
-  const confirmIOSDate = () => {
-    setDateOfBirth(date.toLocaleDateString());
-    setBirthDate(date.toLocaleDateString());
-    togglePicker();
-  }
-
-  const onChange = ({ type }, selectedDate) => {
-    if (type === 'set') {
-      const currentDate = selectedDate;
-      setDate(currentDate);
-
-      if (Platform.OS === 'android') {
-        togglePicker();
-        setDateOfBirth(currentDate.toLocaleDateString());
-        setBirthDate(currentDate.toLocaleDateString());
-      }
-
-    } else {
-      togglePicker();
-    }
-  }
-
   const handleContinue = () => {
-    if (dateOfBirth === '') {
+    if (age === "") {
       setTimeout(() => {
         setError(false);
-      }, 5000);
-      setError('Por favor ingresa tu fecha de nacimiento');
+      }, 3000);
+      setError("Please enter your age");
       return;
     }
-    navigation.navigate('Acerca de ti (Sistema de preferencia)');
-  }
+    console.log(age);
+    navigation.navigate("About you (Weight)");
+  };
+
+  const ref = React.useRef(null);
+
+  // possible values: 16 - 80
+  const data = [...new Array(65).keys()].map((i) => i + 16);
+
+  const scale = 0.9;
+
+  const RIGHT_OFFSET = Dimensions.get("window").width * (1 - scale) * 0.5;
+
+  const ITEM_WIDTH = Dimensions.get("window").width * 0.35;
+  const ITEM_HEIGHT = 100;
+
+  const PAGE_HEIGHT = Dimensions.get("window").height * 0.38;
+  const PAGE_WIDTH = Dimensions.get("window").width * 0.5;
+
+  const animationStyle = React.useCallback(
+    (value) => {
+      "worklet";
+
+      const translateY = interpolate(
+        value,
+        [-1, 0, 1],
+        [-ITEM_HEIGHT, 0, ITEM_HEIGHT],
+      );
+      const right = interpolate(
+        value,
+        [-1, -0.2, 1],
+        [RIGHT_OFFSET / 2, RIGHT_OFFSET, RIGHT_OFFSET / 3],
+      );
+      return {
+        transform: [{ translateY }],
+        right,
+      };
+    },
+    [RIGHT_OFFSET],
+  );
 
   return (
     <View style={styles.container}>
-      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.228} back={true}/>
-      { error && <ErrorNotification message={error} /> }
-      <Text style={styles.title}>¿Cuándo es tu cumpleaños?</Text>
-      <View style={{ width: '85%', marginBottom: 60, backgroundColor: "#1F1F1F", padding: 30, borderRadius: 55 }}>
-        <Text style={{ color: 'white', fontWeight: "bold", fontSize: 15}}>🏋🏽‍♀️ Tu edad nos permite adaptar tu plan</Text>
-        <Text style={{ color: 'white', fontWeight: "normal", fontSize: 14}}>Al saber tu edad podemos. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</Text>
-      </View>
-      {
-        !showPicker && (
-          <Pressable
-            onPress={togglePicker}
-          >
-            <TextInput
-              style={styles.input}
-              textAlign={'center'}
-              placeholder="DD/MM/AAAA"
-              placeholderTextColor={'rgba(147, 146, 154, 0.8)'}
-              value={dateOfBirth}
-              onChangeText={(dateOfBirth) => setDateOfBirth(dateOfBirth)}
-              editable={false}
-              onPressIn={togglePicker}
-            />
-          </Pressable>
-        )
-      }
-      {
-        showPicker && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={date}
-            mode={'date'}
-            is24Hour={true}
-            display="spinner"
-            onChange={onChange}
-            style={{ width: '120', color: 'white' }}
-            textColor={'white'}
-            maximumDate={new Date()}
-            minimumDate={new Date(1900, 0, 1)}
-          />
-        )
-      }
-
-      {
-        showPicker && Platform.OS === 'ios' && (
-          <View style={{ flexDirection: "row", justifyContent: "space-around"}}>
-
-            <TouchableOpacity
-              onPress={togglePicker}
-              style={{ padding: 20 }}
-            >
-              <Text style={{ color: '#0496FF', fontWeight: 'bold' }}>Cancelar</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={confirmIOSDate}
-              style={{ padding: 20 }}
-            >
-              <Text style={{ color: '#0496FF', fontWeight: 'bold' }}>Aceptar</Text>
-            </TouchableOpacity>
-
-          </View>
-        )
-      }
-
-      <Pressable
-        style={styles.btn}
-        onPress={handleContinue}
+      <TopNavigationBar
+        navigation={navigation}
+        actualScreen={"About you"}
+        steps={12}
+        currentStep={3}
+        back={true}
+      />
+      {error && <ErrorNotification message={error} />}
+      <Text style={styles.title}>What is your age?</Text>
+      <View
+        style={{
+          height: PAGE_HEIGHT,
+          width: "100%",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
-        <Text style={styles.btnText}>Continuar</Text>
+        <View style={{ alignItems: "flex-end" }}>
+          <Ionicons name="caret-forward-outline" size={48} color="white" />
+        </View>
+        <Carousel
+          loop
+          vertical
+          style={{
+            justifyContent: "center",
+            width: PAGE_WIDTH,
+            height: PAGE_HEIGHT,
+            marginBottom: 20,
+          }}
+          ref={ref}
+          onSnapToItem={(index) => {
+            setAge(data[index]);
+          }}
+          width={ITEM_WIDTH}
+          pagingEnabled={false}
+          height={ITEM_HEIGHT}
+          data={data}
+          renderItem={({ index }) => {
+            return (
+              <View
+                key={index}
+                style={{
+                  flex: 1,
+                  padding: 10,
+                  backgroundColor: "#157AFF",
+                  borderRadius: 10,
+                  width: ITEM_WIDTH,
+                  marginVertical: 10,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    maxWidth: "100%",
+                    color: "white",
+                    fontSize: 42,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {data[index]}
+                </Text>
+              </View>
+            );
+          }}
+          customAnimation={animationStyle}
+        />
+      </View>
+      <Pressable style={styles.btn} onPress={handleContinue}>
+        <Text style={styles.btnText}>Continue</Text>
       </Pressable>
     </View>
   );
@@ -132,56 +148,56 @@ export default function UserInputBirthday({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B0B0B',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#0B0B0B",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   title: {
     fontSize: 32,
-    fontWeight: 'semibold',
-    color: 'white',
-    marginBottom: 20,
+    fontWeight: "semibold",
+    color: "white",
+    marginBottom: 40,
     marginTop: 80,
-    textAlign: 'center',
-    width: '85%',
+    textAlign: "center",
+    width: "85%",
   },
 
   input: {
-    width: '60%',
+    width: "60%",
     height: 64,
     padding: 20,
     paddingTop: 10,
     paddingBottom: 22,
     fontSize: 22,
-    fontWeight: 'normal',
+    fontWeight: "normal",
     borderWidth: 1,
-    borderColor: '#E5E5E5',
-    borderTopColor: '#0B0B0B',
-    borderRightColor: '#0B0B0B',
-    borderLeftColor: '#0B0B0B',
-    color: '#fff',
-    backgroundColor: '#0B0B0B',
+    borderColor: "#E5E5E5",
+    borderTopColor: "#0B0B0B",
+    borderRightColor: "#0B0B0B",
+    borderLeftColor: "#0B0B0B",
+    color: "#fff",
+    backgroundColor: "#0B0B0B",
     marginBottom: 60,
   },
 
   btn: {
-    width: '85%',
-    height: 48,
-    backgroundColor: '#0496FF',
-    borderRadius: 90,
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: 16,
-    marginTop: 60,
+    width: "85%",
+    paddingVertical: 16,
+    backgroundColor: "#fff",
+    borderRadius: 24,
+    display: "flex",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: 40,
   },
 
   btnText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'normal',
-    alignSelf: 'center',
+    color: "#0B0B0B",
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    alignSelf: "center",
     marginTop: 4,
-  }
+  },
 });

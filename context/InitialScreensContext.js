@@ -1,34 +1,33 @@
-import React, { createContext, useState } from "react"
+import React, { createContext, useState } from "react";
 
-export const InitialScreensContext = createContext()
+export const InitialScreensContext = createContext();
 
 export const InitialScreensProvider = ({ children }) => {
-
-  const [ name, setName ] = useState("")
-  const [ gender, setGender ] = useState("")
-  const [ birthDate, setBirthDate ] = useState("")
-  const [ preferredSystem, setpreferredSystem ] = useState("")
-  const [ initialWeight, setInitialWeight ] = useState("")
-  const [ goalWeight, setGoalWeight ] = useState("")
-  const [ height, setHeight ] = useState("")
-  const [ objectives, setObjectives ] = useState([])
-  const [ exercises, setExercises ] = useState([])
-  const [ exerciseFrequency, setExerciseFrequency ] = useState("")
-  const [ exerciseDays, setExerciseDays ] = useState([])
-  const [ reminders, setReminders ] = useState(false)
-  const [ exerciseDuration, setExerciseDuration ] = useState("")
-  const [ fitnessLevel, setFitnessLevel ] = useState("")
-  const [ activityLevel, setActivityLevel ] = useState("")
+  const [name, setName] = useState("");
+  const [gender, setGender] = useState("");
+  const [age, setAge] = useState("16");
+  const [preferredSystem, setpreferredSystem] = useState("");
+  const [initialWeight, setInitialWeight] = useState("");
+  const [goalWeight, setGoalWeight] = useState("");
+  const [height, setHeight] = useState("");
+  const [objectives, setObjectives] = useState([]);
+  const [exercises, setExercises] = useState([]);
+  const [exerciseFrequency, setExerciseFrequency] = useState("");
+  const [exerciseDays, setExerciseDays] = useState([]);
+  const [reminders, setReminders] = useState(false);
+  const [exerciseDuration, setExerciseDuration] = useState("");
+  const [fitnessLevel, setFitnessLevel] = useState("");
+  const [activityLevel, setActivityLevel] = useState("");
 
   return (
-    <InitialScreensContext.Provider 
-      value={{ 
-        name, 
+    <InitialScreensContext.Provider
+      value={{
+        name,
         setName,
         gender,
         setGender,
-        birthDate,
-        setBirthDate,
+        age,
+        setAge,
         preferredSystem,
         setpreferredSystem,
         initialWeight,
@@ -52,10 +51,10 @@ export const InitialScreensProvider = ({ children }) => {
         fitnessLevel,
         setFitnessLevel,
         activityLevel,
-        setActivityLevel
+        setActivityLevel,
       }}
     >
-      { children }
+      {children}
     </InitialScreensContext.Provider>
-  )
-}
+  );
+};

@@ -1,117 +1,221 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView } from 'react-native';
-import TopNavigationBar from '../../components/TopNavigationBar';
-import ErrorNotification from '../../components/ErrorNotification';
+import { StatusBar } from "expo-status-bar";
+import React, { useState, useContext } from "react";
+import { StyleSheet, Text, Pressable, Image, View } from "react-native";
+import TopNavigationBar from "../../components/TopNavigationBar";
+import ErrorNotification from "../../components/ErrorNotification";
 
-import { InitialScreensContext } from '../../context/InitialScreensContext';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useSharedValue } from "react-native-reanimated";
+import { Slider, HapticModeEnum } from "react-native-awesome-slider";
+import * as Haptics from "expo-haptics";
+
+import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputInitialWeight({ navigation }) {
-
-  const { setInitialWeight, preferredSystem } = useContext(InitialScreensContext);
+  const { setInitialWeight } = useContext(InitialScreensContext);
 
   const [error, setError] = useState(false);
-  const [weight, setWeight] = useState('');
+  const [weight, setWeight] = useState("");
+
+  const [preferredSystem, setPreferredSystem] = useState("metric");
 
   const handleContinue = () => {
-    if (weight === '') {
+    if (weight === "") {
       setTimeout(() => {
         setError(false);
       }, 5000);
-      setError('Por favor ingresa tu peso');
+      setError("Por favor ingresa tu peso");
       return;
     }
 
     setInitialWeight(weight);
-    
-    navigation.navigate('Acerca de ti (Peso ideal)');
-  }
+
+    navigation.navigate("Acerca de ti (Peso ideal)");
+  };
+
+  const progress_weight = useSharedValue(120);
+  const min_weight = useSharedValue(40);
+  const max_weight = useSharedValue(400);
 
   return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.304} back={true}/>
-      { error && <ErrorNotification message={error} /> }
-      <Text style={styles.title}>¿Cuál es tu peso actual?</Text>
-      <View style={{ width: '85%', marginBottom: 60, backgroundColor: "#1F1F1F", padding: 30, borderRadius: 55 }}>
-        <Text style={{ color: 'white', fontWeight: "bold", fontSize: 15}}>🤔️ Tu IMC. O tu peso podemos saber blah</Text>
-        <Text style={{ color: 'white', fontWeight: "normal", fontSize: 14}}>Al saber tu edad podemos. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</Text>
-      </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-      <TextInput
-        style={styles.input}
-        textAlign={'center'}
-        placeholder="00.0"
-        placeholderTextColor={'rgba(147, 146, 154, 0.8)'}
-        keyboardType='numeric'
-        returnKeyType='done'
-        value={weight}
-        onChangeText={setWeight}
+    <GestureHandlerRootView style={styles.container}>
+      <TopNavigationBar
+        navigation={navigation}
+        actualScreen={"About you"}
+        back={true}
+        steps={12}
+        currentStep={4}
       />
-      <Text style={{ fontSize: 20, fontWeight: 'normal', color: '#fff', marginBottom: 40 }}>{preferredSystem === 'Metrico' ? 'kg' : 'lb'}</Text>
-      </View>
-      <Pressable
-        style={styles.btn}
-        onPress={handleContinue}
+      {error && <ErrorNotification message={error} />}
+      <Text style={styles.title}>What is your weight?</Text>
+      <View
+        style={{
+          width: "90%",
+          paddingVertical: 8,
+          alignItems: "center",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingHorizontal: 30,
+          backgroundColor: "#24262B",
+          borderRadius: 14,
+          marginVertical: 20,
+        }}
       >
-        <Text style={styles.btnText}>Continuar</Text>
+        <Pressable
+          style={
+            preferredSystem === "metric" ? styles.selected : styles.unselected
+          }
+          onPress={() => {
+            setPreferredSystem("metric");
+          }}
+        >
+          <Text style={{ color: "#fff", fontSize: 18 }}>kg</Text>
+        </Pressable>
+        <Pressable
+          style={
+            preferredSystem === "imperial" ? styles.selected : styles.unselected
+          }
+          onPress={() => {
+            setPreferredSystem("imperial");
+          }}
+        >
+          <Text style={{ color: "#fff", fontSize: 18 }}>lb</Text>
+        </Pressable>
+      </View>
+      <View style={styles.weightContainer}>
+        <Text style={styles.weight}>{weight}</Text>
+        <Text style={styles.weight_}>
+          {preferredSystem === "metric" ? "kg" : "lb"}
+        </Text>
+      </View>
+      <View style={{ height: 80, width: "100%", alignItems: "center" }}>
+        <Slider
+          progress={progress_weight}
+          minimumValue={min_weight}
+          maximumValue={max_weight}
+          step={10}
+          style={{
+            width: "75%",
+            height: 60,
+            margin: 0,
+          }}
+          onHapticFeedback={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          }}
+          onSlidingComplete={(e) => {
+            setWeight(e.toFixed(0));
+          }}
+          thumbWidth={60}
+          hapticMode={HapticModeEnum.STEP}
+          theme={{
+            disableMinTrackTintColor: "#157AFF",
+            maximumTrackTintColor: "#fff",
+            minimumTrackTintColor: "#157AFF",
+            cacheTrackTintColor: "#fff",
+            bubbleBackgroundColor: "#157AFF",
+          }}
+          markStyle={{
+            width: 1,
+            height: 10,
+            backgroundColor: "#fff",
+          }}
+          renderBubble={(props) => {
+            return;
+          }}
+          // render the current progress inside the thumb
+          renderThumb={(props) => {
+            return (
+              <Image
+                source={require("../../assets/thumb.png")}
+                style={{ width: 60, height: 60 }}
+              />
+            );
+          }}
+        />
+      </View>
+      <Pressable style={styles.btn} onPress={handleContinue}>
+        <Text style={styles.btnText}>Continue</Text>
       </Pressable>
-    </KeyboardAvoidingView>
+    </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B0B0B',
-    alignItems: 'center',
-    justifyContent:'center',
+    backgroundColor: "#0B0B0B",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   title: {
     fontSize: 28,
-    fontWeight: 'semibold',
-    color: 'white',
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
+    width: "85%",
     marginBottom: 20,
-    textAlign: 'center',
-    width: '85%',
   },
 
-  input: {
-    width: 'auto',
-    height: 48,
-    fontSize: 22,
-    fontWeight: 'normal',
-    borderWidth: 1,
-    borderColor: '#E5E5E5',
-    borderTopColor: '#0B0B0B',
-    borderRightColor: '#0B0B0B',
-    borderLeftColor: '#0B0B0B',
-    color: '#fff',
-    backgroundColor: '#0B0B0B',
-    marginBottom: 40,
-    marginRight: 10,
-    paddingHorizontal: 30,
+  weight: {
+    fontSize: 80,
+    fontWeight: "bold",
+    color: "white",
+    margin: 0,
+  },
+
+  weightContainer: {
+    display: "flex",
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "center",
+    width: "85%",
+    marginVertical: 20,
+  },
+
+  weight_: {
+    fontSize: 30,
+    color: "#f0f0f0",
+    marginBottom: 12,
+    marginLeft: 5,
+  },
+
+  selected: {
+    width: "45%",
+    alignItems: "center",
+    paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: "#157AFF",
+  },
+
+  unselected: {
+    width: "45%",
+    alignItems: "center",
+    paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: "#24262B",
   },
 
   btn: {
-    width: '85%',
-    height: 48,
-    backgroundColor: '#0496FF',
-    borderRadius: 90,
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: 16,
+    width: "85%",
+    paddingVertical: 16,
+    backgroundColor: "#fff",
+    borderRadius: 24,
+    display: "flex",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: 40,
   },
 
   btnText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'normal',
-    alignSelf: 'center',
+    color: "#0B0B0B",
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    alignSelf: "center",
     marginTop: 4,
-  }
+  },
 });
