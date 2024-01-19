@@ -106,21 +106,14 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
         keyExtractor={(item) => item.key}
         data={initialData}
         renderItem={renderItem}
-        style={{ width: "100%" }}
+        style={{ width: "100%", height: "100%", marginBottom: 100 }}
         extraData={routine}
       />
     </View>
   );
 }
 
-const UnderlayLeft = ({
-  item,
-  deleteExercise,
-  navigation,
-  currentDay,
-  routine,
-  setRoutine,
-}) => {
+const UnderlayLeft = ({ item, deleteExercise, navigation }) => {
   const { close } = useSwipeableItemParams();
   const id = item.exercise.exerciseId;
   return (
