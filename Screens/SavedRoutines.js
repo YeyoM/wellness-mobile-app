@@ -161,7 +161,6 @@ export default function SavedRoutines({ navigation, route }) {
               marginBottom: 20,
             }}
           >
-            {" "}
             Scroll down to refresh{" "}
           </Text>
           <Pressable
@@ -183,6 +182,7 @@ export default function SavedRoutines({ navigation, route }) {
                   key={index}
                   routine_={routine}
                   navigation={navigation}
+                  index={index}
                 />
               );
             })

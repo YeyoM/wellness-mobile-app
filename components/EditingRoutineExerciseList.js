@@ -1,29 +1,23 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useContext } from "react";
 import {
   Text,
   View,
   StyleSheet,
   TouchableOpacity,
   FlatList,
-  ListRenderItem,
   Pressable,
 } from "react-native";
+
 import SwipeableItem, {
   useSwipeableItemParams,
 } from "react-native-swipeable-item";
 
 import { Ionicons } from "@expo/vector-icons";
 
-export default function EditingRoutineExerciseList({
-  exercices,
-  currentDay,
-  routine,
-  setRoutine,
-  navigation,
-}) {
-  if (!exercices) {
-    return null;
-  }
+import { EditRoutineContext } from "../context/EditRoutineContext";
+
+export default function EditingRoutineExerciseList({ navigation, exercices }) {
+  const { routine, setRoutine, currentDay } = useContext(EditRoutineContext);
 
   const NUM_ITEMS = exercices.length;
 
@@ -157,9 +151,6 @@ const UnderlayLeft = ({
           setTimeout(() => {
             navigation.navigate("Edit Exercise", {
               exercise: item.exercise,
-              currentDay: currentDay,
-              routine: routine,
-              setRoutine: setRoutine,
             });
           }, 200);
         }}
