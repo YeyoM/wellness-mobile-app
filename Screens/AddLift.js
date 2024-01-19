@@ -82,11 +82,7 @@ export default function AddLift({ navigation }) {
               headerShown: false,
             }}
           >
-            <Tab.Screen
-              name="Saved Lifts"
-              component={SavedLifts}
-              initialParams={{ routine, setRoutine, currentDay }}
-            />
+            <Tab.Screen name="Saved Lifts" component={SavedLifts} />
             <Tab.Screen name="Search a Lift" component={SearchLift} />
           </Tab.Navigator>
         </View>

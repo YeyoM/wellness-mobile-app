@@ -230,14 +230,12 @@ export default function EditRoutine({ navigation }) {
             </Pressable>
           </View>
           <View style={styles.containerExercises}>
-            <ScrollView style={{ width: "100%", minHeight: 600 }}>
-              <View style={styles.exercises}>
-                <EditingRoutineExerciseList
-                  exercices={routine.days[currentDay].exercises}
-                  navigation={navigation}
-                />
-              </View>
-            </ScrollView>
+            <View style={styles.exercises}>
+              <EditingRoutineExerciseList
+                exercices={routine.days[currentDay].exercises}
+                navigation={navigation}
+              />
+            </View>
           </View>
         </View>
       </View>
@@ -286,6 +284,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    minHeight: 600,
   },
 
   exercises: {
@@ -295,6 +294,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 60,
+    marginBottom: 120,
+    minHeight: 600,
   },
 });
