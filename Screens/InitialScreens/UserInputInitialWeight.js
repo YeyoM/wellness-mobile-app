@@ -1,13 +1,23 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useContext } from "react";
-import { StyleSheet, Text, Pressable, Image, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  Pressable,
+  Image,
+  View,
+  Dimensions,
+} from "react-native";
 import TopNavigationBar from "../../components/TopNavigationBar";
 import ErrorNotification from "../../components/ErrorNotification";
 
+import { interpolate } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useSharedValue } from "react-native-reanimated";
 import { Slider, HapticModeEnum } from "react-native-awesome-slider";
 import * as Haptics from "expo-haptics";
+
+import Carousel from "react-native-reanimated-carousel";
 
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
@@ -33,9 +43,34 @@ export default function UserInputInitialWeight({ navigation }) {
     navigation.navigate("Acerca de ti (Peso ideal)");
   };
 
-  const progress_weight = useSharedValue(120);
-  const min_weight = useSharedValue(40);
-  const max_weight = useSharedValue(400);
+  const ref = React.useRef(null);
+
+  const data = [...new Array(65).keys()].map((i) => i + 16);
+
+  const scale = 0.9;
+
+  const RIGHT_OFFSET = Dimensions.get("window").width * (1 - scale) * 0.5;
+
+  const ITEM_WIDTH = Dimensions.get("window").width * 0.35;
+  const ITEM_HEIGHT = 100;
+
+  const PAGE_HEIGHT = Dimensions.get("window").height * 0.38;
+  const PAGE_WIDTH = Dimensions.get("window").width * 0.5;
+
+  const animationStyle = React.useCallback(
+    (value) => {
+      "worklet";
+      const translateX = interpolate(
+        value,
+        [-1, 0, 1],
+        [-ITEM_WIDTH, 0, ITEM_WIDTH],
+      );
+      return {
+        transform: [{ translateX }],
+      };
+    },
+    [RIGHT_OFFSET],
+  );
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -88,51 +123,114 @@ export default function UserInputInitialWeight({ navigation }) {
           {preferredSystem === "metric" ? "kg" : "lb"}
         </Text>
       </View>
-      <View style={{ height: 80, width: "100%", alignItems: "center" }}>
-        <Slider
-          progress={progress_weight}
-          minimumValue={min_weight}
-          maximumValue={max_weight}
-          step={10}
-          style={{
-            width: "75%",
-            height: 60,
-            margin: 0,
-          }}
-          onHapticFeedback={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-          }}
-          onSlidingComplete={(e) => {
-            setWeight(e.toFixed(0));
-          }}
-          thumbWidth={60}
-          hapticMode={HapticModeEnum.STEP}
-          theme={{
-            disableMinTrackTintColor: "#157AFF",
-            maximumTrackTintColor: "#fff",
-            minimumTrackTintColor: "#157AFF",
-            cacheTrackTintColor: "#fff",
-            bubbleBackgroundColor: "#157AFF",
-          }}
-          markStyle={{
-            width: 1,
-            height: 10,
-            backgroundColor: "#fff",
-          }}
-          renderBubble={(props) => {
-            return;
-          }}
-          // render the current progress inside the thumb
-          renderThumb={(props) => {
-            return (
-              <Image
-                source={require("../../assets/thumb.png")}
-                style={{ width: 60, height: 60 }}
+
+      <Carousel
+        loop
+        vertical={false}
+        style={{
+          justifyContent: "center",
+          width: Dimensions.get("window").width,
+          height: 100,
+        }}
+        ref={ref}
+        onSnapToItem={(index) => {
+          setWeight(data[index]);
+        }}
+        width={ITEM_WIDTH}
+        pagingEnabled={false}
+        height={ITEM_HEIGHT}
+        data={data}
+        renderItem={({ index }) => {
+          return (
+            <View
+              key={index}
+              style={{
+                flex: 1,
+                backgroundColor: "#0B0B0B",
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              {data[index] === weight ? null : (
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    maxWidth: "100%",
+                    color: "white",
+                    fontSize: 16,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {data[index]}
+                </Text>
+              )}
+              <View
+                style={{
+                  width: 6,
+                  height: 50,
+                  backgroundColor: "#157AFF",
+                  position: "absolute",
+                  left: "50%",
+                  bottom: 0,
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  borderColor: "#0450B4",
+                }}
               />
-            );
-          }}
-        />
-      </View>
+              <View
+                style={{
+                  width: 6,
+                  height: 30,
+                  backgroundColor: "#50535B",
+                  position: "absolute",
+                  left: "25%",
+                  bottom: 10,
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  borderColor: "#50535B",
+                }}
+              />
+              <View
+                style={{
+                  width: 6,
+                  height: 30,
+                  backgroundColor: "#50535B",
+                  position: "absolute",
+                  left: "75%",
+                  bottom: 10,
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  borderColor: "#50535B",
+                }}
+              />
+              <View
+                style={{
+                  width: 6,
+                  height: 40,
+                  backgroundColor: "#50535B",
+                  position: "absolute",
+                  left: "0%",
+                  bottom: 5,
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  borderColor: "#50535B",
+                }}
+              />
+            </View>
+          );
+        }}
+        customAnimation={animationStyle}
+      />
+      <View
+        style={{
+          height: 100,
+          width: "100%",
+          alignItems: "center",
+          marginTop: 20,
+        }}
+      ></View>
       <Pressable style={styles.btn} onPress={handleContinue}>
         <Text style={styles.btnText}>Continue</Text>
       </Pressable>

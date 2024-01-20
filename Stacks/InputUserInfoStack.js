@@ -3,9 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import UserInputName from "../Screens/InitialScreens/UserInputName";
 import UserInputGender from "../Screens/InitialScreens/UserInputGender";
 import UserInputAge from "../Screens/InitialScreens/UserInputBirthday";
-import UserInputSystem from "../Screens/InitialScreens/UserInputSystem";
 import UserInputInitialWeight from "../Screens/InitialScreens/UserInputInitialWeight";
-import UserInputFinalWeight from "../Screens/InitialScreens/UserInputFinalWeight";
 import UserInputHeight from "../Screens/InitialScreens/UserInputHeight";
 import UserInputObjectives from "../Screens/InitialScreens/UserInputObjectives";
 import UserInputExercises from "../Screens/InitialScreens/UserInputExercises";
@@ -94,4 +92,3 @@ export default function InputUserInfoStack() {
     </Stack.Navigator>
   );
 }
-
