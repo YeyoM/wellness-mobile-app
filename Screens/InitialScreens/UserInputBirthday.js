@@ -3,7 +3,11 @@ import React, { useState, useContext } from "react";
 import TopNavigationBar from "../../components/TopNavigationBar";
 import ErrorNotification from "../../components/ErrorNotification";
 
-import { interpolate } from "react-native-reanimated";
+import {
+  interpolate,
+  Extrapolate,
+  interpolateColor,
+} from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -30,37 +34,42 @@ export default function UserInputAge({ navigation }) {
 
   // possible values: 16 - 80
   const data = [...new Array(65).keys()].map((i) => i + 16);
-
   const scale = 0.9;
 
   const RIGHT_OFFSET = Dimensions.get("window").width * (1 - scale) * 0.5;
 
-  const ITEM_WIDTH = Dimensions.get("window").width * 0.35;
-  const ITEM_HEIGHT = 100;
+  const ITEM_WIDTH = Dimensions.get("window").width * 0.5;
+  const ITEM_HEIGHT = 130;
 
-  const PAGE_HEIGHT = Dimensions.get("window").height * 0.38;
-  const PAGE_WIDTH = Dimensions.get("window").width * 0.5;
+  const PAGE_HEIGHT = Dimensions.get("window").height * 0.48;
+  const PAGE_WIDTH = Dimensions.get("window").width;
 
   const animationStyle = React.useCallback(
     (value) => {
       "worklet";
-
       const translateY = interpolate(
         value,
         [-1, 0, 1],
         [-ITEM_HEIGHT, 0, ITEM_HEIGHT],
       );
-      const right = interpolate(
+      const scale = interpolate(
         value,
-        [-1, -0.2, 1],
-        [RIGHT_OFFSET / 2, RIGHT_OFFSET, RIGHT_OFFSET / 3],
+        [-1, 0, 1],
+        [1, 1.25, 1],
+        Extrapolate.CLAMP,
+      );
+      const opacity = interpolate(
+        value,
+        [-1, 0, 1],
+        [0.5, 1, 0.5],
+        Extrapolate.CLAMP,
       );
       return {
-        transform: [{ translateY }],
-        right,
+        transform: [{ translateY }, { scale }],
+        opacity,
       };
     },
-    [RIGHT_OFFSET],
+    [RIGHT_OFFSET, ITEM_HEIGHT],
   );
 
   return (
@@ -82,11 +91,9 @@ export default function UserInputAge({ navigation }) {
           flexDirection: "row",
           justifyContent: "center",
           alignItems: "center",
+          marginTop: 20,
         }}
       >
-        <View style={{ alignItems: "flex-end" }}>
-          <Ionicons name="caret-forward-outline" size={48} color="white" />
-        </View>
         <Carousel
           loop
           vertical
@@ -95,6 +102,8 @@ export default function UserInputAge({ navigation }) {
             width: PAGE_WIDTH,
             height: PAGE_HEIGHT,
             marginBottom: 20,
+            alignItems: "center",
+            alignSelf: "center",
           }}
           ref={ref}
           onSnapToItem={(index) => {
@@ -112,13 +121,15 @@ export default function UserInputAge({ navigation }) {
                   flex: 1,
                   padding: 10,
                   backgroundColor: "#157AFF",
-                  borderRadius: 10,
+                  borderRadius: 24,
                   width: ITEM_WIDTH,
-                  marginVertical: 10,
+                  marginVertical: 16,
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "center",
+                  borderWidth: 2,
+                  borderColor: "#0496FF",
                 }}
               >
                 <Text
@@ -126,7 +137,7 @@ export default function UserInputAge({ navigation }) {
                   style={{
                     maxWidth: "100%",
                     color: "white",
-                    fontSize: 42,
+                    fontSize: 60,
                     fontWeight: "bold",
                   }}
                 >

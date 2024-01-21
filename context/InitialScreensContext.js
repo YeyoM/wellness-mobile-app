@@ -7,16 +7,16 @@ export const InitialScreensProvider = ({ children }) => {
   const [gender, setGender] = useState("");
   const [age, setAge] = useState("16");
   const [preferredSystem, setpreferredSystem] = useState("");
-  const [initialWeight, setInitialWeight] = useState("");
-  const [goalWeight, setGoalWeight] = useState("");
+  const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
+  const [prevExperience, setPrevExperience] = useState(false);
+  const [fitnessLevel, setFitnessLevel] = useState("");
   const [objectives, setObjectives] = useState([]);
   const [exercises, setExercises] = useState([]);
   const [exerciseFrequency, setExerciseFrequency] = useState("");
   const [exerciseDays, setExerciseDays] = useState([]);
   const [reminders, setReminders] = useState(false);
   const [exerciseDuration, setExerciseDuration] = useState("");
-  const [fitnessLevel, setFitnessLevel] = useState("");
   const [activityLevel, setActivityLevel] = useState("");
 
   return (
@@ -30,12 +30,12 @@ export const InitialScreensProvider = ({ children }) => {
         setAge,
         preferredSystem,
         setpreferredSystem,
-        initialWeight,
-        setInitialWeight,
-        goalWeight,
-        setGoalWeight,
+        weight,
+        setWeight,
         height,
         setHeight,
+        prevExperience,
+        setPrevExperience,
         objectives,
         setObjectives,
         exercises,

@@ -1,31 +1,19 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useState, useContext } from "react";
-import {
-  StyleSheet,
-  Text,
-  Pressable,
-  Image,
-  View,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, Text, Pressable, View, Dimensions } from "react-native";
 import TopNavigationBar from "../../components/TopNavigationBar";
 import ErrorNotification from "../../components/ErrorNotification";
 
 import { interpolate } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useSharedValue } from "react-native-reanimated";
-import { Slider, HapticModeEnum } from "react-native-awesome-slider";
-import * as Haptics from "expo-haptics";
 
 import Carousel from "react-native-reanimated-carousel";
 
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputInitialWeight({ navigation }) {
-  const { setInitialWeight } = useContext(InitialScreensContext);
+  const { weight, setWeight } = useContext(InitialScreensContext);
 
   const [error, setError] = useState(false);
-  const [weight, setWeight] = useState("");
 
   const [preferredSystem, setPreferredSystem] = useState("metric");
 
@@ -34,13 +22,10 @@ export default function UserInputInitialWeight({ navigation }) {
       setTimeout(() => {
         setError(false);
       }, 5000);
-      setError("Por favor ingresa tu peso");
+      setError("Please select your weight");
       return;
     }
-
-    setInitialWeight(weight);
-
-    navigation.navigate("Acerca de ti (Peso ideal)");
+    navigation.navigate("About you (Height)");
   };
 
   const ref = React.useRef(null);
@@ -53,9 +38,6 @@ export default function UserInputInitialWeight({ navigation }) {
 
   const ITEM_WIDTH = Dimensions.get("window").width * 0.35;
   const ITEM_HEIGHT = 100;
-
-  const PAGE_HEIGHT = Dimensions.get("window").height * 0.38;
-  const PAGE_WIDTH = Dimensions.get("window").width * 0.5;
 
   const animationStyle = React.useCallback(
     (value) => {
@@ -90,9 +72,9 @@ export default function UserInputInitialWeight({ navigation }) {
           alignItems: "center",
           flexDirection: "row",
           justifyContent: "space-between",
-          paddingHorizontal: 30,
           backgroundColor: "#24262B",
-          borderRadius: 14,
+          paddingHorizontal: 8,
+          borderRadius: 22,
           marginVertical: 20,
         }}
       >
@@ -104,7 +86,7 @@ export default function UserInputInitialWeight({ navigation }) {
             setPreferredSystem("metric");
           }}
         >
-          <Text style={{ color: "#fff", fontSize: 18 }}>kg</Text>
+          <Text style={{ color: "#fff", fontSize: 14 }}>kg</Text>
         </Pressable>
         <Pressable
           style={
@@ -114,7 +96,7 @@ export default function UserInputInitialWeight({ navigation }) {
             setPreferredSystem("imperial");
           }}
         >
-          <Text style={{ color: "#fff", fontSize: 18 }}>lb</Text>
+          <Text style={{ color: "#fff", fontSize: 14 }}>lb</Text>
         </Pressable>
       </View>
       <View style={styles.weightContainer}>
@@ -150,7 +132,6 @@ export default function UserInputInitialWeight({ navigation }) {
                 width: "100%",
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
               }}
             >
               {data[index] === weight ? null : (
@@ -161,6 +142,10 @@ export default function UserInputInitialWeight({ navigation }) {
                     color: "white",
                     fontSize: 16,
                     fontWeight: "bold",
+                    position: "absolute",
+                    bottom: 0,
+                    left: "50%",
+                    transform: [{ translateX: -5 }],
                   }}
                 >
                   {data[index]}
@@ -173,7 +158,7 @@ export default function UserInputInitialWeight({ navigation }) {
                   backgroundColor: "#157AFF",
                   position: "absolute",
                   left: "50%",
-                  bottom: 0,
+                  top: 0,
                   borderRadius: 4,
                   borderWidth: 1,
                   borderColor: "#0450B4",
@@ -186,7 +171,7 @@ export default function UserInputInitialWeight({ navigation }) {
                   backgroundColor: "#50535B",
                   position: "absolute",
                   left: "25%",
-                  bottom: 10,
+                  top: 10,
                   borderRadius: 4,
                   borderWidth: 1,
                   borderColor: "#50535B",
@@ -199,7 +184,7 @@ export default function UserInputInitialWeight({ navigation }) {
                   backgroundColor: "#50535B",
                   position: "absolute",
                   left: "75%",
-                  bottom: 10,
+                  top: 10,
                   borderRadius: 4,
                   borderWidth: 1,
                   borderColor: "#50535B",
@@ -212,7 +197,7 @@ export default function UserInputInitialWeight({ navigation }) {
                   backgroundColor: "#50535B",
                   position: "absolute",
                   left: "0%",
-                  bottom: 5,
+                  top: 5,
                   borderRadius: 4,
                   borderWidth: 1,
                   borderColor: "#50535B",
@@ -225,10 +210,9 @@ export default function UserInputInitialWeight({ navigation }) {
       />
       <View
         style={{
-          height: 100,
+          height: 20,
           width: "100%",
           alignItems: "center",
-          marginTop: 20,
         }}
       ></View>
       <Pressable style={styles.btn} onPress={handleContinue}>
@@ -258,7 +242,7 @@ const styles = StyleSheet.create({
   },
 
   weight: {
-    fontSize: 80,
+    fontSize: 90,
     fontWeight: "bold",
     color: "white",
     margin: 0,
@@ -276,24 +260,24 @@ const styles = StyleSheet.create({
 
   weight_: {
     fontSize: 30,
-    color: "#f0f0f0",
-    marginBottom: 12,
+    color: "#9EA0A5",
+    marginBottom: 16,
     marginLeft: 5,
   },
 
   selected: {
-    width: "45%",
+    width: "50%",
     alignItems: "center",
     paddingVertical: 8,
-    borderRadius: 8,
+    borderRadius: 16,
     backgroundColor: "#157AFF",
   },
 
   unselected: {
-    width: "45%",
+    width: "50%",
     alignItems: "center",
     paddingVertical: 8,
-    borderRadius: 8,
+    borderRadius: 16,
     backgroundColor: "#24262B",
   },
 

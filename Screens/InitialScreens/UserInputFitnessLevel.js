@@ -1,180 +1,146 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
-import React, { useState, useContext } from 'react';
-import TopNavigationBar from '../../components/TopNavigationBar';
-import ErrorNotification from '../../components/ErrorNotification';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Pressable,
+  Image,
+} from "react-native";
+import React, { useState, useContext } from "react";
+import TopNavigationBar from "../../components/TopNavigationBar";
+import ErrorNotification from "../../components/ErrorNotification";
 
-import { InitialScreensContext } from '../../context/InitialScreensContext';
+import { useSharedValue } from "react-native-reanimated";
+import { Slider, HapticModeEnum } from "react-native-awesome-slider";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import * as Haptics from "expo-haptics";
+
+import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputFitnessLevel({ navigation }) {
-
   const { setFitnessLevel } = useContext(InitialScreensContext);
-
-  const [selectPrincipiante, setSelectPrincipiante] = useState(false);
-  const [selectIntermedio, setSelectIntermedio] = useState(false);
-  const [selectAvanzado, setSelectAvanzado] = useState(false);
 
   const [error, setError] = useState(false);
 
-  const pressSelectPrincipiante = () => {
-    setSelectPrincipiante(true);
-    setSelectIntermedio(false);
-    setSelectAvanzado(false);
-  }
+  const progress = useSharedValue(1.25);
+  const min = useSharedValue(0.25);
+  const max = useSharedValue(3);
 
-  const pressSelectIntermedio = () => {
-    setSelectPrincipiante(false);
-    setSelectIntermedio(true);
-    setSelectAvanzado(false);
-  }
-
-  const pressSelectAvanzado = () => {
-    setSelectPrincipiante(false);
-    setSelectIntermedio(false);
-    setSelectAvanzado(true);
-  }
-
-  const handleContinue = () => {
-    if (!selectPrincipiante && !selectIntermedio && !selectAvanzado) {
-      setTimeout(() => {
-        setError(false);
-      }, 5000);
-      setError('Por favor selecciona tu nivel de fitness');
-      return;
-    }
-
-    let fitnessLevel = '';
-
-    if (selectPrincipiante) {
-      fitnessLevel = 'Principiante';
-    }
-
-    if (selectIntermedio) {
-      fitnessLevel = 'Intermedio';
-    }
-
-    if (selectAvanzado) {
-      fitnessLevel = 'Avanzado';
-    }
-
-    setFitnessLevel(fitnessLevel);
-
-    navigation.navigate('Acerca de ti (Activo)');
-  }
+  const handleContinue = () => {};
 
   return (
-    <View style={styles.container}>
-      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.836} back={true}/>
-      { error && <ErrorNotification message={error} /> }
-      <Text style={styles.title}>¿Cuál es tu nivel de fitness?</Text>
-      <Pressable
-        style={selectPrincipiante ? styles.checkboxSelected : styles.checkboxUnselected}
-        onPress={pressSelectPrincipiante}
+    <GestureHandlerRootView style={styles.container}>
+      <TopNavigationBar
+        navigation={navigation}
+        actualScreen={"About you"}
+        steps={12}
+        currentStep={7}
+        back={true}
+      />
+      {error && <ErrorNotification message={error} />}
+      <Text style={styles.title}>How would you rate your fitness level?</Text>
+      <Image
+        source={require("../../assets/fitness_level.png")}
+        style={{
+          width: Dimensions.get("window").width * 0.8,
+          height: Dimensions.get("window").width * 0.8,
+          marginBottom: 10,
+        }}
+      />
+      <Text
+        style={{
+          color: "white",
+          fontSize: 18,
+          fontWeight: "bold",
+          marginBottom: 80,
+        }}
       >
-        <Text style={styles.labelTitle}>Principiante</Text>
-        <Text style={styles.labelSubtitle}>Tus entrenamientos durarán 1 hora en promedio</Text>
+        Beginner
+      </Text>
+      <Slider
+        progress={progress}
+        minimumValue={min}
+        maximumValue={max}
+        step={3}
+        onHapticFeedback={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }}
+        onSlidingComplete={(e) => {}}
+        thumbWidth={70}
+        hapticMode={HapticModeEnum.STEP}
+        theme={{
+          disableMinTrackTintColor: "#157AFF",
+          maximumTrackTintColor: "#fff",
+          minimumTrackTintColor: "#157AFF",
+          cacheTrackTintColor: "#fff",
+          bubbleBackgroundColor: "#157AFF",
+        }}
+        style={{
+          width: "75%",
+          height: 60,
+          position: "absolute",
+          bottom: 160,
+        }}
+        markStyle={{
+          width: 4,
+          height: 24,
+          borderRadius: 4,
+          backgroundColor: "#fff",
+        }}
+        renderBubble={(props) => {
+          return;
+        }}
+        renderThumb={(props) => {
+          return (
+            <Image
+              source={require("../../assets/thumb.png")}
+              style={{ width: 70, height: 70 }}
+            />
+          );
+        }}
+        sliderHeight={10}
+      />
+      <Pressable style={styles.btn} onPress={handleContinue}>
+        <Text style={styles.btnText}>Continue</Text>
       </Pressable>
-      <Pressable
-        style={selectIntermedio ? styles.checkboxSelected : styles.checkboxUnselected}
-        onPress={pressSelectIntermedio}
-      >
-        <Text style={styles.labelTitle}>Intermedio</Text>
-        <Text style={styles.labelSubtitle}>Tus entrenamientos durarán 1 hora en promedio</Text>
-      </Pressable>
-      <Pressable
-        style={selectAvanzado ? styles.checkboxSelected : styles.checkboxUnselected}
-        onPress={pressSelectAvanzado}
-      >
-        <Text style={styles.labelTitle}>Avanzado</Text>
-        <Text style={styles.labelSubtitle}>Tus entrenamientos durarán 1 hora en promedio</Text>
-      </Pressable>
-      <Pressable
-        style={styles.btn}
-        onPress={handleContinue}
-      >
-        <Text style={styles.btnText}>Continuar</Text>
-      </Pressable>
-    </View>
+    </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B0B0B',
-    alignItems: 'center',
-    justifyContent:'center' 
+    backgroundColor: "#0B0B0B",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   title: {
     fontSize: 32,
-    fontWeight: 'semibold',
-    color: 'white',
-    marginBottom: 60,
-    marginTop: 30,
-    textAlign: 'center',
-    width: '85%',
-  },
-
-  labelTitle: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'normal',
-    marginBottom: 4,
-  },
-
-  labelSubtitle: {
-    color: '#A0A0A3',
-    fontSize: 14,
-    fontWeight: 'normal',
-    marginTop: 4,
-  },
-
-  checkboxSelected: {
-    width: '85%',
-    height: 100,
-    backgroundColor: 'rgba(4, 150, 255, 0.5)',
-    borderRadius: 35,
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#0496FF',
-    paddingHorizontal: 25,
-    paddingVertical: 15,
-  },
-
-  checkboxUnselected: {
-    width: '85%',
-    height: 100,
-    backgroundColor: '#1f1f1f',
-    borderRadius: 35,
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: 16,
-    paddingHorizontal: 25,
-    paddingVertical: 15,
-    borderWidth: 1,
-    borderColor: '#1f1f1f',
+    fontWeight: "semibold",
+    color: "white",
+    textAlign: "center",
+    width: "85%",
   },
 
   btn: {
-    width: '85%',
-    height: 48,
-    backgroundColor: '#0496FF',
-    borderRadius: 90,
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: 16,
-    marginTop: 60,
+    width: "85%",
+    paddingVertical: 16,
+    backgroundColor: "#fff",
+    borderRadius: 24,
+    display: "flex",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: 40,
   },
 
   btnText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'normal',
-    alignSelf: 'center',
+    color: "#0B0B0B",
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    alignSelf: "center",
     marginTop: 4,
-  }
+  },
 });

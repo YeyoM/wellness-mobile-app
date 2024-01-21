@@ -1,117 +1,303 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Pressable, KeyboardAvoidingView } from 'react-native';
-import React, { useState, useContext } from 'react';
-import TopNavigationBar from '../../components/TopNavigationBar';
-import ErrorNotification from '../../components/ErrorNotification';
+import React, { useState, useContext } from "react";
+import { StyleSheet, Text, Pressable, View, Dimensions } from "react-native";
+import TopNavigationBar from "../../components/TopNavigationBar";
+import ErrorNotification from "../../components/ErrorNotification";
 
-import { InitialScreensContext } from '../../context/InitialScreensContext';
+import { interpolate } from "react-native-reanimated";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
+import Carousel from "react-native-reanimated-carousel";
+
+import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputHeight({ navigation }) {
-
-  const { setHeight, preferredSystem } = useContext(InitialScreensContext);
+  const { height, setHeight } = useContext(InitialScreensContext);
 
   const [error, setError] = useState(false);
-  const [height_, setHeight_] = useState('');
+
+  const [preferredSystem, setPreferredSystem] = useState("metric");
 
   const handleContinue = () => {
-    if (height_ === '') {
+    if (height === "") {
       setTimeout(() => {
         setError(false);
       }, 5000);
-      setError('Por favor ingresa tu altura');
+      setError("Please select your height");
       return;
     }
+    navigation.navigate("About you (Previous Fitness Experience)");
+  };
 
-    setHeight(height_);
+  const ref = React.useRef(null);
 
-    navigation.navigate('Acerca de ti (Objetivos)');
-  }
+  const data = [...new Array(65).keys()].map((i) => i + 16);
+
+  const scale = 0.9;
+
+  const RIGHT_OFFSET = Dimensions.get("window").width * (1 - scale) * 0.5;
+
+  const ITEM_WIDTH = Dimensions.get("window").width * 0.35;
+  const ITEM_HEIGHT = 100;
+
+  const animationStyle = React.useCallback(
+    (value) => {
+      "worklet";
+      const translateX = interpolate(
+        value,
+        [-1, 0, 1],
+        [-ITEM_WIDTH, 0, ITEM_WIDTH],
+      );
+      return {
+        transform: [{ translateX }],
+      };
+    },
+    [RIGHT_OFFSET],
+  );
 
   return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.456} back={true}/>
-      { error && <ErrorNotification message={error} /> }
-      <Text style={styles.title}>¿Cuál es tu altura?</Text>
-      <View style={{ width: '85%', marginBottom: 60, backgroundColor: "#1F1F1F", padding: 30, borderRadius: 55 }}>
-        <Text style={{ color: 'white', fontWeight: "bold", fontSize: 15}}>🤔️ Altura</Text>
-        <Text style={{ color: 'white', fontWeight: "normal", fontSize: 14}}>Al saber tu edad podemos. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</Text>
-      </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-      <TextInput
-        style={styles.input}
-        textAlign={'center'}
-        placeholder="00.0"
-        placeholderTextColor={'rgba(147, 146, 154, 0.8)'}
-        keyboardType='numeric'
-        returnKeyType='done'
-        value={height_}
-        onChangeText={setHeight_}
+    <GestureHandlerRootView style={styles.container}>
+      <TopNavigationBar
+        navigation={navigation}
+        actualScreen={"About you"}
+        back={true}
+        steps={12}
+        currentStep={5}
       />
-      <Text style={{ fontSize: 20, fontWeight: 'normal', color: '#fff', marginBottom: 40 }}>{preferredSystem === 'Metrico' ? 'cm' : 'in'}</Text>
-      </View>
-      <Pressable
-        style={styles.btn}
-        onPress={handleContinue}
+      {error && <ErrorNotification message={error} />}
+      <Text style={styles.title}>What is your height?</Text>
+      <View
+        style={{
+          width: "90%",
+          paddingVertical: 8,
+          alignItems: "center",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          backgroundColor: "#24262B",
+          paddingHorizontal: 8,
+          borderRadius: 22,
+          marginVertical: 20,
+        }}
       >
-        <Text style={styles.btnText}>Continuar</Text>
+        <Pressable
+          style={
+            preferredSystem === "metric" ? styles.selected : styles.unselected
+          }
+          onPress={() => {
+            setPreferredSystem("metric");
+          }}
+        >
+          <Text style={{ color: "#fff", fontSize: 14 }}>cm</Text>
+        </Pressable>
+        <Pressable
+          style={
+            preferredSystem === "imperial" ? styles.selected : styles.unselected
+          }
+          onPress={() => {
+            setPreferredSystem("imperial");
+          }}
+        >
+          <Text style={{ color: "#fff", fontSize: 14 }}>in</Text>
+        </Pressable>
+      </View>
+      <View style={styles.heightContainer}>
+        <Text style={styles.height}>{height}</Text>
+        <Text style={styles.height_}>
+          {preferredSystem === "metric" ? "cm" : "in"}
+        </Text>
+      </View>
+
+      <Carousel
+        loop
+        vertical={false}
+        style={{
+          justifyContent: "center",
+          width: Dimensions.get("window").width,
+          height: 100,
+        }}
+        ref={ref}
+        onSnapToItem={(index) => {
+          setHeight(data[index]);
+        }}
+        width={ITEM_WIDTH}
+        pagingEnabled={false}
+        height={ITEM_HEIGHT}
+        data={data}
+        renderItem={({ index }) => {
+          return (
+            <View
+              key={index}
+              style={{
+                flex: 1,
+                backgroundColor: "#0B0B0B",
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              {data[index] === height ? null : (
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    maxWidth: "100%",
+                    color: "white",
+                    fontSize: 16,
+                    fontWeight: "bold",
+                    position: "absolute",
+                    bottom: 0,
+                    left: "50%",
+                    transform: [{ translateX: -5 }],
+                  }}
+                >
+                  {data[index]}
+                </Text>
+              )}
+              <View
+                style={{
+                  width: 6,
+                  height: 50,
+                  backgroundColor: "#157AFF",
+                  position: "absolute",
+                  left: "50%",
+                  top: 0,
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  borderColor: "#0450B4",
+                }}
+              />
+              <View
+                style={{
+                  width: 6,
+                  height: 30,
+                  backgroundColor: "#50535B",
+                  position: "absolute",
+                  left: "25%",
+                  top: 10,
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  borderColor: "#50535B",
+                }}
+              />
+              <View
+                style={{
+                  width: 6,
+                  height: 30,
+                  backgroundColor: "#50535B",
+                  position: "absolute",
+                  left: "75%",
+                  top: 10,
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  borderColor: "#50535B",
+                }}
+              />
+              <View
+                style={{
+                  width: 6,
+                  height: 40,
+                  backgroundColor: "#50535B",
+                  position: "absolute",
+                  left: "0%",
+                  top: 5,
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  borderColor: "#50535B",
+                }}
+              />
+            </View>
+          );
+        }}
+        customAnimation={animationStyle}
+      />
+      <View
+        style={{
+          height: 20,
+          width: "100%",
+          alignItems: "center",
+        }}
+      ></View>
+      <Pressable style={styles.btn} onPress={handleContinue}>
+        <Text style={styles.btnText}>Continue</Text>
       </Pressable>
-    </KeyboardAvoidingView>
+    </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B0B0B',
-    alignItems: 'center',
-    justifyContent:'center'
+    backgroundColor: "#0B0B0B",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   title: {
     fontSize: 28,
-    fontWeight: 'semibold',
-    color: 'white',
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
+    width: "85%",
     marginBottom: 20,
-    textAlign: 'center',
-    width: '85%',
   },
 
-  input: {
-    width: 'auto',
-    height: 48,
-    fontSize: 22,
-    fontWeight: 'normal',
-    borderWidth: 1,
-    borderColor: '#E5E5E5',
-    borderTopColor: '#0B0B0B',
-    borderRightColor: '#0B0B0B',
-    borderLeftColor: '#0B0B0B',
-    color: '#fff',
-    backgroundColor: '#0B0B0B',
-    marginBottom: 40,
-    marginRight: 10,
-    paddingHorizontal: 30,
+  height: {
+    fontSize: 90,
+    fontWeight: "bold",
+    color: "white",
+    margin: 0,
+  },
+
+  heightContainer: {
+    display: "flex",
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "center",
+    width: "85%",
+    marginVertical: 20,
+  },
+
+  height_: {
+    fontSize: 30,
+    color: "#9EA0A5",
+    marginBottom: 16,
+    marginLeft: 5,
+  },
+
+  selected: {
+    width: "50%",
+    alignItems: "center",
+    paddingVertical: 8,
+    borderRadius: 16,
+    backgroundColor: "#157AFF",
+  },
+
+  unselected: {
+    width: "50%",
+    alignItems: "center",
+    paddingVertical: 8,
+    borderRadius: 16,
+    backgroundColor: "#24262B",
   },
 
   btn: {
-    width: '85%',
-    height: 48,
-    backgroundColor: '#0496FF',
-    borderRadius: 90,
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: 16,
+    width: "85%",
+    paddingVertical: 16,
+    backgroundColor: "#fff",
+    borderRadius: 24,
+    display: "flex",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: 40,
   },
 
   btnText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'normal',
-    alignSelf: 'center',
+    color: "#0B0B0B",
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    alignSelf: "center",
     marginTop: 4,
-  }
+  },
 });
