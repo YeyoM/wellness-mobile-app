@@ -33,7 +33,10 @@ export default function UserInputName({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       {error && <ErrorNotification message={error} />}
       <TopNavigationBar
         navigation={navigation}

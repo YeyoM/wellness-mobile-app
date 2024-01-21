@@ -11,6 +11,7 @@ export const InitialScreensProvider = ({ children }) => {
   const [height, setHeight] = useState("");
   const [prevExperience, setPrevExperience] = useState(false);
   const [fitnessLevel, setFitnessLevel] = useState("");
+  const [physicalLimitations, setPhysicalLimitations] = useState([]);
   const [objectives, setObjectives] = useState([]);
   const [exercises, setExercises] = useState([]);
   const [exerciseFrequency, setExerciseFrequency] = useState("");
@@ -36,6 +37,8 @@ export const InitialScreensProvider = ({ children }) => {
         setHeight,
         prevExperience,
         setPrevExperience,
+        physicalLimitations,
+        setPhysicalLimitations,
         objectives,
         setObjectives,
         exercises,

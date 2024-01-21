@@ -18,15 +18,33 @@ import * as Haptics from "expo-haptics";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputFitnessLevel({ navigation }) {
-  const { setFitnessLevel } = useContext(InitialScreensContext);
+  const { fitnessLevel, setFitnessLevel } = useContext(InitialScreensContext);
 
   const [error, setError] = useState(false);
 
-  const progress = useSharedValue(1.25);
-  const min = useSharedValue(0.25);
+  const progress = useSharedValue(1);
+  const min = useSharedValue(0);
   const max = useSharedValue(3);
 
-  const handleContinue = () => {};
+  const handleContinue = () => {
+    if (fitnessLevel === "") {
+      setError("Please select a fitness level");
+    } else {
+      navigation.navigate("About you (Physical Limitations)");
+    }
+  };
+
+  const handleSetFitnessLevel = (level) => {
+    if (level === 0) {
+      setFitnessLevel("Beginner");
+    } else if (level === 1) {
+      setFitnessLevel("Intermediate");
+    } else if (level === 2) {
+      setFitnessLevel("Advanced");
+    } else if (level === 3) {
+      setFitnessLevel("Expert");
+    }
+  };
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -55,7 +73,7 @@ export default function UserInputFitnessLevel({ navigation }) {
           marginBottom: 80,
         }}
       >
-        Beginner
+        {fitnessLevel}
       </Text>
       <Slider
         progress={progress}
@@ -65,7 +83,9 @@ export default function UserInputFitnessLevel({ navigation }) {
         onHapticFeedback={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         }}
-        onSlidingComplete={(e) => {}}
+        onSlidingComplete={(e) => {
+          handleSetFitnessLevel(e);
+        }}
         thumbWidth={70}
         hapticMode={HapticModeEnum.STEP}
         theme={{

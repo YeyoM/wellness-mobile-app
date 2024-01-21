@@ -5,6 +5,7 @@ import UserInputGender from "../Screens/InitialScreens/UserInputGender";
 import UserInputAge from "../Screens/InitialScreens/UserInputBirthday";
 import UserInputInitialWeight from "../Screens/InitialScreens/UserInputInitialWeight";
 import UserInputHeight from "../Screens/InitialScreens/UserInputHeight";
+import UserInputPhysicalLimitations from "../Screens/InitialScreens/UserInputPhysicalLimitations";
 import UserInputObjectives from "../Screens/InitialScreens/UserInputObjectives";
 import UserInputExercises from "../Screens/InitialScreens/UserInputExercises";
 import UserInputFrequency from "../Screens/InitialScreens/UserInputFrequency";
@@ -53,6 +54,11 @@ export default function InputUserInfoStack() {
       <Stack.Screen
         name="About you (Previous Fitness Experience)"
         component={UserInputPreviuosFitnessExperience}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="About you (Physical Limitations)"
+        component={UserInputPhysicalLimitations}
         options={{ headerShown: false }}
       />
       <Stack.Screen
