@@ -45,7 +45,9 @@ export default function UserInputDietPreference({ navigation }) {
     setSelectTraditionalDiet(!selectTraditionalDiet);
   };
 
-  const handleContinue = () => {};
+  const handleContinue = () => {
+    navigation.navigate("About you (Training Frequency)");
+  };
 
   return (
     <View style={styles.container}>

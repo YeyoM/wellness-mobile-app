@@ -1,120 +1,185 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
-import { useSharedValue } from 'react-native-reanimated';
-import { Slider, HapticModeEnum } from 'react-native-awesome-slider';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import * as Haptics from 'expo-haptics';
-import TopNavigationBar from '../../components/TopNavigationBar';
-import { useContext } from 'react';
+import React from "react";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 
-import { InitialScreensContext } from '../../context/InitialScreensContext';
+import { useState, useContext } from "react";
 
-import React, { useState } from 'react';
+import TopNavigationBar from "../../components/TopNavigationBar";
+import ErrorNotification from "../../components/ErrorNotification";
+
+import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputFrequency({ navigation }) {
+  const { setTrainingFrequency } = useContext(InitialScreensContext);
+  const [numberOfDays, setNumberOfDays] = useState(1);
 
-  const { setExerciseFrequency } = useContext(InitialScreensContext);
-
-  const [value, onChangeText] = useState('3');
-
-  const progress = useSharedValue(3);
-  const min = useSharedValue(1);
-  const max = useSharedValue(7);
+  const [error, setError] = useState(false);
 
   const handleContinue = () => {
-    setExerciseFrequency(value);
-    navigation.navigate('Acerca de ti (Días)');
-  }
+    if (numberOfDays === 0) {
+      setError(true);
+    } else {
+      setError(false);
+      setTrainingFrequency(numberOfDays);
+      navigation.navigate("About you (Training Duration)");
+    }
+  };
 
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.684} back={true}/>
-      <Text style={styles.title}>¿Con qué frecuencia te gustaría hacer ejercicio?</Text>
-      <Text style={{ color: '#0496FF', fontSize: 80, fontWeight: 'normal', marginTop: 8, marginBottom: 8 }}>
-        {value}x
-      </Text>
-      <Text style={{ color: '#A0A0A3', fontSize: 16, fontWeight: 'bold', marginTop: 16, marginBottom: 40 }}>
-        {value} entrenamientos por semana
-      </Text>
-      <Slider
-        progress={progress}
-        minimumValue={min}
-        maximumValue={max}
-        style={styles.slider}
-        step={6}
-        onHapticFeedback={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        }}
-        onSlidingComplete={(e) => {
-          console.log(e);
-          onChangeText(e);
-        }}
-        thumbWidth={14}
-        hapticMode={HapticModeEnum.STEP}
-        theme={{
-          disableMinTrackTintColor: '#ECECEC',
-          maximumTrackTintColor: '#ECECEC',
-          minimumTrackTintColor: '#0496FF',
-          cacheTrackTintColor: '#0496FF',
-          bubbleBackgroundColor: '#0496FF',
-        }}
+    <View style={styles.container}>
+      <TopNavigationBar
+        navigation={navigation}
+        actualScreen={"Workout Plan"}
+        steps={12}
+        currentStep={10}
+        back={true}
       />
-      <View style={{ width: '80%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={{color: 'white'}}>Menos</Text>
-        <Text style={{color: 'white'}}>Más</Text>
+      {error && <ErrorNotification message={"Error creating routine"} />}
+      <View style={styles.content}>
+        <Text
+          style={{
+            color: "#fff",
+            fontSize: 28,
+            fontWeight: "bold",
+            marginBottom: 20,
+            textAlign: "center",
+          }}
+        >
+          How many days/wk will you commit?
+        </Text>
+        <Text
+          style={{
+            color: "#fff",
+            fontSize: 140,
+            marginTop: 20,
+            textAlign: "center",
+            fontWeight: "bold",
+          }}
+        >
+          {numberOfDays}x
+        </Text>
+        <View
+          style={{
+            width: "90%",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginTop: 20,
+            backgroundColor: "#24262B",
+            padding: 4,
+            borderRadius: 16,
+          }}
+        >
+          <Pressable
+            onPress={() => setNumberOfDays(1)}
+            style={numberOfDays === 1 ? styles.btnSelected : styles.btn}
+          >
+            <Text style={styles.btnText}>1</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setNumberOfDays(2)}
+            style={numberOfDays === 2 ? styles.btnSelected : styles.btn}
+          >
+            <Text style={styles.btnText}>2</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setNumberOfDays(3)}
+            style={numberOfDays === 3 ? styles.btnSelected : styles.btn}
+          >
+            <Text style={styles.btnText}>3</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setNumberOfDays(4)}
+            style={numberOfDays === 4 ? styles.btnSelected : styles.btn}
+          >
+            <Text style={styles.btnText}>4</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setNumberOfDays(5)}
+            style={numberOfDays === 5 ? styles.btnSelected : styles.btn}
+          >
+            <Text style={styles.btnText}>5</Text>
+          </Pressable>
+        </View>
+        <Text
+          style={{
+            color: "#fff",
+            fontSize: 16,
+            marginVertical: 20,
+            textAlign: "center",
+          }}
+        >
+          I’m commited to exercising {numberOfDays}x weekly
+        </Text>
+        <Pressable style={styles.btnContinue} onPress={handleContinue}>
+          <Text style={styles.btnContinueText}>Continue</Text>
+        </Pressable>
       </View>
-      <Pressable
-        style={styles.btn}
-        onPress={handleContinue}
-      >
-        <Text style={styles.btnText}>Continuar</Text>
-      </Pressable>
-    </GestureHandlerRootView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "#0b0b0b",
     flex: 1,
-    backgroundColor: '#0B0B0B',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
   },
 
-  title: {
-    fontSize: 28,
-    fontWeight: 'semibold',
-    color: 'white',
-    marginBottom: 40,
-    marginTop: 0,
-    textAlign: 'center',
-    width: '85%',
-  },
-
-  slider: {
-    width: '85%',
-    height: 48,
-    flex: 0,
+  content: {
+    flex: 1,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   btn: {
-    width: '85%',
-    height: 48,
-    backgroundColor: '#0496FF',
-    borderRadius: 90,
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: 16,
-    marginTop: 40,
+    backgroundColor: "#24262F",
+    borderColor: "#24262F",
+    borderWidth: 2,
+    width: "18%",
+    aspectRatio: 1,
+    alignItems: "center",
+    display: "flex",
+    justifyContent: "center",
+    borderRadius: 16,
+  },
+
+  btnSelected: {
+    backgroundColor: "#0496FF",
+    borderColor: "#142749",
+    borderWidth: 2,
+    width: "18%",
+    aspectRatio: 1,
+
+    alignItems: "center",
+    display: "flex",
+    justifyContent: "center",
+    borderRadius: 16,
   },
 
   btnText: {
-    color: '#fff',
-    textAlign: 'center',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'normal',
-    alignSelf: 'center',
+    fontWeight: "bold",
+  },
+
+  btnContinue: {
+    width: "85%",
+    paddingVertical: 16,
+    backgroundColor: "#fff",
+    borderRadius: 24,
+    display: "flex",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: 40,
+  },
+
+  btnContinueText: {
+    color: "#0B0B0B",
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    alignSelf: "center",
     marginTop: 4,
-  }
+  },
 });

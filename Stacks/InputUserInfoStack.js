@@ -11,11 +11,12 @@ import UserInputDietPreference from "../Screens/InitialScreens/UserInputDietPref
 import UserInputExercises from "../Screens/InitialScreens/UserInputExercises";
 import UserInputFrequency from "../Screens/InitialScreens/UserInputFrequency";
 import UserInputDays from "../Screens/InitialScreens/UserInputDays";
-import UserInputTime from "../Screens/InitialScreens/UserInputTime";
 import UserInputFitnessLevel from "../Screens/InitialScreens/UserInputFitnessLevel";
 import UserInputActive from "../Screens/InitialScreens/UserInputActive";
 import UserInputSummary from "../Screens/InitialScreens/UserInputSummary";
 import UserInputPreviuosFitnessExperience from "../Screens/InitialScreens/UserInputPreviousFitnessExperience";
+import UserInputTrainingDuration from "../Screens/InitialScreens/UserInputTrainingDuration";
+import UserInputTrainingHours from "../Screens/InitialScreens/UserInputTrainingHours";
 
 export default function InputUserInfoStack() {
   const Stack = createNativeStackNavigator();
@@ -68,8 +69,28 @@ export default function InputUserInfoStack() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="About you (Fitness Level)"
+        component={UserInputFitnessLevel}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="About you (Diet Preference)"
         component={UserInputDietPreference}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="About you (Training Frequency)"
+        component={UserInputFrequency}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="About you (Training Duration)"
+        component={UserInputTrainingDuration}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="About you (Training Hours)"
+        component={UserInputTrainingHours}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -78,23 +99,8 @@ export default function InputUserInfoStack() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Acerca de ti (Frecuencia)"
-        component={UserInputFrequency}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
         name="Acerca de ti (Días)"
         component={UserInputDays}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Acerca de ti (Hora)"
-        component={UserInputTime}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="About you (Fitness Level)"
-        component={UserInputFitnessLevel}
         options={{ headerShown: false }}
       />
       <Stack.Screen

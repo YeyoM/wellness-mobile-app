@@ -14,11 +14,13 @@ export const InitialScreensProvider = ({ children }) => {
   const [physicalLimitations, setPhysicalLimitations] = useState([]);
   const [objectives, setObjectives] = useState([]);
   const [dietPreference, setDietPreference] = useState("");
-  const [exercises, setExercises] = useState([]);
-  const [exerciseFrequency, setExerciseFrequency] = useState("");
+  const [trainingFrequency, setTrainingFrequency] = useState("");
+  const [trainingDuration, setTrainingDuration] = useState("");
+  const [trainingHours, setTrainingHours] = useState("");
+
   const [exerciseDays, setExerciseDays] = useState([]);
+  const [exercises, setExercises] = useState([]);
   const [reminders, setReminders] = useState(false);
-  const [exerciseDuration, setExerciseDuration] = useState("");
   const [activityLevel, setActivityLevel] = useState("");
 
   return (
@@ -46,14 +48,16 @@ export const InitialScreensProvider = ({ children }) => {
         setDietPreference,
         exercises,
         setExercises,
-        exerciseFrequency,
-        setExerciseFrequency,
+        trainingFrequency,
+        setTrainingFrequency,
+        trainingDuration,
+        setTrainingDuration,
+        trainingHours,
+        setTrainingHours,
         exerciseDays,
         setExerciseDays,
         reminders,
         setReminders,
-        exerciseDuration,
-        setExerciseDuration,
         fitnessLevel,
         setFitnessLevel,
         activityLevel,
