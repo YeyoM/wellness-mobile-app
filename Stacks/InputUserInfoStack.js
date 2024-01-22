@@ -7,6 +7,7 @@ import UserInputInitialWeight from "../Screens/InitialScreens/UserInputInitialWe
 import UserInputHeight from "../Screens/InitialScreens/UserInputHeight";
 import UserInputPhysicalLimitations from "../Screens/InitialScreens/UserInputPhysicalLimitations";
 import UserInputObjectives from "../Screens/InitialScreens/UserInputObjectives";
+import UserInputDietPreference from "../Screens/InitialScreens/UserInputDietPreference";
 import UserInputExercises from "../Screens/InitialScreens/UserInputExercises";
 import UserInputFrequency from "../Screens/InitialScreens/UserInputFrequency";
 import UserInputDays from "../Screens/InitialScreens/UserInputDays";
@@ -62,8 +63,13 @@ export default function InputUserInfoStack() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Acerca de ti (Objetivos)"
+        name="About you (Objectives)"
         component={UserInputObjectives}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="About you (Diet Preference)"
+        component={UserInputDietPreference}
         options={{ headerShown: false }}
       />
       <Stack.Screen

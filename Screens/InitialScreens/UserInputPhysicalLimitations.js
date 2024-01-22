@@ -22,7 +22,12 @@ export default function UserInputPhysicalLimitations({ navigation }) {
 
   const [error, setError] = useState(false);
 
-  const handleContinue = () => {};
+  const handleContinue = () => {
+    if (physicalLimitations.length === 0) {
+      setPhysicalLimitations([]);
+    }
+    navigation.navigate("About you (Objectives)");
+  };
 
   const addPhysicalLimitation = () => {
     if (singlePhysicalLimitation === "") {
