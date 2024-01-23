@@ -1,32 +1,25 @@
-import { StyleSheet, Text, View, Pressable, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  Alert,
+  Dimensions,
+} from "react-native";
 import React, { useState, useContext } from "react";
 import TopNavigationBar from "../../components/TopNavigationBar";
-import ErrorNotification from "../../components/ErrorNotification";
-
-import {
-  interpolate,
-  Extrapolate,
-  interpolateColor,
-} from "react-native-reanimated";
+import { interpolate, Extrapolate } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
-import { Ionicons } from "@expo/vector-icons";
-
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputAge({ navigation }) {
   const { age, setAge } = useContext(InitialScreensContext);
 
-  const [error, setError] = useState(false);
-
   const handleContinue = () => {
     if (age === "") {
-      setTimeout(() => {
-        setError(false);
-      }, 3000);
-      setError("Please enter your age");
+      Alert.alert("Please enter your age");
       return;
     }
-    console.log(age);
     navigation.navigate("About you (Weight)");
   };
 
@@ -81,7 +74,6 @@ export default function UserInputAge({ navigation }) {
         currentStep={3}
         back={true}
       />
-      {error && <ErrorNotification message={error} />}
       <Text style={styles.title}>What is your age?</Text>
       <View
         style={{
@@ -113,6 +105,7 @@ export default function UserInputAge({ navigation }) {
           pagingEnabled={false}
           height={ITEM_HEIGHT}
           data={data}
+          defaultIndex={5}
           renderItem={({ index }) => {
             return (
               <View

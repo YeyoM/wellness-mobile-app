@@ -5,9 +5,9 @@ export const InitialScreensContext = createContext();
 export const InitialScreensProvider = ({ children }) => {
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
-  const [age, setAge] = useState("16");
+  const [age, setAge] = useState("21");
   const [preferredSystem, setpreferredSystem] = useState("");
-  const [weight, setWeight] = useState("");
+  const [weight, setWeight] = useState("55");
   const [height, setHeight] = useState("");
   const [prevExperience, setPrevExperience] = useState(false);
   const [fitnessLevel, setFitnessLevel] = useState("");

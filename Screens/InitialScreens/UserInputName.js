@@ -6,26 +6,20 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Dimensions,
+  Alert,
 } from "react-native";
 import React, { useState, useContext } from "react";
 
 import TopNavigationBar from "../../components/TopNavigationBar";
-import ErrorNotification from "../../components/ErrorNotification";
 
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputName({ navigation }) {
   const { setName } = useContext(InitialScreensContext);
-
-  const [error, setError] = useState(false);
   const [name_, setName_] = useState("");
-
   const handleContinue = () => {
     if (name_ === "") {
-      setTimeout(() => {
-        setError(false);
-      }, 5000);
-      setError("Please enter your name");
+      Alert.alert("Please enter your name");
       return;
     }
     setName(name_);
@@ -37,7 +31,6 @@ export default function UserInputName({ navigation }) {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      {error && <ErrorNotification message={error} />}
       <TopNavigationBar
         navigation={navigation}
         actualScreen={"About you"}
@@ -67,7 +60,7 @@ export default function UserInputName({ navigation }) {
           />
         </View>
         <Pressable style={styles.btn} onPress={handleContinue}>
-          <Text style={styles.btnText}>Continuar</Text>
+          <Text style={styles.btnText}>Continue</Text>
         </Pressable>
       </View>
     </KeyboardAvoidingView>

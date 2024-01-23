@@ -17,6 +17,7 @@ import UserInputSummary from "../Screens/InitialScreens/UserInputSummary";
 import UserInputPreviuosFitnessExperience from "../Screens/InitialScreens/UserInputPreviousFitnessExperience";
 import UserInputTrainingDuration from "../Screens/InitialScreens/UserInputTrainingDuration";
 import UserInputTrainingHours from "../Screens/InitialScreens/UserInputTrainingHours";
+import UserInputFinishScreen from "../Screens/InitialScreens/UserInputFinishScreen";
 
 export default function InputUserInfoStack() {
   const Stack = createNativeStackNavigator();
@@ -91,6 +92,11 @@ export default function InputUserInfoStack() {
       <Stack.Screen
         name="About you (Training Hours)"
         component={UserInputTrainingHours}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="About you (Finish)"
+        component={UserInputFinishScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

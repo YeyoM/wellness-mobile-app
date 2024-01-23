@@ -1,7 +1,6 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { StyleSheet, Alert, Text, View, Pressable } from "react-native";
 import React, { useState, useContext } from "react";
 import TopNavigationBar from "../../components/TopNavigationBar";
-import ErrorNotification from "../../components/ErrorNotification";
 
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
@@ -10,8 +9,6 @@ export default function UserInputGender({ navigation }) {
 
   const [selectHombre, setSelectHombre] = useState(false);
   const [selectMujer, setSelectMujer] = useState(false);
-
-  const [error, setError] = useState(false);
 
   const pressSelectHombre = () => {
     setSelectHombre(true);
@@ -25,10 +22,7 @@ export default function UserInputGender({ navigation }) {
 
   const handleContinue = () => {
     if (!selectHombre && !selectMujer) {
-      setTimeout(() => {
-        setError(false);
-      }, 3000);
-      setError("Please select an option");
+      Alert.alert("Please select at least one option");
       return;
     }
 
@@ -54,9 +48,7 @@ export default function UserInputGender({ navigation }) {
         steps={12}
         currentStep={2}
         back={true}
-        previousScreen={"Acerca de ti (Nombre)"}
       />
-      {error && <ErrorNotification message={error} />}
       <Text style={styles.title}>What is your gender?</Text>
       <Pressable
         style={

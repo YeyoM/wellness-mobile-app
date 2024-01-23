@@ -74,6 +74,7 @@ export default function UserInputTrainingHours({ navigation }) {
         selectNight,
         selectWhenever,
       });
+      navigation.navigate("About you (Finish)");
     }
   };
 
