@@ -1,42 +1,42 @@
 import { StyleSheet, Alert, Text, View, Pressable } from "react-native";
 import React, { useState, useContext } from "react";
 import TopNavigationBar from "../../components/TopNavigationBar";
-
+import { Ionicons } from "@expo/vector-icons";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputGender({ navigation }) {
   const { setGender } = useContext(InitialScreensContext);
 
-  const [selectHombre, setSelectHombre] = useState(false);
-  const [selectMujer, setSelectMujer] = useState(false);
+  const [selectMale, setSelectMale] = useState(false);
+  const [selectFemale, setSelectFemale] = useState(false);
 
-  const pressSelectHombre = () => {
-    setSelectHombre(true);
-    setSelectMujer(false);
+  const pressSelectMale = () => {
+    setSelectMale(true);
+    setSelectFemale(false);
   };
 
-  const pressSelectMujer = () => {
-    setSelectHombre(false);
-    setSelectMujer(true);
+  const pressSelectFemale = () => {
+    setSelectMale(false);
+    setSelectFemale(true);
   };
 
   const handleContinue = () => {
-    if (!selectHombre && !selectMujer) {
+    if (!selectMale && !selectFemale) {
       Alert.alert("Please select at least one option");
       return;
     }
 
-    if (selectHombre) {
-      setGender("Hombre");
-    } else if (selectMujer) {
-      setGender("Mujer");
+    if (selectMale) {
+      setGender("Male");
+    } else if (selectFemale) {
+      setGender("Female");
     }
 
     navigation.navigate("About you (Age)");
   };
 
   const handleSkip = () => {
-    setGender("Otro");
+    setGender("Other");
     navigation.navigate("About you (Age)");
   };
 
@@ -51,19 +51,29 @@ export default function UserInputGender({ navigation }) {
       />
       <Text style={styles.title}>What is your gender?</Text>
       <Pressable
-        style={
-          selectHombre ? styles.checkboxSelected : styles.checkboxUnselected
-        }
-        onPress={pressSelectHombre}
+        style={selectMale ? styles.checkboxSelected : styles.checkboxUnselected}
+        onPress={pressSelectMale}
       >
+        <Ionicons
+          name="man-outline"
+          size={25}
+          color="white"
+          style={{ marginRight: 10 }}
+        />
         <Text style={styles.label}>Male</Text>
       </Pressable>
       <Pressable
         style={
-          selectMujer ? styles.checkboxSelected : styles.checkboxUnselected
+          selectFemale ? styles.checkboxSelected : styles.checkboxUnselected
         }
-        onPress={pressSelectMujer}
+        onPress={pressSelectFemale}
       >
+        <Ionicons
+          name="woman-outline"
+          size={25}
+          color="white"
+          style={{ marginRight: 10 }}
+        />
         <Text style={styles.label}>Female</Text>
       </Pressable>
       <View
@@ -119,7 +129,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#157AFF",
     borderRadius: 20,
     display: "flex",
-    justifyContent: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingLeft: 20,
     marginBottom: 16,
     borderWidth: 1,
     borderColor: "rgba(4, 150, 255, 0.5)",
@@ -131,7 +144,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#1F1F1F",
     borderRadius: 20,
     display: "flex",
-    justifyContent: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingLeft: 20,
     marginBottom: 16,
     borderWidth: 1,
     borderColor: "#1F1F1F",

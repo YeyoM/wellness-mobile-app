@@ -17,25 +17,24 @@ import Carousel from "react-native-reanimated-carousel";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputInitialWeight({ navigation }) {
-  const { weight, setWeight } = useContext(InitialScreensContext);
-  const [preferredSystem, setPreferredSystem] = useState("metric");
+  const { weight, setWeight, weightUnit } = useContext(InitialScreensContext);
+
+  const [data] = useState(
+    weightUnit === "kg"
+      ? [...new Array(65).keys()].map((i) => i + 35)
+      : [...new Array(140).keys()].map((i) => i + 77),
+  );
+  const [defaultIndex] = useState(weightUnit === "kg" ? 35 : 77);
 
   const handleContinue = () => {
     if (weight === "") {
       Alert.alert("Please enter your weight");
       return;
     }
-    if (preferredSystem === "metric") {
-      setWeight(weight + "kg");
-    } else {
-      setWeight(weight + "lb");
-    }
-    navigation.navigate("About you (Height)");
+    navigation.navigate("About you (Height Unit)");
   };
 
-  const ref = React.useRef(null);
-  const data1 = [...new Array(65).keys()].map((i) => i + 35);
-  const data2 = [...new Array(100).keys()].map((i) => i + 70);
+  const ref1 = React.useRef();
   const scale = 0.9;
   const RIGHT_OFFSET = Dimensions.get("window").width * (1 - scale) * 0.5;
   const ITEM_WIDTH = Dimensions.get("window").width * 0.35;
@@ -56,24 +55,6 @@ export default function UserInputInitialWeight({ navigation }) {
     [RIGHT_OFFSET],
   );
 
-  const handlePressMetric = () => {
-    if (preferredSystem === "metric") {
-      return;
-    } else if (preferredSystem === "imperial") {
-      setPreferredSystem("metric");
-      setWeight(weight * 0.45359237);
-    }
-  };
-
-  const handlePressImperial = () => {
-    if (preferredSystem === "imperial") {
-      return;
-    } else if (preferredSystem === "metric") {
-      setPreferredSystem("imperial");
-      setWeight(weight * 2.20462262185);
-    }
-  };
-
   return (
     <GestureHandlerRootView style={styles.container}>
       <TopNavigationBar
@@ -84,255 +65,113 @@ export default function UserInputInitialWeight({ navigation }) {
         currentStep={4}
       />
       <Text style={styles.title}>What is your weight?</Text>
-      <View
-        style={{
-          width: "90%",
-          paddingVertical: 8,
-          alignItems: "center",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          backgroundColor: "#24262B",
-          paddingHorizontal: 8,
-          borderRadius: 22,
-          marginVertical: 20,
-        }}
-      >
-        <Pressable
-          style={
-            preferredSystem === "metric" ? styles.selected : styles.unselected
-          }
-          onPress={() => {
-            handlePressMetric();
-          }}
-        >
-          <Text style={{ color: "#fff", fontSize: 14 }}>kg</Text>
-        </Pressable>
-        <Pressable
-          style={
-            preferredSystem === "imperial" ? styles.selected : styles.unselected
-          }
-          onPress={() => {
-            handlePressImperial();
-          }}
-        >
-          <Text style={{ color: "#fff", fontSize: 14 }}>lb</Text>
-        </Pressable>
-      </View>
       <View style={styles.weightContainer}>
         <Text style={styles.weight}>{weight}</Text>
-        <Text style={styles.weight_}>
-          {preferredSystem === "metric" ? "kg" : "lb"}
-        </Text>
+        <Text style={styles.weight_}>{weightUnit}</Text>
       </View>
-      {preferredSystem === "metric" ? (
-        <Carousel
-          loop
-          vertical={false}
-          style={{
-            justifyContent: "center",
-            width: Dimensions.get("window").width,
-            height: 100,
-          }}
-          ref={ref}
-          onSnapToItem={(index) => {
-            setWeight(data1[index]);
-          }}
-          width={ITEM_WIDTH}
-          pagingEnabled={false}
-          height={ITEM_HEIGHT}
-          data={data1}
-          defaultIndex={20}
-          renderItem={({ index }) => {
-            return (
-              <View
-                key={index}
-                style={{
-                  flex: 1,
-                  backgroundColor: "#0B0B0B",
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                {data1[index] === weight ? null : (
-                  <Text
-                    numberOfLines={1}
-                    style={{
-                      maxWidth: "100%",
-                      color: "white",
-                      fontSize: 16,
-                      fontWeight: "bold",
-                      position: "absolute",
-                      bottom: 0,
-                      left: "50%",
-                      transform: [{ translateX: -5 }],
-                    }}
-                  >
-                    {data1[index]}
-                  </Text>
-                )}
-                <View
+      <Carousel
+        loop
+        vertical={false}
+        style={{
+          justifyContent: "center",
+          width: Dimensions.get("window").width,
+          height: 100,
+        }}
+        ref={ref1}
+        onSnapToItem={(index) => {
+          setWeight(data[index]);
+        }}
+        width={ITEM_WIDTH}
+        pagingEnabled={false}
+        height={ITEM_HEIGHT}
+        data={data}
+        defaultIndex={defaultIndex}
+        renderItem={({ index }) => {
+          return (
+            <View
+              key={index}
+              style={{
+                flex: 1,
+                backgroundColor: "#0B0B0B",
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              {data[index] === weight ? null : (
+                <Text
+                  numberOfLines={1}
                   style={{
-                    width: 6,
-                    height: 50,
-                    backgroundColor: "#157AFF",
+                    maxWidth: "100%",
+                    color: "white",
+                    fontSize: 16,
+                    fontWeight: "bold",
                     position: "absolute",
+                    bottom: 0,
                     left: "50%",
-                    top: 0,
-                    borderRadius: 4,
-                    borderWidth: 1,
-                    borderColor: "#0450B4",
+                    transform: [{ translateX: -5 }],
                   }}
-                />
-                <View
-                  style={{
-                    width: 6,
-                    height: 30,
-                    backgroundColor: "#50535B",
-                    position: "absolute",
-                    left: "25%",
-                    top: 10,
-                    borderRadius: 4,
-                    borderWidth: 1,
-                    borderColor: "#50535B",
-                  }}
-                />
-                <View
-                  style={{
-                    width: 6,
-                    height: 30,
-                    backgroundColor: "#50535B",
-                    position: "absolute",
-                    left: "75%",
-                    top: 10,
-                    borderRadius: 4,
-                    borderWidth: 1,
-                    borderColor: "#50535B",
-                  }}
-                />
-                <View
-                  style={{
-                    width: 6,
-                    height: 40,
-                    backgroundColor: "#50535B",
-                    position: "absolute",
-                    left: "0%",
-                    top: 5,
-                    borderRadius: 4,
-                    borderWidth: 1,
-                    borderColor: "#50535B",
-                  }}
-                />
-              </View>
-            );
-          }}
-          customAnimation={animationStyle}
-        />
-      ) : (
-        <Carousel
-          loop
-          vertical={false}
-          style={{
-            justifyContent: "center",
-            width: Dimensions.get("window").width,
-            height: 100,
-          }}
-          ref={ref}
-          onSnapToItem={(index) => {
-            setWeight(data2[index]);
-          }}
-          width={ITEM_WIDTH}
-          pagingEnabled={false}
-          height={ITEM_HEIGHT}
-          data={data2}
-          defaultIndex={20}
-          renderItem={({ index }) => {
-            return (
+                >
+                  {data[index]}
+                </Text>
+              )}
               <View
-                key={index}
                 style={{
-                  flex: 1,
-                  backgroundColor: "#0B0B0B",
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "column",
+                  width: 6,
+                  height: 50,
+                  backgroundColor: "#157AFF",
+                  position: "absolute",
+                  left: "50%",
+                  top: 0,
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  borderColor: "#0450B4",
                 }}
-              >
-                {data2[index] === weight ? null : (
-                  <Text
-                    numberOfLines={1}
-                    style={{
-                      maxWidth: "100%",
-                      color: "white",
-                      fontSize: 16,
-                      fontWeight: "bold",
-                      position: "absolute",
-                      bottom: 0,
-                      left: "50%",
-                      transform: [{ translateX: -5 }],
-                    }}
-                  >
-                    {data2[index]}
-                  </Text>
-                )}
-                <View
-                  style={{
-                    width: 6,
-                    height: 50,
-                    backgroundColor: "#157AFF",
-                    position: "absolute",
-                    left: "50%",
-                    top: 0,
-                    borderRadius: 4,
-                    borderWidth: 1,
-                    borderColor: "#0450B4",
-                  }}
-                />
-                <View
-                  style={{
-                    width: 6,
-                    height: 30,
-                    backgroundColor: "#50535B",
-                    position: "absolute",
-                    left: "25%",
-                    top: 10,
-                    borderRadius: 4,
-                    borderWidth: 1,
-                    borderColor: "#50535B",
-                  }}
-                />
-                <View
-                  style={{
-                    width: 6,
-                    height: 30,
-                    backgroundColor: "#50535B",
-                    position: "absolute",
-                    left: "75%",
-                    top: 10,
-                    borderRadius: 4,
-                    borderWidth: 1,
-                    borderColor: "#50535B",
-                  }}
-                />
-                <View
-                  style={{
-                    width: 6,
-                    height: 40,
-                    backgroundColor: "#50535B",
-                    position: "absolute",
-                    left: "0%",
-                    top: 5,
-                    borderRadius: 4,
-                    borderWidth: 1,
-                    borderColor: "#50535B",
-                  }}
-                />
-              </View>
-            );
-          }}
-          customAnimation={animationStyle}
-        />
-      )}
+              />
+              <View
+                style={{
+                  width: 6,
+                  height: 30,
+                  backgroundColor: "#50535B",
+                  position: "absolute",
+                  left: "25%",
+                  top: 10,
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  borderColor: "#50535B",
+                }}
+              />
+              <View
+                style={{
+                  width: 6,
+                  height: 30,
+                  backgroundColor: "#50535B",
+                  position: "absolute",
+                  left: "75%",
+                  top: 10,
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  borderColor: "#50535B",
+                }}
+              />
+              <View
+                style={{
+                  width: 6,
+                  height: 40,
+                  backgroundColor: "#50535B",
+                  position: "absolute",
+                  left: "0%",
+                  top: 5,
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  borderColor: "#50535B",
+                }}
+              />
+            </View>
+          );
+        }}
+        customAnimation={animationStyle}
+      />
       <View
         style={{
           height: 20,

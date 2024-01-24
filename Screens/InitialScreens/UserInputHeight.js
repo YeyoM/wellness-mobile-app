@@ -11,11 +11,15 @@ import Carousel from "react-native-reanimated-carousel";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputHeight({ navigation }) {
-  const { height, setHeight } = useContext(InitialScreensContext);
+  const { height, setHeight, heightUnit } = useContext(InitialScreensContext);
 
   const [error, setError] = useState(false);
-
-  const [preferredSystem, setPreferredSystem] = useState("metric");
+  const [data] = useState(
+    heightUnit === "cm"
+      ? [...new Array(120).keys()].map((i) => i + 100)
+      : [...new Array(126).keys()].map((i) => i + 40),
+  );
+  const [defaultIndex] = useState(heightUnit === "cm" ? 70 : 27);
 
   const handleContinue = () => {
     if (height === "") {
@@ -29,13 +33,8 @@ export default function UserInputHeight({ navigation }) {
   };
 
   const ref = React.useRef(null);
-
-  const data = [...new Array(65).keys()].map((i) => i + 16);
-
   const scale = 0.9;
-
   const RIGHT_OFFSET = Dimensions.get("window").width * (1 - scale) * 0.5;
-
   const ITEM_WIDTH = Dimensions.get("window").width * 0.35;
   const ITEM_HEIGHT = 100;
 
@@ -65,49 +64,14 @@ export default function UserInputHeight({ navigation }) {
       />
       {error && <ErrorNotification message={error} />}
       <Text style={styles.title}>What is your height?</Text>
-      <View
-        style={{
-          width: "90%",
-          paddingVertical: 8,
-          alignItems: "center",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          backgroundColor: "#24262B",
-          paddingHorizontal: 8,
-          borderRadius: 22,
-          marginVertical: 20,
-        }}
-      >
-        <Pressable
-          style={
-            preferredSystem === "metric" ? styles.selected : styles.unselected
-          }
-          onPress={() => {
-            setPreferredSystem("metric");
-          }}
-        >
-          <Text style={{ color: "#fff", fontSize: 14 }}>cm</Text>
-        </Pressable>
-        <Pressable
-          style={
-            preferredSystem === "imperial" ? styles.selected : styles.unselected
-          }
-          onPress={() => {
-            setPreferredSystem("imperial");
-          }}
-        >
-          <Text style={{ color: "#fff", fontSize: 14 }}>in</Text>
-        </Pressable>
-      </View>
       <View style={styles.heightContainer}>
         <Text style={styles.height}>{height}</Text>
-        <Text style={styles.height_}>
-          {preferredSystem === "metric" ? "cm" : "in"}
-        </Text>
+        <Text style={styles.height_}>{heightUnit === "cm" ? "cm" : "in"}</Text>
       </View>
 
       <Carousel
         loop
+        defaultIndex={defaultIndex}
         vertical={false}
         style={{
           justifyContent: "center",

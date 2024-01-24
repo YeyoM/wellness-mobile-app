@@ -1,17 +1,21 @@
-import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Pressable,
+} from "react-native";
 import React, { useState, useContext } from "react";
 import TopNavigationBar from "../../components/TopNavigationBar";
-import ErrorNotification from "../../components/ErrorNotification";
 import { Ionicons } from "@expo/vector-icons";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputFinishScreen({ navigation }) {
-  const { setTrainingHours } = useContext(InitialScreensContext);
+  const { printState } = useContext(InitialScreensContext);
 
   const [selectSeeIt, setSelectSeeIt] = useState(false);
   const [selectLater, setSelectLater] = useState(false);
-
-  const [error, setError] = useState(false);
 
   const handleSeeIt = () => {
     setSelectSeeIt(!selectSeeIt);
@@ -25,16 +29,15 @@ export default function UserInputFinishScreen({ navigation }) {
 
   const handleContinue = () => {
     if (!selectSeeIt && !selectLater) {
-      setError("Please select at least one option");
-    } else {
-      setError(false);
+      Alert.alert("Please select an option");
+      return;
     }
+    printState();
   };
 
   return (
     <View style={styles.container}>
       <TopNavigationBar navigation={navigation} actualScreen={"All done!"} />
-      {error && <ErrorNotification message={error} />}
       <Text style={styles.title}>Your AI workout plan is ready!</Text>
       <View style={styles.objectives}>
         <Pressable

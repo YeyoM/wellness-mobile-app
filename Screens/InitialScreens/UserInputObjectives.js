@@ -66,13 +66,21 @@ export default function UserInputObjectives({ navigation }) {
     ) {
       setError("Please select at least one objective");
     } else {
-      setObjectives({
-        selectHealtyLifestyle,
-        looseWeight,
-        gainMuscle,
-        gainEndurance,
-        justTrying,
-      });
+      if (selectHealtyLifestyle) {
+        setObjectives(["Healthy Lifestyle"]);
+      }
+      if (looseWeight) {
+        setObjectives(["Loose Weight"]);
+      }
+      if (gainMuscle) {
+        setObjectives(["Gain Muscle"]);
+      }
+      if (gainEndurance) {
+        setObjectives(["Gain Endurance"]);
+      }
+      if (justTrying) {
+        setObjectives([]);
+      }
       navigation.navigate("About you (Diet Preference)");
     }
   };

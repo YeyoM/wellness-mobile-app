@@ -1,11 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  Pressable,
-  Image,
-} from "react-native";
+import { StyleSheet, Text, Dimensions, Pressable, Image } from "react-native";
 import React, { useState, useContext } from "react";
 import TopNavigationBar from "../../components/TopNavigationBar";
 import ErrorNotification from "../../components/ErrorNotification";

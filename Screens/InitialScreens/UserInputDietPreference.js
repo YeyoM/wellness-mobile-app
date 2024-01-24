@@ -1,21 +1,16 @@
-import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
+import { StyleSheet, Alert, Text, View, Pressable } from "react-native";
 import React, { useState, useContext } from "react";
 import TopNavigationBar from "../../components/TopNavigationBar";
-import ErrorNotification from "../../components/ErrorNotification";
 import { Ionicons } from "@expo/vector-icons";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputDietPreference({ navigation }) {
-  const { dietPreference, setDietPreference } = useContext(
-    InitialScreensContext,
-  );
+  const { setDietPreference } = useContext(InitialScreensContext);
 
   const [selectPlantBased, setSelectPlantBased] = useState(false);
   const [selectSpecializedDiet, setSelectSpecializedDiet] = useState(false);
   const [selectCarboDiet, setSelectCarboDiet] = useState(false);
   const [selectTraditionalDiet, setSelectTraditionalDiet] = useState(false);
-
-  const [error, setError] = useState(false);
 
   const handlePlantBased = () => {
     setSelectPlantBased(!selectPlantBased);
@@ -46,6 +41,24 @@ export default function UserInputDietPreference({ navigation }) {
   };
 
   const handleContinue = () => {
+    if (
+      !selectPlantBased &&
+      !selectSpecializedDiet &&
+      !selectCarboDiet &&
+      !selectTraditionalDiet
+    ) {
+      Alert.alert("Please select an option");
+      return;
+    }
+    if (selectPlantBased) {
+      setDietPreference("Plant based");
+    } else if (selectSpecializedDiet) {
+      setDietPreference("Specialized diet");
+    } else if (selectCarboDiet) {
+      setDietPreference("Carbo diet");
+    } else if (selectTraditionalDiet) {
+      setDietPreference("Traditional diet");
+    }
     navigation.navigate("About you (Training Frequency)");
   };
 
@@ -58,7 +71,6 @@ export default function UserInputDietPreference({ navigation }) {
         currentStep={9}
         back={true}
       />
-      {error && <ErrorNotification message={error} />}
       <Text style={styles.title}>Do you have a specific diet preference?</Text>
       <View style={styles.objectives}>
         <View

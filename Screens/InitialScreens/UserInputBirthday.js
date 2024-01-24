@@ -20,7 +20,7 @@ export default function UserInputAge({ navigation }) {
       Alert.alert("Please enter your age");
       return;
     }
-    navigation.navigate("About you (Weight)");
+    navigation.navigate("About you (Weight Unit)");
   };
 
   const ref = React.useRef(null);

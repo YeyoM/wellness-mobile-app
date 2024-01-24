@@ -1,7 +1,13 @@
-import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Pressable,
+} from "react-native";
 import React, { useState, useContext } from "react";
 import TopNavigationBar from "../../components/TopNavigationBar";
-import ErrorNotification from "../../components/ErrorNotification";
 import { Ionicons } from "@expo/vector-icons";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
@@ -13,8 +19,6 @@ export default function UserInputTrainingHours({ navigation }) {
   const [selectAfternoon, setSelectAfterNoon] = useState(false);
   const [selectNight, setSelectNight] = useState(false);
   const [selectWhenever, setSelectWhenever] = useState(false);
-
-  const [error, setError] = useState(false);
 
   const handleHealthierLifestyle = () => {
     setSelectEarly(!selectEarly);
@@ -64,16 +68,19 @@ export default function UserInputTrainingHours({ navigation }) {
       !selectNight &&
       !selectWhenever
     ) {
-      setError("Please select at least one option");
+      Alert.alert("Please select an option");
     } else {
-      setError(false);
-      setTrainingHours({
-        selectEarly,
-        selectNoon,
-        selectAfternoon,
-        selectNight,
-        selectWhenever,
-      });
+      if (selectEarly) {
+        setTrainingHours("Early Bird");
+      } else if (selectNoon) {
+        setTrainingHours("Around noon");
+      } else if (selectAfternoon) {
+        setTrainingHours("Afternoon");
+      } else if (selectNight) {
+        setTrainingHours("Night Owl");
+      } else if (selectWhenever) {
+        setTrainingHours("Whenever I can");
+      }
       navigation.navigate("About you (Finish)");
     }
   };
@@ -87,7 +94,6 @@ export default function UserInputTrainingHours({ navigation }) {
         currentStep={12}
         back={true}
       />
-      {error && <ErrorNotification message={error} />}
       <Text style={styles.title}>At what time you like to workout?</Text>
       <View style={styles.objectives}>
         <Pressable

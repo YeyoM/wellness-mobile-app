@@ -6,11 +6,12 @@ export const InitialScreensProvider = ({ children }) => {
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
   const [age, setAge] = useState("21");
-  const [preferredSystem, setpreferredSystem] = useState("");
-  const [weight, setWeight] = useState("55");
-  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("70");
+  const [weightUnit, setWeightUnit] = useState("kg");
+  const [height, setHeight] = useState("170");
+  const [heightUnit, setHeightUnit] = useState("cm");
   const [prevExperience, setPrevExperience] = useState(false);
-  const [fitnessLevel, setFitnessLevel] = useState("");
+  const [fitnessLevel, setFitnessLevel] = useState("Intermediate");
   const [physicalLimitations, setPhysicalLimitations] = useState([]);
   const [objectives, setObjectives] = useState([]);
   const [dietPreference, setDietPreference] = useState("");
@@ -18,10 +19,23 @@ export const InitialScreensProvider = ({ children }) => {
   const [trainingDuration, setTrainingDuration] = useState("");
   const [trainingHours, setTrainingHours] = useState("");
 
-  const [exerciseDays, setExerciseDays] = useState([]);
-  const [exercises, setExercises] = useState([]);
-  const [reminders, setReminders] = useState(false);
-  const [activityLevel, setActivityLevel] = useState("");
+  const printState = () => {
+    console.log("name: ", name);
+    console.log("gender: ", gender);
+    console.log("age: ", age);
+    console.log("weight: ", weight);
+    console.log("weightUnit: ", weightUnit);
+    console.log("height: ", height);
+    console.log("heightUnit: ", heightUnit);
+    console.log("prevExperience: ", prevExperience);
+    console.log("fitnessLevel: ", fitnessLevel);
+    console.log("physicalLimitations: ", physicalLimitations);
+    console.log("objectives: ", objectives);
+    console.log("dietPreference: ", dietPreference);
+    console.log("trainingFrequency: ", trainingFrequency);
+    console.log("trainingDuration: ", trainingDuration);
+    console.log("trainingHours: ", trainingHours);
+  };
 
   return (
     <InitialScreensContext.Provider
@@ -32,12 +46,14 @@ export const InitialScreensProvider = ({ children }) => {
         setGender,
         age,
         setAge,
-        preferredSystem,
-        setpreferredSystem,
         weight,
         setWeight,
+        weightUnit,
+        setWeightUnit,
         height,
         setHeight,
+        heightUnit,
+        setHeightUnit,
         prevExperience,
         setPrevExperience,
         physicalLimitations,
@@ -46,22 +62,15 @@ export const InitialScreensProvider = ({ children }) => {
         setObjectives,
         dietPreference,
         setDietPreference,
-        exercises,
-        setExercises,
         trainingFrequency,
         setTrainingFrequency,
         trainingDuration,
         setTrainingDuration,
         trainingHours,
         setTrainingHours,
-        exerciseDays,
-        setExerciseDays,
-        reminders,
-        setReminders,
         fitnessLevel,
         setFitnessLevel,
-        activityLevel,
-        setActivityLevel,
+        printState,
       }}
     >
       {children}

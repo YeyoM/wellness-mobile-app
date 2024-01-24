@@ -4,16 +4,14 @@ import UserInputName from "../Screens/InitialScreens/UserInputName";
 import UserInputGender from "../Screens/InitialScreens/UserInputGender";
 import UserInputAge from "../Screens/InitialScreens/UserInputBirthday";
 import UserInputInitialWeight from "../Screens/InitialScreens/UserInputInitialWeight";
+import UserInputWeightUnit from "../Screens/InitialScreens/UserInputWeightUnit";
 import UserInputHeight from "../Screens/InitialScreens/UserInputHeight";
+import UserInputHeightUnit from "../Screens/InitialScreens/UserInputHeightUnit";
 import UserInputPhysicalLimitations from "../Screens/InitialScreens/UserInputPhysicalLimitations";
 import UserInputObjectives from "../Screens/InitialScreens/UserInputObjectives";
 import UserInputDietPreference from "../Screens/InitialScreens/UserInputDietPreference";
-import UserInputExercises from "../Screens/InitialScreens/UserInputExercises";
 import UserInputFrequency from "../Screens/InitialScreens/UserInputFrequency";
-import UserInputDays from "../Screens/InitialScreens/UserInputDays";
 import UserInputFitnessLevel from "../Screens/InitialScreens/UserInputFitnessLevel";
-import UserInputActive from "../Screens/InitialScreens/UserInputActive";
-import UserInputSummary from "../Screens/InitialScreens/UserInputSummary";
 import UserInputPreviuosFitnessExperience from "../Screens/InitialScreens/UserInputPreviousFitnessExperience";
 import UserInputTrainingDuration from "../Screens/InitialScreens/UserInputTrainingDuration";
 import UserInputTrainingHours from "../Screens/InitialScreens/UserInputTrainingHours";
@@ -45,8 +43,18 @@ export default function InputUserInfoStack() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="About you (Weight Unit)"
+        component={UserInputWeightUnit}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="About you (Weight)"
         component={UserInputInitialWeight}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="About you (Height Unit)"
+        component={UserInputHeightUnit}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -97,26 +105,6 @@ export default function InputUserInfoStack() {
       <Stack.Screen
         name="About you (Finish)"
         component={UserInputFinishScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Acerca de ti (Ejercicios)"
-        component={UserInputExercises}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Acerca de ti (Días)"
-        component={UserInputDays}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Acerca de ti (Activo)"
-        component={UserInputActive}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Acerca de ti (Resumen)"
-        component={UserInputSummary}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

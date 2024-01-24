@@ -19,7 +19,7 @@ export default function UserInputFrequency({ navigation }) {
       setError(true);
     } else {
       setError(false);
-      setTrainingFrequency(numberOfDays);
+      setTrainingFrequency(numberOfDays + " days");
       navigation.navigate("About you (Training Duration)");
     }
   };

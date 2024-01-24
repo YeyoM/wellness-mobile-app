@@ -40,7 +40,7 @@ export default function UserInputTrainingDuration({ navigation }) {
   };
 
   const handleContinue = () => {
-    setTrainingDuration(value);
+    setTrainingDuration(realTime);
     navigation.navigate("About you (Training Hours)");
   };
 
