@@ -23,10 +23,6 @@ export default function Home({ navigation }) {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    // For now, redirect the user to UserInput
-    navigation.navigate("User Input");
-    return;
-
     // TODO: Move this logic to a function in the Firebase functions file
     const userId = FIREBASE_AUTH.currentUser.uid;
 

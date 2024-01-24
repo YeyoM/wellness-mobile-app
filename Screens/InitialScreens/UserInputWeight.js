@@ -16,8 +16,10 @@ import Carousel from "react-native-reanimated-carousel";
 
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
-export default function UserInputInitialWeight({ navigation }) {
+export default function UserInputWeight({ navigation }) {
   const { weight, setWeight, weightUnit } = useContext(InitialScreensContext);
+
+  const [weight_, setWeight_] = useState(weight);
 
   const [data] = useState(
     weightUnit === "kg"
@@ -27,10 +29,11 @@ export default function UserInputInitialWeight({ navigation }) {
   const [defaultIndex] = useState(weightUnit === "kg" ? 35 : 77);
 
   const handleContinue = () => {
-    if (weight === "") {
+    if (weight_ === "") {
       Alert.alert("Please enter your weight");
       return;
     }
+    setWeight(weight_);
     navigation.navigate("About you (Height Unit)");
   };
 
@@ -66,7 +69,7 @@ export default function UserInputInitialWeight({ navigation }) {
       />
       <Text style={styles.title}>What is your weight?</Text>
       <View style={styles.weightContainer}>
-        <Text style={styles.weight}>{weight}</Text>
+        <Text style={styles.weight}>{weight_}</Text>
         <Text style={styles.weight_}>{weightUnit}</Text>
       </View>
       <Carousel
@@ -79,7 +82,7 @@ export default function UserInputInitialWeight({ navigation }) {
         }}
         ref={ref1}
         onSnapToItem={(index) => {
-          setWeight(data[index]);
+          setWeight_(data[index]);
         }}
         width={ITEM_WIDTH}
         pagingEnabled={false}
@@ -98,7 +101,7 @@ export default function UserInputInitialWeight({ navigation }) {
                 flexDirection: "column",
               }}
             >
-              {data[index] === weight ? null : (
+              {data[index] === weight_ ? null : (
                 <Text
                   numberOfLines={1}
                   style={{

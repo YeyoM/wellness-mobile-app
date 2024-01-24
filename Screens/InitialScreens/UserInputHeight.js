@@ -1,7 +1,13 @@
 import React, { useState, useContext } from "react";
-import { StyleSheet, Text, Pressable, View, Dimensions } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  Pressable,
+  View,
+  Dimensions,
+} from "react-native";
 import TopNavigationBar from "../../components/TopNavigationBar";
-import ErrorNotification from "../../components/ErrorNotification";
 
 import { interpolate } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -13,7 +19,8 @@ import { InitialScreensContext } from "../../context/InitialScreensContext";
 export default function UserInputHeight({ navigation }) {
   const { height, setHeight, heightUnit } = useContext(InitialScreensContext);
 
-  const [error, setError] = useState(false);
+  const [height_, setHeight_] = useState(height);
+
   const [data] = useState(
     heightUnit === "cm"
       ? [...new Array(120).keys()].map((i) => i + 100)
@@ -22,13 +29,11 @@ export default function UserInputHeight({ navigation }) {
   const [defaultIndex] = useState(heightUnit === "cm" ? 70 : 27);
 
   const handleContinue = () => {
-    if (height === "") {
-      setTimeout(() => {
-        setError(false);
-      }, 5000);
-      setError("Please select your height");
+    if (height_ === "") {
+      Alert.alert("Error", "Please select your height");
       return;
     }
+    setHeight(height_);
     navigation.navigate("About you (Previous Fitness Experience)");
   };
 
@@ -62,10 +67,9 @@ export default function UserInputHeight({ navigation }) {
         steps={12}
         currentStep={5}
       />
-      {error && <ErrorNotification message={error} />}
       <Text style={styles.title}>What is your height?</Text>
       <View style={styles.heightContainer}>
-        <Text style={styles.height}>{height}</Text>
+        <Text style={styles.height}>{height_}</Text>
         <Text style={styles.height_}>{heightUnit === "cm" ? "cm" : "in"}</Text>
       </View>
 
@@ -80,7 +84,7 @@ export default function UserInputHeight({ navigation }) {
         }}
         ref={ref}
         onSnapToItem={(index) => {
-          setHeight(data[index]);
+          setHeight_(data[index]);
         }}
         width={ITEM_WIDTH}
         pagingEnabled={false}
@@ -98,7 +102,7 @@ export default function UserInputHeight({ navigation }) {
                 flexDirection: "column",
               }}
             >
-              {data[index] === height ? null : (
+              {data[index] === height_ ? null : (
                 <Text
                   numberOfLines={1}
                   style={{

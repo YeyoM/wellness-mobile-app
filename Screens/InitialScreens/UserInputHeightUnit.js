@@ -13,13 +13,11 @@ export default function UserInputHeightUnit({ navigation }) {
   const handleSelectCm = () => {
     setSelectCm(true);
     setSelectIn(false);
-    setHeightUnit("cm");
   };
 
   const handleSelectIn = () => {
     setSelectCm(false);
     setSelectIn(true);
-    setHeightUnit("in");
   };
 
   const handleContinue = () => {

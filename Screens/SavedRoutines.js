@@ -170,8 +170,8 @@ export default function SavedRoutines({ navigation, route }) {
             <Text style={styles.create}>Add new routine</Text>
             <Ionicons name="create-outline" size={30} color="#0496FF" />
           </Pressable>
-          {routines !== null && routines.length === 0 ? (
-            <Text style={{ color: "#fff", fontSize: 20 }}>
+          {!refreshing && !routines ? (
+            <Text style={{ color: "#fff", fontSize: 20, marginTop: 20 }}>
               You don't have any routines yet
             </Text>
           ) : (

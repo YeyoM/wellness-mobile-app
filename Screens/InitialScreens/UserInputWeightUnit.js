@@ -13,13 +13,11 @@ export default function UserInputWeightUnit({ navigation }) {
   const handleSelectKg = () => {
     setSelectKg(true);
     setSelectLb(false);
-    setWeightUnit("kg");
   };
 
   const handleSelectLb = () => {
     setSelectKg(false);
     setSelectLb(true);
-    setWeightUnit("lb");
   };
 
   const handleContinue = () => {

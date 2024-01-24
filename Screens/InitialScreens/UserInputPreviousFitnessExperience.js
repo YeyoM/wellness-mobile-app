@@ -28,7 +28,7 @@ export default function UserInputPreviuosFitnessExperience({ navigation }) {
     <View style={styles.container}>
       <TopNavigationBar
         navigation={navigation}
-        actualScreen={"About you"}
+        actualScreen={"Fitness"}
         steps={12}
         currentStep={6}
         back={true}

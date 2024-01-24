@@ -1,4 +1,5 @@
 import React, { createContext, useState } from "react";
+import { registerInitialQuestions } from "../FirebaseFunctions/Users/RegisterInitialQuestion";
 
 export const InitialScreensContext = createContext();
 
@@ -37,6 +38,30 @@ export const InitialScreensProvider = ({ children }) => {
     console.log("trainingHours: ", trainingHours);
   };
 
+  const registerInitialQuestionsFunction = async (setLoading, setError) => {
+    const questions = {
+      name,
+      gender,
+      age,
+      weight,
+      weightUnit,
+      height,
+      heightUnit,
+      prevExperience,
+
+      fitnessLevel,
+      physicalLimitations,
+      objectives,
+      dietPreference,
+      trainingFrequency,
+      trainingDuration,
+      trainingHours,
+    };
+    console.log("registerInitialQuestionsFunction");
+    console.log(questions);
+    await registerInitialQuestions(questions, setLoading, setError);
+  };
+
   return (
     <InitialScreensContext.Provider
       value={{
@@ -71,6 +96,7 @@ export const InitialScreensProvider = ({ children }) => {
         fitnessLevel,
         setFitnessLevel,
         printState,
+        registerInitialQuestionsFunction,
       }}
     >
       {children}

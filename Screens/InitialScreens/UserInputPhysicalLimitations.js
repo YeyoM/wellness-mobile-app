@@ -14,16 +14,16 @@ import ErrorNotification from "../../components/ErrorNotification";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputPhysicalLimitations({ navigation }) {
-  const { physicalLimitations, setPhysicalLimitations } = useContext(
-    InitialScreensContext,
-  );
+  const { setPhysicalLimitations } = useContext(InitialScreensContext);
+
+  const [physicalLimitations_, setPhysicalLimitations_] = useState([]);
 
   const [singlePhysicalLimitation, setSinglePhysicalLimitation] = useState("");
 
   const [error, setError] = useState(false);
 
   const handleContinue = () => {
-    if (physicalLimitations.length === 0) {
+    if (physicalLimitations_.length === 0) {
       setPhysicalLimitations([]);
     }
     navigation.navigate("About you (Objectives)");
@@ -33,8 +33,8 @@ export default function UserInputPhysicalLimitations({ navigation }) {
     if (singlePhysicalLimitation === "") {
       setError("Please type a physical limitation");
     } else {
-      setPhysicalLimitations([
-        ...physicalLimitations,
+      setPhysicalLimitations_([
+        ...physicalLimitations_,
         singlePhysicalLimitation,
       ]);
       setSinglePhysicalLimitation("");
@@ -48,7 +48,7 @@ export default function UserInputPhysicalLimitations({ navigation }) {
     >
       <TopNavigationBar
         navigation={navigation}
-        actualScreen={"About you"}
+        actualScreen={"Health"}
         steps={12}
         currentStep={7}
         back={true}
@@ -74,8 +74,8 @@ export default function UserInputPhysicalLimitations({ navigation }) {
           marginBottom: 10,
         }}
       >
-        {physicalLimitations &&
-          physicalLimitations.map((limitation, index) => (
+        {physicalLimitations_ &&
+          physicalLimitations_.map((limitation, index) => (
             <View
               key={index}
               style={{

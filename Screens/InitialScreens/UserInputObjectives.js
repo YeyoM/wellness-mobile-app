@@ -89,7 +89,7 @@ export default function UserInputObjectives({ navigation }) {
     <View style={styles.container}>
       <TopNavigationBar
         navigation={navigation}
-        actualScreen={"About you"}
+        actualScreen={"Health"}
         steps={12}
         currentStep={8}
         back={true}

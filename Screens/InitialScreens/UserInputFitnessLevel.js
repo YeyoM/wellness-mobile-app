@@ -1,7 +1,13 @@
-import { StyleSheet, Text, Dimensions, Pressable, Image } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  Dimensions,
+  Pressable,
+  Image,
+} from "react-native";
 import React, { useState, useContext } from "react";
 import TopNavigationBar from "../../components/TopNavigationBar";
-import ErrorNotification from "../../components/ErrorNotification";
 
 import { useSharedValue } from "react-native-reanimated";
 import { Slider, HapticModeEnum } from "react-native-awesome-slider";
@@ -13,7 +19,7 @@ import { InitialScreensContext } from "../../context/InitialScreensContext";
 export default function UserInputFitnessLevel({ navigation }) {
   const { fitnessLevel, setFitnessLevel } = useContext(InitialScreensContext);
 
-  const [error, setError] = useState(false);
+  const [fitnessLevel_, setFitnessLevel_] = useState(fitnessLevel);
 
   const progress = useSharedValue(1);
   const min = useSharedValue(0);
@@ -21,21 +27,22 @@ export default function UserInputFitnessLevel({ navigation }) {
 
   const handleContinue = () => {
     if (fitnessLevel === "") {
-      setError("Please select a fitness level");
+      Alert.alert("Error", "Please select your fitness level");
     } else {
+      setFitnessLevel(fitnessLevel_);
       navigation.navigate("About you (Physical Limitations)");
     }
   };
 
   const handleSetFitnessLevel = (level) => {
     if (level === 0) {
-      setFitnessLevel("Beginner");
+      setFitnessLevel_("Beginner");
     } else if (level === 1) {
-      setFitnessLevel("Intermediate");
+      setFitnessLevel_("Intermediate");
     } else if (level === 2) {
-      setFitnessLevel("Advanced");
+      setFitnessLevel_("Advanced");
     } else if (level === 3) {
-      setFitnessLevel("Expert");
+      setFitnessLevel_("Expert");
     }
   };
 
@@ -43,12 +50,11 @@ export default function UserInputFitnessLevel({ navigation }) {
     <GestureHandlerRootView style={styles.container}>
       <TopNavigationBar
         navigation={navigation}
-        actualScreen={"About you"}
+        actualScreen={"Fitness"}
         steps={12}
         currentStep={7}
         back={true}
       />
-      {error && <ErrorNotification message={error} />}
       <Text style={styles.title}>How would you rate your fitness level?</Text>
       <Image
         source={require("../../assets/fitness_level.png")}
@@ -66,7 +72,7 @@ export default function UserInputFitnessLevel({ navigation }) {
           marginBottom: 80,
         }}
       >
-        {fitnessLevel}
+        {fitnessLevel_}
       </Text>
       <Slider
         progress={progress}

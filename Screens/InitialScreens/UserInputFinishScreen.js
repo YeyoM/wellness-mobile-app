@@ -3,19 +3,23 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState, useContext } from "react";
 import TopNavigationBar from "../../components/TopNavigationBar";
 import { Ionicons } from "@expo/vector-icons";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
-
 export default function UserInputFinishScreen({ navigation }) {
-  const { printState } = useContext(InitialScreensContext);
+  const { printState, registerInitialQuestionsFunction } = useContext(
+    InitialScreensContext,
+  );
 
   const [selectSeeIt, setSelectSeeIt] = useState(false);
   const [selectLater, setSelectLater] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSeeIt = () => {
     setSelectSeeIt(!selectSeeIt);
@@ -27,17 +31,24 @@ export default function UserInputFinishScreen({ navigation }) {
     setSelectLater(!selectLater);
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (!selectSeeIt && !selectLater) {
       Alert.alert("Please select an option");
       return;
     }
     printState();
+    await registerInitialQuestionsFunction(setLoading, setError);
+    if (error) {
+      Alert.alert(error);
+      return;
+    }
+    navigation.navigate("Home");
   };
 
   return (
     <View style={styles.container}>
       <TopNavigationBar navigation={navigation} actualScreen={"All done!"} />
+      {loading && <ActivityIndicator size="large" color="#fff" />}
       <Text style={styles.title}>Your AI workout plan is ready!</Text>
       <View style={styles.objectives}>
         <Pressable

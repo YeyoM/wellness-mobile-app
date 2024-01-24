@@ -2,8 +2,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import UserInputName from "../Screens/InitialScreens/UserInputName";
 import UserInputGender from "../Screens/InitialScreens/UserInputGender";
-import UserInputAge from "../Screens/InitialScreens/UserInputBirthday";
-import UserInputInitialWeight from "../Screens/InitialScreens/UserInputInitialWeight";
+import UserInputAge from "../Screens/InitialScreens/UserInputAge.js";
+import UserInputWeight from "../Screens/InitialScreens/UserInputWeight";
 import UserInputWeightUnit from "../Screens/InitialScreens/UserInputWeightUnit";
 import UserInputHeight from "../Screens/InitialScreens/UserInputHeight";
 import UserInputHeightUnit from "../Screens/InitialScreens/UserInputHeightUnit";
@@ -49,7 +49,7 @@ export default function InputUserInfoStack() {
       />
       <Stack.Screen
         name="About you (Weight)"
-        component={UserInputInitialWeight}
+        component={UserInputWeight}
         options={{ headerShown: false }}
       />
       <Stack.Screen
