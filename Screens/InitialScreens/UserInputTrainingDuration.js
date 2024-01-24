@@ -6,11 +6,12 @@ import { Slider, HapticModeEnum } from "react-native-awesome-slider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as Haptics from "expo-haptics";
 
-import { useState } from "react";
-
+import { useContext, useState } from "react";
+import { InitialScreensContext } from "../../context/InitialScreensContext";
 import TopNavigationBar from "../../components/TopNavigationBar";
 
-export default function SelectWorkoutDuration({ navigation }) {
+export default function UserInputTrainingDuration({ navigation }) {
+  const { setTrainingDuration } = useContext(InitialScreensContext);
   const [value, onChangeText] = useState("3");
   const [realTime, setRealTime] = useState("1:15");
   const [type, setType] = useState("Minutes-Hours");
@@ -38,11 +39,18 @@ export default function SelectWorkoutDuration({ navigation }) {
     }
   };
 
+  const handleContinue = () => {
+    setTrainingDuration(realTime);
+    navigation.navigate("About you (Training Hours)");
+  };
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <TopNavigationBar
         navigation={navigation}
-        actualScreen={"AI routine maker"}
+        actualScreen={"Workout Plan"}
+        steps={12}
+        currentStep={11}
         back={true}
       />
       <View style={styles.content}>
@@ -116,7 +124,7 @@ export default function SelectWorkoutDuration({ navigation }) {
                 onChangeText(e);
                 valueToTime(e);
               }}
-              thumbWidth={60}
+              thumbWidth={70}
               hapticMode={HapticModeEnum.STEP}
               theme={{
                 disableMinTrackTintColor: "#157AFF",
@@ -137,7 +145,7 @@ export default function SelectWorkoutDuration({ navigation }) {
                 return (
                   <Image
                     source={require("../../assets/thumb.png")}
-                    style={{ width: 60, height: 60 }}
+                    style={{ width: 70, height: 70 }}
                   />
                 );
               }}
@@ -211,10 +219,7 @@ export default function SelectWorkoutDuration({ navigation }) {
             )}
           </View>
         </View>
-        <Pressable
-          onPress={() => navigation.navigate("Select Split Preference")}
-          style={styles.btnContinue}
-        >
+        <Pressable style={styles.btnContinue} onPress={handleContinue}>
           <Text style={styles.btnContinueText}>Continue</Text>
         </Pressable>
       </View>
@@ -236,55 +241,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  btn: {
-    backgroundColor: "#24262F",
-    borderColor: "#24262F",
-    borderWidth: 2,
-    width: "18%",
-    aspectRatio: 1,
-    alignItems: "center",
-    display: "flex",
-    justifyContent: "center",
-    borderRadius: 16,
-  },
-
-  btnSelected: {
-    backgroundColor: "#0496FF",
-    borderColor: "#142749",
-    borderWidth: 2,
-    width: "18%",
-    aspectRatio: 1,
-
-    alignItems: "center",
-    display: "flex",
-    justifyContent: "center",
-    borderRadius: 16,
-  },
-
-  btnText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-
   btnContinue: {
-    backgroundColor: "#fff",
-    borderColor: "#fff",
-    borderWidth: 2,
     width: "85%",
-    alignItems: "center",
+    paddingVertical: 16,
+    backgroundColor: "#fff",
+    borderRadius: 24,
     display: "flex",
     justifyContent: "center",
-    flexDirection: "row",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderRadius: 16,
-    marginVertical: 30,
+    position: "absolute",
+    bottom: 40,
   },
 
   btnContinueText: {
-    color: "#000",
-    fontSize: 16,
+    color: "#0B0B0B",
+    textAlign: "center",
+    fontSize: 18,
     fontWeight: "bold",
+    alignSelf: "center",
+    marginTop: 4,
   },
 });

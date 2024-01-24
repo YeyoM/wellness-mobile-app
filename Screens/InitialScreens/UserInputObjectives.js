@@ -1,145 +1,177 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
-import React, { useState, useContext } from 'react';
-import TopNavigationBar from '../../components/TopNavigationBar';
-import ErrorNotification from '../../components/ErrorNotification';
-
-import { InitialScreensContext } from '../../context/InitialScreensContext';
+import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
+import React, { useState, useContext } from "react";
+import TopNavigationBar from "../../components/TopNavigationBar";
+import ErrorNotification from "../../components/ErrorNotification";
+import { Ionicons } from "@expo/vector-icons";
+import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputObjectives({ navigation }) {
-
   const { setObjectives } = useContext(InitialScreensContext);
 
-  const [selectFormaFisica, setSelectFormaFisica] = useState(false);
-  const [selectQuemarGrasa, setSelectQuemarGrasa] = useState(false);
-  const [selectDesarrollarMusculo, setSelectDesarrollarMusculo] = useState(false);
-  const [selectAumentarResistencia, setSelectAumentarResistencia] = useState(false);
-  const [selectFortalecerMente, setSelectFortalecerMente] = useState(false);
-  const [selectPerdidaPeso, setSelectPerdidaPeso] = useState(false);
-  const [selectManejarEstes, setSelectManejarEstes] = useState(false);
-  const [selectFlexibilidad, setSelectFlexibilidad] = useState(false);
-  const [selectOptimizarEntrenamientos, setSelectOptimizarEntrenamientos] = useState(false);
+  const [selectHealtyLifestyle, setSelectHealthyLifestyle] = useState(false);
+  const [looseWeight, setLooseWeight] = useState(false);
+  const [gainMuscle, setGainMuscle] = useState(false);
+  const [gainEndurance, setGainEndurance] = useState(false);
+  const [justTrying, setJustTrying] = useState(false);
 
   const [error, setError] = useState(false);
 
+  const handleHealthierLifestyle = () => {
+    setSelectHealthyLifestyle(!selectHealtyLifestyle);
+    setLooseWeight(false);
+    setGainMuscle(false);
+    setGainEndurance(false);
+    setJustTrying(false);
+  };
+
+  const handleLooseWeight = () => {
+    setSelectHealthyLifestyle(false);
+    setLooseWeight(!looseWeight);
+    setGainMuscle(false);
+    setGainEndurance(false);
+    setJustTrying(false);
+  };
+
+  const handleGainMuscle = () => {
+    setSelectHealthyLifestyle(false);
+    setLooseWeight(false);
+    setGainMuscle(!gainMuscle);
+    setGainEndurance(false);
+    setJustTrying(false);
+  };
+
+  const handleGainEndurance = () => {
+    setSelectHealthyLifestyle(false);
+    setLooseWeight(false);
+    setGainMuscle(false);
+    setGainEndurance(!gainEndurance);
+    setJustTrying(false);
+  };
+
+  const handleJustTrying = () => {
+    setSelectHealthyLifestyle(false);
+    setLooseWeight(false);
+    setGainMuscle(false);
+    setGainEndurance(false);
+    setJustTrying(!justTrying);
+  };
+
   const handleContinue = () => {
-    if (!selectFormaFisica && !selectQuemarGrasa && !selectDesarrollarMusculo && !selectAumentarResistencia && !selectFortalecerMente && !selectPerdidaPeso && !selectManejarEstes && !selectFlexibilidad && !selectOptimizarEntrenamientos) {
-      setTimeout(() => {
-        setError(false);
-      }, 5000);
-      setError('Por favor selecciona al menos un objetivo');
-      return;
+    if (
+      !selectHealtyLifestyle &&
+      !looseWeight &&
+      !gainMuscle &&
+      !gainEndurance &&
+      !justTrying
+    ) {
+      setError("Please select at least one objective");
+    } else {
+      if (selectHealtyLifestyle) {
+        setObjectives(["Healthy Lifestyle"]);
+      }
+      if (looseWeight) {
+        setObjectives(["Loose Weight"]);
+      }
+      if (gainMuscle) {
+        setObjectives(["Gain Muscle"]);
+      }
+      if (gainEndurance) {
+        setObjectives(["Gain Endurance"]);
+      }
+      if (justTrying) {
+        setObjectives([]);
+      }
+      navigation.navigate("About you (Diet Preference)");
     }
-
-    let objectives = [];
-
-    if (selectFormaFisica) {
-      objectives.push('Mejorar mi forma física');
-    }
-
-    if (selectQuemarGrasa) {
-      objectives.push('Quemar grasa');
-    }
-
-    if (selectDesarrollarMusculo) {
-      objectives.push('Desarrollar músculo');
-    }
-
-    if (selectAumentarResistencia) {
-      objectives.push('Aumentar resistencia');
-    }
-
-    if (selectFortalecerMente) {
-      objectives.push('Fortalecer la mente');
-    }
-
-    if (selectPerdidaPeso) {
-      objectives.push('Pérdida de peso');
-    }
-
-    if (selectManejarEstes) {
-      objectives.push('Manejar el estés');
-    }
-
-    if (selectFlexibilidad) {
-      objectives.push('Flexibilidad');
-    }
-
-    if (selectOptimizarEntrenamientos) {
-      objectives.push('Optimizar mis entrenamientos');
-    }
-
-    setObjectives(objectives);
-
-    navigation.navigate('Acerca de ti (Ejercicios)');
-  }
+  };
 
   return (
     <View style={styles.container}>
-      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.532} back={true}/>
-      { error && <ErrorNotification message={error} /> }
-      <Text style={styles.title}>¿Cuales son tus objetivos?</Text>
+      <TopNavigationBar
+        navigation={navigation}
+        actualScreen={"Health"}
+        steps={12}
+        currentStep={8}
+        back={true}
+      />
+      {error && <ErrorNotification message={error} />}
+      <Text style={styles.title}>What’s your fitness goal/target?</Text>
       <View style={styles.objectives}>
         <Pressable
-          style={selectFormaFisica ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelectFormaFisica(!selectFormaFisica)}
+          style={
+            looseWeight ? styles.checkboxSelected : styles.checkboxUnselected
+          }
+          onPress={() => handleLooseWeight()}
         >
-          <Text style={styles.label}>Mejorar mi forma física </Text>
+          <Ionicons
+            name="flame-outline"
+            size={24}
+            color="white"
+            style={{ marginRight: 10 }}
+          />
+          <Text style={styles.label}>I want to lose weight</Text>
         </Pressable>
         <Pressable
-          style={selectQuemarGrasa ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelectQuemarGrasa(!selectQuemarGrasa)}
+          style={
+            selectHealtyLifestyle
+              ? styles.checkboxSelected
+              : styles.checkboxUnselected
+          }
+          onPress={() => handleHealthierLifestyle()}
         >
-          <Text style={styles.label}>Quemar grasa </Text>
+          <Ionicons
+            name="walk-outline"
+            size={24}
+            color="white"
+            style={{ marginRight: 10 }}
+          />
+          <Text style={styles.label}>I want a healthier lifestyle</Text>
         </Pressable>
         <Pressable
-          style={selectDesarrollarMusculo ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelectDesarrollarMusculo(!selectDesarrollarMusculo)}
+          style={
+            gainMuscle ? styles.checkboxSelected : styles.checkboxUnselected
+          }
+          onPress={() => handleGainMuscle()}
         >
-          <Text style={styles.label}>Desarrollar músculo </Text>
+          <Ionicons
+            name="barbell-outline"
+            size={24}
+            color="white"
+            style={{ marginRight: 10 }}
+          />
+          <Text style={styles.label}>I want to gain muscle</Text>
         </Pressable>
         <Pressable
-          style={selectAumentarResistencia ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelectAumentarResistencia(!selectAumentarResistencia)}
+          style={
+            gainEndurance ? styles.checkboxSelected : styles.checkboxUnselected
+          }
+          onPress={() => handleGainEndurance()}
         >
-          <Text style={styles.label}>Aumentar resistencia </Text>
+          <Ionicons
+            name="heart-outline"
+            size={24}
+            color="white"
+            style={{ marginRight: 10 }}
+          />
+          <Text style={styles.label}>I want to gain endurance</Text>
         </Pressable>
         <Pressable
-          style={selectFortalecerMente ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelectFortalecerMente(!selectFortalecerMente)}
+          style={
+            justTrying ? styles.checkboxSelected : styles.checkboxUnselected
+          }
+          onPress={() => handleJustTrying()}
         >
-          <Text style={styles.label}>Fortalecer la mente </Text>
-        </Pressable>
-        <Pressable
-          style={selectPerdidaPeso ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelectPerdidaPeso(!selectPerdidaPeso)}
-        >
-          <Text style={styles.label}>Pérdida de peso</Text>
-        </Pressable>
-        <Pressable
-          style={selectManejarEstes ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelectManejarEstes(!selectManejarEstes)}
-        >
-          <Text style={styles.label}>Manejar el estés</Text>
-        </Pressable>
-        <Pressable
-          style={selectFlexibilidad ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelectFlexibilidad(!selectFlexibilidad)}
-        >
-          <Text style={styles.label}>Flexibilidad </Text>
-        </Pressable>
-        <Pressable
-          style={selectOptimizarEntrenamientos ? styles.checkboxSelected : styles.checkboxUnselected}
-          onPress={() => setSelectOptimizarEntrenamientos(!selectOptimizarEntrenamientos)}
-        >
-          <Text style={styles.label}>Optimizar mis entrenamientos</Text>
+          <Ionicons
+            name="happy-outline"
+            size={24}
+            color="white"
+            style={{ marginRight: 10 }}
+          />
+          <Text style={styles.label}>Just trying out the app! </Text>
         </Pressable>
       </View>
-      <Pressable
-        style={styles.btn}
-        onPress={handleContinue}
-      >
-        <Text style={styles.btnText}>Continuar</Text>
+      <Pressable style={styles.btn} onPress={handleContinue}>
+        <Text style={styles.btnText}>Continue</Text>
       </Pressable>
     </View>
   );
@@ -148,83 +180,82 @@ export default function UserInputObjectives({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B0B0B',
-    alignItems: 'center',
-    justifyContent:'center'
+    backgroundColor: "#0B0B0B",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   title: {
     fontSize: 32,
-    fontWeight: 'semibold',
-    color: 'white',
+    fontWeight: "semibold",
+    color: "white",
     marginBottom: 30,
-    textAlign: 'center',
-    width: '85%',
+    textAlign: "center",
+    width: "85%",
   },
 
   objectives: {
-    width: '80%',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
+    width: "80%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
     marginBottom: 20,
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
   },
 
   label: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 12,
-    fontWeight: 'normal',
-    alignSelf: 'center',
+    color: "white",
+    textAlign: "center",
+    fontSize: 14,
+    fontWeight: "bold",
     marginTop: 2,
   },
 
   checkboxSelected: {
-    width: 'auto',
-    height: 42,
-    backgroundColor: 'rgba(4, 150, 255, 0.5)',
-    borderRadius: 90,
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#0496FF',
+    width: "100%",
+    paddingVertical: 16,
     paddingHorizontal: 20,
-    marginRight: 5,
+    backgroundColor: "#157AFF",
+    borderRadius: 20,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: "#0F2F66",
   },
 
   checkboxUnselected: {
-    width: 'auto',
-    height: 42,
-    backgroundColor: '#1F1F1F',
-    borderRadius: 90,
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: 16,
+    width: "100%",
+    paddingVertical: 16,
     paddingHorizontal: 20,
-    marginRight: 5,
-    borderWidth: 1,
-    borderColor: '#1F1F1F',
+    backgroundColor: "#24262B",
+    borderRadius: 20,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: "#24262B",
   },
 
   btn: {
-    width: '85%',
-    height: 48,
-    backgroundColor: '#0496FF',
-    borderRadius: 90,
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: 16,
-    marginTop: 20,
+    width: "85%",
+    paddingVertical: 16,
+    backgroundColor: "#fff",
+    borderRadius: 24,
+    display: "flex",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: 40,
   },
 
   btnText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'normal',
-    alignSelf: 'center',
+    color: "#0B0B0B",
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    alignSelf: "center",
     marginTop: 4,
-  }
+  },
 });

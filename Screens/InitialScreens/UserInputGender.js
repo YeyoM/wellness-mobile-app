@@ -1,88 +1,97 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native';
-import React, { useState, useContext } from 'react';
-import TopNavigationBar from '../../components/TopNavigationBar';
-import ErrorNotification from '../../components/ErrorNotification';
-
-import { InitialScreensContext } from '../../context/InitialScreensContext';
+import { StyleSheet, Alert, Text, View, Pressable } from "react-native";
+import React, { useState, useContext } from "react";
+import TopNavigationBar from "../../components/TopNavigationBar";
+import { Ionicons } from "@expo/vector-icons";
+import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputGender({ navigation }) {
-
   const { setGender } = useContext(InitialScreensContext);
 
-  const [selectHombre, setSelectHombre] = useState(false);
-  const [selectMujer, setSelectMujer] = useState(false);
-  const [selectOtro, setSelectOtro] = useState(false);
+  const [selectMale, setSelectMale] = useState(false);
+  const [selectFemale, setSelectFemale] = useState(false);
 
-  const [error, setError] = useState(false);
+  const pressSelectMale = () => {
+    setSelectMale(true);
+    setSelectFemale(false);
+  };
 
-  const pressSelectHombre = () => {
-    setSelectHombre(true);
-    setSelectMujer(false);
-    setSelectOtro(false);
-  }
-
-  const pressSelectMujer = () => {
-    setSelectHombre(false);
-    setSelectMujer(true);
-    setSelectOtro(false);
-  }
-
-  const pressSelectOtro = () => {
-    setSelectHombre(false);
-    setSelectMujer(false);
-    setSelectOtro(true);
-  }
+  const pressSelectFemale = () => {
+    setSelectMale(false);
+    setSelectFemale(true);
+  };
 
   const handleContinue = () => {
-    if (!selectHombre && !selectMujer && !selectOtro) {
-      setTimeout(() => {
-        setError(false);
-      }, 3000);
-      setError('Por favor ingresa tu género');
+    if (!selectMale && !selectFemale) {
+      Alert.alert("Please select at least one option");
       return;
     }
 
-    if (selectHombre) {
-      setGender('Hombre');
-    } else if (selectMujer) {
-      setGender('Mujer');
-    } else if (selectOtro) {
-      setGender('Otro');
+    if (selectMale) {
+      setGender("Male");
+    } else if (selectFemale) {
+      setGender("Female");
     }
 
-    navigation.navigate('Acerca de ti (Cumpleaños)');    
-  }
+    navigation.navigate("About you (Age)");
+  };
+
+  const handleSkip = () => {
+    setGender("Other");
+    navigation.navigate("About you (Age)");
+  };
 
   return (
     <View style={styles.container}>
-      <TopNavigationBar navigation={navigation} actualScreen={'Acerca de ti'} progress={0.153} back={true} previousScreen={'Acerca de ti (Nombre)'}/>
-      { error && <ErrorNotification message={error} /> }
-      <Text style={styles.title}>¿Cuál es tu género?</Text>
+      <TopNavigationBar
+        navigation={navigation}
+        actualScreen={"About you"}
+        steps={12}
+        currentStep={2}
+        back={true}
+      />
+      <Text style={styles.title}>What is your gender?</Text>
       <Pressable
-        style={selectHombre ? styles.checkboxSelected : styles.checkboxUnselected}
-        onPress={pressSelectHombre}
+        style={selectMale ? styles.checkboxSelected : styles.checkboxUnselected}
+        onPress={pressSelectMale}
       >
-        <Text style={styles.label}>Hombre</Text>
+        <Ionicons
+          name="man-outline"
+          size={25}
+          color="white"
+          style={{ marginRight: 10 }}
+        />
+        <Text style={styles.label}>Male</Text>
       </Pressable>
       <Pressable
-        style={selectMujer ? styles.checkboxSelected : styles.checkboxUnselected}
-        onPress={pressSelectMujer}
+        style={
+          selectFemale ? styles.checkboxSelected : styles.checkboxUnselected
+        }
+        onPress={pressSelectFemale}
       >
-        <Text style={styles.label}>Mujer</Text>
+        <Ionicons
+          name="woman-outline"
+          size={25}
+          color="white"
+          style={{ marginRight: 10 }}
+        />
+        <Text style={styles.label}>Female</Text>
       </Pressable>
-      <Pressable
-        style={selectOtro ? styles.checkboxSelected : styles.checkboxUnselected}
-        onPress={pressSelectOtro}
+      <View
+        style={{
+          position: "absolute",
+          bottom: 40,
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+        }}
       >
-        <Text style={styles.label}>Otro</Text>
-      </Pressable>
-      <Pressable
-        style={styles.btn}
-        onPress={handleContinue}
-      >
-        <Text style={styles.btnText}>Continuar</Text>
-      </Pressable>
+        <Pressable style={styles.btnSkip} onPress={handleSkip}>
+          <Text style={styles.btnTextSkip}>Prefer to skip, thanks!</Text>
+        </Pressable>
+        <Pressable style={styles.btn} onPress={handleContinue}>
+          <Text style={styles.btnText}>Continue</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -90,71 +99,94 @@ export default function UserInputGender({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B0B0B',
-    alignItems: 'center',
-    justifyContent:'center'
+    backgroundColor: "#0B0B0B",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   title: {
     fontSize: 32,
-    fontWeight: 'semibold',
-    color: 'white',
+    fontWeight: "semibold",
+    color: "white",
     marginBottom: 50,
     marginTop: 70,
-    textAlign: 'center',
-    width: '85%',
+    textAlign: "center",
+    width: "85%",
   },
 
   label: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'normal',
-    alignSelf: 'center',
+    color: "white",
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    alignSelf: "center",
     marginTop: 4,
   },
 
   checkboxSelected: {
-    width: '85%',
-    height: 48,
-    backgroundColor: 'rgba(4, 150, 255, 0.5)',
-    borderRadius: 90,
-    display: 'flex',
-    justifyContent: 'center',
+    width: "85%",
+    paddingVertical: 20,
+    backgroundColor: "#157AFF",
+    borderRadius: 20,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingLeft: 20,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#0496FF',
+    borderColor: "rgba(4, 150, 255, 0.5)",
   },
 
   checkboxUnselected: {
-    width: '85%',
-    height: 48,
-    backgroundColor: '#1F1F1F',
-    borderRadius: 90,
-    display: 'flex',
-    justifyContent: 'center',
+    width: "85%",
+    paddingVertical: 20,
+    backgroundColor: "#1F1F1F",
+    borderRadius: 20,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingLeft: 20,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#1F1F1F',
+    borderColor: "#1F1F1F",
+  },
+
+  btnSkip: {
+    width: "85%",
+    paddingVertical: 16,
+    backgroundColor: "#05538B",
+    borderRadius: 24,
+    display: "flex",
+    justifyContent: "center",
+  },
+
+  btnTextSkip: {
+    color: "#fff",
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "bold",
+    alignSelf: "center",
+    marginTop: 4,
   },
 
   btn: {
-    width: '85%',
-    height: 48,
-    backgroundColor: '#0496FF',
-    borderRadius: 90,
-    display: 'flex',
-    justifyContent: 'center',
-    marginBottom: 16,
-    marginTop: 60,
+    width: "85%",
+    paddingVertical: 16,
+    backgroundColor: "#fff",
+    borderRadius: 24,
+    display: "flex",
+    justifyContent: "center",
+    marginTop: 16,
   },
 
   btnText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'normal',
-    alignSelf: 'center',
+    color: "#0B0B0B",
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    alignSelf: "center",
     marginTop: 4,
-  }
+  },
 });

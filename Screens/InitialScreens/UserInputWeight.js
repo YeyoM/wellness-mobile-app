@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import {
-  Alert,
   StyleSheet,
+  Alert,
   Text,
   Pressable,
   View,
@@ -16,28 +16,28 @@ import Carousel from "react-native-reanimated-carousel";
 
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
-export default function UserInputHeight({ navigation }) {
-  const { height, setHeight, heightUnit } = useContext(InitialScreensContext);
+export default function UserInputWeight({ navigation }) {
+  const { weight, setWeight, weightUnit } = useContext(InitialScreensContext);
 
-  const [height_, setHeight_] = useState(height);
+  const [weight_, setWeight_] = useState(weight);
 
   const [data] = useState(
-    heightUnit === "cm"
-      ? [...new Array(120).keys()].map((i) => i + 100)
-      : [...new Array(126).keys()].map((i) => i + 40),
+    weightUnit === "kg"
+      ? [...new Array(65).keys()].map((i) => i + 35)
+      : [...new Array(140).keys()].map((i) => i + 77),
   );
-  const [defaultIndex] = useState(heightUnit === "cm" ? 70 : 27);
+  const [defaultIndex] = useState(weightUnit === "kg" ? 35 : 77);
 
   const handleContinue = () => {
-    if (height_ === "") {
-      Alert.alert("Error", "Please select your height");
+    if (weight_ === "") {
+      Alert.alert("Please enter your weight");
       return;
     }
-    setHeight(height_);
-    navigation.navigate("About you (Previous Fitness Experience)");
+    setWeight(weight_);
+    navigation.navigate("About you (Height Unit)");
   };
 
-  const ref = React.useRef(null);
+  const ref1 = React.useRef();
   const scale = 0.9;
   const RIGHT_OFFSET = Dimensions.get("window").width * (1 - scale) * 0.5;
   const ITEM_WIDTH = Dimensions.get("window").width * 0.35;
@@ -65,31 +65,30 @@ export default function UserInputHeight({ navigation }) {
         actualScreen={"About you"}
         back={true}
         steps={12}
-        currentStep={5}
+        currentStep={4}
       />
-      <Text style={styles.title}>What is your height?</Text>
-      <View style={styles.heightContainer}>
-        <Text style={styles.height}>{height_}</Text>
-        <Text style={styles.height_}>{heightUnit === "cm" ? "cm" : "in"}</Text>
+      <Text style={styles.title}>What is your weight?</Text>
+      <View style={styles.weightContainer}>
+        <Text style={styles.weight}>{weight_}</Text>
+        <Text style={styles.weight_}>{weightUnit}</Text>
       </View>
-
       <Carousel
         loop
-        defaultIndex={defaultIndex}
         vertical={false}
         style={{
           justifyContent: "center",
           width: Dimensions.get("window").width,
           height: 100,
         }}
-        ref={ref}
+        ref={ref1}
         onSnapToItem={(index) => {
-          setHeight_(data[index]);
+          setWeight_(data[index]);
         }}
         width={ITEM_WIDTH}
         pagingEnabled={false}
         height={ITEM_HEIGHT}
         data={data}
+        defaultIndex={defaultIndex}
         renderItem={({ index }) => {
           return (
             <View
@@ -102,7 +101,7 @@ export default function UserInputHeight({ navigation }) {
                 flexDirection: "column",
               }}
             >
-              {data[index] === height_ ? null : (
+              {data[index] === weight_ ? null : (
                 <Text
                   numberOfLines={1}
                   style={{
@@ -209,14 +208,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
-  height: {
+  weight: {
     fontSize: 90,
     fontWeight: "bold",
     color: "white",
     margin: 0,
   },
 
-  heightContainer: {
+  weightContainer: {
     display: "flex",
     padding: 10,
     flexDirection: "row",
@@ -226,7 +225,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
 
-  height_: {
+  weight_: {
     fontSize: 30,
     color: "#9EA0A5",
     marginBottom: 16,

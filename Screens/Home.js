@@ -23,6 +23,7 @@ export default function Home({ navigation }) {
   const [user, setUser] = useState({});
 
   useEffect(() => {
+    // TODO: Move this logic to a function in the Firebase functions file
     const userId = FIREBASE_AUTH.currentUser.uid;
 
     const docRef = doc(FIRESTORE, "users", userId);
