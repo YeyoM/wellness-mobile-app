@@ -1,6 +1,5 @@
-import { FIRESTORE } from "./firebaseConfig";
-
-import { collection, doc, getDoc, updateDoc, addDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, addDoc, collection } from "firebase/firestore";
+import { FIRESTORE } from "../../firebaseConfig.js";
 
 export const addExerciseToUser = async (
   userId,

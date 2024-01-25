@@ -13,7 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { WELLNESS_NINJA_API_KEY } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { addExerciseToUser } from "../firebaseFunctions";
+import { addExerciseToUser } from "../FirebaseFunctions/Exercises/addExerciseToUser.js";
 
 import { FIREBASE_AUTH } from "../firebaseConfig";
 
