@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   Pressable,
-  ScrollView,
   TextInput,
   ActivityIndicator,
 } from "react-native";
@@ -17,7 +16,7 @@ import CarouselDays from "../components/CarouselDays";
 import EditingRoutineExerciseList from "../components/EditingRoutineExerciseList";
 
 import { FIREBASE_AUTH } from "../firebaseConfig.js";
-import { saveEditedRoutine } from "../firebaseFunctions.js";
+import { saveEditedRoutine } from "../FirebaseFunctions/Routines/saveEditedRoutine.js";
 
 import { EditRoutineContext } from "../context/EditRoutineContext";
 
