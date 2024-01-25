@@ -4,14 +4,10 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 const Tab = createMaterialTopTabNavigator();
 
 import { FIREBASE_AUTH } from "../firebaseConfig";
-import { FIRESTORE } from "../firebaseConfig";
+import { UserAnsweredInitialQuestions } from "../FirebaseFunctions/Users/UserAnsweredInitialQuestions";
 
 import Constants from "expo-constants";
-
-import { doc, getDoc } from "firebase/firestore";
-
 import PrimaryNotification from "../components/PrimaryNotification";
-
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
 
@@ -25,24 +21,17 @@ export default function Home({ navigation }) {
   useEffect(() => {
     // TODO: Move this logic to a function in the Firebase functions file
     const userId = FIREBASE_AUTH.currentUser.uid;
-
-    const docRef = doc(FIRESTORE, "users", userId);
-
-    getDoc(docRef)
-      .then((docSnap) => {
-        if (docSnap.exists()) {
-          setMessage(false);
-          setUser(docSnap.data());
-        } else {
+    UserAnsweredInitialQuestions(userId)
+      .then((result) => {
+        if (!result) {
           setMessage(true);
           setTimeout(() => {
-            setMessage(false);
             navigation.navigate("User Input");
           }, 3000);
         }
       })
       .catch((error) => {
-        console.log("Error getting document:", error);
+        throw error;
       });
   }, []);
 
