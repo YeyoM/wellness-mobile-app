@@ -9,7 +9,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { userSavedExercises } from "../firebaseFunctions.js";
+import { getSavedExercises } from "../FirebaseFunctions/Exercises/getSavedExercises.js";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -52,7 +52,7 @@ export default function SavedLifts({ navigation }) {
         setExercises(exercises);
       } else {
         console.log("exercises from API");
-        userSavedExercises(
+        getSavedExercises(
           routine.userId,
           setExercises,
           setError,
@@ -105,7 +105,7 @@ export default function SavedLifts({ navigation }) {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={() => {
-              userSavedExercises(
+              getSavedExercises(
                 routine.userId,
                 setExercises,
                 setError,
