@@ -18,7 +18,7 @@ import Accordion from "../components/AccordionWorkout";
 
 import ErrorNotification from "../components/ErrorNotification";
 
-import { getRoutines } from "../firebaseFunctions.js";
+import { getSavedRoutines } from "../FirebaseFunctions/Routines/getSavedRoutines.js";
 import { FIREBASE_AUTH } from "../firebaseConfig.js";
 
 export default function SavedRoutines({ navigation, route }) {
@@ -54,7 +54,7 @@ export default function SavedRoutines({ navigation, route }) {
     if (route.params && route.params.refresh) {
       console.log("refreshing");
       const user = FIREBASE_AUTH.currentUser;
-      getRoutines(user.uid, setRoutines, setError, setRefreshing);
+      getSavedRoutines(user.uid, setRoutines, setError, setRefreshing);
       route.params.refresh = false;
     }
 
@@ -85,7 +85,7 @@ export default function SavedRoutines({ navigation, route }) {
       if (routines) {
         setRoutines(routines);
       } else {
-        getRoutines(user.uid, setRoutines, setError, setRefreshing).then(
+        getSavedRoutines(user.uid, setRoutines, setError, setRefreshing).then(
           (routines) => {
             saveRoutinesStorage(routines);
           },
@@ -99,7 +99,7 @@ export default function SavedRoutines({ navigation, route }) {
     const routinesBeforeRefresh = await getRoutinesStorage();
     setRoutines(null);
     try {
-      const refreshedRoutines = await getRoutines(
+      const refreshedRoutines = await getSavedRoutines(
         user.uid,
         setRoutines,
         setError,
