@@ -45,24 +45,27 @@ export default function SavedLifts({ navigation }) {
     // If the user has saved exercises, set them in the state
     // If the user doesn't have saved exercises, fetch them from the API
     // and save them in the async storage
-
+    setRefreshing(true);
     getExercisesStorage().then((exercises) => {
       if (exercises) {
         console.log("exercises from storage");
         setExercises(exercises);
       } else {
         console.log("exercises from API");
-        getSavedExercises(
-          routine.userId,
-          setExercises,
-          setError,
-          setRefreshing,
-        ).then((exercises) => {
-          console.log("saving exercises in storage");
-          saveExercisesStorage(exercises);
-        });
+        getSavedExercises(routine.userId)
+          .then((exercises) => {
+            console.log("saving exercises in storage");
+            setExercises(exercises);
+            saveExercisesStorage(exercises);
+            setRefreshing(false);
+          })
+          .catch((err) => {
+            setError(err);
+            setRefreshing(false);
+          });
       }
     });
+    setRefreshing(false);
   }, []);
 
   const handleAddLift = async ({ lift }) => {
@@ -97,6 +100,19 @@ export default function SavedLifts({ navigation }) {
     navigation.goBack();
   };
 
+  const onRefresh = React.useCallback(async () => {
+    try {
+      setRefreshing(true);
+      const exercises = await getSavedExercises(routine.userId);
+      setExercises(exercises);
+      saveExercisesStorage(exercises);
+      setRefreshing(false);
+    } catch (err) {
+      setError(err);
+      setRefreshing(false);
+    }
+  }, []);
+
   return (
     <View style={styles.containerExercises}>
       <ScrollView
@@ -104,14 +120,7 @@ export default function SavedLifts({ navigation }) {
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
-            onRefresh={() => {
-              getSavedExercises(
-                routine.userId,
-                setExercises,
-                setError,
-                setRefreshing,
-              );
-            }}
+            onRefresh={() => onRefresh()}
           />
         }
       >
@@ -221,6 +230,19 @@ export default function SavedLifts({ navigation }) {
                 </View>
               </View>
             ))}
+          {exercises && exercises.length === 0 && (
+            <Text
+              style={{
+                color: "#fff",
+                fontSize: 16,
+                textAlign: "center",
+                marginTop: 20,
+              }}
+            >
+              You haven't saved any lifts yet, add some to your list by going to
+              the "search a lift" tab
+            </Text>
+          )}
         </View>
       </ScrollView>
     </View>

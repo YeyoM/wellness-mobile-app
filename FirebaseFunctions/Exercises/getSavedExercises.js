@@ -1,17 +1,8 @@
 import { doc, getDoc } from "firebase/firestore";
-
-export const getSavedExercises = async (
-  userId,
-  setExercises,
-  setError,
-  setRefreshing,
-) => {
+import { FIRESTORE } from "../../firebaseConfig.js";
+export const getSavedExercises = async (userId) => {
   // from the user document, get the ids of the exercises
   // and then get the exercises from the exercises collection
-
-  setRefreshing(true);
-  setError(null);
-
   try {
     const userDocRef = doc(FIRESTORE, "users", userId);
     const userDocSnap = await getDoc(userDocRef);
@@ -19,9 +10,7 @@ export const getSavedExercises = async (
     const userExercisesIds = userDocData.exercises;
 
     if (userExercisesIds.length === 0) {
-      setExercises([]);
-      setRefreshing(false);
-      return;
+      return [];
     }
 
     const exercises = [];
@@ -38,12 +27,9 @@ export const getSavedExercises = async (
       exercises.push(exercise);
     }
 
-    setExercises(exercises);
-    setRefreshing(false);
     return exercises;
   } catch (err) {
-    setError(err);
-    setRefreshing(false);
-    return;
+    console.error(err);
+    throw new Error("Error getting saved exercises");
   }
 };
