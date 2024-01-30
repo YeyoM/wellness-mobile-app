@@ -40,7 +40,6 @@ export default async function createRoutine(userId, routine) {
       const userDoc = await transaction.get(userRef);
       if (!userDoc.exists()) {
         throw "Document does not exist!";
-        return;
       }
       const routines = userDoc.data().routines;
       routines.push(routineRef.id);

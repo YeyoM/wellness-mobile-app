@@ -64,13 +64,17 @@ export default function EditRoutine({ navigation }) {
       return;
     }
     // save the routine to the database
-    await saveEditedRoutine(user.uid, routine, setError, setLoading);
-    if (error) {
-      console.log(error);
-      return;
+    setLoading(true);
+    try {
+      await saveEditedRoutine(routine);
+      setLoading(false);
+      // go back to the previous screen and refresh the data
+      navigation.navigate("Saved Routines", { refresh: true });
+    } catch (err) {
+      console.log(err);
+      setError("Couldn't save the routine");
+      setLoading(false);
     }
-    // go back to the previous screen and refresh the data
-    navigation.navigate("Saved Routines", { refresh: true });
   };
 
   const handleGoBack = async () => {

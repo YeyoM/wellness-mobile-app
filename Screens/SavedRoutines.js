@@ -43,7 +43,6 @@ export default function SavedRoutines({ navigation, route }) {
   const getRoutinesStorage = async () => {
     try {
       const value = await AsyncStorage.getItem("@routines");
-      console.log(JSON.parse(value));
       return value !== null ? JSON.parse(value) : null;
     } catch (e) {
       console.log(e);
@@ -54,7 +53,17 @@ export default function SavedRoutines({ navigation, route }) {
     if (route.params && route.params.refresh) {
       console.log("refreshing");
       const user = FIREBASE_AUTH.currentUser;
-      getSavedRoutines(user.uid, setRoutines, setError, setRefreshing);
+      setRefreshing(true);
+      getSavedRoutines(user.uid)
+        .then((routines) => {
+          setRoutines(routines);
+          setRefreshing(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          setError("Couldn't get your routines");
+          setRefreshing(false);
+        });
       route.params.refresh = false;
     }
 
@@ -85,11 +94,14 @@ export default function SavedRoutines({ navigation, route }) {
       if (routines) {
         setRoutines(routines);
       } else {
-        getSavedRoutines(user.uid, setRoutines, setError, setRefreshing).then(
-          (routines) => {
+        getSavedRoutines(user.uid)
+          .then((routines) => {
             saveRoutinesStorage(routines);
-          },
-        );
+          })
+          .catch((error) => {
+            console.log(error);
+            setError("Couldn't get your routines");
+          });
       }
     });
   }, []);
@@ -98,21 +110,21 @@ export default function SavedRoutines({ navigation, route }) {
     const user = FIREBASE_AUTH.currentUser;
     const routinesBeforeRefresh = await getRoutinesStorage();
     setRoutines(null);
+    setRefreshing(true);
     try {
-      const refreshedRoutines = await getSavedRoutines(
-        user.uid,
-        setRoutines,
-        setError,
-        setRefreshing,
-      );
+      console.log("refreshing");
+      const refreshedRoutines = await getSavedRoutines(user.uid);
       setRoutines(refreshedRoutines);
       await saveRoutinesStorage(refreshedRoutines);
+      setRefreshing(false);
     } catch (error) {
+      console.log(error);
       setRoutines(routinesBeforeRefresh);
       setTimeout(() => {
         setError(null);
       }, 2000);
       setError("Something went wrong. Please try again later.");
+      setRefreshing(false);
     }
   }, []);
 

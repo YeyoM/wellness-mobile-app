@@ -1,18 +1,7 @@
 import { doc, updateDoc } from "firebase/firestore";
 
-export const saveEditedRoutine = async (
-  userId,
-  routine,
-  setError,
-  setLoading,
-) => {
+export const saveEditedRoutine = async (routine) => {
   console.log("saving edited routine");
-  console.log(routine);
-  console.log(userId);
-
-  setLoading(true);
-  setError(null);
-
   try {
     // for the routine document, we only need to update the name and the updatedAt fields
     const routineDocRef = doc(FIRESTORE, "routines", routine.id);
@@ -34,14 +23,9 @@ export const saveEditedRoutine = async (
       });
     }
 
-    console.log("updated days");
-
-    setLoading(false);
-    return;
+    return true;
   } catch (err) {
-    setError(err);
-    setLoading(false);
     console.log(err);
-    return;
+    throw new Error("Couldn't save the edited routine");
   }
 };
