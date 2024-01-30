@@ -140,14 +140,9 @@ export default function SearchLift({ navigation }) {
     };
 
     console.log("Exercise", exercise);
-
+    setLoading(true);
     try {
-      const response = await addExerciseToUser(
-        userId,
-        exercise,
-        setError,
-        setLoading,
-      );
+      const response = await addExerciseToUser(userId, exercise);
 
       // it will return the new list of saved exercises
       // that we can save in the async storage
@@ -157,9 +152,15 @@ export default function SearchLift({ navigation }) {
           setTimeout(() => {
             setSuccess(null);
           }, 2000);
+          setLoading(false);
           setSuccess("Lift saved");
         } catch (error) {
           console.log(error);
+          setTimeout(() => {
+            setError(null);
+          }, 2000);
+          setLoading(false);
+          setError("Something went wrong. Please try again later.");
         }
       }
     } catch (error) {
@@ -167,6 +168,7 @@ export default function SearchLift({ navigation }) {
       setTimeout(() => {
         setError(null);
       }, 2000);
+      setLoading(false);
       setError("Something went wrong. Please try again later.");
     }
   };
