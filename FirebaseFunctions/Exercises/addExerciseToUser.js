@@ -1,17 +1,9 @@
 import { doc, getDoc, updateDoc, addDoc, collection } from "firebase/firestore";
 import { FIRESTORE } from "../../firebaseConfig.js";
 
-export const addExerciseToUser = async (
-  userId,
-  exercise,
-  setError,
-  setLoading,
-) => {
+export const addExerciseToUser = async (userId, exercise) => {
   // check if the exercise is not already in the user's exercises
   // if it is, don't add it, the exercises are in an array of strings
-
-  setLoading(true);
-
   try {
     const userDoc = doc(FIRESTORE, "users", userId);
     const userDocSnap = await getDoc(userDoc);
@@ -43,10 +35,8 @@ export const addExerciseToUser = async (
     );
 
     if (exists) {
-      setLoading(false);
       console.log("Exercise already saved");
-      setError("This exercise is already saved");
-      return;
+      throw new Error("Exercise already saved");
     }
 
     console.log("AFTER CHECKING IF EXERCISE EXISTS");
@@ -84,12 +74,9 @@ export const addExerciseToUser = async (
     console.log("AFTER ADDING NEW EXERCISE TO EXERCISES");
     console.log(exercises);
 
-    setLoading(false);
     return exercises;
   } catch (err) {
-    setError(err);
-    setLoading(false);
     console.log(err);
-    return;
+    throw new Error(err);
   }
 };

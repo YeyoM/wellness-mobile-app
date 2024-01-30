@@ -1,13 +1,8 @@
 import { doc, getDoc } from "firebase/firestore";
-export const getRoutines = async (
-  userId,
-  setRoutines,
-  setError,
-  setRefreshing,
-) => {
-  setRefreshing(true);
-  console.log("getting routines");
+import { FIRESTORE } from "../../firebaseConfig.js";
 
+export const getSavedRoutines = async (userId) => {
+  console.log("getting routines");
   // get the user's routines' ids, they are stored in the user's document
   // it is an array of strings
   try {
@@ -17,13 +12,10 @@ export const getRoutines = async (
     const userRoutinesIds = userDocData.routines;
 
     if (userRoutinesIds.length === 0) {
-      setRoutines([]);
-      setRefreshing(false);
-      return;
+      return [];
     }
 
     console.log("AFTER GETTING USER'S ROUTINES' IDS");
-
     // after getting the ids, get the routines from the routines collection
     // and store them in the state
     const routines = [];
@@ -41,10 +33,8 @@ export const getRoutines = async (
     }
 
     console.log("AFTER GETTING ROUTINES");
-
     // after getting the routines, we need to get all the day's ids
     // and then get the days from the days collection
-
     for (const routine of routines) {
       const days = [];
 
@@ -68,14 +58,9 @@ export const getRoutines = async (
     // after getting the days, we need to get all the exercise's ids
     // and then get the exercises from the exercises collection
     // and then add them to the days
-
-    setRoutines(routines);
-    setRefreshing(false);
     return routines;
   } catch (err) {
-    setError(err);
-    setRefreshing(false);
-    console.log(err);
-    return;
+    console.error("Error getting routines", err);
+    throw err;
   }
 };
