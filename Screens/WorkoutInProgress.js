@@ -199,6 +199,7 @@ export default function WorkoutInProgress({ route, navigation }) {
             }}
             onSwipeSuccess={() => handleEndWorkout()}
           />
+          <View style={{ height: 60 }} />
         </View>
       </ScrollView>
     </GestureHandlerRootView>
@@ -217,6 +218,7 @@ const styles = StyleSheet.create({
 
   workout: {
     backgroundColor: "#0b0b0b",
+    marginTop: 40,
     width: "100%",
     minHeight: Dimensions.get("window").height + 100,
     alignItems: "center",
@@ -244,4 +246,3 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
 });
-
