@@ -1,83 +1,244 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image, Pressable, ScrollView } from 'react-native';
+import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  ScrollView,
+  Dimensions,
+} from "react-native";
 
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 
-import { Dimensions } from 'react-native';
-import Constants from 'expo-constants';
+import Constants from "expo-constants";
 
 export default function WorkoutFinished1({ route, navigation }) {
-
   const { routine } = route.params;
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.summary}>
-        <Text style={{ color: '#fff', fontSize: 26, marginTop: 50 }}>Workout session Finished</Text>
-        
-        <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: 30, backgroundColor: '#E01439', width: '75%', padding: 5, borderRadius: 36 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: 10 }}>
-            <Ionicons name="flame-outline" size={24} color="white" style={{ alignSelf: 'center', marginRight: 5 }} />
-            <Text style={{ color: 'white', fontSize: 18, textAlign: 'center' }}>Calories</Text>
+        <Text
+          style={{
+            color: "#fff",
+            fontSize: 32,
+            marginTop: 50,
+            marginBottom: 20,
+            fontWeight: "bold",
+          }}
+        >
+          Workout session Completed!
+        </Text>
+        <View
+          style={{
+            width: Dimensions.get("window").width * 0.9,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-around",
+            alignItems: "center",
+            marginTop: 20,
+          }}
+        >
+          <View
+            style={{
+              width: "30%",
+              height: 250,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              backgroundColor: "#8E2727",
+              borderRadius: 20,
+            }}
+          >
+            <Ionicons
+              name="flame-outline"
+              size={40}
+              color="white"
+              style={{ marginTop: 20 }}
+            />
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#FF4242",
+                width: "100%",
+                height: "60%",
+                bottom: 0,
+                position: "absolute",
+                borderRadius: 20,
+              }}
+            >
+              <Text
+                style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
+              >
+                200
+              </Text>
+              <Text
+                style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
+              >
+                Calories
+              </Text>
+            </View>
           </View>
-          <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingVertical: 20, backgroundColor: '#0b0b0b', width: '100%', padding: 10, borderRadius: 36 }}>
-            <Text style={{ color: 'white', fontSize: 26, marginBottom: 10, textAlign: 'center' }}>400</Text>
-            <Text style={{ color: 'white', fontSize: 22 }}>Calories Burned</Text>
+          <View
+            style={{
+              width: "30%",
+              height: 250,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              backgroundColor: "#AA633B",
+              borderRadius: 20,
+            }}
+          >
+            <Ionicons
+              name="barbell"
+              size={40}
+              color="white"
+              style={{ marginTop: 20 }}
+            />
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#E05A0F",
+                width: "100%",
+                height: "60%",
+                bottom: 0,
+                position: "absolute",
+                borderRadius: 20,
+              }}
+            >
+              <Text
+                style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
+              >
+                120
+              </Text>
+              <Text
+                style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
+              >
+                Kg
+              </Text>
+            </View>
           </View>
-        </View>
 
-        <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: 30, backgroundColor: '#24E014', width: '75%', padding: 5, borderRadius: 36 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: 10 }}>
-            <Ionicons name="checkmark-circle-outline" size={24} color="white" style={{ alignSelf: 'center', marginRight: 5 }} />
-            <Text style={{ color: 'white', fontSize: 18, textAlign: 'center' }}>Sets Finished</Text>
-          </View>
-          <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingVertical: 20, backgroundColor: '#0b0b0b', width: '100%', padding: 10, borderRadius: 36 }}>
-            <Text style={{ color: 'white', fontSize: 26, marginBottom: 10, textAlign: 'center' }}>20</Text>
-            <Text style={{ color: 'white', fontSize: 22 }}>Sets Finished</Text>
+          <View
+            style={{
+              width: "30%",
+              height: 250,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              backgroundColor: "#144D77",
+              borderRadius: 20,
+            }}
+          >
+            <Ionicons
+              name="time-outline"
+              size={40}
+              color="white"
+              style={{ marginTop: 20 }}
+            />
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#0496FF",
+                width: "100%",
+                height: "60%",
+                bottom: 0,
+                position: "absolute",
+                borderRadius: 20,
+              }}
+            >
+              <Text
+                style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
+              >
+                1.5
+              </Text>
+              <Text
+                style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
+              >
+                Hours
+              </Text>
+            </View>
           </View>
         </View>
-
-        <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: 30, backgroundColor: '#157AFF', width: '75%', padding: 5, borderRadius: 36 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: 10 }}>
-            <Ionicons name="time-outline" size={24} color="white" style={{ alignSelf: 'center', marginRight: 5 }} />
-            <Text style={{ color: 'white', fontSize: 18, textAlign: 'center' }}>Time</Text>
-          </View>
-          <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingVertical: 20, backgroundColor: '#0b0b0b', width: '100%', padding: 10, borderRadius: 36 }}>
-            <Text style={{ color: 'white', fontSize: 26, marginBottom: 10, textAlign: 'center' }}>1</Text>
-            <Text style={{ color: 'white', fontSize: 22 }}>Hour</Text>
-          </View>
+        <Text
+          style={{
+            color: "#fff",
+            fontSize: 24,
+            marginTop: 30,
+            fontWeight: "bold",
+          }}
+        >
+          New badge unlocked!
+        </Text>
+        <View
+          style={{
+            width: 120,
+            height: 140,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 20,
+            backgroundColor: "#C0BC4A",
+            borderRadius: 20,
+          }}
+        >
+          <Ionicons name="trophy-outline" size={60} color="white" />
+          <Text style={{ fontSize: 18, color: "#fff" }}>Level 6</Text>
         </View>
-
-        <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: 30, backgroundColor: '#FF4D15', width: '75%', padding: 5, borderRadius: 36 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: 10 }}>
-            <Ionicons name="barbell-outline" size={24} color="white" style={{ alignSelf: 'center', marginRight: 5 }} />
-            <Text style={{ color: 'white', fontSize: 18, textAlign: 'center' }}>Kg Lifted</Text>
-          </View>
-          <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingVertical: 20, backgroundColor: '#0b0b0b', width: '100%', padding: 10, borderRadius: 36 }}>
-            <Text style={{ color: 'white', fontSize: 26, marginBottom: 10, textAlign: 'center' }}>400</Text>
-            <Text style={{ color: 'white', fontSize: 22 }}>Calories Burned</Text>
-          </View>
-        </View>
-        
-        <Pressable style={{ backgroundColor: '#0496FF', width: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, borderRadius: 20, marginVertical: 40 }} onPress={() => navigation.navigate('Workout Finished 2', { routine: routine })}>
-          <Text style={{ color: 'white', fontSize: 20 }}>Continue</Text>
+        <Text
+          style={{
+            color: "#fff",
+            fontSize: 20,
+            marginTop: 10,
+          }}
+        >
+          Chasing the pump
+        </Text>
+        <Pressable
+          style={{
+            backgroundColor: "#157AFF",
+            width: "80%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 20,
+            borderRadius: 20,
+            marginVertical: 40,
+          }}
+          onPress={() =>
+            navigation.navigate("Workout Finished 2", { routine: routine })
+          }
+        >
+          <Text style={{ color: "white", fontSize: 20 }}>Continue</Text>
         </Pressable>
       </View>
     </ScrollView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#0b0b0b',
+    backgroundColor: "#0b0b0b",
     flex: 1,
   },
 
   summary: {
-    backgroundColor: '#0b0b0b',
-    width: '100%',
-    minHeight: Dimensions.get('window').height,
+    backgroundColor: "#0b0b0b",
+    width: "100%",
+    minHeight: Dimensions.get("window").height,
     paddingTop: Constants.statusBarHeight,
-    alignItems: 'center',
+    alignItems: "center",
   },
-})
+});
+

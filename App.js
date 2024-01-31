@@ -9,6 +9,7 @@ import MyGoals from "./Screens/MyGoals";
 import WorkoutInProgress from "./Screens/WorkoutInProgress";
 import WorkoutFinished1 from "./Screens/WorkoutFinished1";
 import WorkoutFinished2 from "./Screens/WorkoutFinished2";
+import WorkoutShare from "./Screens/WorkoutShare";
 
 import InputUserInfoStack from "./Stacks/InputUserInfoStack";
 import UpdateUserInfoStack from "./Stacks/UpdateUserInfoStack";
@@ -93,6 +94,11 @@ export default function App() {
                   <Stack.Screen
                     name="Workout Finished 2"
                     component={WorkoutFinished2}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="Share Workout"
+                    component={WorkoutShare}
                     options={{ headerShown: false }}
                   />
                   <Stack.Screen
