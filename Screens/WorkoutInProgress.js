@@ -47,6 +47,12 @@ export default function WorkoutInProgress({ route, navigation }) {
   );
   const [exercises, setExercises] = useState(routine.exercises);
 
+  const handleEndWorkout = () => {
+    // some logic to save to firebase and navigate to workout summary
+    console.log("Workout ended");
+    navigation.navigate("Workout Finished 1", { routine: routine });
+  };
+
   const renderItem = ({ item, drag, isActive }) => {
     return (
       <ScaleDecorator activeScale={0.95} inactiveScale={1}>
@@ -191,6 +197,7 @@ export default function WorkoutInProgress({ route, navigation }) {
               borderRadius: 20,
               borderWidth: 0,
             }}
+            onSwipeSuccess={() => handleEndWorkout()}
           />
         </View>
       </ScrollView>
