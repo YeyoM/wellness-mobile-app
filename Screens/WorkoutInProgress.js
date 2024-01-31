@@ -1,83 +1,163 @@
-import React from 'react'
-import { StyleSheet, Text, View, Image, Pressable, TouchableOpacity, SafeAreaView } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import { Ionicons } from '@expo/vector-icons'
+import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Ionicons } from "@expo/vector-icons";
 import DraggableFlatList, {
-  ScaleDecorator, NestableDraggableFlatList, NestableScrollContainer
-} from "react-native-draggable-flatlist"; 
-import { Dimensions } from 'react-native';
-import Constants from 'expo-constants';
+  ScaleDecorator,
+  NestableScrollContainer,
+} from "react-native-draggable-flatlist";
+import { Dimensions } from "react-native";
+import Constants from "expo-constants";
+import SwipeButton from "rn-swipe-button";
+import CurrentExercise from "../components/CurrentExercise";
+import arrowRight from "../assets/arrow-right.png";
 
-import CurrentExercise from '../components/CurrentExercise'
-
-import { useState } from 'react'
+import { useState } from "react";
 
 export default function WorkoutInProgress({ route, navigation }) {
-
-  const { routine } = route.params
+  const { routine } = route.params;
 
   /**
    * {"calories": "100", "duration": "70", "exercises": [{"exerciseName": "Push Up", "reps": "10", "sets": "4", "weight": "0"}, {"exerciseName": "Bench Press", "reps": "10", "sets": "4", "weight": "0"}, {"exerciseName": "Overhead Press", "reps": "10", "sets": "4", "weight": "0"}], "image": "../assets/push_day.png", "routineName": "Push Day", "sets": "12"}
    */
 
-  console.log(routine)
+  console.log(routine);
 
-  const [ currentExercise, setCurrentExercise ] = useState(routine.exercises[ 0 ])
-  const [ currentExerciseIndex, setCurrentExerciseIndex ] = useState(0)
-  const [ currentExerciseReps, setCurrentExerciseReps ] = useState(routine.exercises[ 0 ].reps)
-  const [ currentExerciseSets, setCurrentExerciseSets ] = useState(routine.exercises[ 0 ].sets)
-  const [ currentExerciseWeight, setCurrentExerciseWeight ] = useState(routine.exercises[ 0 ].weight)
+  const [currentExercise, setCurrentExercise] = useState(routine.exercises[0]);
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
+  const [currentExerciseReps, setCurrentExerciseReps] = useState(
+    routine.exercises[0].reps,
+  );
+  const [currentExerciseSets, setCurrentExerciseSets] = useState(
+    routine.exercises[0].sets,
+  );
+  const [currentExerciseWeight, setCurrentExerciseWeight] = useState(
+    routine.exercises[0].weight,
+  );
 
-  const [ numberOfExercises, setNumberOfExercises ] = useState(routine.exercises.length)
-  const [ exercises, setExercises ] = useState(routine.exercises)
+  const [numberOfExercises, setNumberOfExercises] = useState(
+    routine.exercises.length,
+  );
+  const [exercises, setExercises] = useState(routine.exercises);
 
   const renderItem = ({ item, drag, isActive }) => {
     return (
       <ScaleDecorator activeScale={0.95} inactiveScale={1}>
         <TouchableOpacity
           style={{
-            height: 100,
-            backgroundColor: "#0b0b0b",
+            backgroundColor: "#157AFF",
             alignItems: "center",
             justifyContent: "center",
-            borderWidth: 1,
-            borderColor: "#fff",
-            borderLeftWidth: 0,
-            borderRightWidth: 0,
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            width: '100%',
-            paddingHorizontal: 10,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: "100%",
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            borderRadius: 24,
+            marginVertical: 8,
           }}
           onLongPress={drag}
         >
-          <Text style={{ color: "#fff", fontSize: 18 }}>
+          <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
             {item.exerciseName}
           </Text>
-          <Ionicons name="reorder-three-outline" size={50} color="white" />
+          <Ionicons name="reorder-three-outline" size={40} color="white" />
         </TouchableOpacity>
       </ScaleDecorator>
     );
-  }
+  };
 
   return (
     <GestureHandlerRootView style={styles.container}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.workout}>
-          <View style={styles.header}>
-            <Ionicons name="person-circle-outline" size={55} color="white" />
-            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-              <Text style={styles.headerText}>Total Time</Text>
-              <Text style={styles.headerText_}>00:00</Text>
-            </View>
-            <Image source={require('../assets/icon.png')} style={{ width: 70, height: 70 }} />
-          </View>
-          <Text style={{ color: 'white', fontSize: 24, marginVertical: 30 }}>Workout session in progress</Text>
-          <CurrentExercise exercise={currentExercise.exerciseName} reps={currentExerciseReps} sets={currentExerciseSets} weight={currentExerciseWeight} image={routine.image} navigation={navigation} />
-          <Text style={{ color: 'white', fontSize: 24, marginVertical: 30, paddingLeft: 20, alignSelf: 'flex-start' }}>Next in Line</Text>
-          <View style={{ width: '90%', backgroundColor: '#0b0b0b', marginBottom: 60, display: 'flex', alignItems: 'center' }}>
+          <Text
+            style={{
+              color: "white",
+              fontSize: 34,
+              marginTop: 30,
+              marginBottom: -20,
+            }}
+          >
+            {currentExercise.exerciseName}
+          </Text>
+          <Text
+            style={{
+              color: "white",
+              fontSize: 90,
+              marginBottom: 20,
+              fontWeight: "800",
+            }}
+          >
+            11:00
+          </Text>
+          <CurrentExercise
+            exercise={currentExercise.exerciseName}
+            reps={currentExerciseReps}
+            sets={currentExerciseSets}
+            weight={currentExerciseWeight}
+            image={routine.image}
+            navigation={navigation}
+          />
+          <Pressable
+            style={{
+              backgroundColor: "#157AFF",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+              borderRadius: 40,
+              marginVertical: 20,
+            }}
+          >
+            <Text
+              style={{
+                color: "white",
+                fontSize: 18,
+                fontWeight: "bold",
+                marginRight: 10,
+              }}
+            >
+              Next Lift
+            </Text>
+            <Ionicons
+              name="arrow-forward-circle-outline"
+              size={24}
+              color="white"
+            />
+          </Pressable>
+
+          <Text
+            style={{
+              color: "white",
+              fontSize: 20,
+              marginBottom: 20,
+              paddingLeft: 20,
+              alignSelf: "flex-start",
+              fontWeight: "bold",
+            }}
+          >
+            Lift queue:
+          </Text>
+          <View
+            style={{
+              width: "90%",
+              backgroundColor: "#0b0b0b",
+              marginBottom: 60,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
             <NestableScrollContainer>
               <DraggableFlatList
                 data={exercises}
@@ -87,51 +167,74 @@ export default function WorkoutInProgress({ route, navigation }) {
               />
             </NestableScrollContainer>
           </View>
-          <Pressable style={{ backgroundColor: '#FF0431', width: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, borderRadius: 20, marginBottom: 60 }} onPress={() => navigation.navigate('Workout Finished 1', { routine: routine })}>
-            <Text style={{ color: 'white', fontSize: 20 }}>End Workout</Text>
-          </Pressable>
+          <SwipeButton
+            width={Dimensions.get("window").width * 0.9}
+            height={62}
+            title="swipe to end workout"
+            titleFontSize={18}
+            titleColor="#fff"
+            railBackgroundColor="#870C0C"
+            railBorderColor="#870C0C"
+            railStyles={{
+              borderRadius: 20,
+              borderWidth: 2,
+            }}
+            thumbIconImageSource={arrowRight}
+            railFillBackgroundColor="#FF0000"
+            railFillBorderColor="#FF0000"
+            thumbIconBackgroundColor="#FF0000"
+            thumbIconStyles={{
+              borderRadius: 20,
+              borderWidth: 0,
+            }}
+            containerStyles={{
+              borderRadius: 20,
+              borderWidth: 0,
+            }}
+          />
         </View>
       </ScrollView>
     </GestureHandlerRootView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#0b0b0b',
+    backgroundColor: "#0b0b0b",
     flex: 1,
   },
 
   scrollView: {
-    backgroundColor: '#0b0b0b',
+    backgroundColor: "#0b0b0b",
   },
 
   workout: {
-    backgroundColor: '#0b0b0b',
-    width: '100%',
-    minHeight: Dimensions.get('window').height + 100,
-    alignItems: 'center',
+    backgroundColor: "#0b0b0b",
+    width: "100%",
+    minHeight: Dimensions.get("window").height + 100,
+    alignItems: "center",
   },
 
   header: {
-    width: '100%',
+    width: "100%",
     height: 100,
-    backgroundColor: '#323743',
+    backgroundColor: "#323743",
     paddingHorizontal: 20,
     marginTop: Constants.statusBarHeight,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 
   headerText: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: '#fff'
+    fontWeight: "bold",
+    color: "#fff",
   },
 
   headerText_: {
     fontSize: 12,
-    color: '#fff'
+    color: "#fff",
   },
-})
+});
+
