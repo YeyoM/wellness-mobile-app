@@ -2,8 +2,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
 import Home from "../Screens/Home";
-import ManageAccount from "../Screens/ManageAccount";
 import SavedRoutines from "../Screens/SavedRoutines";
+import Profile from "../Screens/Profile";
 
 const Tab = createBottomTabNavigator();
 
@@ -11,13 +11,12 @@ export default function MainTabs({ navigation }) {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-
+        tabBarIcon: ({ focused, color }) => {
           let iconName;
 
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Manage Account") {
+          } else if (route.name === "Profile") {
             iconName = focused ? "person" : "person-outline";
           } else if (route.name === "Saved Routines") {
             iconName = focused ? "heart" : "heart-outline";
@@ -40,7 +39,8 @@ export default function MainTabs({ navigation }) {
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Saved Routines" component={SavedRoutines} />
-      <Tab.Screen name="Manage Account" component={ManageAccount} />
+      <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
-  )
+  );
 }
+
