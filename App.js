@@ -20,6 +20,7 @@ import AddLift from "./Screens/AddLift";
 
 import MainTabs from "./Stacks/MainTabs";
 import AccountSettings from "./Screens/AccountSettings";
+import NotificationSettings from "./Screens/NotificationSettings";
 
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
@@ -120,6 +121,11 @@ export default function App() {
                   <Stack.Screen
                     name="Account Settings"
                     component={AccountSettings}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="Notification Settings"
+                    component={NotificationSettings}
                     options={{ headerShown: false }}
                   />
                 </Stack.Group>

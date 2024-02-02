@@ -16,7 +16,7 @@ export default function Profile({ navigation }) {
       <View
         style={{
           width: "100%",
-          minHeight: 560,
+          height: Dimensions.get("window").height * 0.8,
           backgroundColor: "#0b0b0b",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,

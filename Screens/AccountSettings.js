@@ -1,13 +1,17 @@
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+} from "react-native";
 import React, { useState } from "react";
 import { FIREBASE_AUTH } from "../firebaseConfig";
 import { signOut } from "firebase/auth";
 
 import { Ionicons } from "@expo/vector-icons";
 
-import SuccessNotification from "../components/SuccessNotification";
-import ErrorNotification from "../components/ErrorNotification";
-import PrimaryNotification from "../components/PrimaryNotification";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function AccountSettings({ navigation }) {
@@ -36,62 +40,196 @@ export default function AccountSettings({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {success && <SuccessNotification message={success} />}
-      {error && <ErrorNotification message={error} />}
-      {loading && <PrimaryNotification message={loading} />}
-      <Pressable
-        onPress={() => navigation.navigate((routeName = "User Information"))}
-        style={styles.buttonLarge}
+      <Text style={styles.text}>Account Settings</Text>
+      <View
+        style={{
+          width: "100%",
+          height: Dimensions.get("window").height * 0.8,
+          backgroundColor: "#0b0b0b",
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
+          paddingTop: 40,
+        }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Ionicons name="person-circle-outline" size={30} color="white" />
-          <Text style={{ color: "white", marginLeft: 12 }}>My Profile</Text>
-        </View>
-        <Ionicons name="chevron-forward-outline" size={24} color="white" />
-      </Pressable>
-      <Pressable style={styles.button}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Ionicons name="notifications-outline" size={24} color="white" />
-          <Text style={{ color: "white", marginLeft: 12 }}>Notifications</Text>
-        </View>
-        <Ionicons name="chevron-forward-outline" size={24} color="white" />
-      </Pressable>
-      <Pressable style={styles.button}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Ionicons name="lock-closed-outline" size={24} color="white" />
-          <Text style={{ color: "white", marginLeft: 12 }}>Privacy</Text>
-        </View>
-        <Ionicons name="chevron-forward-outline" size={24} color="white" />
-      </Pressable>
-      <Pressable style={styles.button}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Ionicons name="barbell-outline" size={24} color="white" />
-          <Text style={{ color: "white", marginLeft: 12 }}>
-            Workout Preferences
-          </Text>
-        </View>
-        <Ionicons name="chevron-forward-outline" size={24} color="white" />
-      </Pressable>
-      <Pressable
-        style={styles.button}
-        onPress={() => navigation.navigate((routeName = "User Goals"))}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Ionicons name="ribbon-outline" size={24} color="white" />
-          <Text style={{ color: "white", marginLeft: 12 }}>My Goals</Text>
-        </View>
-        <Ionicons name="chevron-forward-outline" size={24} color="white" />
-      </Pressable>
-      <Pressable style={styles.button}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Ionicons name="help-buoy-outline" size={24} color="white" />
-          <Text style={{ color: "white", marginLeft: 12 }}>Help & Support</Text>
-        </View>
-        <Ionicons name="chevron-forward-outline" size={24} color="white" />
-      </Pressable>
-      <Pressable onPress={handleSignOut} style={styles.signOutButton}>
-        <Text style={{ color: "white" }}>Sign Out</Text>
-      </Pressable>
+        <ScrollView style={styles.content}>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              marginBottom: 20,
+              height: "100%",
+              width: "100%",
+            }}
+          >
+            <Text
+              style={{
+                color: "white",
+                fontSize: 20,
+                marginBottom: 20,
+                textAlign: "left",
+                alignSelf: "flex-start",
+              }}
+            >
+              General
+            </Text>
+            <Pressable
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+                marginBottom: 10,
+                backgroundColor: "#24262B",
+                padding: 20,
+                borderRadius: 20,
+              }}
+              onPress={() => navigation.navigate("Notification Settings")}
+            >
+              <Text style={{ color: "white", fontSize: 16 }}>
+                Notifications
+              </Text>
+              <Ionicons name="chevron-forward" size={24} color="white" />
+            </Pressable>
+            <Pressable
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+                marginBottom: 10,
+                backgroundColor: "#24262B",
+                padding: 20,
+                borderRadius: 20,
+              }}
+            >
+              <Text style={{ color: "white", fontSize: 16 }}>
+                Personal Information
+              </Text>
+              <Ionicons name="chevron-forward" size={24} color="white" />
+            </Pressable>
+            <Text
+              style={{
+                color: "white",
+                fontSize: 20,
+                marginTop: 20,
+                marginBottom: 20,
+                textAlign: "left",
+                alignSelf: "flex-start",
+              }}
+            >
+              Security and Privacy
+            </Text>
+            <Pressable
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+                marginBottom: 10,
+                backgroundColor: "#24262B",
+                padding: 20,
+                borderRadius: 20,
+              }}
+            >
+              <Text style={{ color: "white", fontSize: 16 }}>
+                Blocked Accounts
+              </Text>
+              <Ionicons name="chevron-forward" size={24} color="white" />
+            </Pressable>
+            <Pressable
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+                marginBottom: 10,
+                backgroundColor: "#24262B",
+                padding: 20,
+                borderRadius: 20,
+              }}
+            >
+              <Text style={{ color: "white", fontSize: 16 }}>
+                Change Password
+              </Text>
+              <Ionicons name="chevron-forward" size={24} color="white" />
+            </Pressable>
+            <Text
+              style={{
+                color: "white",
+                fontSize: 20,
+                marginTop: 20,
+                marginBottom: 20,
+                textAlign: "left",
+                alignSelf: "flex-start",
+              }}
+            >
+              Information and Support
+            </Text>
+            <Pressable
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+                marginBottom: 10,
+                backgroundColor: "#24262B",
+                padding: 20,
+                borderRadius: 20,
+              }}
+            >
+              <Text style={{ color: "white", fontSize: 16 }}>Help</Text>
+              <Ionicons name="chevron-forward" size={24} color="white" />
+            </Pressable>
+            <Pressable
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+                marginBottom: 10,
+                backgroundColor: "#24262B",
+                padding: 20,
+                borderRadius: 20,
+              }}
+            >
+              <Text style={{ color: "white", fontSize: 16 }}>About</Text>
+              <Ionicons name="chevron-forward" size={24} color="white" />
+            </Pressable>
+            <Pressable onPress={handleSignOut} style={styles.signOutButton}>
+              <Text
+                style={{ color: "white", fontWeight: "bold", fontSize: 16 }}
+              >
+                Sign Out
+              </Text>
+            </Pressable>
+            <Pressable style={styles.deleteAccountButton}>
+              <Text
+                style={{ color: "#C70202", fontWeight: "bold", fontSize: 16 }}
+              >
+                Delete Account
+              </Text>
+            </Pressable>
+            <Text
+              style={{
+                color: "#a0a0a0",
+                fontSize: 16,
+                marginTop: 20,
+                marginBottom: 20,
+                textAlign: "center",
+              }}
+            >
+              Wellness Version Beta 1.0.0
+            </Text>
+          </View>
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -99,43 +237,36 @@ export default function AccountSettings({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0B0B",
+    backgroundColor: "#24262B",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-end",
   },
 
   text: {
     fontSize: 30,
     fontWeight: "bold",
-    color: "#0496FF",
+    color: "#fff",
     marginBottom: 20,
   },
 
-  buttonLarge: {
-    width: "85%",
-    backgroundColor: "#24262B",
-    borderRadius: 90,
-    alignItems: "center",
-    marginBottom: 24,
-    padding: 25,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-
-  button: {
-    width: "75%",
-    backgroundColor: "#24262B",
-    borderRadius: 90,
-    alignItems: "center",
-    marginBottom: 14,
-    padding: 18,
-    flexDirection: "row",
-    justifyContent: "space-between",
+  content: {
+    width: "100%",
+    paddingHorizontal: 30,
   },
 
   signOutButton: {
     width: "65%",
-    backgroundColor: "#0496FF",
+    backgroundColor: "#840505",
+    borderRadius: 90,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+    padding: 20,
+  },
+
+  deleteAccountButton: {
+    width: "65%",
+    backgroundColor: "#fff",
     borderRadius: 90,
     alignItems: "center",
     justifyContent: "center",
