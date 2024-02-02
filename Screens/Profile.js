@@ -85,19 +85,23 @@ export default function Profile({ navigation }) {
                     Finished Workouts
                   </Text>
                 </View>
-
-                <Text
+                <View
                   style={{
-                    color: "white",
-                    fontSize: 16,
                     backgroundColor: "#0496FF",
                     borderRadius: 30,
                     paddingHorizontal: 12,
                     paddingVertical: 4,
                   }}
                 >
-                  12
-                </Text>
+                  <Text
+                    style={{
+                      color: "white",
+                      fontSize: 16,
+                    }}
+                  >
+                    12
+                  </Text>
+                </View>
               </View>
               <View style={styles.stat}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -113,18 +117,23 @@ export default function Profile({ navigation }) {
                   </Text>
                 </View>
 
-                <Text
+                <View
                   style={{
-                    color: "white",
-                    fontSize: 16,
                     backgroundColor: "#0496FF",
                     borderRadius: 30,
                     paddingHorizontal: 12,
                     paddingVertical: 4,
                   }}
                 >
-                  30
-                </Text>
+                  <Text
+                    style={{
+                      color: "white",
+                      fontSize: 16,
+                    }}
+                  >
+                    30
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
