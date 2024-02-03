@@ -5,6 +5,7 @@ import {
   View,
   Pressable,
   TouchableOpacity,
+  LogBox,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -28,8 +29,6 @@ export default function WorkoutInProgress({ route, navigation }) {
    * {"calories": "100", "duration": "70", "exercises": [{"exerciseName": "Push Up", "reps": "10", "sets": "4", "weight": "0"}, {"exerciseName": "Bench Press", "reps": "10", "sets": "4", "weight": "0"}, {"exerciseName": "Overhead Press", "reps": "10", "sets": "4", "weight": "0"}], "image": "../assets/push_day.png", "routineName": "Push Day", "sets": "12"}
    */
 
-  console.log(routine);
-
   const [currentExercise, setCurrentExercise] = useState(routine.exercises[0]);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [currentExerciseReps, setCurrentExerciseReps] = useState(
@@ -52,6 +51,10 @@ export default function WorkoutInProgress({ route, navigation }) {
     console.log("Workout ended");
     navigation.navigate("Workout Finished 1", { routine: routine });
   };
+
+  React.useEffect(() => {
+    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
+  }, []);
 
   const renderItem = ({ item, drag, isActive }) => {
     return (
@@ -83,7 +86,13 @@ export default function WorkoutInProgress({ route, navigation }) {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView
+        style={styles.scrollView}
+        bounces={false}
+        disableScrollViewPanResponder={true}
+        disableIntervalMomentum={true}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.workout}>
           <Text
             style={{
