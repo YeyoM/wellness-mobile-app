@@ -21,6 +21,7 @@ import AddLift from "./Screens/AddLift";
 import MainTabs from "./Stacks/MainTabs";
 import AccountSettings from "./Screens/AccountSettings";
 import NotificationSettings from "./Screens/NotificationSettings";
+import EditProfile from "./Screens/EditProfile";
 
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
@@ -126,6 +127,11 @@ export default function App() {
                   <Stack.Screen
                     name="Notification Settings"
                     component={NotificationSettings}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="Edit Profile"
+                    component={EditProfile}
                     options={{ headerShown: false }}
                   />
                 </Stack.Group>

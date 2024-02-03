@@ -8,7 +8,7 @@ import {
   Switch,
 } from "react-native";
 import React, { useState } from "react";
-
+import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function NotificationSettings({ navigation }) {
@@ -20,11 +20,30 @@ export default function NotificationSettings({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.backButton}>
+        <Pressable onPress={() => navigation.goBack()}>
+          <Ionicons name="chevron-back" size={32} color="white" />
+        </Pressable>
+      </View>
+      <View style={styles.doneButton}>
+        <Pressable onPress={() => navigation.goBack()}>
+          <Text
+            style={{
+              color: "white",
+              fontSize: 18,
+              fontWeight: "bold",
+              color: "#0496FF",
+            }}
+          >
+            Done
+          </Text>
+        </Pressable>
+      </View>
       <Text style={styles.text}>Notification Settings</Text>
       <View
         style={{
           width: "100%",
-          height: Dimensions.get("window").height * 0.8,
+          height: Dimensions.get("window").height - 200,
           backgroundColor: "#0b0b0b",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
@@ -147,6 +166,22 @@ const styles = StyleSheet.create({
     backgroundColor: "#24262B",
     alignItems: "center",
     justifyContent: "flex-end",
+  },
+
+  backButton: {
+    position: "absolute",
+    top: Constants.statusBarHeight + 20,
+    left: 20,
+    backgroundColor: "#0b0b0b",
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 16,
+  },
+
+  doneButton: {
+    position: "absolute",
+    top: Constants.statusBarHeight + 36,
+    right: 20,
   },
 
   text: {
