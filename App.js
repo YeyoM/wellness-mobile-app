@@ -22,6 +22,7 @@ import MainTabs from "./Stacks/MainTabs";
 import AccountSettings from "./Screens/AccountSettings";
 import NotificationSettings from "./Screens/NotificationSettings";
 import EditProfile from "./Screens/EditProfile";
+import PersonalInfoSettings from "./Screens/PersonalInfoSettings";
 
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
@@ -132,6 +133,11 @@ export default function App() {
                   <Stack.Screen
                     name="Edit Profile"
                     component={EditProfile}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="Personal Info Settings"
+                    component={PersonalInfoSettings}
                     options={{ headerShown: false }}
                   />
                 </Stack.Group>
