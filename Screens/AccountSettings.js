@@ -110,6 +110,7 @@ export default function AccountSettings({ navigation }) {
                 padding: 20,
                 borderRadius: 20,
               }}
+              onPress={() => navigation.navigate("Personal Info Settings")}
             >
               <Text style={{ color: "white", fontSize: 16 }}>
                 Personal Information
