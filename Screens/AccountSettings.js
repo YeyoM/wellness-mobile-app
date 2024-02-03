@@ -9,6 +9,7 @@ import {
 import React, { useState } from "react";
 import { FIREBASE_AUTH } from "../firebaseConfig";
 import { signOut } from "firebase/auth";
+import Constants from "expo-constants";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -40,11 +41,16 @@ export default function AccountSettings({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.backButton}>
+        <Pressable onPress={() => navigation.goBack()}>
+          <Ionicons name="chevron-back" size={32} color="white" />
+        </Pressable>
+      </View>
       <Text style={styles.text}>Account Settings</Text>
       <View
         style={{
           width: "100%",
-          height: Dimensions.get("window").height * 0.8,
+          height: Dimensions.get("window").height - 200,
           backgroundColor: "#0b0b0b",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
@@ -240,6 +246,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#24262B",
     alignItems: "center",
     justifyContent: "flex-end",
+  },
+
+  backButton: {
+    position: "absolute",
+    top: Constants.statusBarHeight + 20,
+    left: 20,
+    backgroundColor: "#0b0b0b",
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
 
   text: {

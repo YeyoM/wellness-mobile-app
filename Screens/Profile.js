@@ -47,7 +47,10 @@ export default function Profile({ navigation }) {
             </View>
           </View>
           <View style={styles.bottom}>
-            <Pressable style={styles.editButton}>
+            <Pressable
+              style={styles.editButton}
+              onPress={() => navigation.navigate("Edit Profile")}
+            >
               <Text style={{ color: "white" }}>Edit Profile</Text>
             </Pressable>
             <Pressable style={styles.shareButton}>
