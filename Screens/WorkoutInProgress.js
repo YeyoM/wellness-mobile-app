@@ -83,7 +83,13 @@ export default function WorkoutInProgress({ route, navigation }) {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView
+        style={styles.scrollView}
+        bounces={false}
+        disableScrollViewPanResponder={true}
+        disableIntervalMomentum={true}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.workout}>
           <Text
             style={{
