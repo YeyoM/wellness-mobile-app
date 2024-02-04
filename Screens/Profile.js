@@ -117,7 +117,18 @@ export default function Profile({ navigation }) {
           <View style={styles.bottom}>
             <Pressable
               style={styles.editButton}
-              onPress={() => navigation.navigate("Edit Profile")}
+              onPress={() =>
+                navigation.navigate("Edit Profile", {
+                  name: profileData?.name,
+                  bio: profileData?.bio,
+                  weight: profileData?.weight,
+                  height: profileData?.height,
+                  weightUnit: profileData?.weightUnit,
+                  heightUnit: profileData?.heightUnit,
+                  showHeightAndWeight: profileData?.showHeightAndWeight,
+                  privateProfile: profileData?.privateProfile,
+                })
+              }
             >
               <Text style={{ color: "white" }}>Edit Profile</Text>
             </Pressable>

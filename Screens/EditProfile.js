@@ -11,9 +11,27 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 
-export default function EditProfile({ navigation }) {
-  const [setSwitch, setSetSwitch] = React.useState(false);
-  const [setSwitch2, setSetSwitch2] = React.useState(false);
+export default function EditProfile({ route, navigation }) {
+  const {
+    name,
+    bio,
+    weight,
+    height,
+    showHeightAndWeight,
+    weightUnit,
+    heightUnit,
+    privateProfile,
+  } = route.params;
+
+  const [name_, setName] = React.useState(name);
+  const [bio_, setBio] = React.useState(bio);
+  const [weight_, setWeight] = React.useState(weight);
+  const [height_, setHeight] = React.useState(height);
+  const [weightUnit_, setWeightUnit] = React.useState(weightUnit);
+  const [heightUnit_, setHeightUnit] = React.useState(heightUnit);
+
+  const [setSwitch, setSetSwitch] = React.useState(showHeightAndWeight);
+  const [setSwitch2, setSetSwitch2] = React.useState(privateProfile);
 
   const handleSwitch = () => {
     setSetSwitch(!setSwitch);
@@ -73,7 +91,7 @@ export default function EditProfile({ navigation }) {
               >
                 Name
               </Text>
-              <Text style={{ color: "white", fontSize: 14 }}>John Doe</Text>
+              <Text style={{ color: "white", fontSize: 14 }}>{name_}</Text>
               <Pressable
                 style={{
                   position: "absolute",
@@ -93,7 +111,7 @@ export default function EditProfile({ navigation }) {
                 Bio
               </Text>
               <Text style={{ color: "white", fontSize: 14 }}>
-                Fitness Freak
+                {bio_ ? bio_ : "no bio yet"}
               </Text>
               <Pressable
                 style={{
@@ -113,7 +131,9 @@ export default function EditProfile({ navigation }) {
               >
                 Weight
               </Text>
-              <Text style={{ color: "white", fontSize: 14 }}>75 kg</Text>
+              <Text style={{ color: "white", fontSize: 14 }}>
+                {weight_} {weightUnit_}
+              </Text>
               <Pressable
                 style={{
                   position: "absolute",
@@ -132,7 +152,9 @@ export default function EditProfile({ navigation }) {
               >
                 Height
               </Text>
-              <Text style={{ color: "white", fontSize: 14 }}>170 cm</Text>
+              <Text style={{ color: "white", fontSize: 14 }}>
+                {height_} {heightUnit_}
+              </Text>
               <Pressable
                 style={{
                   position: "absolute",
