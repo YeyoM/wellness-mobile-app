@@ -5,6 +5,8 @@ import UpdateName from "../Screens/UpdateUserInfo/UpdateName";
 import UpdateBio from "../Screens/UpdateUserInfo/UpdateBio";
 import UpdateWeightUnit from "../Screens/UpdateUserInfo/UpdateWeightUnit";
 import UpdateWeight from "../Screens/UpdateUserInfo/UpdateWeight";
+import UpdateHeightUnit from "../Screens/UpdateUserInfo/UpdateHeightUnit";
+import UpdateHeight from "../Screens/UpdateUserInfo/UpdateHeight";
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +41,16 @@ export default function UpdateUserInfoStack() {
       <Stack.Screen
         name="Update Weight"
         component={UpdateWeight}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Update Height Unit"
+        component={UpdateHeightUnit}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Update Height"
+        component={UpdateHeight}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

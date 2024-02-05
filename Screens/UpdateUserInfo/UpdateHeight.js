@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {
-  StyleSheet,
   Alert,
+  StyleSheet,
   Text,
   Pressable,
   View,
@@ -13,30 +13,30 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import Carousel from "react-native-reanimated-carousel";
 
-export default function UpdateWeight({ route, navigation }) {
-  const { weight, setWeight, weightUnit } = route.params;
+export default function UserInputHeight({ route, navigation }) {
+  const { height, setHeight, heightUnit } = route.params;
 
-  const [weight_, setWeight_] = useState(weight);
+  const [height_, setHeight_] = useState(height);
 
   const [data] = useState(
-    weightUnit === "kg"
-      ? [...new Array(65).keys()].map((i) => i + 35)
-      : [...new Array(140).keys()].map((i) => i + 77),
+    heightUnit === "cm"
+      ? [...new Array(120).keys()].map((i) => i + 100)
+      : [...new Array(126).keys()].map((i) => i + 40),
   );
   const [defaultIndex] = useState(
-    weightUnit === "kg" ? weight_ - 35 : weight_ - 77,
+    heightUnit === "cm" ? height_ - 100 : height_ - 40,
   );
 
   const handleContinue = () => {
-    if (weight_ === "") {
-      Alert.alert("Please enter your weight");
+    if (height_ === "") {
+      Alert.alert("Error", "Please select your height");
       return;
     }
-    setWeight(weight_);
+    setHeight(height_);
     navigation.pop(2);
   };
 
-  const ref1 = React.useRef();
+  const ref = React.useRef(null);
   const scale = 0.9;
   const RIGHT_OFFSET = Dimensions.get("window").width * (1 - scale) * 0.5;
   const ITEM_WIDTH = Dimensions.get("window").width * 0.35;
@@ -59,28 +59,29 @@ export default function UpdateWeight({ route, navigation }) {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <Text style={styles.title}>Update your weight</Text>
-      <View style={styles.weightContainer}>
-        <Text style={styles.weight}>{weight_}</Text>
-        <Text style={styles.weight_}>{weightUnit}</Text>
+      <Text style={styles.title}>Update your height</Text>
+      <View style={styles.heightContainer}>
+        <Text style={styles.height}>{height_}</Text>
+        <Text style={styles.height_}>{heightUnit === "cm" ? "cm" : "in"}</Text>
       </View>
+
       <Carousel
         loop
+        defaultIndex={defaultIndex}
         vertical={false}
         style={{
           justifyContent: "center",
           width: Dimensions.get("window").width,
           height: 100,
         }}
-        ref={ref1}
+        ref={ref}
         onSnapToItem={(index) => {
-          setWeight_(data[index]);
+          setHeight_(data[index]);
         }}
         width={ITEM_WIDTH}
         pagingEnabled={false}
         height={ITEM_HEIGHT}
         data={data}
-        defaultIndex={defaultIndex}
         renderItem={({ index }) => {
           return (
             <View
@@ -93,7 +94,7 @@ export default function UpdateWeight({ route, navigation }) {
                 flexDirection: "column",
               }}
             >
-              {data[index] === weight_ ? null : (
+              {data[index] === height_ ? null : (
                 <Text
                   numberOfLines={1}
                   style={{
@@ -175,7 +176,7 @@ export default function UpdateWeight({ route, navigation }) {
         }}
       ></View>
       <Pressable style={styles.btn} onPress={handleContinue}>
-        <Text style={styles.btnText}>Update</Text>
+        <Text style={styles.btnText}>Continue</Text>
       </Pressable>
     </GestureHandlerRootView>
   );
@@ -200,14 +201,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
-  weight: {
+  height: {
     fontSize: 90,
     fontWeight: "bold",
     color: "white",
     margin: 0,
   },
 
-  weightContainer: {
+  heightContainer: {
     display: "flex",
     padding: 10,
     flexDirection: "row",
@@ -217,7 +218,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
 
-  weight_: {
+  height_: {
     fontSize: 30,
     color: "#9EA0A5",
     marginBottom: 16,

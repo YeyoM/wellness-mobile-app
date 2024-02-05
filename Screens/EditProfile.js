@@ -193,6 +193,14 @@ export default function EditProfile({ route, navigation }) {
                   bottom: 0,
                   justifyContent: "center",
                 }}
+                onPress={() => {
+                  navigation.navigate("Update Height Unit", {
+                    height: height_,
+                    heightUnit: heightUnit_,
+                    setHeight: setHeight,
+                    setHeightUnit: setHeightUnit,
+                  });
+                }}
               >
                 <Ionicons name="pencil-outline" size={24} color="white" />
               </Pressable>
