@@ -15,7 +15,17 @@ import { Ionicons } from "@expo/vector-icons";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function AccountSettings({ navigation }) {
+export default function AccountSettings({ route, navigation }) {
+  const {
+    pushNotifications,
+    workoutReminders,
+    sound,
+    vibrations,
+    gym,
+    age,
+    gender,
+  } = route.params;
+
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -91,7 +101,14 @@ export default function AccountSettings({ navigation }) {
                 padding: 20,
                 borderRadius: 20,
               }}
-              onPress={() => navigation.navigate("Notification Settings")}
+              onPress={() =>
+                navigation.navigate("Notification Settings", {
+                  pushNotifications: pushNotifications,
+                  workoutReminders: workoutReminders,
+                  sound: sound,
+                  vibrations: vibrations,
+                })
+              }
             >
               <Text style={{ color: "white", fontSize: 16 }}>
                 Notifications
@@ -110,7 +127,13 @@ export default function AccountSettings({ navigation }) {
                 padding: 20,
                 borderRadius: 20,
               }}
-              onPress={() => navigation.navigate("Personal Info Settings")}
+              onPress={() =>
+                navigation.navigate("Personal Info Settings", {
+                  age: age,
+                  gender: gender,
+                  gym: gym,
+                })
+              }
             >
               <Text style={{ color: "white", fontSize: 16 }}>
                 Personal Information

@@ -11,11 +11,8 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import Constants from "expo-constants";
-
 import Accordion from "../components/AccordionWorkout";
-
 import ErrorNotification from "../components/ErrorNotification";
 
 import { getSavedRoutines } from "../FirebaseFunctions/Routines/getSavedRoutines.js";

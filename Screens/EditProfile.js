@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   ScrollView,
@@ -7,13 +7,36 @@ import {
   Pressable,
   Dimensions,
   Switch,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
+import SaveProfileChanges from "../FirebaseFunctions/Users/SaveProfileChanges";
+import { FIREBASE_AUTH } from "../firebaseConfig";
 
-export default function EditProfile({ navigation }) {
-  const [setSwitch, setSetSwitch] = React.useState(false);
-  const [setSwitch2, setSetSwitch2] = React.useState(false);
+export default function EditProfile({ route, navigation }) {
+  const {
+    name,
+    bio,
+    weight,
+    height,
+    showHeightAndWeight,
+    weightUnit,
+    heightUnit,
+    privateProfile,
+  } = route.params;
+
+  const [name_, setName] = React.useState(name);
+  const [bio_, setBio] = React.useState(bio);
+  const [weight_, setWeight] = React.useState(weight);
+  const [height_, setHeight] = React.useState(height);
+  const [weightUnit_, setWeightUnit] = React.useState(weightUnit);
+  const [heightUnit_, setHeightUnit] = React.useState(heightUnit);
+
+  const [setSwitch, setSetSwitch] = React.useState(showHeightAndWeight);
+  const [setSwitch2, setSetSwitch2] = React.useState(privateProfile);
+
+  const [loading, setLoading] = useState(false);
 
   const handleSwitch = () => {
     setSetSwitch(!setSwitch);
@@ -23,27 +46,70 @@ export default function EditProfile({ navigation }) {
     setSetSwitch2(!setSwitch2);
   };
 
+  const handleDone = async () => {
+    const user = FIREBASE_AUTH.currentUser;
+    if (!user) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await SaveProfileChanges({
+        name: name_,
+        bio: bio_,
+        weight: weight_,
+        height: height_,
+        showHeightAndWeight: setSwitch,
+        weightUnit: weightUnit_,
+        heightUnit: heightUnit_,
+        privateProfile: setSwitch2,
+        userId: user.uid,
+      });
+      navigation.navigate("Profile", { refresh: true });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.backButton}>
-        <Pressable onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={32} color="white" />
-        </Pressable>
-      </View>
-      <View style={styles.doneButton}>
-        <Pressable onPress={() => navigation.goBack()}>
-          <Text
-            style={{
-              color: "white",
-              fontSize: 18,
-              fontWeight: "bold",
-              color: "#0496FF",
-            }}
-          >
-            Done
-          </Text>
-        </Pressable>
-      </View>
+      {!loading && (
+        <View style={styles.backButton}>
+          <Pressable onPress={() => navigation.goBack()}>
+            <Ionicons name="chevron-back" size={32} color="white" />
+          </Pressable>
+        </View>
+      )}
+      {!loading && (
+        <View style={styles.doneButton}>
+          <Pressable onPress={() => handleDone()}>
+            <Text
+              style={{
+                color: "white",
+                fontSize: 18,
+                fontWeight: "bold",
+                color: "#0496FF",
+              }}
+            >
+              Done
+            </Text>
+          </Pressable>
+        </View>
+      )}
+      {loading && (
+        <ActivityIndicator
+          size="large"
+          color="#0496FF"
+          style={{
+            position: "absolute",
+            top: Constants.statusBarHeight + 20,
+            left: 0,
+            right: 0,
+          }}
+        />
+      )}
       <Text
         style={{
           color: "white",
@@ -73,7 +139,7 @@ export default function EditProfile({ navigation }) {
               >
                 Name
               </Text>
-              <Text style={{ color: "white", fontSize: 14 }}>John Doe</Text>
+              <Text style={{ color: "white", fontSize: 14 }}>{name_}</Text>
               <Pressable
                 style={{
                   position: "absolute",
@@ -82,6 +148,12 @@ export default function EditProfile({ navigation }) {
                   bottom: 0,
                   justifyContent: "center",
                 }}
+                onPress={() =>
+                  navigation.navigate("Update Name", {
+                    name: name_,
+                    setName: setName,
+                  })
+                }
               >
                 <Ionicons name="pencil-outline" size={24} color="white" />
               </Pressable>
@@ -93,7 +165,17 @@ export default function EditProfile({ navigation }) {
                 Bio
               </Text>
               <Text style={{ color: "white", fontSize: 14 }}>
-                Fitness Freak
+                {bio_ ? (
+                  bio_.length > 20 ? (
+                    bio_.substring(0, 20) + "..."
+                  ) : (
+                    bio_
+                  )
+                ) : (
+                  <Text style={{ color: "rgba(147, 146, 154, 0.8)" }}>
+                    Add a bio
+                  </Text>
+                )}
               </Text>
               <Pressable
                 style={{
@@ -102,6 +184,12 @@ export default function EditProfile({ navigation }) {
                   top: 0,
                   bottom: 0,
                   justifyContent: "center",
+                }}
+                onPress={() => {
+                  navigation.navigate("Update Bio", {
+                    bio: bio_,
+                    setBio: setBio,
+                  });
                 }}
               >
                 <Ionicons name="pencil-outline" size={24} color="white" />
@@ -113,7 +201,9 @@ export default function EditProfile({ navigation }) {
               >
                 Weight
               </Text>
-              <Text style={{ color: "white", fontSize: 14 }}>75 kg</Text>
+              <Text style={{ color: "white", fontSize: 14 }}>
+                {weight_} {weightUnit_}
+              </Text>
               <Pressable
                 style={{
                   position: "absolute",
@@ -121,6 +211,14 @@ export default function EditProfile({ navigation }) {
                   top: 0,
                   bottom: 0,
                   justifyContent: "center",
+                }}
+                onPress={() => {
+                  navigation.navigate("Update Weight Unit", {
+                    weight: weight_,
+                    weightUnit: weightUnit_,
+                    setWeight: setWeight,
+                    setWeightUnit: setWeightUnit,
+                  });
                 }}
               >
                 <Ionicons name="pencil-outline" size={24} color="white" />
@@ -132,7 +230,9 @@ export default function EditProfile({ navigation }) {
               >
                 Height
               </Text>
-              <Text style={{ color: "white", fontSize: 14 }}>170 cm</Text>
+              <Text style={{ color: "white", fontSize: 14 }}>
+                {height_} {heightUnit_}
+              </Text>
               <Pressable
                 style={{
                   position: "absolute",
@@ -140,6 +240,14 @@ export default function EditProfile({ navigation }) {
                   top: 0,
                   bottom: 0,
                   justifyContent: "center",
+                }}
+                onPress={() => {
+                  navigation.navigate("Update Height Unit", {
+                    height: height_,
+                    heightUnit: heightUnit_,
+                    setHeight: setHeight,
+                    setHeightUnit: setHeightUnit,
+                  });
                 }}
               >
                 <Ionicons name="pencil-outline" size={24} color="white" />

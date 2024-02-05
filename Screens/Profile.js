@@ -1,22 +1,95 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   ScrollView,
   Text,
   StyleSheet,
-  Image,
   Pressable,
   Dimensions,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function Profile({ navigation }) {
+import { FIREBASE_AUTH } from "../firebaseConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import GetUser from "../FirebaseFunctions/Users/GetUser.js";
+
+export default function Profile({ route, navigation }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [profileData, setProfileData] = useState(null);
+
+  async function saveProfileDataStorage(data) {
+    try {
+      await AsyncStorage.setItem("@profileData", JSON.stringify(data));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function getProfileDataStorage() {
+    try {
+      const jsonValue = await AsyncStorage.getItem("@profileData");
+      console.log("From storage: ", JSON.parse(jsonValue));
+      if (route.params?.refresh) {
+        route.params.refresh = false;
+        return null;
+      } else {
+        return jsonValue != null ? JSON.parse(jsonValue) : null;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    const user = FIREBASE_AUTH.currentUser;
+    if (!user) {
+      navigation.navigate("Login");
+      return;
+    }
+    setIsLoading(true);
+    getProfileDataStorage()
+      .then((data) => {
+        if (data) {
+          setIsLoading(false);
+          setProfileData(data);
+        } else {
+          GetUser(user.uid)
+            .then((data) => {
+              saveProfileDataStorage(data);
+              setProfileData(data);
+            })
+            .catch((error) => {
+              Alert.alert("Error", error.message);
+              navigation.navigate("Home");
+            })
+            .finally(() => {
+              setIsLoading(false);
+            });
+        }
+      })
+      .catch((error) => {
+        Alert.alert("Error", error.message);
+        navigation.navigate("Home");
+      });
+    setIsLoading(false);
+  }, [route]);
+
   return (
     <View style={styles.container}>
+      {isLoading ? (
+        <ActivityIndicator
+          size="large"
+          color="#0496FF"
+          style={{ zIndex: 100, marginBottom: 20 }}
+        />
+      ) : null}
       <View
         style={{
           width: "100%",
-          height: Dimensions.get("window").height * 0.8,
+          height: Dimensions.get("window").height * 0.75,
           backgroundColor: "#0b0b0b",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
@@ -26,30 +99,60 @@ export default function Profile({ navigation }) {
       >
         <View style={styles.header}>
           <View style={styles.left}>
-            <Text style={styles.name}>John Doe</Text>
-            <Text style={styles.bio}>Fitness Enthusiast</Text>
+            <Text style={styles.name}>{profileData?.name}</Text>
+            <Text style={styles.bio}>
+              {profileData?.bio ? profileData.bio : "no bio"}
+            </Text>
           </View>
           <View style={styles.right}>
-            <Pressable onPress={() => navigation.navigate("Account Settings")}>
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Account Settings", {
+                  pushNotifications: profileData?.pushNotifications,
+                  workoutReminders: profileData?.workoutReminders,
+                  sound: profileData?.sound,
+                  vibrations: profileData?.vibrations,
+                  gym: profileData?.gym,
+                  age: profileData?.age,
+                  gender: profileData?.gender,
+                });
+              }}
+            >
               <Ionicons name="settings-outline" size={32} color="white" />
             </Pressable>
           </View>
         </View>
         <View style={styles.subHeader}>
-          <View style={styles.top}>
-            <View style={{ flexDirection: "column", alignItems: "center" }}>
-              <Text style={styles.weight}>75</Text>
-              <Text style={styles.unit}>kg</Text>
+          {profileData?.showHeightAndWeight ? (
+            <View style={styles.top}>
+              <View style={{ flexDirection: "column", alignItems: "center" }}>
+                <Text style={styles.weight}>{profileData?.weight}</Text>
+                <Text style={styles.unit}>{profileData?.weightUnit}</Text>
+              </View>
+              <View style={{ flexDirection: "column", alignItems: "center" }}>
+                <Text style={styles.weight}>{profileData?.height}</Text>
+                <Text style={styles.unit}>{profileData?.heightUnit}</Text>
+              </View>
             </View>
-            <View style={{ flexDirection: "column", alignItems: "center" }}>
-              <Text style={styles.weight}>170</Text>
-              <Text style={styles.unit}>cm</Text>
-            </View>
-          </View>
+          ) : null}
           <View style={styles.bottom}>
             <Pressable
               style={styles.editButton}
-              onPress={() => navigation.navigate("Edit Profile")}
+              onPress={() =>
+                navigation.navigate("User Update", {
+                  screen: "Edit Profile",
+                  params: {
+                    name: profileData?.name,
+                    bio: profileData?.bio,
+                    weight: profileData?.weight,
+                    height: profileData?.height,
+                    weightUnit: profileData?.weightUnit,
+                    heightUnit: profileData?.heightUnit,
+                    showHeightAndWeight: profileData?.showHeightAndWeight,
+                    privateProfile: profileData?.privateProfile,
+                  },
+                })
+              }
             >
               <Text style={{ color: "white" }}>Edit Profile</Text>
             </Pressable>
@@ -102,7 +205,7 @@ export default function Profile({ navigation }) {
                       fontSize: 16,
                     }}
                   >
-                    12
+                    {profileData?.finishedWorkouts}
                   </Text>
                 </View>
               </View>
@@ -134,7 +237,7 @@ export default function Profile({ navigation }) {
                       fontSize: 16,
                     }}
                   >
-                    30
+                    {profileData?.hoursTrained}
                   </Text>
                 </View>
               </View>
