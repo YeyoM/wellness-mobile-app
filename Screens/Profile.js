@@ -58,6 +58,7 @@ export default function Profile({ navigation }) {
             })
             .catch((error) => {
               Alert.alert("Error", error.message);
+              navigation.navigate("Home");
             })
             .finally(() => {
               setIsLoading(false);
@@ -66,6 +67,7 @@ export default function Profile({ navigation }) {
       })
       .catch((error) => {
         Alert.alert("Error", error.message);
+        navigation.navigate("Home");
       });
     setIsLoading(false);
   }, []);
@@ -104,29 +106,34 @@ export default function Profile({ navigation }) {
           </View>
         </View>
         <View style={styles.subHeader}>
-          <View style={styles.top}>
-            <View style={{ flexDirection: "column", alignItems: "center" }}>
-              <Text style={styles.weight}>{profileData?.weight}</Text>
-              <Text style={styles.unit}>{profileData?.weightUnit}</Text>
+          {profileData?.showHeightAndWeight ? (
+            <View style={styles.top}>
+              <View style={{ flexDirection: "column", alignItems: "center" }}>
+                <Text style={styles.weight}>{profileData?.weight}</Text>
+                <Text style={styles.unit}>{profileData?.weightUnit}</Text>
+              </View>
+              <View style={{ flexDirection: "column", alignItems: "center" }}>
+                <Text style={styles.weight}>{profileData?.height}</Text>
+                <Text style={styles.unit}>{profileData?.heightUnit}</Text>
+              </View>
             </View>
-            <View style={{ flexDirection: "column", alignItems: "center" }}>
-              <Text style={styles.weight}>{profileData?.height}</Text>
-              <Text style={styles.unit}>{profileData?.heightUnit}</Text>
-            </View>
-          </View>
+          ) : null}
           <View style={styles.bottom}>
             <Pressable
               style={styles.editButton}
               onPress={() =>
-                navigation.navigate("Edit Profile", {
-                  name: profileData?.name,
-                  bio: profileData?.bio,
-                  weight: profileData?.weight,
-                  height: profileData?.height,
-                  weightUnit: profileData?.weightUnit,
-                  heightUnit: profileData?.heightUnit,
-                  showHeightAndWeight: profileData?.showHeightAndWeight,
-                  privateProfile: profileData?.privateProfile,
+                navigation.navigate("User Update", {
+                  screen: "Edit Profile",
+                  params: {
+                    name: profileData?.name,
+                    bio: profileData?.bio,
+                    weight: profileData?.weight,
+                    height: profileData?.height,
+                    weightUnit: profileData?.weightUnit,
+                    heightUnit: profileData?.heightUnit,
+                    showHeightAndWeight: profileData?.showHeightAndWeight,
+                    privateProfile: profileData?.privateProfile,
+                  },
                 })
               }
             >

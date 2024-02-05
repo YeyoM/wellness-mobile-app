@@ -100,6 +100,12 @@ export default function EditProfile({ route, navigation }) {
                   bottom: 0,
                   justifyContent: "center",
                 }}
+                onPress={() =>
+                  navigation.navigate("Update Name", {
+                    name: name_,
+                    setName: setName,
+                  })
+                }
               >
                 <Ionicons name="pencil-outline" size={24} color="white" />
               </Pressable>
@@ -111,7 +117,17 @@ export default function EditProfile({ route, navigation }) {
                 Bio
               </Text>
               <Text style={{ color: "white", fontSize: 14 }}>
-                {bio_ ? bio_ : "no bio yet"}
+                {bio_ ? (
+                  bio_.length > 20 ? (
+                    bio_.substring(0, 20) + "..."
+                  ) : (
+                    bio_
+                  )
+                ) : (
+                  <Text style={{ color: "rgba(147, 146, 154, 0.8)" }}>
+                    Add a bio
+                  </Text>
+                )}
               </Text>
               <Pressable
                 style={{
@@ -120,6 +136,12 @@ export default function EditProfile({ route, navigation }) {
                   top: 0,
                   bottom: 0,
                   justifyContent: "center",
+                }}
+                onPress={() => {
+                  navigation.navigate("Update Bio", {
+                    bio: bio_,
+                    setBio: setBio,
+                  });
                 }}
               >
                 <Ionicons name="pencil-outline" size={24} color="white" />
@@ -141,6 +163,14 @@ export default function EditProfile({ route, navigation }) {
                   top: 0,
                   bottom: 0,
                   justifyContent: "center",
+                }}
+                onPress={() => {
+                  navigation.navigate("Update Weight Unit", {
+                    weight: weight_,
+                    weightUnit: weightUnit_,
+                    setWeight: setWeight,
+                    setWeightUnit: setWeightUnit,
+                  });
                 }}
               >
                 <Ionicons name="pencil-outline" size={24} color="white" />
