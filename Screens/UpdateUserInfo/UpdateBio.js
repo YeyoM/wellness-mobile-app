@@ -17,7 +17,7 @@ import Constants from "expo-constants";
 export default function UpdateBio({ route, navigation }) {
   const { bio, setBio } = route.params;
   const [bio_, setBio_] = useState(bio);
-  const [counter, setCounter] = useState(bio.length);
+  const [counter, setCounter] = useState(bio?.length || 0);
 
   const handleContinue = () => {
     if (bio_ === "") {

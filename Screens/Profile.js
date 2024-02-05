@@ -16,7 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import GetUser from "../FirebaseFunctions/Users/GetUser.js";
 
-export default function Profile({ navigation }) {
+export default function Profile({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   const [profileData, setProfileData] = useState(null);
 
@@ -31,8 +31,13 @@ export default function Profile({ navigation }) {
   async function getProfileDataStorage() {
     try {
       const jsonValue = await AsyncStorage.getItem("@profileData");
-      console.log(JSON.parse(jsonValue));
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
+      console.log("From storage: ", JSON.parse(jsonValue));
+      if (route.params?.refresh) {
+        route.params.refresh = false;
+        return null;
+      } else {
+        return jsonValue != null ? JSON.parse(jsonValue) : null;
+      }
     } catch (error) {
       console.log(error);
     }
@@ -70,7 +75,7 @@ export default function Profile({ navigation }) {
         navigation.navigate("Home");
       });
     setIsLoading(false);
-  }, []);
+  }, [route]);
 
   return (
     <View style={styles.container}>
@@ -100,7 +105,19 @@ export default function Profile({ navigation }) {
             </Text>
           </View>
           <View style={styles.right}>
-            <Pressable onPress={() => navigation.navigate("Account Settings")}>
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Account Settings", {
+                  pushNotifications: profileData?.pushNotifications,
+                  workoutReminders: profileData?.workoutReminders,
+                  sound: profileData?.sound,
+                  vibrations: profileData?.vibrations,
+                  gym: profileData?.gym,
+                  age: profileData?.age,
+                  gender: profileData?.gender,
+                });
+              }}
+            >
               <Ionicons name="settings-outline" size={32} color="white" />
             </Pressable>
           </View>

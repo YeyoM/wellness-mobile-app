@@ -33,6 +33,7 @@ export default function Home({ navigation }) {
       .catch((error) => {
         throw error;
       });
+    setMessage(false);
   }, []);
 
   return (

@@ -6,39 +6,86 @@ import {
   ScrollView,
   Dimensions,
   Switch,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
+import SaveNotificationSettingsChanges from "../FirebaseFunctions/Users/SaveNotificationSettingsChanges";
+import { FIREBASE_AUTH } from "../firebaseConfig";
 
-export default function NotificationSettings({ navigation }) {
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [vibrationEnabled, setVibrationEnabled] = useState(true);
+export default function NotificationSettings({ route, navigation }) {
+  const { pushNotifications, workoutReminders, sound, vibrations } =
+    route.params;
+  const [soundEnabled, setSoundEnabled] = useState(sound);
+  const [vibrationEnabled, setVibrationEnabled] = useState(vibrations);
   const [pushNotificationsEnabled, setPushNotificationsEnabled] =
-    useState(true);
-  const [workoutRemindersEnabled, setWorkoutRemindersEnabled] = useState(true);
+    useState(pushNotifications);
+  const [workoutRemindersEnabled, setWorkoutRemindersEnabled] =
+    useState(workoutReminders);
+  const [loading, setLoading] = useState(false);
+
+  const handleDone = async () => {
+    const user = FIREBASE_AUTH.currentUser;
+    if (!user) {
+      console.log("User not found!");
+      return;
+    }
+    setLoading(true);
+    try {
+      await SaveNotificationSettingsChanges({
+        userId: user.uid,
+        pushNotifications: pushNotificationsEnabled,
+        workoutReminders: workoutRemindersEnabled,
+        sound: soundEnabled,
+        vibrations: vibrationEnabled,
+      });
+      console.log("Notification settings updated successfully!");
+      navigation.navigate("Profile", { refresh: true });
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <View style={styles.backButton}>
-        <Pressable onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={32} color="white" />
-        </Pressable>
-      </View>
-      <View style={styles.doneButton}>
-        <Pressable onPress={() => navigation.goBack()}>
-          <Text
-            style={{
-              color: "white",
-              fontSize: 18,
-              fontWeight: "bold",
-              color: "#0496FF",
-            }}
-          >
-            Done
-          </Text>
-        </Pressable>
-      </View>
+      {!loading && (
+        <View style={styles.backButton}>
+          <Pressable onPress={() => navigation.goBack()}>
+            <Ionicons name="chevron-back" size={32} color="white" />
+          </Pressable>
+        </View>
+      )}
+      {!loading && (
+        <View style={styles.doneButton}>
+          <Pressable onPress={() => handleDone()}>
+            <Text
+              style={{
+                color: "white",
+                fontSize: 18,
+                fontWeight: "bold",
+                color: "#0496FF",
+              }}
+            >
+              Done
+            </Text>
+          </Pressable>
+        </View>
+      )}
+      {loading && (
+        <ActivityIndicator
+          size="large"
+          color="#0496FF"
+          style={{
+            position: "absolute",
+            top: Constants.statusBarHeight + 20,
+            left: 0,
+            right: 0,
+          }}
+        />
+      )}
       <Text style={styles.text}>Notification Settings</Text>
       <View
         style={{

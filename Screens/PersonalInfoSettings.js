@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   ScrollView,
@@ -6,44 +6,84 @@ import {
   StyleSheet,
   Pressable,
   Dimensions,
-  Switch,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
+import { FIREBASE_AUTH } from "../firebaseConfig";
+import SavePersonalInfoChanges from "../FirebaseFunctions/Users/SavePersonalInfoChanges";
 
-export default function PersonalInfoSettings({ navigation }) {
-  const [setSwitch, setSetSwitch] = React.useState(false);
-  const [setSwitch2, setSetSwitch2] = React.useState(false);
+export default function PersonalInfoSettings({ route, navigation }) {
+  const { gym, age, gender } = route.params;
 
-  const handleSwitch = () => {
-    setSetSwitch(!setSwitch);
-  };
+  const [email, setEmail] = useState("");
+  const [gym_, setGym_] = useState(gym);
+  const [loading, setLoading] = useState(false);
 
-  const handleSwitch2 = () => {
-    setSetSwitch2(!setSwitch2);
+  useEffect(() => {
+    const user = FIREBASE_AUTH.currentUser;
+    if (!user) {
+      navigation.navigate("Login");
+      return;
+    }
+
+    setEmail(user.email);
+  }, []);
+
+  const handleDone = async () => {
+    setLoading(true);
+    try {
+      const user = FIREBASE_AUTH.currentUser;
+      if (!user) {
+        navigation.navigate("Login");
+        return;
+      }
+      await SavePersonalInfoChanges({ uid: user.uid, gym: gym_ });
+      setLoading(false);
+      navigation.navigate("Profile", { refresh: true });
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.backButton}>
-        <Pressable onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={32} color="white" />
-        </Pressable>
-      </View>
-      <View style={styles.doneButton}>
-        <Pressable onPress={() => navigation.goBack()}>
-          <Text
-            style={{
-              color: "white",
-              fontSize: 18,
-              fontWeight: "bold",
-              color: "#0496FF",
-            }}
-          >
-            Done
-          </Text>
-        </Pressable>
-      </View>
+      {!loading && (
+        <View style={styles.backButton}>
+          <Pressable onPress={() => navigation.goBack()}>
+            <Ionicons name="chevron-back" size={32} color="white" />
+          </Pressable>
+        </View>
+      )}
+      {!loading && (
+        <View style={styles.doneButton}>
+          <Pressable onPress={() => handleDone()}>
+            <Text
+              style={{
+                color: "white",
+                fontSize: 18,
+                fontWeight: "bold",
+                color: "#0496FF",
+              }}
+            >
+              Done
+            </Text>
+          </Pressable>
+        </View>
+      )}
+      {loading && (
+        <ActivityIndicator
+          size="large"
+          color="#0496FF"
+          style={{
+            position: "absolute",
+            top: Constants.statusBarHeight + 20,
+            left: 0,
+            right: 0,
+          }}
+        />
+      )}
       <Text
         style={{
           color: "white",
@@ -74,7 +114,7 @@ export default function PersonalInfoSettings({ navigation }) {
                 Email
               </Text>
               <Text style={{ color: "white", fontSize: 14 }}>
-                email@example.com
+                {email ? email : "no email"}
               </Text>
             </View>
             <View style={styles.group}>
@@ -83,7 +123,9 @@ export default function PersonalInfoSettings({ navigation }) {
               >
                 Age
               </Text>
-              <Text style={{ color: "white", fontSize: 14 }}>21 years old</Text>
+              <Text style={{ color: "white", fontSize: 14 }}>
+                {age} years old
+              </Text>
             </View>
             <View style={styles.group}>
               <Text
@@ -91,7 +133,7 @@ export default function PersonalInfoSettings({ navigation }) {
               >
                 Gender
               </Text>
-              <Text style={{ color: "white", fontSize: 14 }}>Male</Text>
+              <Text style={{ color: "white", fontSize: 14 }}>{gender}</Text>
             </View>
             <View style={styles.groupBottom}>
               <Text
@@ -100,7 +142,7 @@ export default function PersonalInfoSettings({ navigation }) {
                 My Gym
               </Text>
               <Text style={{ color: "white", fontSize: 14 }}>
-                Wellness Gym TEC MTY
+                {gym_ ? gym_ : "no gym"}
               </Text>
               <Pressable
                 style={{
@@ -110,6 +152,12 @@ export default function PersonalInfoSettings({ navigation }) {
                   bottom: 0,
                   justifyContent: "center",
                 }}
+                onPress={() =>
+                  navigation.navigate("User Update", {
+                    screen: "Update Gym",
+                    params: { gym: gym_, setGym: setGym_ },
+                  })
+                }
               >
                 <Ionicons name="pencil-outline" size={24} color="white" />
               </Pressable>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   ScrollView,
@@ -7,9 +7,12 @@ import {
   Pressable,
   Dimensions,
   Switch,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
+import SaveProfileChanges from "../FirebaseFunctions/Users/SaveProfileChanges";
+import { FIREBASE_AUTH } from "../firebaseConfig";
 
 export default function EditProfile({ route, navigation }) {
   const {
@@ -33,6 +36,8 @@ export default function EditProfile({ route, navigation }) {
   const [setSwitch, setSetSwitch] = React.useState(showHeightAndWeight);
   const [setSwitch2, setSetSwitch2] = React.useState(privateProfile);
 
+  const [loading, setLoading] = useState(false);
+
   const handleSwitch = () => {
     setSetSwitch(!setSwitch);
   };
@@ -41,27 +46,70 @@ export default function EditProfile({ route, navigation }) {
     setSetSwitch2(!setSwitch2);
   };
 
+  const handleDone = async () => {
+    const user = FIREBASE_AUTH.currentUser;
+    if (!user) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await SaveProfileChanges({
+        name: name_,
+        bio: bio_,
+        weight: weight_,
+        height: height_,
+        showHeightAndWeight: setSwitch,
+        weightUnit: weightUnit_,
+        heightUnit: heightUnit_,
+        privateProfile: setSwitch2,
+        userId: user.uid,
+      });
+      navigation.navigate("Profile", { refresh: true });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.backButton}>
-        <Pressable onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={32} color="white" />
-        </Pressable>
-      </View>
-      <View style={styles.doneButton}>
-        <Pressable onPress={() => navigation.goBack()}>
-          <Text
-            style={{
-              color: "white",
-              fontSize: 18,
-              fontWeight: "bold",
-              color: "#0496FF",
-            }}
-          >
-            Done
-          </Text>
-        </Pressable>
-      </View>
+      {!loading && (
+        <View style={styles.backButton}>
+          <Pressable onPress={() => navigation.goBack()}>
+            <Ionicons name="chevron-back" size={32} color="white" />
+          </Pressable>
+        </View>
+      )}
+      {!loading && (
+        <View style={styles.doneButton}>
+          <Pressable onPress={() => handleDone()}>
+            <Text
+              style={{
+                color: "white",
+                fontSize: 18,
+                fontWeight: "bold",
+                color: "#0496FF",
+              }}
+            >
+              Done
+            </Text>
+          </Pressable>
+        </View>
+      )}
+      {loading && (
+        <ActivityIndicator
+          size="large"
+          color="#0496FF"
+          style={{
+            position: "absolute",
+            top: Constants.statusBarHeight + 20,
+            left: 0,
+            right: 0,
+          }}
+        />
+      )}
       <Text
         style={{
           color: "white",
