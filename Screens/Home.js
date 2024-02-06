@@ -29,6 +29,7 @@ export default function Home({ navigation }) {
             navigation.navigate("User Input");
           }, 3000);
         }
+        setUser(FIREBASE_AUTH.currentUser);
       })
       .catch((error) => {
         throw error;
@@ -44,7 +45,7 @@ export default function Home({ navigation }) {
         )}
         <View style={styles.header}>
           <View>
-            <Text style={styles.headerText}>Hello {user.name}!</Text>
+            <Text style={styles.headerText}>Hello {user.displayName}!</Text>
             <Text style={styles.headerText_}>
               Get ready to level up your fitness
             </Text>

@@ -38,7 +38,7 @@ export const InitialScreensProvider = ({ children }) => {
     console.log("trainingHours: ", trainingHours);
   };
 
-  const registerInitialQuestionsFunction = async (setLoading, setError) => {
+  const registerInitialQuestionsFunction = async () => {
     const questions = {
       name,
       gender,
@@ -57,9 +57,12 @@ export const InitialScreensProvider = ({ children }) => {
       trainingDuration,
       trainingHours,
     };
-    console.log("registerInitialQuestionsFunction");
-    console.log(questions);
-    await registerInitialQuestions(questions, setLoading, setError);
+    try {
+      await registerInitialQuestions(questions);
+    } catch (error) {
+      console.log("Error: ", error);
+      throw error;
+    }
   };
 
   return (

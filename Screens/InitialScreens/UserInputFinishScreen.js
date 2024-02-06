@@ -10,8 +10,9 @@ import React, { useState, useContext } from "react";
 import TopNavigationBar from "../../components/TopNavigationBar";
 import { Ionicons } from "@expo/vector-icons";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
+
 export default function UserInputFinishScreen({ navigation }) {
-  const { printState, registerInitialQuestionsFunction } = useContext(
+  const { registerInitialQuestionsFunction } = useContext(
     InitialScreensContext,
   );
 
@@ -36,13 +37,16 @@ export default function UserInputFinishScreen({ navigation }) {
       Alert.alert("Please select an option");
       return;
     }
-    printState();
-    await registerInitialQuestionsFunction(setLoading, setError);
-    if (error) {
-      Alert.alert(error);
-      return;
+    try {
+      setLoading(true);
+      await registerInitialQuestionsFunction();
+      navigation.navigate("Home");
+    } catch (error) {
+      setError(error);
+      Alert.alert("Error", error);
+    } finally {
+      setLoading(false);
     }
-    navigation.navigate("Home");
   };
 
   return (
