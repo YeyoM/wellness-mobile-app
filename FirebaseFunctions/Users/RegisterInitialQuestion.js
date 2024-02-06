@@ -1,30 +1,32 @@
 import { FIRESTORE, FIREBASE_AUTH } from "../../firebaseConfig.js";
 import { doc, setDoc } from "firebase/firestore";
+import { updateProfile } from "firebase/auth";
 
-export const registerInitialQuestions = async (
-  questions,
-  setLoading,
-  setError,
-) => {
+/**
+ * @param {Object} questions - Object containing the user's answers to the initial questions
+ * @returns {Promise<void>} - Promise that resolves when the user's answers are successfully registered
+ * @description - Registers the user's answers to the initial questions in the database
+ */
+export const registerInitialQuestions = async (questions) => {
   const userId = FIREBASE_AUTH.currentUser.uid;
   const email = FIREBASE_AUTH.currentUser.email;
 
   if (!userId) {
-    setError("No user found");
-    return;
+    throw new Error("No user found");
   }
 
   if (!email) {
-    setError("No email found");
-    return;
+    throw new Error("No email found");
   }
 
-  if (!checkQuestion(questions, setError)) {
-    return;
+  if (!checkQuestion(questions)) {
+    throw new Error("Invalid questions");
   }
 
-  setLoading(true);
   try {
+    await updateProfile(FIREBASE_AUTH.currentUser, {
+      displayName: questions.name,
+    });
     await setDoc(doc(FIRESTORE, "users", userId), {
       name: questions.name,
       gender: questions.gender,
@@ -46,75 +48,68 @@ export const registerInitialQuestions = async (
       workouts: [],
       routines: [],
       exercises: [],
+      showwHeightAndWeight: true,
+      finishedWorkouts: 0,
+      hoursTrained: 0,
+      achievements: 0,
+      bio: "",
+      privateProfile: false,
+      pushNotifications: true,
+      workoutReminders: true,
+      sound: true,
+      vibrations: true,
+      gym: "",
+      badges: [],
     });
-    setLoading(false);
   } catch (error) {
-    setLoading(false);
-    setError(error.message);
+    throw new Error("Error setting document: ", error);
   }
-
-  return;
 };
 
-const checkQuestion = (questions, setError) => {
+const checkQuestion = (questions) => {
   if (questions.name === "") {
-    setError("Please enter your name");
     return false;
   }
   if (questions.gender === "") {
-    setError("Please enter you gender");
     return false;
   }
   if (questions.age === "") {
-    setError("Please enter your age");
     return false;
   }
   if (questions.weight === "") {
-    setError("Please enter your weight");
     return false;
   }
   if (questions.weightUnit === "") {
-    setError("Please enter your weight unit");
     return false;
   }
   if (questions.height === "") {
-    setError("Please enter your height");
     return false;
   }
   if (questions.heightUnit === "") {
-    setError("Please enter your height unit");
     return false;
   }
   if (questions.prevExperience === "") {
-    setError("Please enter your previous experience");
     return false;
   }
   if (questions.fitnessLevel === "") {
-    setError("Please enter your fitness level");
     return false;
   }
   if (questions.physicalLimitations === "") {
-    setError("Please enter your physical limitations");
     return false;
   }
   if (questions.objectives === "") {
-    setError("Please enter your objectives");
     return false;
   }
   if (questions.dietPreference === "") {
-    setError("Please enter your diet preference");
     return false;
   }
   if (questions.trainingFrequency === "") {
-    setError("Please enter your training frequency");
     return false;
   }
   if (questions.trainingDuration === "") {
-    setError("Please enter your training duration");
     return false;
   }
   if (questions.trainingHours === "") {
-    setError("Please enter your training hours");
     return false;
   }
   return true;
