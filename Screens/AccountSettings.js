@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { FIREBASE_AUTH } from "../firebaseConfig";
@@ -47,6 +48,27 @@ export default function AccountSettings({ route, navigation }) {
       }, 3000);
       setError("Hubo un error al cerrar sesión");
     }
+  };
+
+  const handleDeleteAccount = async () => {
+    // promt the user for confirmation
+    Alert.alert(
+      "Delete Account",
+      "Are you sure you want to delete your account? This action is irreversible.",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: () => navigation.navigate("Delete Account"),
+          style: "destructive",
+        },
+      ],
+      { cancelable: false },
+    );
   };
 
   return (
@@ -239,7 +261,10 @@ export default function AccountSettings({ route, navigation }) {
                 Sign Out
               </Text>
             </Pressable>
-            <Pressable style={styles.deleteAccountButton}>
+            <Pressable
+              style={styles.deleteAccountButton}
+              onPress={handleDeleteAccount}
+            >
               <Text
                 style={{ color: "#C70202", fontWeight: "bold", fontSize: 16 }}
               >
