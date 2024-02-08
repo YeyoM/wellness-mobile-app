@@ -13,6 +13,33 @@ export default async function createRoutine(userId, routine) {
   // 2. save the routine id to the user's routines array
   // 3. save the days to firebase with auto-generated ids on the days collection and save the ids to the daysIds array
   // 4. update the routine with the daysIds array
+  if (!userId) {
+    throw "User id is required!";
+  }
+
+  if (!routine) {
+    throw "Routine is required!";
+  }
+
+  if (!routine.routineName) {
+    throw "Routine name is required!";
+  }
+
+  if (!routine.numberOfDays) {
+    throw "Number of days is required!";
+  }
+
+  if (!routine.image) {
+    throw "Image is required!";
+  }
+
+  if (routine.generatedAI === undefined) {
+    throw "Generated AI is required!";
+  }
+
+  if (!routine.days) {
+    throw "Days are required!";
+  }
 
   try {
     // 1. save the routine to firebase with auto-generated id
@@ -22,7 +49,7 @@ export default async function createRoutine(userId, routine) {
 
     // Create n-day objects based on the number of days
     const days_ = [];
-    for (let i = 0; i < numberOfDays; i++) {
+    for (let i = 0; i < routine.numberOfDays; i++) {
       const day_ = {
         dayName: `Day ${i + 1}`,
         routineId: routineRef.id,

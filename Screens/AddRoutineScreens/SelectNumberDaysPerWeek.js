@@ -14,7 +14,7 @@ import TopNavigationBar from "../../components/TopNavigationBar";
 import { CreateRoutineContext } from "../../context/CreateRoutineContext";
 
 import { FIREBASE_AUTH } from "../../firebaseConfig";
-import { createRoutine } from "../../FirebaseFunctions/Routines/createRoutine.js";
+import createRoutine from "../../FirebaseFunctions/Routines/createRoutine.js";
 
 import SuccessNotification from "../../components/SuccessNotification";
 
@@ -60,13 +60,17 @@ export default function SelectNumberDaysPerWeek({ navigation }) {
     };
 
     try {
-      const createdRoutine = await createRoutine(userId, routine);
-      console.log("createdRoutine", createdRoutine);
+      await createRoutine(userId, routine);
       setSuccess(true);
+      setLoading(false);
+      setTimeout(() => {
+        navigation.navigate("Home");
+      }, 2000);
     } catch (error) {
       console.log(error);
       setLoading(false);
       Alert.alert("Error", "Something went wrong, please try again later.");
+      navigation.navigate("Home");
       return;
     }
   };

@@ -71,7 +71,7 @@ export default function Profile({ route, navigation }) {
         }
       })
       .catch((error) => {
-        Alert.alert("Error", error.message);
+        console.log(error);
         navigation.navigate("Home");
       });
     setIsLoading(false);
