@@ -11,6 +11,8 @@ import React, { useState } from "react";
 import { FIREBASE_AUTH } from "../firebaseConfig";
 import { reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
 import Constants from "expo-constants";
+import DeleteUser from "../FirebaseFunctions/Users/DeleteUser";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -30,6 +32,9 @@ export default function DeleteAccount({ navigation }) {
       console.log(result);
       setError(false);
       // delete the Account
+      await DeleteUser();
+      await AsyncStorage.clear();
+      navigation.navigate("Login");
     } catch (error) {
       console.log(error);
       setError("Invalid password");
