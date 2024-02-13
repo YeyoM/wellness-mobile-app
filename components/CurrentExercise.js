@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     display: "flex",
     flexDirection: "column",
+    marginBottom: 20,
   },
 
   exerciseText: {
@@ -192,4 +193,3 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
-
