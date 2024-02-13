@@ -10,15 +10,12 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 
 export default function CurrentExercise({
-  exercise,
   reps,
   sets,
   weight,
   image,
   navigation,
 }) {
-  console.log(image);
-
   return (
     <View style={styles.container}>
       <View style={styles.top}>
