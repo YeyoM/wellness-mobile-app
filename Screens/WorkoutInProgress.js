@@ -2,6 +2,7 @@ import React from "react";
 import {
   StyleSheet,
   Text,
+  ActivityIndicator,
   View,
   Pressable,
   TouchableOpacity,
@@ -19,11 +20,9 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 import { Dimensions } from "react-native";
 import Constants from "expo-constants";
-import SwipeButton from "rn-swipe-button";
 import CurrentExercise from "../components/CurrentExercise";
-import arrowRight from "../assets/arrow-right.png";
 import SetsTable from "../components/SetsTable";
-
+import SaveWorkout from "../FirebaseFunctions/Workouts/SaveWorkout";
 import { useState } from "react";
 
 export default function WorkoutInProgress({ route, navigation }) {
@@ -40,39 +39,81 @@ export default function WorkoutInProgress({ route, navigation }) {
   const [currentExerciseWeight, setCurrentExerciseWeight] = useState(
     day.exercises[0].weight,
   );
-  const [numberOfExercises, setNumberOfExercises] = useState(
-    day.exercises.length,
-  );
+  const [numberOfExercises] = useState(day.exercises.length);
   const [exercises, setExercises] = useState(day.exercises);
   const [exerciseQueue, setExerciseQueue] = useState(day.exercises.slice(1));
-  const [finishedExercises, setFinishedExercises] = useState([]);
-  /*
-   * currentSets is not used in this file, but it is used in the SetsTable.js file
-   * and is passed as a prop to the SetsTable component.
-   *
-   * It has the following structure:
-   * [
-   * {
-   * reps: 12,
-   * weight: 100,
-   * finished: false,
-   * },
-   * {
-   * reps: 12,
-   * weight: 100,
-   * finished: false,
-   * },
-   * ...
-   * ]
-   * */
   const [currentSets, setCurrentSets] = useState();
+  const [currentWorkoutInfo, setCurrentWorkoutInfo] = useState([]); // This is the state that will be sent to the databas
 
   const [time, setTime] = useState(0);
   const [readableTime, setReadableTime] = useState("00:00");
 
-  const handleEndWorkout = () => {
+  const [loading, setLoading] = useState(false);
+
+  const handleEndWorkout = async () => {
     // some logic to save to firebase and navigate to workout summary
-    console.log("Workout ended");
+    // Check if the currentExerciseIndex is the last exercise
+    // If not, alert the user to finish the exercises
+    if (currentExerciseIndex < numberOfExercises - 1) {
+      alert("Please finish the exercises before ending the workout");
+      return;
+    }
+    // Check if the current sets are finished
+    let finished = true;
+    for (let i = 0; i < currentSets.length; i++) {
+      if (!currentSets[i].finished) {
+        finished = false;
+      }
+    }
+    if (!finished) {
+      alert("Please finish the sets before ending the workout");
+      return;
+    }
+    // If they are, add the last exercise to the currentWorkoutInfo state
+    let meanReps = 0;
+    let meanWeight = 0;
+    for (let i = 0; i < currentSets.length; i++) {
+      meanReps += parseInt(currentSets[i].reps);
+      meanWeight += parseInt(currentSets[i].weight);
+    }
+    meanReps /= currentSets.length;
+    meanWeight /= currentSets.length;
+    const finalWorkoutInfo = [
+      ...currentWorkoutInfo,
+      {
+        exerciseName: currentExercise.exerciseName,
+        exerciseReps: meanReps,
+        exerciseSets: currentSets.length,
+        exerciseWeight: meanWeight,
+      },
+    ];
+    // calculate the total calories, weight and time
+    let totalCalories = 0;
+    let totalWeight = 0;
+    for (let i = 0; i < finalWorkoutInfo.length; i++) {
+      totalCalories += finalWorkoutInfo[i].exerciseSets * 0.5;
+      totalWeight +=
+        finalWorkoutInfo[i].exerciseSets *
+        finalWorkoutInfo[i].exerciseReps *
+        finalWorkoutInfo[i].exerciseWeight;
+    }
+    setLoading(true);
+    try {
+      await SaveWorkout({
+        workout: finalWorkoutInfo,
+        routineId: day.routineId,
+        dayId: day.dayId,
+        totalCalories: totalCalories,
+        totalWeight: totalWeight,
+        totalTime: readableTime,
+      });
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      alert("Error saving the workout");
+      setLoading(false);
+      return;
+    }
     navigation.navigate("Workout Finished 1", { day: day });
   };
 
@@ -129,13 +170,23 @@ export default function WorkoutInProgress({ route, navigation }) {
       setCurrentExerciseReps(exercises[currentExerciseIndex + 1].numberOfReps);
       setCurrentExerciseSets(exercises[currentExerciseIndex + 1].numberOfSets);
       setCurrentExerciseWeight(exercises[currentExerciseIndex + 1].weight);
-      setFinishedExercises([
-        ...finishedExercises,
+      // get the mean of the weight and reps of the current exercise and add it to the currentWorkoutInfo state
+      let meanReps = 0;
+      let meanWeight = 0;
+      for (let i = 0; i < currentSets.length; i++) {
+        meanReps += parseInt(currentSets[i].reps);
+        meanWeight += parseInt(currentSets[i].weight);
+      }
+      meanReps /= currentSets.length;
+      meanWeight /= currentSets.length;
+
+      setCurrentWorkoutInfo([
+        ...currentWorkoutInfo,
         {
           exerciseName: currentExercise.exerciseName,
-          exerciseReps: currentExerciseReps,
-          exerciseSets: currentExerciseSets,
-          exerciseWeight: currentExerciseWeight,
+          exerciseReps: meanReps,
+          exerciseSets: currentSets.length,
+          exerciseWeight: meanWeight,
         },
       ]);
       const sets = exercises[currentExerciseIndex + 1].numberOfSets;
@@ -147,6 +198,26 @@ export default function WorkoutInProgress({ route, navigation }) {
       }
       setCurrentSets(initialSets);
     }
+  };
+
+  const handleTap = () => {
+    // Check if the current reps or weight are empty
+    for (let i = 0; i < currentSets.length; i++) {
+      if (currentSets[i].reps === "") {
+        // If they are, fill them with 0
+        let newSets = [...currentSets];
+        newSets[i].reps = 0;
+        setCurrentSets(newSets);
+      }
+      if (currentSets[i].weight === "") {
+        // If they are, fill them with 0
+        let newSets = [...currentSets];
+        newSets[i].weight = 0;
+        setCurrentSets(newSets);
+      }
+    }
+    // Dismiss the keyboard
+    Keyboard.dismiss();
   };
 
   const renderItem = ({ item, drag }) => {
@@ -192,7 +263,7 @@ export default function WorkoutInProgress({ route, navigation }) {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <TouchableWithoutFeedback onPress={() => handleTap()}>
             <View style={styles.workout}>
               <Text
                 style={{
@@ -326,7 +397,7 @@ export default function WorkoutInProgress({ route, navigation }) {
                   alignItems: "center",
                 }}
               >
-                {finishedExercises.length === 0 ? (
+                {currentWorkoutInfo.length === 0 ? (
                   <Text
                     style={{
                       color: "white",
@@ -338,7 +409,7 @@ export default function WorkoutInProgress({ route, navigation }) {
                     No finished exercises
                   </Text>
                 ) : (
-                  finishedExercises.map((exercise, index) => {
+                  currentWorkoutInfo.map((exercise, index) => {
                     return (
                       <View
                         key={index}
@@ -359,43 +430,62 @@ export default function WorkoutInProgress({ route, navigation }) {
                           style={{
                             color: "#fff",
                             fontSize: 18,
-                            fontWeight: "bold",
+                            fontStyle: "italic",
                           }}
                         >
                           {exercise.exerciseName}
+                        </Text>
+                        <Text
+                          style={{
+                            color: "#fff",
+                            fontSize: 18,
+                            fontStyle: "italic",
+                          }}
+                        >
+                          {exercise.exerciseSets} x {exercise.exerciseReps} x{" "}
+                          {exercise.exerciseWeight}
                         </Text>
                       </View>
                     );
                   })
                 )}
               </View>
-
-              <SwipeButton
-                width={Dimensions.get("window").width * 0.9}
-                height={62}
-                title="swipe to end workout"
-                titleFontSize={18}
-                titleColor="#fff"
-                railBackgroundColor="#870C0C"
-                railBorderColor="#870C0C"
-                railStyles={{
-                  borderRadius: 20,
-                  borderWidth: 2,
-                }}
-                thumbIconImageSource={arrowRight}
-                railFillBackgroundColor="#FF0000"
-                railFillBorderColor="#FF0000"
-                thumbIconBackgroundColor="#FF0000"
-                thumbIconStyles={{
-                  borderRadius: 20,
-                  borderWidth: 0,
-                }}
-                containerStyles={{
-                  borderRadius: 20,
-                  borderWidth: 0,
-                }}
-                onSwipeSuccess={() => handleEndWorkout()}
-              />
+              {loading ? (
+                <ActivityIndicator size="small" color="white" />
+              ) : (
+                <Pressable
+                  style={{
+                    backgroundColor: "#870C0C",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    borderRadius: 20,
+                    marginVertical: 20,
+                    width: "90%",
+                    height: 60,
+                  }}
+                  onPress={() => handleEndWorkout()}
+                >
+                  <Text
+                    style={{
+                      color: "white",
+                      fontSize: 18,
+                      fontWeight: "bold",
+                      marginRight: 10,
+                    }}
+                  >
+                    End Workout
+                  </Text>
+                  <Ionicons
+                    name="checkmark-circle-outline"
+                    size={24}
+                    color="white"
+                  />
+                </Pressable>
+              )}
               <View style={{ height: 60 }} />
             </View>
           </TouchableWithoutFeedback>

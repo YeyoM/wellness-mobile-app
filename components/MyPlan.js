@@ -6,6 +6,7 @@ import PreviewWorkout from "./PreviewWorkout";
 const days = [
   {
     dayName: "Push Day",
+    dayId: 1,
     exercises: [
       {
         exerciseId: 1,
@@ -33,6 +34,7 @@ const days = [
   },
   {
     dayName: "Pull Day",
+    dayId: 2,
     exercises: [
       {
         exerciseId: 1,
@@ -98,4 +100,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
 });
-

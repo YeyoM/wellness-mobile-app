@@ -4,10 +4,6 @@ import Checkbox from "expo-checkbox";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 export default function SetsTable({ currentSets, setCurrentSets }) {
-  React.useEffect(() => {
-    console.log("SetsTable.js: currentSets: ", currentSets);
-  }, [currentSets]);
-
   const AddSet = () => {
     let newSets = [...currentSets];
     // Add a new set with the values of the last set
@@ -40,6 +36,12 @@ export default function SetsTable({ currentSets, setCurrentSets }) {
               onChangeText={(text) => {
                 let newSets = [...currentSets];
                 newSets[index].reps = text;
+                if (parseInt(text) < 0) {
+                  newSets[index].reps = 0;
+                }
+                if (parseInt(text) > 100) {
+                  newSets[index].reps = 100;
+                }
                 setCurrentSets(newSets);
               }}
               keyboardType="numeric"
@@ -82,6 +84,19 @@ export default function SetsTable({ currentSets, setCurrentSets }) {
             </View>
           </View>
         ))}
+      <Text
+        style={{
+          color: "#a0a0a0",
+          marginTop: 10,
+          fontStyle: "italic",
+          fontSize: 12,
+          textAlign: "center",
+        }}
+      >
+        <Ionicons name="information-circle-outline" size={12} color="#a0a0a0" />
+        You can modify the number of reps and weight for each set by tapping on
+        the value.
+      </Text>
       <Pressable onPress={AddSet} style={styles.addSetButton}>
         <Text style={styles.rowText}>
           Add Set <Ionicons name="add" size={15} color="white" />

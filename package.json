@@ -23,7 +23,7 @@
     "firebase": "^10.7.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native": "0.72.6",
+    "react-native": "0.72.10",
     "react-native-awesome-slider": "^2.4.5",
     "react-native-chart-kit": "^6.12.0",
     "react-native-circular-progress-indicator": "^4.4.2",
