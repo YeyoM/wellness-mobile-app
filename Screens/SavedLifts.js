@@ -145,7 +145,6 @@ export default function SavedLifts({ navigation }) {
               marginBottom: 20,
             }}
           >
-            {" "}
             Scroll down to refresh{" "}
           </Text>
           {/** User's saved lifts */}

@@ -1,82 +1,121 @@
-import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import PreviewWorkout from "./PreviewWorkout";
-
-const days = [
-  {
-    dayName: "Push Day",
-    dayId: 1,
-    exercises: [
-      {
-        exerciseId: 1,
-        exerciseName: "Bench Press",
-        numberOfSets: 4,
-        numberOfReps: 8,
-        restTime: 60,
-        weight: 135,
-      },
-      {
-        exerciseId: 2,
-        exerciseName: "Dumbbell Shoulder Press",
-        numberOfSets: 4,
-        numberOfReps: 8,
-        restTime: 60,
-        weight: 35,
-      },
-    ],
-    routineId: 1,
-    totalSets: 8,
-    totalCalories: 200,
-    totalDuration: 60,
-    image:
-      "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    dayName: "Pull Day",
-    dayId: 2,
-    exercises: [
-      {
-        exerciseId: 1,
-        exerciseName: "Pull Ups",
-        numberOfSets: 4,
-        numberOfReps: 8,
-        restTime: 60,
-        weight: 0,
-      },
-      {
-        exerciseId: 2,
-        exerciseName: "Barbell Rows",
-        numberOfSets: 4,
-        numberOfReps: 8,
-        restTime: 60,
-        weight: 135,
-      },
-    ],
-    routineId: 2,
-    totalSets: 8,
-    totalCalories: 200,
-    totalDuration: 60,
-    image:
-      "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-];
+import getAllDays from "../FirebaseFunctions/Days/getAllDays";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function MyPlan({ navigation }) {
-  console.log(navigation);
+  const [days, setDays] = useState([]);
+  const [error, setError] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const saveDaysStorage = async (days) => {
+    try {
+      const jsonValue = JSON.stringify(days);
+      await AsyncStorage.setItem("@days", jsonValue);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getDaysStorage = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem("@days");
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    // Check in the async storage if the user has saved days
+    // If the user has saved days, set them in the state
+    // If the user doesn't have saved days, fetch them from the API
+    // and save them in the async storage
+    setError(false);
+    setRefreshing(true);
+    getDaysStorage().then((days) => {
+      if (days) {
+        setDays(days);
+        setRefreshing(false);
+        setError(false);
+      } else {
+        getAllDays()
+          .then((days) => {
+            setDays(days);
+            saveDaysStorage(days);
+            setRefreshing(false);
+            setError(false);
+          })
+          .catch((error) => {
+            console.log(error);
+            setError(true);
+            setRefreshing(false);
+          });
+      }
+    });
+  }, []);
+
+  const onRefresh = React.useCallback(async () => {
+    try {
+      setRefreshing(true);
+      setError(false);
+      const days = await getAllDays();
+      setDays(days);
+      setRefreshing(false);
+    } catch (error) {
+      setError(true);
+      setRefreshing(false);
+    }
+  }, []);
 
   return (
     <View style={styles.container}>
-      <ScrollView style={{ width: "100%" }}>
+      <ScrollView
+        style={{ width: "100%" }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View style={styles.plan}>
+          <Text
+            style={{
+              color: "#a0a0a0",
+              fontSize: 13,
+              textAlign: "center",
+              marginTop: 20,
+              fontStyle: "italic",
+            }}
+          >
+            Scroll down to refresh{" "}
+          </Text>
           <Text style={{ color: "#fff", fontSize: 20, marginTop: 20 }}>
             What muscle group are we training today?
           </Text>
           <View
             style={{ flexDirection: "column", marginTop: 20, width: "90%" }}
           >
-            <PreviewWorkout day={days[0]} navigation={navigation} />
-            <PreviewWorkout day={days[1]} navigation={navigation} />
+            {days && days.length > 0 && !refreshing ? (
+              days.map((day, index) => {
+                return (
+                  <PreviewWorkout
+                    day={day}
+                    navigation={navigation}
+                    key={index}
+                  />
+                );
+              })
+            ) : error ? (
+              <Text style={{ color: "#fff" }}>
+                An error occurred while fetching the data
+              </Text>
+            ) : null}
           </View>
         </View>
       </ScrollView>
