@@ -26,7 +26,7 @@ export default function SavedRoutines({ navigation, route }) {
   const [refreshing, setRefreshing] = useState(false);
 
   const [routines, setRoutines] = useState(null);
-  const [user, setUser] = useState(null);
+  const [_user, setUser] = useState(null);
   const [error, setError] = useState(false);
 
   const saveRoutinesStorage = async (routines) => {
