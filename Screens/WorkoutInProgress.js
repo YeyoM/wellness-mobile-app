@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -55,7 +56,22 @@ export default function WorkoutInProgress({ route, navigation }) {
     // Check if the currentExerciseIndex is the last exercise
     // If not, alert the user to finish the exercises
     if (currentExerciseIndex < numberOfExercises - 1) {
-      alert("Please finish the exercises before ending the workout");
+      Alert.alert(
+        "Are you sure you want to end the workout?",
+        "You still have exercises left, progress will be lost",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          {
+            text: "End Workout",
+            style: "destructive",
+            onPress: () => navigation.goBack(),
+          },
+        ],
+      );
       return;
     }
     // Check if the current sets are finished
@@ -66,7 +82,22 @@ export default function WorkoutInProgress({ route, navigation }) {
       }
     }
     if (!finished) {
-      alert("Please finish the sets before ending the workout");
+      Alert.alert(
+        "Are you sure you want to end the workout?",
+        "You still have sets left, progress will be lost",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          {
+            text: "End Workout",
+            style: "destructive",
+            onPress: () => navigation.goBack(),
+          },
+        ],
+      );
       return;
     }
     // If they are, add the last exercise to the currentWorkoutInfo state
@@ -110,7 +141,12 @@ export default function WorkoutInProgress({ route, navigation }) {
       setLoading(false);
     } catch (error) {
       console.log(error);
-      alert("Error saving the workout");
+      Alert.alert("Error saving the workout", "Please try again later", [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+      ]);
       setLoading(false);
       return;
     }
@@ -159,7 +195,16 @@ export default function WorkoutInProgress({ route, navigation }) {
       }
     }
     if (!finished) {
-      alert("Please finish the sets before moving to the next exercise");
+      Alert.alert(
+        "Please finish the sets before moving to the next exercise",
+        "You still have sets left",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+        ],
+      );
       return;
     }
 
