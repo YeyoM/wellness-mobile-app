@@ -88,7 +88,7 @@ export default function App() {
                   <Stack.Screen
                     name="Workout In Progress"
                     component={WorkoutInProgress}
-                    options={{ headerShown: false }}
+                    options={{ headerShown: false, gestureEnabled: false }}
                   />
                   <Stack.Screen
                     name="Workout Finished 1"
