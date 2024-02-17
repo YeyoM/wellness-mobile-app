@@ -11,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
+  AppState,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -46,6 +47,7 @@ export default function WorkoutInProgress({ route, navigation }) {
   const [currentSets, setCurrentSets] = useState();
   const [currentWorkoutInfo, setCurrentWorkoutInfo] = useState([]); // This is the state that will be sent to the databas
 
+  const [startTime, setStartTime] = useState(null);
   const [time, setTime] = useState(0);
   const [readableTime, setReadableTime] = useState("00:00");
 
@@ -169,6 +171,7 @@ export default function WorkoutInProgress({ route, navigation }) {
     setCurrentSets(initialSets);
   }, []);
 
+  // Start the timer when the component mounts
   React.useEffect(() => {
     const interval = setInterval(() => {
       setTime((time) => time + 1);
@@ -182,6 +185,24 @@ export default function WorkoutInProgress({ route, navigation }) {
     }, 1000);
     return () => clearInterval(interval);
   }, [time]);
+
+  // When the app is in the background, save the time
+  // and when it comes back to the foreground, calculate the time
+  // and set the time state to the difference
+  // between the current time and the time when the app went to the background
+  React.useEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (nextAppState === "background") {
+        setStartTime(new Date());
+      }
+      if (nextAppState === "active") {
+        const endTime = new Date();
+        const difference = endTime - startTime;
+        setTime((time) => time + Math.floor(difference / 1000));
+      }
+    });
+    return () => subscription.remove();
+  }, [startTime]);
 
   const handleNextExercise = () => {
     // Check if the currentsets are finished
