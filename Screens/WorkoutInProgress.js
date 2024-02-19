@@ -118,6 +118,7 @@ export default function WorkoutInProgress({ route, navigation }) {
         exerciseReps: meanReps,
         exerciseSets: currentSets.length,
         exerciseWeight: meanWeight,
+        exerciseId: currentExercise.exerciseId,
       },
     ];
     // calculate the total calories, weight and time
@@ -131,6 +132,7 @@ export default function WorkoutInProgress({ route, navigation }) {
         finalWorkoutInfo[i].exerciseWeight;
     }
     setLoading(true);
+    console.log(day);
     try {
       await SaveWorkout({
         workout: finalWorkoutInfo,
@@ -253,6 +255,7 @@ export default function WorkoutInProgress({ route, navigation }) {
           exerciseReps: meanReps,
           exerciseSets: currentSets.length,
           exerciseWeight: meanWeight,
+          exerciseId: currentExercise.exerciseId,
         },
       ]);
       const sets = exercises[currentExerciseIndex + 1].numberOfSets;
