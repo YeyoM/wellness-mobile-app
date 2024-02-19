@@ -13,6 +13,7 @@ export default function PreviewWorkout({ day, navigation }) {
             resizeMode: "cover",
             borderRadius: 14,
           }}
+          defaultSource={require("../assets/image_fallback.png")}
         />
         <View
           style={{
@@ -83,4 +84,3 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
 });
-
