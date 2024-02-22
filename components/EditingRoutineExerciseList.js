@@ -16,6 +16,12 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { EditRoutineContext } from "../context/EditRoutineContext";
 
+import { FIRESTORE, FIREBASE_AUTH } from "../firebaseConfig.js";
+import { doc, getDoc } from "firebase/firestore";
+
+import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
+import calculateTimeLift from "../Utils/calculateTimeLift.js";
+
 export default function EditingRoutineExerciseList({ navigation, exercices }) {
   const { routine, setRoutine, currentDay } = useContext(EditRoutineContext);
 
@@ -27,12 +33,34 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
     day: currentDay,
   }));
 
-  const deleteExercise = (id, day) => {
+  const deleteExercise = async (id, day) => {
+    // update the calories, sets, and duration of the day
+    // first, calculate the calories, sets, and duration of the exercise
+    const user = FIREBASE_AUTH.currentUser;
+
+    if (!user) {
+      return;
+    }
+
+    const userDocRef = doc(FIRESTORE, "users", user.uid);
+    const userDoc = await getDoc(userDocRef);
+    // get the user's weight and weightUnit
+    const { weight, weightUnit } = userDoc.data();
+
     setRoutine((prevRoutine) => {
       const newRoutine = { ...prevRoutine };
+      const exercise = newRoutine.days[day].exercises.find(
+        (exercise) => exercise.exerciseId === id,
+      );
+      const { numberOfSets, weight: exerciseWeight, restTime } = exercise;
+      const time = calculateTimeLift(numberOfSets, restTime / 60);
+      const calories = calculateCaloriesLift(time, weight, weightUnit);
       newRoutine.days[day].exercises = newRoutine.days[day].exercises.filter(
         (exercise) => exercise.exerciseId !== id,
       );
+      newRoutine.days[day].totalCalories -= Math.round(calories);
+      newRoutine.days[day].totalSets -= numberOfSets;
+      newRoutine.days[day].totalDuration -= time;
       return newRoutine;
     });
   };
