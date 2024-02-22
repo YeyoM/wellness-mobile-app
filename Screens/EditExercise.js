@@ -1,9 +1,15 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useSharedValue } from "react-native-reanimated";
 import { Slider, HapticModeEnum } from "react-native-awesome-slider";
 import * as Haptics from "expo-haptics";
+
+import { FIREBASE_AUTH, FIRESTORE } from "../firebaseConfig.js";
+import { doc, getDoc } from "firebase/firestore"; // to get the user weight
+
+import calculateCaloriesLift from "../Utils/calculateCaloriesLift";
+import calculateTimeLift from "../Utils/calculateTimeLift";
 
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
@@ -26,6 +32,12 @@ export default function EditExercise({ route, navigation }) {
   const [restTime, setRestTime] = useState(exercise.restTime / 60);
   const [system, setSystem] = useState("lbs");
 
+  const [calories, setCalories] = useState(0);
+  const [totalDuration, setTotalDuration] = useState(0);
+
+  const [userWeight, setUserWeight] = useState(0);
+  const [userWeightUnit, setUserWeightUnit] = useState("kg");
+
   const progress_reps = useSharedValue(exercise.numberOfReps);
   const min_reps = useSharedValue(1);
   const max_reps = useSharedValue(20);
@@ -44,9 +56,41 @@ export default function EditExercise({ route, navigation }) {
 
   const handleReset = () => {};
 
+  useEffect(() => {
+    const getUserWeight = async () => {
+      const uid = FIREBASE_AUTH.currentUser.uid;
+      const docRef = doc(FIRESTORE, "users", uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setUserWeight(data.weight);
+        setUserWeightUnit(data.weightUnit);
+      } else {
+        console.log("No such document!");
+      }
+    };
+
+    getUserWeight();
+  }, []);
+
+  // update the calories and total time when the user changes the reps, sets, weight, or rest time
+  useEffect(() => {
+    console.log("updating");
+    console.log(reps, sets, weight, restTime);
+    console.log(userWeight, userWeightUnit);
+    setTotalDuration(calculateTimeLift(sets, restTime));
+    setCalories(
+      calculateCaloriesLift(
+        calculateTimeLift(sets, restTime),
+        userWeight,
+        userWeightUnit,
+      ),
+    );
+    console.log("calories", calories);
+    console.log("totalDuration", totalDuration);
+  }, [reps, sets, weight, restTime, userWeight, userWeightUnit]);
+
   const handleApply = () => {
-    console.log("apply");
-    console.log(exercise);
     setRoutine((prevRoutine) => {
       const newRoutine = { ...prevRoutine };
       newRoutine.days[currentDay].exercises = newRoutine.days[
@@ -63,6 +107,29 @@ export default function EditExercise({ route, navigation }) {
         }
         return ex;
       });
+      // update the calories and total time of the day
+      newRoutine.days[currentDay].totalCalories = newRoutine.days[
+        currentDay
+      ].exercises.reduce((acc, ex) => {
+        return Math.round(
+          acc +
+            calculateCaloriesLift(
+              calculateTimeLift(ex.numberOfSets, ex.restTime / 60),
+              userWeight,
+              userWeightUnit,
+            ),
+        );
+      }, 0);
+      newRoutine.days[currentDay].totalSets = newRoutine.days[
+        currentDay
+      ].exercises.reduce((acc, ex) => {
+        return acc + ex.numberOfSets;
+      }, 0);
+      newRoutine.days[currentDay].totalDuration = newRoutine.days[
+        currentDay
+      ].exercises.reduce((acc, ex) => {
+        return acc + calculateTimeLift(ex.numberOfSets, ex.restTime / 60);
+      }, 0);
       return newRoutine;
     });
     navigation.goBack();
@@ -484,7 +551,7 @@ export default function EditExercise({ route, navigation }) {
                         fontWeight: "bold",
                       }}
                     >
-                      45
+                      {Math.round(calories)}
                     </Text>
                     <Text
                       style={{
@@ -496,6 +563,28 @@ export default function EditExercise({ route, navigation }) {
                       kcal
                     </Text>
                   </View>
+                </View>
+
+                <View
+                  style={{
+                    display: "flex",
+                    width: "100%",
+                    marginBottom: 20,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#a0a0a0",
+                      fontSize: 18,
+                      fontWeight: "normal",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    Approximate time lifting: {Math.round(totalDuration)}
+                    Minutes
+                  </Text>
                 </View>
 
                 <View

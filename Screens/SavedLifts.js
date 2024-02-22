@@ -11,6 +11,12 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { getSavedExercises } from "../FirebaseFunctions/Exercises/getSavedExercises.js";
 
+import calculateTimeLift from "../Utils/calculateTimeLift.js";
+import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
+
+import { FIREBASE_AUTH, FIRESTORE } from "../firebaseConfig.js";
+import { doc, getDoc } from "firebase/firestore"; // to get the user's weight
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { EditRoutineContext } from "../context/EditRoutineContext";
@@ -71,6 +77,12 @@ export default function SavedLifts({ navigation }) {
   const handleAddLift = async ({ lift }) => {
     console.log("adding lift");
 
+    const user = FIREBASE_AUTH.currentUser;
+    if (!user) {
+      navigation.navigate("Login");
+      return;
+    }
+
     // check if the lift is already in the exercise list of the current day
     // if it is, don't add it
     const isAlreadyInList = routine.days[currentDay].exercises.find(
@@ -89,10 +101,31 @@ export default function SavedLifts({ navigation }) {
       restTime: lift.defaultRestTime,
     };
 
+    // get the user's weight from the database
+    const docRef = doc(FIRESTORE, "users", user.uid);
+    const docSnap = await getDoc(docRef);
+    const userWeight = docSnap.data().weight;
+    const userWeightUnit = docSnap.data().weightUnit;
+
+    // calculate the time and calories of the new lift
+    const time = calculateTimeLift(
+      lift.defaultNumberOfSets,
+      lift.defaultRestTime / 60,
+    );
+    const calories = calculateCaloriesLift(
+      calculateTimeLift(lift.defaultNumberOfSets, lift.defaultRestTime / 60),
+      userWeight,
+      userWeightUnit,
+    );
+    console.log(time, calories);
+
     // add lift to the exercise list of the current day
     setRoutine((prevRoutine) => {
       const newRoutine = { ...prevRoutine };
       newRoutine.days[currentDay].exercises.push(newLift);
+      newRoutine.days[currentDay].totalDuration += Math.round(time);
+      newRoutine.days[currentDay].totalCalories += Math.round(calories);
+      newRoutine.days[currentDay].totalSets += lift.defaultNumberOfSets;
       return newRoutine;
     });
 

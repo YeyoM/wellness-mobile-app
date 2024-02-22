@@ -75,7 +75,14 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
               <Ionicons name="barbell-outline" size={40} color="white" />
             </View>
             <View style={{ display: "flex", flexDirection: "column" }}>
-              <Text style={{ color: "#fff", fontSize: 20, marginLeft: 16 }}>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontSize: 20,
+                  marginLeft: 16,
+                  maxWidth: 180,
+                }}
+              >
                 {item.exercise.exerciseName}
               </Text>
               <Text style={{ color: "#9095A1", fontSize: 12, marginLeft: 16 }}>
@@ -90,6 +97,7 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
               flexDirection: "column",
               alignItems: "center",
               marginRight: 6,
+              marginLeft: 6,
             }}
           >
             <Ionicons name="play-circle-outline" size={36} color="white" />

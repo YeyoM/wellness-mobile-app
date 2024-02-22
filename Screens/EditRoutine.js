@@ -36,7 +36,13 @@ export default function EditRoutine({ navigation }) {
     clenUpEditRoutine,
   } = useContext(EditRoutineContext);
 
-  const [error, setError] = useState(null);
+  // Here is the current day of the routine that is being edited
+  // When adding an exercise to the day or editing an exercise,
+  // the totalCalories, totalSets, and totalDuration will be updated in
+  // the current day
+  console.log(routine.days[currentDay]);
+
+  const [_error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const refInputRoutineName = useRef(null);
@@ -188,32 +194,58 @@ export default function EditRoutine({ navigation }) {
               marginBottom: 20,
             }}
           >
-            <View
-              style={{
-                alignItems: "center",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-              }}
-            >
-              <TextInput
-                style={{ color: "#fff", fontSize: 20, textAlign: "center" }}
-                value={daysNames[currentDay]}
-                ref={refInputDayName}
-                onChangeText={(text) => {
-                  const newDaysNames = [...daysNames];
-                  newDaysNames[currentDay] = text;
-                  setDaysNames(newDaysNames);
+            <View>
+              <View
+                style={{
+                  alignItems: "center",
+                  display: "flex",
+                  flexDirection: "row",
                 }}
-              />
-              <Pressable onPress={() => refInputDayName.current.focus()}>
-                <Ionicons
-                  name="pencil-outline"
-                  size={20}
-                  color="white"
-                  style={{ marginLeft: 5 }}
+              >
+                <TextInput
+                  style={{ color: "#fff", fontSize: 20, textAlign: "center" }}
+                  value={daysNames[currentDay]}
+                  ref={refInputDayName}
+                  onChangeText={(text) => {
+                    const newDaysNames = [...daysNames];
+                    newDaysNames[currentDay] = text;
+                    setDaysNames(newDaysNames);
+                  }}
                 />
-              </Pressable>
+                <Pressable onPress={() => refInputDayName.current.focus()}>
+                  <Ionicons
+                    name="pencil-outline"
+                    size={20}
+                    color="white"
+                    style={{ marginLeft: 5 }}
+                  />
+                </Pressable>
+              </View>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginTop: 10,
+                }}
+              >
+                <Text
+                  style={{ color: "#9095A1", fontSize: 12, marginRight: 5 }}
+                >
+                  {routine.days[currentDay].totalDuration ?? 0} min
+                </Text>
+                <Text
+                  style={{ color: "#9095A1", fontSize: 12, marginRight: 5 }}
+                >
+                  {routine.days[currentDay].totalSets ?? 0} sets
+                </Text>
+                <Text
+                  style={{ color: "#9095A1", fontSize: 12, marginRight: 5 }}
+                >
+                  {routine.days[currentDay].totalCalories ?? 0} cal
+                </Text>
+              </View>
             </View>
             <Pressable
               style={{

@@ -8,6 +8,18 @@ import {
   getDoc,
 } from "firebase/firestore";
 
+/**
+ * @param {string} userId - The user id
+ * @param {object} routine - The routine object
+ * @param {string} routine.routineName - The routine name
+ * @param {number} routine.numberOfDays - The number of days
+ * @param {string} routine.image - The image
+ * @param {boolean} routine.generatedAI - The generated AI
+ * @param {array} routine.days - The days
+ * @returns {object} - The routine object
+ * @throws {string} - The error message
+ * @description - This function creates a routine and saves it to firebase
+ */
 export default async function createRoutine(userId, routine) {
   // 1. save the routine to firebase with auto-generated id
   // 2. save the routine id to the user's routines array
@@ -44,8 +56,7 @@ export default async function createRoutine(userId, routine) {
   try {
     // 1. save the routine to firebase with auto-generated id
     const routineRef = await addDoc(collection(FIRESTORE, "routines"), routine);
-    // console.log("routineRef");
-    // console.log(routineRef);
+    console.log("AFTER ADDING ROUTINE");
 
     // Create n-day objects based on the number of days
     const days_ = [];
@@ -72,6 +83,7 @@ export default async function createRoutine(userId, routine) {
       routines.push(routineRef.id);
       transaction.update(userRef, { routines: routines });
     });
+    console.log("AFTER UPDATING USER");
 
     const daysIds = [];
 
@@ -84,8 +96,8 @@ export default async function createRoutine(userId, routine) {
         return dayRef;
       }),
     );
-    // console.log("daysRef");
-    // console.log(daysRef);
+    console.log("AFTER ADDING DAYS");
+
     daysRef.forEach((dayRef) => {
       daysIds.push(dayRef.id);
     });
@@ -96,12 +108,14 @@ export default async function createRoutine(userId, routine) {
       { days: daysIds },
       { merge: true },
     );
+    console.log("AFTER UPDATING ROUTINE");
 
     // get the routine from firebase
     const routineSnap = await getDoc(doc(FIRESTORE, "routines", routineRef.id));
+    console.log("AFTER GETTING ROUTINE");
 
     if (!routineSnap.exists()) {
-      navigation.navigate("Home");
+      throw "Routine does not exist!";
     }
 
     const routine_ = routineSnap.data();
