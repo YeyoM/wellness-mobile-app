@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Alert } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 const Tab = createMaterialTopTabNavigator();
 
@@ -14,9 +14,70 @@ import * as Progress from "react-native-progress";
 import MyPlan from "../components/MyPlan";
 import Crowdmeter from "../components/Crowdmeter";
 
+import GetUser from "../FirebaseFunctions/Users/GetUser";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export default function Home({ navigation }) {
   const [message, setMessage] = useState(false);
   const [user, setUser] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  async function saveProfileDataStorage(data) {
+    try {
+      await AsyncStorage.setItem("@profileData", JSON.stringify(data));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function getProfileDataStorage() {
+    try {
+      const jsonValue = await AsyncStorage.getItem("@profileData");
+      console.log("From storage: ", JSON.parse(jsonValue));
+      if (route.params?.refresh) {
+        route.params.refresh = false;
+        return null;
+      } else {
+        return jsonValue != null ? JSON.parse(jsonValue) : null;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    const user = FIREBASE_AUTH.currentUser;
+    if (!user) {
+      navigation.navigate("Login");
+      return;
+    }
+    setIsLoading(true);
+    getProfileDataStorage()
+      .then((data) => {
+        if (data) {
+          setIsLoading(false);
+          setUser(data);
+        } else {
+          GetUser(user.uid)
+            .then((data) => {
+              saveProfileDataStorage(data);
+              setUser(data);
+            })
+            .catch((error) => {
+              Alert.alert("Error", error.message);
+              navigation.navigate("Home");
+            })
+            .finally(() => {
+              setIsLoading(false);
+            });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        navigation.navigate("Home");
+      });
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
     // TODO: Move this logic to a function in the Firebase functions file
@@ -29,7 +90,6 @@ export default function Home({ navigation }) {
             navigation.navigate("User Input");
           }, 3000);
         }
-        setUser(FIREBASE_AUTH.currentUser);
       })
       .catch((error) => {
         throw error;
@@ -45,7 +105,7 @@ export default function Home({ navigation }) {
         )}
         <View style={styles.header}>
           <View>
-            <Text style={styles.headerText}>Hello {user.displayName}!</Text>
+            <Text style={styles.headerText}>Hello {user.name}!</Text>
             <Text style={styles.headerText_}>
               Get ready to level up your fitness
             </Text>

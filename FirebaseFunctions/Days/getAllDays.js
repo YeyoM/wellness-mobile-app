@@ -42,6 +42,7 @@ export default async function getAllDays() {
         dayDocData.image = image;
         // add the id to the day object
         dayDocData.dayId = id;
+        console.log("DAY DOC DATA: ", dayDocData);
         days.push(dayDocData);
       }
     }
