@@ -26,9 +26,12 @@ import CurrentExercise from "../components/CurrentExercise";
 import SetsTable from "../components/SetsTable";
 import SaveWorkout from "../FirebaseFunctions/Workouts/SaveWorkout";
 import { useState } from "react";
+import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
+import calculateTimeLift from "../Utils/calculateTimeLift.js";
+import { or } from "firebase/firestore";
 
 export default function WorkoutInProgress({ route, navigation }) {
-  const { day } = route.params;
+  const { day, userWeight, userWeightUnit } = route.params;
 
   const [currentExercise, setCurrentExercise] = useState(day.exercises[0]);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
@@ -46,6 +49,9 @@ export default function WorkoutInProgress({ route, navigation }) {
   const [exerciseQueue, setExerciseQueue] = useState(day.exercises.slice(1));
   const [currentSets, setCurrentSets] = useState();
   const [currentWorkoutInfo, setCurrentWorkoutInfo] = useState([]); // This is the state that will be sent to the databas
+
+  const [currentCalories, setCurrentCalories] = useState(0);
+  const [currentWeight, setCurrentWeight] = useState(0);
 
   const [startTime, setStartTime] = useState(null);
   const [time, setTime] = useState(0);
@@ -124,15 +130,19 @@ export default function WorkoutInProgress({ route, navigation }) {
     // calculate the total calories, weight and time
     let totalCalories = 0;
     let totalWeight = 0;
-    for (let i = 0; i < finalWorkoutInfo.length; i++) {
-      totalCalories += finalWorkoutInfo[i].exerciseSets * 0.5;
-      totalWeight +=
-        finalWorkoutInfo[i].exerciseSets *
-        finalWorkoutInfo[i].exerciseReps *
-        finalWorkoutInfo[i].exerciseWeight;
-    }
-    setLoading(true);
+    const duration = calculateTimeLift(
+      currentSets.length,
+      currentExercise.restTime / 60,
+    );
+    const calories = calculateCaloriesLift(
+      duration,
+      userWeight,
+      userWeightUnit,
+    );
+    totalCalories += calories;
     console.log(day);
+
+    setLoading(true);
     try {
       await SaveWorkout({
         workout: finalWorkoutInfo,
@@ -232,6 +242,19 @@ export default function WorkoutInProgress({ route, navigation }) {
     }
 
     if (currentExerciseIndex < numberOfExercises - 1) {
+      // The user weight and unit comes from Home -> AsyncStorage -> MyPlan -> PreviewWorkout -> here
+      // TODO: calculate the calories and weight of the current exercise
+      const duration = calculateTimeLift(
+        currentSets.length,
+        exercises[currentExerciseIndex].restTime / 60,
+      );
+      const calories = calculateCaloriesLift(
+        duration,
+        userWeight,
+        userWeightUnit,
+      );
+      // Add the calories and weight to the currentCalories and currentWeight states
+      setCurrentCalories(currentCalories + calories);
       setExerciseQueue(exerciseQueue.slice(1));
       setCurrentExercise(exercises[currentExerciseIndex + 1]);
       setCurrentExerciseIndex(currentExerciseIndex + 1);

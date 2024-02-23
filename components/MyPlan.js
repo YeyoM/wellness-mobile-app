@@ -14,6 +14,8 @@ export default function MyPlan({ navigation }) {
   const [days, setDays] = useState([]);
   const [error, setError] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [userWeight, setUserWeight] = useState(null);
+  const [userWeightUnit, setUserWeightUnit] = useState(null);
 
   const saveDaysStorage = async (days) => {
     try {
@@ -32,6 +34,15 @@ export default function MyPlan({ navigation }) {
       console.log(e);
     }
   };
+
+  async function getProfileDataStorage() {
+    try {
+      const jsonValue = await AsyncStorage.getItem("@profileData");
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   useEffect(() => {
     // Check in the async storage if the user has saved days
@@ -60,7 +71,25 @@ export default function MyPlan({ navigation }) {
           });
       }
     });
+    getProfileDataStorage()
+      .then((data) => {
+        if (data) {
+          console.log(data);
+          console.log("Weight: ", data.weight);
+          console.log("Weight unit: ", data.weightUnit);
+          setUserWeight(data.weight);
+          setUserWeightUnit(data.weightUnit);
+        } else {
+          return;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        navigation.navigate("Home");
+      });
   }, []);
+
+  // user weight and weight unit from storage
 
   const onRefresh = React.useCallback(async () => {
     try {
@@ -68,7 +97,10 @@ export default function MyPlan({ navigation }) {
       setError(false);
       const days = await getAllDays();
       setDays(days);
+      saveDaysStorage(days);
       setRefreshing(false);
+      console.log(userWeight);
+      console.log(userWeightUnit);
     } catch (error) {
       setError(true);
       setRefreshing(false);
@@ -106,6 +138,8 @@ export default function MyPlan({ navigation }) {
                 return (
                   <PreviewWorkout
                     day={day}
+                    userWeight={userWeight}
+                    userWeightUnit={userWeightUnit}
                     navigation={navigation}
                     key={index}
                   />

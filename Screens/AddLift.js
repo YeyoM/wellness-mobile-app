@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
@@ -9,11 +9,7 @@ const Tab = createMaterialTopTabNavigator();
 import SavedLifts from "./SavedLifts.js";
 import SearchLift from "./SearchLift.js";
 
-import { EditRoutineContext } from "../context/EditRoutineContext";
-
 export default function AddLift({ navigation }) {
-  const { routine, setRoutine, currentDay } = useContext(EditRoutineContext);
-
   return (
     <View style={styles.container}>
       <View style={styles.home}>

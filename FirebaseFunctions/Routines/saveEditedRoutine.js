@@ -21,6 +21,9 @@ export const saveEditedRoutine = async (routine) => {
       await updateDoc(dayDocRef, {
         dayName: day.dayName,
         exercises: day.exercises,
+        totalCalories: day.totalCalories,
+        totalSets: day.totalSets,
+        totalDuration: day.totalDuration,
       });
     }
 

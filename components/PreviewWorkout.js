@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 
-export default function PreviewWorkout({ day, navigation }) {
+export default function PreviewWorkout({ day, navigation, userWeight, userWeightUnit }) {
   return (
     <View style={styles.container}>
       <View style={styles.viewContainer}>
@@ -34,7 +34,7 @@ export default function PreviewWorkout({ day, navigation }) {
           <Pressable
             style={styles.buttonStart}
             onPress={() =>
-              navigation.navigate("Workout In Progress", { day: day })
+              navigation.navigate("Workout In Progress", { day: day, userWeight: userWeight, userWeightUnit: userWeightUnit })
             }
           >
             <Text style={{ color: "white" }}>Start</Text>
