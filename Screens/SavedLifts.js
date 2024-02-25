@@ -7,15 +7,13 @@ import {
   Pressable,
   TextInput,
   RefreshControl,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { getSavedExercises } from "../FirebaseFunctions/Exercises/getSavedExercises.js";
 
 import calculateTimeLift from "../Utils/calculateTimeLift.js";
 import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
-
-import { FIREBASE_AUTH, FIRESTORE } from "../firebaseConfig.js";
-import { doc, getDoc } from "firebase/firestore"; // to get the user's weight
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -45,6 +43,16 @@ export default function SavedLifts({ navigation }) {
       console.log(e);
     }
   };
+
+  async function getProfileDataStorage() {
+    try {
+      const jsonValue = await AsyncStorage.getItem("@profileData");
+      console.log("From storage: ", JSON.parse(jsonValue));
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   useEffect(() => {
     // Check in the async storage if the user has saved excercises
@@ -77,20 +85,19 @@ export default function SavedLifts({ navigation }) {
   const handleAddLift = async ({ lift }) => {
     console.log("adding lift");
 
-    const user = FIREBASE_AUTH.currentUser;
-    if (!user) {
-      navigation.navigate("Login");
-      return;
-    }
-
     // check if the lift is already in the exercise list of the current day
     // if it is, don't add it
     const isAlreadyInList = routine.days[currentDay].exercises.find(
       (exercise) => exercise.exerciseId === lift.id,
     );
+    // TODO add a message to the user if the lift is already in the list
     if (isAlreadyInList) {
+      Alert.alert("This lift is already in the list");
       return;
     }
+
+    console.log("adding lift");
+    console.log(lift);
 
     const newLift = {
       exerciseId: lift.id,
@@ -98,14 +105,21 @@ export default function SavedLifts({ navigation }) {
       numberOfSets: lift.defaultNumberOfSets,
       numberOfReps: lift.defaultNumberOfReps,
       weight: lift.defaultWeight,
+      weightSystem: lift.defaultWeightSystem,
       restTime: lift.defaultRestTime,
     };
 
-    // get the user's weight from the database
-    const docRef = doc(FIRESTORE, "users", user.uid);
-    const docSnap = await getDoc(docRef);
-    const userWeight = docSnap.data().weight;
-    const userWeightUnit = docSnap.data().weightUnit;
+    // get the user's weight from the async storage
+    const profileData = await getProfileDataStorage();
+    let userWeight = null;
+    let userWeightUnit = null;
+    // TODO, handle the case where the app does not have the user's info
+    if (!profileData) {
+      return;
+    } else {
+      userWeight = profileData.weight;
+      userWeightUnit = profileData.weightUnit;
+    }
 
     // calculate the time and calories of the new lift
     const time = calculateTimeLift(
@@ -117,7 +131,6 @@ export default function SavedLifts({ navigation }) {
       userWeight,
       userWeightUnit,
     );
-    console.log(time, calories);
 
     // add lift to the exercise list of the current day
     setRoutine((prevRoutine) => {

@@ -95,6 +95,16 @@ export default function SearchLift({ navigation }) {
     return false;
   };
 
+  async function getProfileDataStorage() {
+    try {
+      const jsonValue = await AsyncStorage.getItem("@profileData");
+      console.log("From storage: ", JSON.parse(jsonValue));
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const handleSaveLift = async ({ lift }) => {
     console.log("Saving lift", lift);
 
@@ -121,17 +131,27 @@ export default function SearchLift({ navigation }) {
       return;
     }
 
-    const userId = user.uid;
+    const profileData = await getProfileDataStorage();
+    let weightUnit = profileData.weightUnit ? profileData.weightUnit : "lbs";
+    if (weightUnit === "lbs") {
+      defaultWeight = 80;
+    } else {
+      defaultWeight = 40;
+    }
 
+    console.log("Weight unit", weightUnit);
+    console.log("Default weight", defaultWeight);
+
+    const userId = user.uid;
     console.log("Saving lift to user", userId);
 
     const exercise = {
       defaultNumberOfReps: 10,
       defaultNumberOfSets: 4,
-      defaultWeight: 40,
+      defaultWeight: defaultWeight,
       exerciseName: lift.exerciseName,
       defaultRestTime: 60,
-      defaultWeightSystem: "lbs",
+      defaultWeightSystem: weightUnit,
       muscle: lift.muscle,
       type: lift.type,
       equipment: lift.equipment,
@@ -141,6 +161,8 @@ export default function SearchLift({ navigation }) {
 
     console.log("Exercise", exercise);
     setLoading(true);
+    // TODO, refesh the user data after saving the exercise
+    // to get the new list of exercises, and save it to the async storage
     try {
       const response = await addExerciseToUser(userId, exercise);
 
