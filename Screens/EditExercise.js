@@ -582,8 +582,8 @@ export default function EditExercise({ route, navigation }) {
                       fontStyle: "italic",
                     }}
                   >
-                    Approximate time lifting: {Math.round(totalDuration)}
-                    Minutes
+                    Approximate time lifting: {Math.round(totalDuration)}{" "}
+                    minutes
                   </Text>
                 </View>
 

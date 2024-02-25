@@ -115,7 +115,8 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
               </Text>
               <Text style={{ color: "#9095A1", fontSize: 12, marginLeft: 16 }}>
                 {item.exercise.numberOfSets} sets of{" "}
-                {item.exercise.numberOfReps} reps, {item.exercise.weight} lbs
+                {item.exercise.numberOfReps} reps, {item.exercise.weight}{" "}
+                {item.exercise.weightSystem}
               </Text>
             </View>
           </View>
@@ -138,6 +139,29 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
 
   return (
     <View style={styles.container}>
+      <View
+        style={{
+          width: "90%",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          marginBottom: 10,
+        }}
+      >
+        <Ionicons name="information-circle-outline" size={12} color="#a0a0a0" />
+        <Text
+          style={{
+            color: "#a0a0a0",
+            fontSize: 12,
+            fontStyle: "italic",
+            alignSelf: "flex-end",
+            marginLeft: 2,
+          }}
+        >
+          Swipe left to edit or delete a lift
+        </Text>
+      </View>
       <FlatList
         keyExtractor={(item) => item.key}
         data={initialData}
