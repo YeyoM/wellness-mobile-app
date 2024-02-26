@@ -8,7 +8,9 @@ import {
 } from "react-native";
 import PreviewWorkout from "./PreviewWorkout";
 import getAllDays from "../FirebaseFunctions/Days/getAllDays";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage";
+import getDaysStorage from "../AsyncStorageFunctions/Days/getDaysStorage.js";
+import saveDaysStorage from "../AsyncStorageFunctions/Days/saveDaysStorage.js";
 
 export default function MyPlan({ navigation }) {
   const [days, setDays] = useState([]);
@@ -16,33 +18,6 @@ export default function MyPlan({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
   const [userWeight, setUserWeight] = useState(null);
   const [userWeightUnit, setUserWeightUnit] = useState(null);
-
-  const saveDaysStorage = async (days) => {
-    try {
-      const jsonValue = JSON.stringify(days);
-      await AsyncStorage.setItem("@days", jsonValue);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const getDaysStorage = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem("@days");
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  async function getProfileDataStorage() {
-    try {
-      const jsonValue = await AsyncStorage.getItem("@profileData");
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   useEffect(() => {
     // Check in the async storage if the user has saved days
@@ -71,7 +46,7 @@ export default function MyPlan({ navigation }) {
           });
       }
     });
-    getProfileDataStorage()
+    getUserStorage()
       .then((data) => {
         if (data) {
           console.log(data);

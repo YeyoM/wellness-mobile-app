@@ -15,35 +15,13 @@ import MyPlan from "../components/MyPlan";
 import Crowdmeter from "../components/Crowdmeter";
 
 import GetUser from "../FirebaseFunctions/Users/GetUser";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage";
+import saveUserStorage from "../AsyncStorageFunctions/Users/saveUserStorage";
 
 export default function Home({ navigation }) {
   const [message, setMessage] = useState(false);
   const [user, setUser] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-
-  async function saveProfileDataStorage(data) {
-    try {
-      await AsyncStorage.setItem("@profileData", JSON.stringify(data));
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async function getProfileDataStorage() {
-    try {
-      const jsonValue = await AsyncStorage.getItem("@profileData");
-      console.log("From storage: ", JSON.parse(jsonValue));
-      if (route.params?.refresh) {
-        route.params.refresh = false;
-        return null;
-      } else {
-        return jsonValue != null ? JSON.parse(jsonValue) : null;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   useEffect(() => {
     const user = FIREBASE_AUTH.currentUser;
@@ -52,7 +30,7 @@ export default function Home({ navigation }) {
       return;
     }
     setIsLoading(true);
-    getProfileDataStorage()
+    getUserStorage()
       .then((data) => {
         if (data) {
           setIsLoading(false);
@@ -60,7 +38,7 @@ export default function Home({ navigation }) {
         } else {
           GetUser(user.uid)
             .then((data) => {
-              saveProfileDataStorage(data);
+              saveUserStorage(data);
               setUser(data);
             })
             .catch((error) => {

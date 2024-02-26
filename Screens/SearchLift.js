@@ -11,7 +11,10 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 
 import { WELLNESS_NINJA_API_KEY } from "@env";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import getExercisesStorage from "../AsyncStorageFunctions/Exercises/getExercisesStorage.js";
+import saveExercisesStorage from "../AsyncStorageFunctions/Exercises/saveExercisesStorage.js";
+import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage.js";
 
 import { addExerciseToUser } from "../FirebaseFunctions/Exercises/addExerciseToUser.js";
 
@@ -79,7 +82,7 @@ export default function SearchLift({ navigation }) {
     // check if the lift is already in the async storage
     // if it is, don't save it
     try {
-      const jsonValue = await AsyncStorage.getItem("@exercises");
+      const jsonValue = await getExercisesStorage();
       const exercises = jsonValue != null ? JSON.parse(jsonValue) : null;
       if (exercises) {
         const exists = exercises.find(
@@ -94,16 +97,6 @@ export default function SearchLift({ navigation }) {
     }
     return false;
   };
-
-  async function getProfileDataStorage() {
-    try {
-      const jsonValue = await AsyncStorage.getItem("@profileData");
-      console.log("From storage: ", JSON.parse(jsonValue));
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   const handleSaveLift = async ({ lift }) => {
     console.log("Saving lift", lift);
@@ -131,7 +124,7 @@ export default function SearchLift({ navigation }) {
       return;
     }
 
-    const profileData = await getProfileDataStorage();
+    const profileData = await getUserStorage();
     let weightUnit = profileData.weightUnit ? profileData.weightUnit : "lbs";
     if (weightUnit === "lbs") {
       defaultWeight = 80;
@@ -170,7 +163,7 @@ export default function SearchLift({ navigation }) {
       // that we can save in the async storage
       if (response) {
         try {
-          await AsyncStorage.setItem("@exercises", JSON.stringify(response));
+          await saveExercisesStorage(response);
           setTimeout(() => {
             setSuccess(null);
           }, 2000);
