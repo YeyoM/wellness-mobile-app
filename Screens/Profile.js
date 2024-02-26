@@ -12,36 +12,14 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 
 import { FIREBASE_AUTH } from "../firebaseConfig";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import GetUser from "../FirebaseFunctions/Users/GetUser.js";
+import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage.js";
+import saveUserStorage from "../AsyncStorageFunctions/Users/saveUserStorage.js";
 
 export default function Profile({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   const [profileData, setProfileData] = useState(null);
-
-  async function saveProfileDataStorage(data) {
-    try {
-      await AsyncStorage.setItem("@profileData", JSON.stringify(data));
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async function getProfileDataStorage() {
-    try {
-      const jsonValue = await AsyncStorage.getItem("@profileData");
-      console.log("From storage: ", JSON.parse(jsonValue));
-      if (route.params?.refresh) {
-        route.params.refresh = false;
-        return null;
-      } else {
-        return jsonValue != null ? JSON.parse(jsonValue) : null;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   useEffect(() => {
     const user = FIREBASE_AUTH.currentUser;
@@ -50,7 +28,7 @@ export default function Profile({ route, navigation }) {
       return;
     }
     setIsLoading(true);
-    getProfileDataStorage()
+    getUserStorage()
       .then((data) => {
         if (data) {
           setIsLoading(false);
@@ -58,7 +36,7 @@ export default function Profile({ route, navigation }) {
         } else {
           GetUser(user.uid)
             .then((data) => {
-              saveProfileDataStorage(data);
+              saveUserStorage(data);
               setProfileData(data);
             })
             .catch((error) => {
@@ -75,7 +53,7 @@ export default function Profile({ route, navigation }) {
         navigation.navigate("Home");
       });
     setIsLoading(false);
-  }, [route]);
+  }, [route.params]);
 
   return (
     <View style={styles.container}>

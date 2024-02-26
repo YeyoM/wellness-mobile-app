@@ -10,10 +10,12 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import Accordion from "../components/AccordionWorkout";
 import ErrorNotification from "../components/ErrorNotification";
+
+import saveRoutinesStorage from "../AsyncStorageFunctions/Routines/saveRoutinesStorage.js";
+import getRoutinesStorage from "../AsyncStorageFunctions/Routines/getRoutinesStorage.js";
 
 import { getSavedRoutines } from "../FirebaseFunctions/Routines/getSavedRoutines.js";
 import { FIREBASE_AUTH } from "../firebaseConfig.js";
@@ -28,23 +30,6 @@ export default function SavedRoutines({ navigation, route }) {
   const [routines, setRoutines] = useState(null);
   const [_user, setUser] = useState(null);
   const [error, setError] = useState(false);
-
-  const saveRoutinesStorage = async (routines) => {
-    try {
-      await AsyncStorage.setItem("@routines", JSON.stringify(routines));
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const getRoutinesStorage = async () => {
-    try {
-      const value = await AsyncStorage.getItem("@routines");
-      return value !== null ? JSON.parse(value) : null;
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   useEffect(() => {
     if (route.params && route.params.refresh) {

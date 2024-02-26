@@ -15,7 +15,9 @@ import { getSavedExercises } from "../FirebaseFunctions/Exercises/getSavedExerci
 import calculateTimeLift from "../Utils/calculateTimeLift.js";
 import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import getExercisesStorage from "../AsyncStorageFunctions/Exercises/getExercisesStorage.js";
+import saveExercisesStorage from "../AsyncStorageFunctions/Exercises/saveExercisesStorage.js";
+import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage.js";
 
 import { EditRoutineContext } from "../context/EditRoutineContext";
 
@@ -25,34 +27,6 @@ export default function SavedLifts({ navigation }) {
   const [exercises, setExercises] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
-
-  const saveExercisesStorage = async (exercises) => {
-    try {
-      const jsonValue = JSON.stringify(exercises);
-      await AsyncStorage.setItem("@exercises", jsonValue);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const getExercisesStorage = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem("@exercises");
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  async function getProfileDataStorage() {
-    try {
-      const jsonValue = await AsyncStorage.getItem("@profileData");
-      console.log("From storage: ", JSON.parse(jsonValue));
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   useEffect(() => {
     // Check in the async storage if the user has saved excercises
@@ -110,7 +84,7 @@ export default function SavedLifts({ navigation }) {
     };
 
     // get the user's weight from the async storage
-    const profileData = await getProfileDataStorage();
+    const profileData = await getUserStorage();
     let userWeight = null;
     let userWeightUnit = null;
     // TODO, handle the case where the app does not have the user's info

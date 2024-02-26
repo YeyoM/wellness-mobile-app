@@ -1,6 +1,8 @@
 import React, { createContext, useState } from "react";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import getRoutineBeforeEdit from "../AsyncStorageFunctions/Routines/getRoutineBeforeEdit.js";
+import saveRoutineBeforeEdit from "../AsyncStorageFunctions/Routines/saveRoutineBeforeEdit.js";
+import deleteRoutineBeforeEdit from "../AsyncStorageFunctions/Routines/deleteRoutineBeforeEdit.js";
 
 export const EditRoutineContext = createContext();
 
@@ -23,34 +25,32 @@ export const EditRoutineProvider = ({ children }) => {
 
   // Add this to the handleEdit button in the accordion
   const initializeEditRoutine = async (routine, index) => {
-    setRoutine(routine);
-    setRoutineName(routine.routineName);
-    setDaysNames(routine.days.map((day) => day.dayName));
-    // set the routine before edit in the async storage
-    await AsyncStorage.setItem("@routineBeforeEdit", JSON.stringify(routine));
-    setRoutineBeforeEditIndex(index);
-    setNumberOfDays(routine.days.length);
-    setTotalDays(routine.days.length);
-    setCurrentDay(0);
+    try {
+      await saveRoutineBeforeEdit(routine, index);
+      setRoutine(routine);
+      setRoutineName(routine.routineName);
+      setDaysNames(routine.days.map((day) => day.dayName));
+      setRoutineBeforeEditIndex(index);
+      setNumberOfDays(routine.days.length);
+      setTotalDays(routine.days.length);
+      setCurrentDay(0);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   // Add this to the handleBack button in the edit routine page
   const clenUpEditRoutine = async () => {
-    setRoutine({});
-    setRoutineName("");
-    setDaysNames([]);
-    await AsyncStorage.removeItem("@routineBeforeEdit");
-    setRoutineBeforeEditIndex(0);
-    setNumberOfDays(3);
-    setCurrentDay(0);
-    setTotalDays(0);
-    setCurrentExercise(null);
-  };
-
-  const getRoutineBeforeEdit = async () => {
     try {
-      const jsonValue = await AsyncStorage.getItem("@routineBeforeEdit");
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
+      await deleteRoutineBeforeEdit(routineBeforeEditIndex);
+      setRoutine({});
+      setRoutineName("");
+      setDaysNames([]);
+      setRoutineBeforeEditIndex(0);
+      setNumberOfDays(3);
+      setCurrentDay(0);
+      setTotalDays(0);
+      setCurrentExercise(null);
     } catch (e) {
       console.log(e);
     }
