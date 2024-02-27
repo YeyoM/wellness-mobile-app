@@ -19,6 +19,21 @@ export default async function SaveNotificationSettingsChanges({
   sound,
   vibrations,
 }) {
+  if (!userId) {
+    throw new Error("No user ID provided!");
+  }
+  if (pushNotifications === undefined) {
+    throw new Error("No push notifications preference provided!");
+  }
+  if (workoutReminders === undefined) {
+    throw new Error("No workout reminders preference provided!");
+  }
+  if (sound === undefined) {
+    throw new Error("No sound preference provided!");
+  }
+  if (vibrations === undefined) {
+    throw new Error("No vibrations preference provided!");
+  }
   try {
     const docRef = doc(FIRESTORE, "users", userId);
     const docSnap = await getDoc(docRef);

@@ -1,5 +1,5 @@
 import { FIRESTORE } from "../../firebaseConfig.js";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, or } from "firebase/firestore";
 
 /**
  * Get user data from Firestore
@@ -7,6 +7,9 @@ import { doc, getDoc } from "firebase/firestore";
  * @returns {Promise<Object>} - User data
  */
 export default async function GetUser(uid) {
+  if (!uid) {
+    throw new Error("No user ID provided!");
+  }
   try {
     const docRef = doc(FIRESTORE, "users", uid);
     const docSnap = await getDoc(docRef);

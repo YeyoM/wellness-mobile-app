@@ -6,6 +6,7 @@ import { updateProfile } from "firebase/auth";
  * @param {Object} questions - Object containing the user's answers to the initial questions
  * @returns {Promise<void>} - Promise that resolves when the user's answers are successfully registered
  * @description - Registers the user's answers to the initial questions in the database
+ * @throws {Error} - If the user is not found, if there is an error setting the document, or if the questions are invalid
  */
 export const registerInitialQuestions = async (questions) => {
   const userId = FIREBASE_AUTH.currentUser.uid;
