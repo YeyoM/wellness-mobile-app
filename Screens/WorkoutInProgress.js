@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -12,23 +12,27 @@ import {
   Keyboard,
   Alert,
   AppState,
+  Dimensions,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Ionicons } from "@expo/vector-icons";
+
+import {
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
 import DraggableFlatList, {
   ScaleDecorator,
   NestableScrollContainer,
 } from "react-native-draggable-flatlist";
-import { Dimensions } from "react-native";
+
+import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
+
 import CurrentExercise from "../components/CurrentExercise";
 import SetsTable from "../components/SetsTable";
+
 import SaveWorkout from "../FirebaseFunctions/Workouts/SaveWorkout";
-import { useState } from "react";
 import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
 import calculateTimeLift from "../Utils/calculateTimeLift.js";
-import { or } from "firebase/firestore";
 
 export default function WorkoutInProgress({ route, navigation }) {
   const { day, userWeight, userWeightUnit } = route.params;
@@ -51,7 +55,6 @@ export default function WorkoutInProgress({ route, navigation }) {
   const [currentWorkoutInfo, setCurrentWorkoutInfo] = useState([]); // This is the state that will be sent to the databas
 
   const [currentCalories, setCurrentCalories] = useState(0);
-  const [currentWeight, setCurrentWeight] = useState(0);
 
   const [startTime, setStartTime] = useState(null);
   const [time, setTime] = useState(0);
@@ -60,9 +63,6 @@ export default function WorkoutInProgress({ route, navigation }) {
   const [loading, setLoading] = useState(false);
 
   const handleEndWorkout = async () => {
-    // some logic to save to firebase and navigate to workout summary
-    // Check if the currentExerciseIndex is the last exercise
-    // If not, alert the user to finish the exercises
     if (currentExerciseIndex < numberOfExercises - 1) {
       Alert.alert(
         "Are you sure you want to end the workout?",
@@ -140,7 +140,6 @@ export default function WorkoutInProgress({ route, navigation }) {
       userWeightUnit,
     );
     totalCalories += calories;
-    console.log(day);
 
     setLoading(true);
     try {
@@ -167,12 +166,12 @@ export default function WorkoutInProgress({ route, navigation }) {
     navigation.navigate("Workout Finished 1", { day: day });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
 
   // Initialize the currentSets state with the sets from the first exercise
-  React.useEffect(() => {
+  useEffect(() => {
     const sets = day.exercises[0].numberOfSets;
     const weight = day.exercises[0].weight;
     const reps = day.exercises[0].numberOfReps;
@@ -184,7 +183,7 @@ export default function WorkoutInProgress({ route, navigation }) {
   }, []);
 
   // Start the timer when the component mounts
-  React.useEffect(() => {
+  useEffect(() => {
     const interval = setInterval(() => {
       setTime((time) => time + 1);
       const minutes = Math.floor(time / 60);
@@ -202,7 +201,7 @@ export default function WorkoutInProgress({ route, navigation }) {
   // and when it comes back to the foreground, calculate the time
   // and set the time state to the difference
   // between the current time and the time when the app went to the background
-  React.useEffect(() => {
+  useEffect(() => {
     const subscription = AppState.addEventListener("change", (nextAppState) => {
       if (nextAppState === "background") {
         setStartTime(new Date());

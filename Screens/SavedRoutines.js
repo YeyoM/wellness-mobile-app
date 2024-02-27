@@ -21,10 +21,6 @@ import { getSavedRoutines } from "../FirebaseFunctions/Routines/getSavedRoutines
 import { FIREBASE_AUTH } from "../firebaseConfig.js";
 
 export default function SavedRoutines({ navigation, route }) {
-  // check if in the route.params there is a
-  // variable called refresh, if there is,
-  // go and get the routines again
-
   const [refreshing, setRefreshing] = useState(false);
 
   const [routines, setRoutines] = useState(null);
@@ -47,9 +43,7 @@ export default function SavedRoutines({ navigation, route }) {
           setRefreshing(false);
         });
       route.params.refresh = false;
-    }
-
-    if (route.params && route.params.beforeEdit) {
+    } else if (route.params && route.params.beforeEdit) {
       const newRoutines = [...routines];
       newRoutines[route.params.beforeEditIndex] =
         route.params.routineBeforeEdit;
@@ -71,7 +65,6 @@ export default function SavedRoutines({ navigation, route }) {
 
     // before getting the routines, check if there routines in the async storage
     // if there is, get them from there, if not, get them from the database
-
     getRoutinesStorage().then((routines) => {
       if (routines) {
         setRoutines(routines);

@@ -58,7 +58,6 @@ export default function Home({ navigation }) {
   }, []);
 
   useEffect(() => {
-    // TODO: Move this logic to a function in the Firebase functions file
     const userId = FIREBASE_AUTH.currentUser.uid;
     UserAnsweredInitialQuestions(userId)
       .then((result) => {

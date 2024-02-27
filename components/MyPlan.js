@@ -65,7 +65,6 @@ export default function MyPlan({ navigation }) {
   }, []);
 
   // user weight and weight unit from storage
-
   const onRefresh = React.useCallback(async () => {
     try {
       setRefreshing(true);
@@ -74,8 +73,6 @@ export default function MyPlan({ navigation }) {
       setDays(days);
       saveDaysStorage(days);
       setRefreshing(false);
-      console.log(userWeight);
-      console.log(userWeightUnit);
     } catch (error) {
       setError(true);
       setRefreshing(false);
@@ -122,7 +119,7 @@ export default function MyPlan({ navigation }) {
               })
             ) : error ? (
               <Text style={{ color: "#fff" }}>
-                An error occurred while fetching the data
+                Oops! Something went wrong. Please try again later.
               </Text>
             ) : null}
           </View>
