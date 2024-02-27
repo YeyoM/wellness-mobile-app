@@ -6,8 +6,8 @@ import { signOut, deleteUser } from "firebase/auth";
  * DeleteUser
  * @param {void}
  * @returns {Promise<void>}
- * @description Deletes the user and all its data from the database.
  * @throws {Error} If there is an error deleting the user or its data.
+ * @description Deletes the user and all its data from the database.
  */
 export default async function DeleteUser() {
   // Things to delete:

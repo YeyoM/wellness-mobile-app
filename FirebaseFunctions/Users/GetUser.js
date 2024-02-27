@@ -5,6 +5,8 @@ import { doc, getDoc, or } from "firebase/firestore";
  * Get user data from Firestore
  * @param {string} uid - User ID
  * @returns {Promise<Object>} - User data
+ * @throws {Error} - Error if no user ID provided or no such document
+ * @description - Get user data from Firestore
  */
 export default async function GetUser(uid) {
   if (!uid) {

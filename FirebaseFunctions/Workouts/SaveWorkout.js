@@ -19,6 +19,8 @@ import {
  * @param {Object} day
  * @param {Object} workoutInfo
  * @returns {Promise}
+ * @throws {Error} iff there is no user logged in, routineId, dayId, workout, totalCalories, totalWeight, or totalTime is missing
+ * @description Saves a workout to the database
  */
 export default async function SaveWorkout({
   workout,
@@ -30,14 +32,33 @@ export default async function SaveWorkout({
 }) {
   const userId = FIREBASE_AUTH.currentUser.uid;
 
-  console.log("BEFORE SAVING THE WORKOUT");
-  console.log("userId: ", userId);
-  console.log("routineId: ", routineId);
-  console.log("dayId: ", dayId);
-  console.log("workout: ", workout);
-  console.log("totalCalories: ", totalCalories);
-  console.log("totalWeight: ", totalWeight);
-  console.log("totalTime: ", totalTime);
+  if (!userId) {
+    throw new Error("User is not logged in!");
+  }
+
+  if (!routineId) {
+    throw new Error("Routine ID is missing!");
+  }
+
+  if (!dayId) {
+    throw new Error("Day ID is missing!");
+  }
+
+  if (!workout) {
+    throw new Error("Workout is missing!");
+  }
+
+  if (!totalCalories) {
+    throw new Error("Total calories is missing!");
+  }
+
+  if (!totalWeight) {
+    throw new Error("Total weight is missing!");
+  }
+
+  if (!totalTime) {
+    throw new Error("Total time is missing!");
+  }
 
   try {
     // the name of the collection is "workouts"
