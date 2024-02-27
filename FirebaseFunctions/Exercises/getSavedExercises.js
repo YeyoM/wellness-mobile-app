@@ -1,8 +1,18 @@
 import { doc, getDoc } from "firebase/firestore";
 import { FIRESTORE } from "../../firebaseConfig.js";
+
+/**
+ * getSavedExercises
+ * @param {string} userId - the user's id
+ * @returns {array} - the user's saved exercises
+ * @throws {Error} - if there is an error getting the saved exercises
+ * @description - gets the user's saved exercises from the database
+ */
 export const getSavedExercises = async (userId) => {
-  // from the user document, get the ids of the exercises
-  // and then get the exercises from the exercises collection
+  if (!userId) {
+    throw new Error("No user id provided");
+  }
+
   try {
     const userDocRef = doc(FIRESTORE, "users", userId);
     const userDocSnap = await getDoc(userDocRef);

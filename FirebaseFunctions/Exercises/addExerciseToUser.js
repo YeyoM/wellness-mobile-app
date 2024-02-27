@@ -1,9 +1,72 @@
 import { doc, getDoc, updateDoc, addDoc, collection } from "firebase/firestore";
 import { FIRESTORE } from "../../firebaseConfig.js";
 
+/**
+ * addExerciseToUser
+ * @param {string} userId - the user's id
+ * @param {object} exercise - the exercise object
+ * @param {string} exercise.exerciseName - the exercise's name
+ * @param {number} exercise.defaultNumberOfSets - the exercise's default number of sets
+ * @param {number} exercise.defaultNumberOfReps - the exercise's default number of reps
+ * @param {number} exercise.defaultWeight - the exercise's default weight
+ * @param {string} exercise.defaultWeightSystem - the exercise's default weight system
+ * @param {number} exercise.defaultRestTime - the exercise's default rest time
+ * @param {string} exercise.muscle - the exercise's muscle
+ * @param {string} exercise.equipment - the exercise's equipment
+ * @param {string} exercise.type - the exercise's type
+ * @param {string} exercise.userId - the exercise's user id
+ * @returns {array} - the updated exercises array
+ * @throws {Error} - if the exercise is already in the user's exercises or if the exercise object is not valid
+ */
 export const addExerciseToUser = async (userId, exercise) => {
-  // check if the exercise is not already in the user's exercises
-  // if it is, don't add it, the exercises are in an array of strings
+  if (!userId) {
+    throw new Error("No user id provided");
+  }
+
+  if (!exercise) {
+    throw new Error("No exercise provided");
+  }
+
+  if (!exercise.exerciseName) {
+    throw new Error("No exercise name provided");
+  }
+
+  if (!exercise.defaultNumberOfSets) {
+    throw new Error("No default number of sets provided");
+  }
+
+  if (!exercise.defaultNumberOfReps) {
+    throw new Error("No default number of reps provided");
+  }
+
+  if (!exercise.defaultWeight) {
+    throw new Error("No default weight provided");
+  }
+
+  if (!exercise.defaultWeightSystem) {
+    throw new Error("No default weight system provided");
+  }
+
+  if (!exercise.defaultRestTime) {
+    throw new Error("No default rest time provided");
+  }
+
+  if (!exercise.muscle) {
+    throw new Error("No muscle provided");
+  }
+
+  if (!exercise.equipment) {
+    throw new Error("No equipment provided");
+  }
+
+  if (!exercise.type) {
+    throw new Error("No type provided");
+  }
+
+  if (!exercise.userId) {
+    throw new Error("No user id provided");
+  }
+
   try {
     const userDoc = doc(FIRESTORE, "users", userId);
     const userDocSnap = await getDoc(userDoc);
