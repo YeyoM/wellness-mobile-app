@@ -1,10 +1,19 @@
 import { doc, getDoc } from "firebase/firestore";
 import { FIRESTORE } from "../../firebaseConfig.js";
 
+/**
+ * getSavedRoutines
+ * @param {string} userId - The user id
+ * @returns {array} - The routines array
+ * @throws {Error} - If the user id is not provided
+ * @description - This function gets the user's saved routines from firebase
+ * and returns them as an array
+ */
 export const getSavedRoutines = async (userId) => {
-  console.log("getting routines");
-  // get the user's routines' ids, they are stored in the user's document
-  // it is an array of strings
+  if (!userId) {
+    throw new Error("User id is required!");
+  }
+
   try {
     const userDocRef = doc(FIRESTORE, "users", userId);
     const userDocSnap = await getDoc(userDocRef);
@@ -61,6 +70,6 @@ export const getSavedRoutines = async (userId) => {
     return routines;
   } catch (err) {
     console.error("Error getting routines", err);
-    throw err;
+    throw new Error(err);
   }
 };
