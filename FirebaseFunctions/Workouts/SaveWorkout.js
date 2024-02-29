@@ -56,12 +56,10 @@ export default async function SaveWorkout({
   // Create references for the documents we are going to update/modify
   const userRef = doc(FIRESTORE, "users", userId);
   const newWorkoutRef = doc(collection(FIRESTORE, "workouts"));
-  const exerciseRefs = [];
-  for (let i = 0; i < workout.length; i++) {
-    const exerciseId = workout[i].exerciseId;
-    const exerciseRef = doc(FIRESTORE, "exercises", exerciseId);
-    exerciseRefs.push(exerciseRef);
-  }
+  const exerciseRefs = workout.map((exercise) => {
+    const exerciseId = exercise.exerciseId;
+    return doc(FIRESTORE, "exercises", exerciseId);
+  });
 
   if (!userRef) {
     throw new Error("User does not exist!");
@@ -87,7 +85,6 @@ export default async function SaveWorkout({
         const exerciseDoc = await transaction.get(exerciseRefs[i]);
         exercisesDocs.push(exerciseDoc);
       }
-      // workout
       transaction.set(newWorkoutRef, {
         userId,
         routineId,
@@ -102,17 +99,17 @@ export default async function SaveWorkout({
       userWorkouts.push(newWorkoutRef.id);
       transaction.update(userRef, { workouts: userWorkouts });
       console.log("USER WORKOUTS UPDATE WRITTEN TO TRANSACTION");
-      for (let i = 0; i < exerciseRefs.length; i++) {
-        const weightHistory = exercisesDocs[i].data().weightRecord;
+      exerciseRefs.forEach((exerciseRef, index) => {
+        const weightHistory = exercisesDocs[index].data().weightRecord;
         const newWeightHistory = {
           date: new Date(),
-          weight: workout[i].exerciseWeight,
+          weight: workout[index].exerciseWeight,
         };
         weightHistory.push(newWeightHistory);
-        transaction.update(exerciseRefs[i], {
+        transaction.update(exerciseRef, {
           weightRecord: weightHistory,
         });
-      }
+      });
       console.log("EXERCISES WEIGHT HISTORY WRITTEN TO TRANSACTION");
     });
     console.log("Transaction executed correctly");

@@ -27,9 +27,9 @@ const Accordion = ({ routine_, navigation, index }) => {
     height: heightValue.value,
   }));
 
-  const handleEdit = () => {
+  const handleEdit = async () => {
     // initialize the edit routine context with the routine
-    initializeEditRoutine(routine_, index);
+    await initializeEditRoutine(routine_, index);
     navigation.push("Edit Routine");
   };
 
