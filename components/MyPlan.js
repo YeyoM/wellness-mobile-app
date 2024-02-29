@@ -121,7 +121,13 @@ export default function MyPlan({ navigation }) {
               <Text style={{ color: "#fff" }}>
                 Oops! Something went wrong. Please try again later.
               </Text>
-            ) : null}
+            ) : (
+              <Text
+                style={{ color: "#a0a0a0", textAlign: "center", marginTop: 20 }}
+              >
+                No routines were found. Add a new routine to your plan.
+              </Text>
+            )}
           </View>
         </View>
       </ScrollView>

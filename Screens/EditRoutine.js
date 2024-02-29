@@ -16,7 +16,7 @@ import CarouselDays from "../components/CarouselDays";
 import EditingRoutineExerciseList from "../components/EditingRoutineExerciseList";
 
 import { FIREBASE_AUTH } from "../firebaseConfig.js";
-import { saveEditedRoutine } from "../FirebaseFunctions/Routines/saveEditedRoutine.js";
+import saveEditedRoutine from "../FirebaseFunctions/Routines/saveEditedRoutine.js";
 
 import { EditRoutineContext } from "../context/EditRoutineContext";
 
@@ -36,13 +36,7 @@ export default function EditRoutine({ navigation }) {
     clenUpEditRoutine,
   } = useContext(EditRoutineContext);
 
-  // Here is the current day of the routine that is being edited
-  // When adding an exercise to the day or editing an exercise,
-  // the totalCalories, totalSets, and totalDuration will be updated in
-  // the current day
-  console.log(routine.days[currentDay]);
-
-  const [_error, setError] = useState(null);
+  const [_error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const refInputRoutineName = useRef(null);
@@ -73,6 +67,8 @@ export default function EditRoutine({ navigation }) {
     setLoading(true);
     try {
       await saveEditedRoutine(routine);
+      // add a delay to see the loading spinner
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       setLoading(false);
       // go back to the previous screen and refresh the data
       navigation.navigate("Saved Routines", { refresh: true });

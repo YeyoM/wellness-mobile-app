@@ -65,6 +65,7 @@ export default function Home({ navigation }) {
           setMessage(true);
           setTimeout(() => {
             navigation.navigate("User Input");
+            setMessage(false);
           }, 3000);
         }
       })

@@ -1,5 +1,6 @@
 import {
   StyleSheet,
+  Platform,
   Text,
   View,
   TextInput,

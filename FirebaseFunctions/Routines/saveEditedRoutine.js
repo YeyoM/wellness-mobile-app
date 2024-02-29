@@ -1,4 +1,4 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, runTransaction } from "firebase/firestore";
 import { FIRESTORE } from "../../firebaseConfig.js";
 
 /**
@@ -11,7 +11,7 @@ import { FIRESTORE } from "../../firebaseConfig.js";
  * @throws {Error} - If the routine object is not provided or if it is not valid
  * @description - This function saves the edited routine to firebase
  */
-export const saveEditedRoutine = async (routine) => {
+export default async function saveEditedRoutine(routine) {
   if (!routine) {
     throw new Error("Routine is required!");
   }
@@ -44,33 +44,35 @@ export const saveEditedRoutine = async (routine) => {
     throw new Error("Exercises is required!");
   }
 
-  try {
-    // for the routine document, we only need to update the name and the updatedAt fields
-    const routineDocRef = doc(FIRESTORE, "routines", routine.id);
-    await updateDoc(routineDocRef, {
-      routineName: routine.routineName,
-      updatedAt: new Date(),
-    });
+  // Getting all the refs for the documents to update
+  const routineRef = doc(FIRESTORE, "routines", routine.id);
+  const daysRefs = routine.days.map((day) => doc(FIRESTORE, "days", day.id));
 
-    console.log("updated routine");
-
-    // for the days documents, for each day we need to update the name and the exercises fields
-    // the exercises array is the same as the one in the object in the routine.days array
-    // so we can just update the whole array
-    for (const day of routine.days) {
-      const dayDocRef = doc(FIRESTORE, "days", day.id);
-      await updateDoc(dayDocRef, {
-        dayName: day.dayName,
-        exercises: day.exercises,
-        totalCalories: day.totalCalories,
-        totalSets: day.totalSets,
-        totalDuration: day.totalDuration,
-      });
-    }
-
-    return true;
-  } catch (err) {
-    console.log(err);
-    throw new Error("Couldn't save the edited routine");
+  if (!routineRef || !daysRefs) {
+    throw new Error("Couldn't get the document references");
   }
-};
+
+  try {
+    await runTransaction(FIRESTORE, async (transaction) => {
+      transaction.update(routineRef, {
+        routineName: routine.routineName,
+        updatedAt: new Date(),
+      });
+      console.log("ROUTINE UPDATE WRITTEN TO TRANSACTION");
+      for (const day of routine.days) {
+        transaction.update(doc(FIRESTORE, "days", day.id), {
+          dayName: day.dayName,
+          exercises: day.exercises,
+          totalCalories: day.totalCalories,
+          totalSets: day.totalSets,
+          totalDuration: day.totalDuration,
+        });
+      }
+      console.log("DAYS UPDATE WRITTEN TO TRANSACTION");
+    });
+    console.log("TRANSACTION SUCCESSFUL");
+  } catch (err) {
+    console.log("TRANSACTION FAILED", err);
+    throw new Error("Couldn't save the edited routine", err);
+  }
+}
