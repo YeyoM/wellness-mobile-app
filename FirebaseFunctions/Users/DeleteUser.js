@@ -1,5 +1,5 @@
 import { FIRESTORE, FIREBASE_AUTH } from "../../firebaseConfig.js";
-import { doc, getDoc, deleteDoc } from "firebase/firestore";
+import { doc, runTransaction } from "firebase/firestore";
 import { signOut, deleteUser } from "firebase/auth";
 
 /**
@@ -9,94 +9,52 @@ import { signOut, deleteUser } from "firebase/auth";
  * @throws {Error} If there is an error deleting the user or its data.
  * @description Deletes the user and all its data from the database.
  */
-export default async function DeleteUser() {
-  // Things to delete:
-  /**
-   * The user document
-   * The user's exercises (get from user's doc)
-   * The user's routines (get from user's doc)
-   * Each day from the user's routines (get from each routine)
-   * The user's workouts history
-   * The user itself
-   */
+export default async function DeleteUserTransaction() {
+  const user = FIREBASE_AUTH.currentUser;
+  if (!user) throw new Error("User is not logged in, cannot delete user");
+
+  const userRef = doc(FIRESTORE, "users", user.uid);
+
   try {
-    // get the user document
-    console.log("GETTING USER DOC");
-    const user = FIREBASE_AUTH.currentUser;
-    const userRef = doc(FIRESTORE, "users", user.uid);
-    const userDoc = await getDoc(userRef);
-    const userDocData = userDoc.data();
-    if (!userDoc.exists())
-      throw new Error("User document does not exist, cannot delete user");
-    if (!userDocData)
-      throw new Error("User document has no data, cannot delete user");
-    console.log(userDocData);
-
-    // get the user's exercises, it is an array of references in the user's doc
-    console.log("GETTING USER EXERCISES");
-    const userExercises = userDocData.exercises;
-    console.log(userExercises);
-    // delete each exercise
-    console.log("DELETING USER EXERCISES");
-    if (userExercises.length > 0) {
-      for (const exerciseId of userExercises) {
-        await deleteDoc(doc(FIRESTORE, "exercises", exerciseId));
-        console.log("DELETING EXERCISE: " + exerciseId);
+    await runTransaction(FIRESTORE, async (transaction) => {
+      const userDoc = await transaction.get(userRef);
+      if (!userDoc.exists()) {
+        throw new Error("User document does not exist, cannot delete user");
       }
-    }
-
-    // get the user's routines, it is an array of references in the user's doc
-    console.log("GETTING USER ROUTINES");
-    const userRoutines = userDocData.routines;
-
-    // get each routine, then get each day, then delete each day and the routine
-    // itself
-    console.log("DELETING USER ROUTINES");
-    console.log("DELETING USER DAYS");
-    if (userRoutines.length > 0) {
-      for (const routineId of userRoutines) {
-        const routineRef = doc(FIRESTORE, "routines", routineId);
-        const routineDoc = await getDoc(routineRef);
-        const routineDocData = routineDoc.data();
-        if (routineDoc.exists() && routineDocData) {
-          const routineDays = routineDocData.days;
-          if (routineDays.length > 0) {
-            for (const dayId of routineDays) {
-              await deleteDoc(doc(FIRESTORE, "days", dayId));
-              console.log("DELETING DAY: " + dayId);
+      if (userDoc.data()?.routines.length > 0) {
+        for (const routineId of userDoc.data()?.routines) {
+          const routineRef = doc(FIRESTORE, "routines", routineId);
+          const routineDoc = await transaction.get(routineRef);
+          if (routineDoc.exists()) {
+            if (routineDoc.data()?.days.length > 0) {
+              for (const dayId of routineDoc.data()?.days) {
+                const dayRef = doc(FIRESTORE, "days", dayId);
+                transaction.delete(dayRef);
+              }
             }
+            transaction.delete(routineRef);
           }
-          await deleteDoc(routineRef);
-          console.log("DELETING ROUTINE: " + routineId);
         }
       }
-    }
-
-    // get the user's workouts history, it is an array of references in the user's doc
-    // (each reference is a document in the workouts collection)
-    // delete each workout document
-    console.log("DELETING USER WORKOUTS HISTORY");
-    const userWorkouts = userDocData.workouts;
-    if (userWorkouts.length > 0) {
-      for (const workoutId of userWorkouts) {
-        await deleteDoc(doc(FIRESTORE, "workouts", workoutId));
-        console.log("DELETING WORKOUT: " + workoutId);
+      if (userDoc.data()?.exercises.length > 0) {
+        for (const exerciseId of userDoc.data()?.exercises) {
+          const exerciseRef = doc(FIRESTORE, "exercises", exerciseId);
+          transaction.delete(exerciseRef);
+        }
       }
-    }
-
-    // delete the user document
-    console.log("DELETING USER DOC");
-    await deleteDoc(userRef);
-
-    // delete the user itself and log out
-    console.log("DELETING USER");
-    await deleteUser(user);
+      if (userDoc.data()?.workouts.length > 0) {
+        for (const workoutId of userDoc.data()?.workouts) {
+          const workoutRef = doc(FIRESTORE, "workouts", workoutId);
+          transaction.delete(workoutRef);
+        }
+      }
+      transaction.delete(userRef);
+    });
+    console.log("TRANSACTION SUCCESS: User deleted");
     await signOut(FIREBASE_AUTH);
-
-    console.log("USER DELETED");
-
-    console.log("DELETION SUCCESSFUL");
+    await deleteUser(user);
   } catch (error) {
-    throw new Error("Error getting user's exercises: " + error);
+    console.log("TRANSACTION ERROR: ", error);
+    throw new Error("Error running transaction: " + error);
   }
 }

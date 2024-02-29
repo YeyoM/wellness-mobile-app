@@ -89,7 +89,7 @@ const Accordion = ({ routine_, navigation, index }) => {
                   }}
                 >
                   <Text style={styles.routineInfo}>
-                    {day.exercises.length} exercises
+                    {day.exercises?.length} exercises
                   </Text>
                   <Text style={styles.routineInfo}>{day.totalSets} sets</Text>
                   <Text style={styles.routineInfo}>

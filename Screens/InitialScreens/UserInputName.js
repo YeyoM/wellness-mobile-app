@@ -1,4 +1,5 @@
 import {
+  Platform,
   StyleSheet,
   Text,
   View,

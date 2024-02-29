@@ -1,4 +1,5 @@
 import {
+  Platform,
   StyleSheet,
   KeyboardAvoidingView,
   Text,

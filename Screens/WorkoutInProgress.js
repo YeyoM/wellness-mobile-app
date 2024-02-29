@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
+  Platform,
   Text,
   ActivityIndicator,
   View,
