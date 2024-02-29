@@ -148,7 +148,7 @@ export default function WorkoutInProgress({ route, navigation }) {
         routineId: day.routineId,
         dayId: day.dayId,
         totalCalories: totalCalories,
-        totalWeight: totalWeight,
+        totalWeight: totalWeight ? totalWeight : 1,
         totalTime: readableTime,
       });
       setLoading(false);
