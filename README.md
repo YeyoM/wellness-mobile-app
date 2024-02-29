@@ -40,3 +40,15 @@ Like `npm start`, but also attempts to open your app on a connected Android devi
 
 1. Make sure that you can run adb from your terminal.
 2. Open Genymotion and navigate to `Settings -> ADB`. Select “Use custom Android SDK tools” and update with your [Android SDK directory](https://stackoverflow.com/questions/25176594/android-sdk-location).
+
+### Environment Variables
+
+The environment variables are stored in a file called `.env` in the root of the project. This file is not included in the repository, so you need to create it manually. The file should look like this:
+
+```
+WELLNESS_FIREBASE_API_KEY
+WELLNESS_FIREBASE_MESSAGE_SENDER_ID
+WELLNESS_FIREBASE_APP_ID
+WELLNESS_FIREBASE_MEASUREMENT_ID
+WELLNESS_NINJA_API_KEY
+```

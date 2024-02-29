@@ -9,6 +9,7 @@ import {
   Alert,
   ActivityIndicator,
   Dimensions,
+  Platform,
 } from "react-native";
 import React, { useState } from "react";
 import { FIREBASE_AUTH } from "../firebaseConfig";
