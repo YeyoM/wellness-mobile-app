@@ -16,7 +16,7 @@ import getExercisesStorage from "../AsyncStorageFunctions/Exercises/getExercises
 import saveExercisesStorage from "../AsyncStorageFunctions/Exercises/saveExercisesStorage.js";
 import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage.js";
 
-import { addExerciseToUser } from "../FirebaseFunctions/Exercises/addExerciseToUser.js";
+import addExerciseToUser from "../FirebaseFunctions/Exercises/addExerciseToUser.js";
 
 import { FIREBASE_AUTH } from "../firebaseConfig";
 
@@ -157,13 +157,12 @@ export default function SearchLift({ navigation }) {
     // TODO, refesh the user data after saving the exercise
     // to get the new list of exercises, and save it to the async storage
     try {
-      const response = await addExerciseToUser(userId, exercise);
-
+      const updatedExercises = await addExerciseToUser(userId, exercise);
       // it will return the new list of saved exercises
       // that we can save in the async storage
-      if (response) {
+      if (updatedExercises) {
         try {
-          await saveExercisesStorage(response);
+          await saveExercisesStorage(updatedExercises);
           setTimeout(() => {
             setSuccess(null);
           }, 2000);
