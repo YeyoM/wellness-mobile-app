@@ -97,7 +97,26 @@ export default async function createRoutine(userId, routine) {
     if (!routineSnap.exists()) {
       throw new Error("Routine does not exist!");
     }
-    return routineSnap.data();
+
+    const newRoutine = routineSnap.data();
+
+    // populate the days array from the daysIds
+    const days = [];
+    for (let i = 0; i < routine.numberOfDays; i++) {
+      const dayRef = doc(FIRESTORE, "days", routineSnap.data().days[i]);
+      const daySnap = await getDoc(dayRef);
+      if (!daySnap.exists()) {
+        throw new Error("Day does not exist!");
+      }
+      const day = daySnap.data();
+      day.id = daySnap.id;
+      days.push(day);
+    }
+
+    newRoutine.days = days;
+    newRoutine.id = newRoutineRef.id;
+    console.log("NEW ROUTINE: ", newRoutine);
+    return newRoutine;
   } catch (e) {
     console.error("TRANSACTION FAILED: ", e);
     throw new Error(e);

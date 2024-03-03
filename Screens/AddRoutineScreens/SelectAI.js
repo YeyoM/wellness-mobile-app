@@ -7,8 +7,9 @@ import { useState, useContext } from "react";
 import TopNavigationBar from "../../components/TopNavigationBar";
 import { CreateRoutineContext } from "../../context/CreateRoutineContext";
 
-export default function SelectAI({ navigation }) {
+export default function SelectAI({ navigation, route }) {
   const { setGeneratedAI } = useContext(CreateRoutineContext);
+  console.log(route.params);
 
   const [selectAI, setSelectAI] = useState(true);
   const [selectNoAI, setSelectNoAI] = useState(false);
