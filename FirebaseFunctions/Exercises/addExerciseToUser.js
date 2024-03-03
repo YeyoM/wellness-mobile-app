@@ -71,39 +71,45 @@ export default async function addExerciseToUser(userId, exercise) {
   const newExerciseRef = doc(collection(FIRESTORE, "exercises"));
 
   try {
-    await runTransaction(FIRESTORE, async (transaction) => {
-      const userDoc = await transaction.get(userRef);
-      const userExercisesIds = userDoc.data().exercises;
-      const exercises = [];
-      for (const id of userExercisesIds) {
-        const exerciseDocRef = doc(FIRESTORE, "exercises", id);
-        const exerciseDoc = await transaction.get(exerciseDocRef);
-        const exerciseData = exerciseDoc.data();
-        const userExercise = {
-          id: id,
-          ...exerciseData,
-        };
-        if (exercise.exerciseName === userExercise.exerciseName) {
-          throw new Error("Exercise already saved");
+    const newExercises = await runTransaction(
+      FIRESTORE,
+      async (transaction) => {
+        const userDoc = await transaction.get(userRef);
+        const userExercisesIds = userDoc.data().exercises;
+        const exercises = [];
+        for (const id of userExercisesIds) {
+          const exerciseDocRef = doc(FIRESTORE, "exercises", id);
+          const exerciseDoc = await transaction.get(exerciseDocRef);
+          const exerciseData = exerciseDoc.data();
+          const userExercise = {
+            id: id,
+            ...exerciseData,
+          };
+          if (exercise.exerciseName === userExercise.exerciseName) {
+            throw new Error("Exercise already saved");
+          }
+          exercises.push(userExercise);
         }
-        exercises.push(userExercise);
-      }
-      console.log("GETTING EXERCISES SUCCEEDED TRANSACTION");
-      const newExercise = {
-        ...exercise,
-      };
-      const newExerciseId = newExerciseRef.id;
-      transaction.set(newExerciseRef, newExercise);
-      console.log("ADDING EXERCISE SUCCEEDED TRANSACTION");
-      const updatedExercises = [...userExercisesIds, newExerciseId];
-      transaction.update(userRef, {
-        exercises: updatedExercises,
-      });
-      console.log("UPDATING USER SUCCEEDED TRANSACTION");
-      exercises.push(newExercise);
-      return exercises;
-    });
+        console.log("GETTING EXERCISES SUCCEEDED TRANSACTION");
+        const newExercise = {
+          ...exercise,
+        };
+        const newExerciseId = newExerciseRef.id;
+        transaction.set(newExerciseRef, newExercise);
+        console.log("ADDING EXERCISE SUCCEEDED TRANSACTION");
+        const updatedExercises = [...userExercisesIds, newExerciseId];
+        transaction.update(userRef, {
+          exercises: updatedExercises,
+        });
+        console.log("UPDATING USER SUCCEEDED TRANSACTION");
+        exercises.push(newExercise);
+        console.log(exercises);
+        return exercises;
+      },
+    );
     console.log("TRANSACTION SUCCEEDED");
+    console.log(newExercises);
+    return newExercises;
   } catch (err) {
     console.error("TRANSACTION FAILED: ", err);
     throw new Error(err);

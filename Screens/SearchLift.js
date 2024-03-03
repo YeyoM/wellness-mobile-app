@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   TextInput,
@@ -29,6 +29,8 @@ export default function SearchLift({ navigation }) {
   const [inputName, setInputName] = useState("");
   const [inputType, setInputType] = useState("strength");
   const [inputMuscle, setInputMuscle] = useState("chest");
+
+  const scrollViewRef = useRef();
 
   const handleSearch = async (text) => {
     if (text === "") {
@@ -154,12 +156,8 @@ export default function SearchLift({ navigation }) {
 
     console.log("Exercise", exercise);
     setLoading(true);
-    // TODO, refesh the user data after saving the exercise
-    // to get the new list of exercises, and save it to the async storage
     try {
       const updatedExercises = await addExerciseToUser(userId, exercise);
-      // it will return the new list of saved exercises
-      // that we can save in the async storage
       if (updatedExercises) {
         try {
           await saveExercisesStorage(updatedExercises);
@@ -168,6 +166,11 @@ export default function SearchLift({ navigation }) {
           }, 2000);
           setLoading(false);
           setSuccess("Lift saved");
+          setExercises(null);
+          setInputName("");
+
+          //navigation.jumpTo("Saved Lifts", { refreshStorageLifts: true });
+          navigation.navigate("Saved Lifts", { refreshStorageLifts: true });
         } catch (error) {
           console.log(error);
           setTimeout(() => {
@@ -176,6 +179,12 @@ export default function SearchLift({ navigation }) {
           setLoading(false);
           setError("Something went wrong. Please try again later.");
         }
+      } else {
+        setTimeout(() => {
+          setError(null);
+        }, 2000);
+        setLoading(false);
+        setError("Something went wrong. Please try again later.");
       }
     } catch (error) {
       console.log(error);
@@ -189,7 +198,7 @@ export default function SearchLift({ navigation }) {
 
   return (
     <View style={styles.containerExercises}>
-      <ScrollView style={{ width: "100%", minHeight: 600 }}>
+      <ScrollView style={{ width: "100%", minHeight: 600 }} ref={scrollViewRef}>
         {loading && (
           <ActivityIndicator
             size="large"
@@ -276,7 +285,13 @@ export default function SearchLift({ navigation }) {
                     borderRadius: 20,
                     width: 80,
                   }}
-                  onPress={() => handleSaveLift({ lift: lift })}
+                  onPress={async () => {
+                    scrollViewRef.current.scrollTo({
+                      y: 0,
+                      animated: true,
+                    });
+                    await handleSaveLift({ lift: lift });
+                  }}
                 >
                   <Text
                     style={{
