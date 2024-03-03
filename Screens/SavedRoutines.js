@@ -152,7 +152,11 @@ export default function SavedRoutines({ navigation, route }) {
           </Text>
           <Pressable
             style={styles.createContainer}
-            onPress={() => navigation.navigate("Add Routine")}
+            onPress={() =>
+              navigation.navigate("Add Routine", {
+                newRoutineIndex: routines ? routines.length : 0,
+              })
+            }
           >
             <Text style={styles.create}>Add new routine</Text>
             <Ionicons name="create-outline" size={30} color="#0496FF" />

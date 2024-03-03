@@ -11,14 +11,15 @@ import {
 import { useState, useContext } from "react";
 
 import TopNavigationBar from "../../components/TopNavigationBar";
-import { CreateRoutineContext } from "../../context/CreateRoutineContext";
+import { CreateRoutineContext } from "../../context/CreateRoutineContext.js";
+import { EditRoutineContext } from "../../context/EditRoutineContext.js";
 
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import createRoutine from "../../FirebaseFunctions/Routines/createRoutine.js";
 
 import SuccessNotification from "../../components/SuccessNotification";
 
-export default function SelectNumberDaysPerWeek({ navigation }) {
+export default function SelectNumberDaysPerWeek({ route, navigation }) {
   const {
     numberOfDays,
     setNumberOfDays,
@@ -30,8 +31,12 @@ export default function SelectNumberDaysPerWeek({ navigation }) {
     image,
   } = useContext(CreateRoutineContext);
 
+  const { newRoutineIndex } = route.params;
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  const { initializeEditRoutine } = useContext(EditRoutineContext);
 
   const handleContinue = async () => {
     setLoading(true);
@@ -60,12 +65,13 @@ export default function SelectNumberDaysPerWeek({ navigation }) {
     };
 
     try {
-      await createRoutine(userId, routine);
+      const newRoutine = await createRoutine(userId, routine);
       setSuccess(true);
       setLoading(false);
-      setTimeout(() => {
-        navigation.navigate("Home");
-      }, 2000);
+      setTimeout(async () => {
+        await initializeEditRoutine(newRoutine, newRoutineIndex);
+        navigation.push("Edit Routine");
+      }, 1000);
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -82,10 +88,20 @@ export default function SelectNumberDaysPerWeek({ navigation }) {
         actualScreen={"Routine Creator"}
         back={!loading}
       />
-      {success && (
-        <SuccessNotification message={"Routine created, redirecting..."} />
-      )}
       <View style={styles.content}>
+        {success && (
+          <Text
+            style={{
+              color: "#98ff8c",
+              fontSize: 18,
+              marginVertical: 20,
+              textAlign: "center",
+              fontStyle: "italic",
+            }}
+          >
+            Routine created successfully!, redirecting...
+          </Text>
+        )}
         <Text
           style={{
             color: "#fff",
