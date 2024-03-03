@@ -21,8 +21,12 @@ import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage.js";
 
 import { EditRoutineContext } from "../context/EditRoutineContext";
 
-export default function SavedLifts({ navigation }) {
+export default function SavedLifts({ route, navigation }) {
   const { routine, setRoutine, currentDay } = useContext(EditRoutineContext);
+
+  const { refreshStorageLifts } = route.params;
+
+  console.log(refreshStorageLifts);
 
   const [exercises, setExercises] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -55,6 +59,31 @@ export default function SavedLifts({ navigation }) {
     });
     setRefreshing(false);
   }, []);
+
+  useEffect(() => {
+    if (route.params?.refreshStorageLifts) {
+      console.log("refreshing storage lifts");
+      getExercisesStorage().then((exercises) => {
+        if (exercises) {
+          console.log("exercises from storage");
+          setExercises(exercises);
+        } else {
+          console.log("exercises from API");
+          getSavedExercises(routine.userId)
+            .then((exercises) => {
+              console.log("saving exercises in storage");
+              setExercises(exercises);
+              saveExercisesStorage(exercises);
+              setRefreshing(false);
+            })
+            .catch((err) => {
+              setError(err);
+              setRefreshing(false);
+            });
+        }
+      });
+    }
+  }, [route.params]);
 
   const handleAddLift = async ({ lift }) => {
     console.log("adding lift");
