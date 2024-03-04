@@ -57,8 +57,16 @@ export default function Signup({ navigation }) {
       await signInWithEmailAndPassword(auth, email, password);
       setLoading(false);
     } catch (error) {
-      Alert.alert("There was an error signing in");
-      return;
+      if (error.message === "Firebase: Error (auth/invalid-credential).") {
+        // delay 3 seconds, and then show the error of invalid credentials
+        setTimeout(() => {
+          setLoading(false);
+          setError("email or password invalid");
+        }, 3000);
+      } else {
+        setLoading(false);
+        Alert.alert("There was an error, please try again later");
+      }
     }
   };
 
@@ -121,6 +129,19 @@ export default function Signup({ navigation }) {
               />
             )}
           </Pressable>
+          {error && (
+            <Text
+              style={{
+                color: "red",
+                marginTop: 5,
+                marginLeft: 5,
+                fontSize: 12,
+                fontStyle: "italic",
+              }}
+            >
+              {error}
+            </Text>
+          )}
         </View>
         <Text style={styles.label}>
           {" "}

@@ -11,6 +11,8 @@ import TopNavigationBar from "../../components/TopNavigationBar";
 import { Ionicons } from "@expo/vector-icons";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
+import { CommonActions } from "@react-navigation/native";
+
 export default function UserInputFinishScreen({ navigation }) {
   const { registerInitialQuestionsFunction } = useContext(
     InitialScreensContext,
@@ -40,7 +42,12 @@ export default function UserInputFinishScreen({ navigation }) {
     try {
       setLoading(true);
       await registerInitialQuestionsFunction();
-      navigation.navigate("Home");
+      console.log(navigation.getState());
+      navigation.getParent().dispatch(
+        CommonActions.navigate({
+          name: "Main Tabs",
+        }),
+      );
     } catch (error) {
       setError(error);
       Alert.alert("Error", error);

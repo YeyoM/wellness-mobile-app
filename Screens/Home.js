@@ -19,7 +19,6 @@ import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage";
 import saveUserStorage from "../AsyncStorageFunctions/Users/saveUserStorage";
 
 export default function Home({ navigation }) {
-  const [message, setMessage] = useState(false);
   const [user, setUser] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
@@ -57,30 +56,9 @@ export default function Home({ navigation }) {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => {
-    const userId = FIREBASE_AUTH.currentUser.uid;
-    UserAnsweredInitialQuestions(userId)
-      .then((result) => {
-        if (!result) {
-          setMessage(true);
-          setTimeout(() => {
-            navigation.navigate("User Input");
-            setMessage(false);
-          }, 3000);
-        }
-      })
-      .catch((error) => {
-        throw error;
-      });
-    setMessage(false);
-  }, []);
-
   return (
     <View style={styles.container}>
       <View style={styles.home}>
-        {message && (
-          <PrimaryNotification message="Por favor, completa tu información inicial, redirigiendo..." />
-        )}
         <View style={styles.header}>
           <View>
             <Text style={styles.headerText}>Hello {user.name}!</Text>

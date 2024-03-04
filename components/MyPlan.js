@@ -82,7 +82,7 @@ export default function MyPlan({ navigation }) {
   return (
     <View style={styles.container}>
       <ScrollView
-        style={{ width: "100%" }}
+        style={{ width: "100%", marginTop: 20 }}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
@@ -97,11 +97,13 @@ export default function MyPlan({ navigation }) {
               fontStyle: "italic",
             }}
           >
-            Scroll down to refresh{" "}
+            {refreshing ? "Refreshing..." : "Pull down to refresh"}
           </Text>
-          <Text style={{ color: "#fff", fontSize: 20, marginTop: 20 }}>
-            What muscle group are we training today?
-          </Text>
+          {refreshing ? null : (
+            <Text style={{ color: "#fff", fontSize: 20, marginTop: 20 }}>
+              What muscle group are we training today?
+            </Text>
+          )}
           <View
             style={{ flexDirection: "column", marginTop: 20, width: "90%" }}
           >
@@ -121,13 +123,7 @@ export default function MyPlan({ navigation }) {
               <Text style={{ color: "#fff" }}>
                 Oops! Something went wrong. Please try again later.
               </Text>
-            ) : (
-              <Text
-                style={{ color: "#a0a0a0", textAlign: "center", marginTop: 20 }}
-              >
-                No routines were found. Add a new routine to your plan.
-              </Text>
-            )}
+            ) : null}
           </View>
         </View>
       </ScrollView>

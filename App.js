@@ -52,7 +52,7 @@ export default function App() {
       <CreateRoutineProvider>
         <EditRoutineProvider>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName="Main Tabs">
+            <Stack.Navigator>
               {user ? (
                 <Stack.Group>
                   <Stack.Screen
