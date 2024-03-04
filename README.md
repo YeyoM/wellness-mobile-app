@@ -6,8 +6,6 @@
 <h1 align="center">Wellness</h1>
 </div>
 
-## About the project
-
 Welcome to Wellness, where health isn't just a goal—it's a way of life. This mobile app is your perfect gym companion, designed for everyone, from beginners taking their first steps to fitness pros pushing their limits. Crafted with React Native, Expo, and Firebase, Wellness is more than an app; it's a commitment to your well-being. Unfurtunately, the app is not available on the App Store or Google Play Store yet but soon it will be.
 
 Wellness isn't just about surviving; it's about thriving by practicing healthy habits daily. It's the synergy of physical, mental, and social well-being, forming the pillars of the Health Triangle. The Wellness app is your guide to achieving and tracking this holistic wellness journey.
