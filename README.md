@@ -1,4 +1,10 @@
-# Wellness Mobile App
+<br />
+<div align="center">
+  <a href="https://github.com/YeyoM/lofi_code">
+    <img src="assets/icon.png" alt="Logo" width="90" height="90">
+  </a>
+
+<h3 align="center">Wellness</h3>
 
 ## About the project
 
