@@ -5,6 +5,7 @@
   </a>
 
 <h3 align="center">Wellness</h3>
+</div>
 
 ## About the project
 
