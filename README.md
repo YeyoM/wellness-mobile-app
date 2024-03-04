@@ -3,8 +3,7 @@
   <a href="https://github.com/YeyoM/lofi_code">
     <img src="assets/icon.png" alt="Logo" width="90" height="90">
   </a>
-
-<h3 align="center">Wellness</h3>
+<h1 align="center">Wellness</h1>
 </div>
 
 ## About the project
