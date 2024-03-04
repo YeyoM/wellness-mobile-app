@@ -56,6 +56,7 @@ export default function SavedRoutines({ navigation, route }) {
 
   useEffect(() => {
     // get the user id, to get the user's routines
+    console.log("SavedRoutines.js");
     const user = FIREBASE_AUTH.currentUser;
     if (user) {
       setUser(user);
