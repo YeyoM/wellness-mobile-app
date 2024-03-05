@@ -7,6 +7,9 @@ import Home from "../Screens/Home";
 import SavedRoutines from "../Screens/SavedRoutines";
 import Profile from "../Screens/Profile";
 import Loading1 from "../Screens/LoadingTransitionScreens/Loading1.js";
+import Loading2 from "../Screens/LoadingTransitionScreens/Loading2.js";
+import Loading3 from "../Screens/LoadingTransitionScreens/Loading3.js";
+import Loading4 from "../Screens/LoadingTransitionScreens/Loading4.js";
 
 import { FIREBASE_AUTH } from "../firebaseConfig";
 import { UserAnsweredInitialQuestions } from "../FirebaseFunctions/Users/UserAnsweredInitialQuestions";
@@ -22,6 +25,8 @@ export default function MainTabs({ navigation }) {
   const [initialQuestionsAnswered, setInitialQuestionsAnswered] =
     useState(false);
   const [appDataFetched, setAppDataFetched] = useState(false);
+
+  const [loadingScreen, setLoadingScreen] = useState(null);
 
   const isFocused = useIsFocused();
 
@@ -43,6 +48,12 @@ export default function MainTabs({ navigation }) {
       console.log(e);
     }
   };
+
+  useEffect(() => {
+    // select a random loading screen
+    const randomLoadingScreen = Math.floor(Math.random() * 4) + 1;
+    setLoadingScreen(randomLoadingScreen);
+  }, [loadingScreen]);
 
   useEffect(() => {
     console.log("MainTabs.js");
@@ -71,34 +82,35 @@ export default function MainTabs({ navigation }) {
           Alert.alert("Error", "An error has occurred, try again later please");
           setLoading(false);
         });
+    } else {
+      getDataIsFetched()
+        .then((value) => {
+          if (value === "true") {
+            console.log("Data is fetched");
+            setAppDataFetched(true);
+            setLoading(false);
+          } else {
+            console.log("Data is not fetched");
+            setAppDataFetched(false);
+            setLoading(false);
+            getAppData(user.uid)
+              .then(() => {
+                setLoading(false);
+                setAppDataFetched(true);
+                setDataIsFetched("true");
+              })
+              .catch((error) => {
+                console.log("Error in MainTabs.js: ", error);
+                setLoading(false);
+                setAppDataFetched(false);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
-    getDataIsFetched()
-      .then((value) => {
-        if (value === "true") {
-          console.log("Data is fetched");
-          setAppDataFetched(true);
-          setLoading(false);
-        } else {
-          console.log("Data is not fetched");
-          setAppDataFetched(false);
-          setLoading(false);
-          getAppData(user.uid)
-            .then(() => {
-              setLoading(false);
-              setAppDataFetched(true);
-              setDataIsFetched("true");
-            })
-            .catch((error) => {
-              console.log("Error in MainTabs.js: ", error);
-              setLoading(false);
-              setAppDataFetched(false);
-            });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [navigation, isFocused]);
+  }, [navigation, isFocused, initialQuestionsAnswered]);
 
   if (
     (loading && !initialQuestionsAnswered) ||
@@ -106,7 +118,15 @@ export default function MainTabs({ navigation }) {
     (loading && !appDataFetched) ||
     (!loading && !appDataFetched)
   ) {
-    return <Loading1 />;
+    return loadingScreen === 1 ? (
+      <Loading1 />
+    ) : loadingScreen === 2 ? (
+      <Loading2 />
+    ) : loadingScreen === 3 ? (
+      <Loading3 />
+    ) : (
+      <Loading4 />
+    );
   } else {
     return (
       <Tab.Navigator

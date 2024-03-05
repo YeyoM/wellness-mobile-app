@@ -99,7 +99,7 @@ export default function SavedLifts({ route, navigation }) {
     console.log(lift);
 
     const newLift = {
-      exerciseId: lift.id,
+      exerciseId: lift.exerciseId,
       exerciseName: lift.exerciseName,
       numberOfSets: lift.defaultNumberOfSets,
       numberOfReps: lift.defaultNumberOfReps,

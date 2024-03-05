@@ -96,6 +96,7 @@ export default async function addExerciseToUser(userId, exercise) {
           ...exercise,
           exerciseId: newExerciseId,
         };
+        console.log(newExercise);
         transaction.set(newExerciseRef, newExercise);
         console.log("ADDING EXERCISE SUCCEEDED TRANSACTION");
         const updatedExercises = [...userExercisesIds, newExerciseId];
