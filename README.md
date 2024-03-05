@@ -1,4 +1,30 @@
-# Wellness Mobile App
+<br />
+<div align="center">
+  <a href="https://github.com/YeyoM/lofi_code">
+    <img src="assets/icon.png" alt="Logo" width="90" height="90">
+  </a>
+<h1 align="center">Wellness</h1>
+</div>
+
+Welcome to Wellness, where health isn't just a goal—it's a way of life. This mobile app is your perfect gym companion, designed for everyone, from beginners taking their first steps to fitness pros pushing their limits. Crafted with React Native, Expo, and Firebase, Wellness is more than an app; it's a commitment to your well-being. Unfurtunately, the app is not available on the App Store or Google Play Store yet but soon it will be.
+
+Wellness isn't just about surviving; it's about thriving by practicing healthy habits daily. It's the synergy of physical, mental, and social well-being, forming the pillars of the Health Triangle. The Wellness app is your guide to achieving and tracking this holistic wellness journey.
+
+#### Key Features
+
+- Comprehensive Wellness Tracking: Monitor and track your physical and mental health with user-friendly interfaces that adapt to your fitness level.
+- Personalized Workouts: Whether you're a fitness rookie or a seasoned pro, Wellness offers personalized workout plans tailored to your goals.
+- Firebase Integration: Seamless data storage and retrieval with Firebase, ensuring your wellness journey is always backed up and accessible.
+
+#### Future Vision - AI and ML Integration
+
+Our journey doesn't end here. The Wellness app is set to evolve with the integration of Artificial Intelligence (AI) and Machine Learning (ML). Imagine having a virtual fitness coach powered by AI, analyzing your progress, adapting your workout plans, and offering insights to enhance your gains. The future of wellness is smart, adaptive, and tailored just for you.
+
+## Tech Stack
+
+- Languages: JavaScript
+- Tools: Git, GitHub, Firebase, FIrestore, Expo
+- Frameworks: React Native
 
 ## Requirements
 
