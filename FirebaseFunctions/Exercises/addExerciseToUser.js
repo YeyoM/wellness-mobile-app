@@ -91,10 +91,12 @@ export default async function addExerciseToUser(userId, exercise) {
           exercises.push(userExercise);
         }
         console.log("GETTING EXERCISES SUCCEEDED TRANSACTION");
+        const newExerciseId = newExerciseRef.id;
         const newExercise = {
           ...exercise,
+          exerciseId: newExerciseId,
         };
-        const newExerciseId = newExerciseRef.id;
+        console.log(newExercise);
         transaction.set(newExerciseRef, newExercise);
         console.log("ADDING EXERCISE SUCCEEDED TRANSACTION");
         const updatedExercises = [...userExercisesIds, newExerciseId];

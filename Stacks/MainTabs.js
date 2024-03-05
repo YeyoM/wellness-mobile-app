@@ -7,9 +7,16 @@ import Home from "../Screens/Home";
 import SavedRoutines from "../Screens/SavedRoutines";
 import Profile from "../Screens/Profile";
 import Loading1 from "../Screens/LoadingTransitionScreens/Loading1.js";
+import Loading2 from "../Screens/LoadingTransitionScreens/Loading2.js";
+import Loading3 from "../Screens/LoadingTransitionScreens/Loading3.js";
+import Loading4 from "../Screens/LoadingTransitionScreens/Loading4.js";
 
 import { FIREBASE_AUTH } from "../firebaseConfig";
 import { UserAnsweredInitialQuestions } from "../FirebaseFunctions/Users/UserAnsweredInitialQuestions";
+
+import getAppData from "../Utils/getAppData.js";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Tab = createBottomTabNavigator();
 
@@ -17,8 +24,36 @@ export default function MainTabs({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [initialQuestionsAnswered, setInitialQuestionsAnswered] =
     useState(false);
+  const [appDataFetched, setAppDataFetched] = useState(false);
+
+  const [loadingScreen, setLoadingScreen] = useState(null);
 
   const isFocused = useIsFocused();
+
+  const setDataIsFetched = async (value) => {
+    try {
+      await AsyncStorage.setItem("dataIsFetched", value);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getDataIsFetched = async () => {
+    try {
+      const value = await AsyncStorage.getItem("dataIsFetched");
+      if (value !== null) {
+        return value;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    // select a random loading screen
+    const randomLoadingScreen = Math.floor(Math.random() * 4) + 1;
+    setLoadingScreen(randomLoadingScreen);
+  }, [loadingScreen]);
 
   useEffect(() => {
     console.log("MainTabs.js");
@@ -28,31 +63,70 @@ export default function MainTabs({ navigation }) {
       return;
     }
     setLoading(true);
-    UserAnsweredInitialQuestions(user.uid)
-      .then((result) => {
-        if (result === false) {
+    if (!initialQuestionsAnswered) {
+      UserAnsweredInitialQuestions(user.uid)
+        .then((result) => {
+          if (result === false) {
+            setLoading(false);
+            setInitialQuestionsAnswered(false);
+            setTimeout(() => {
+              navigation.navigate("User Input");
+            }, 2000);
+          } else {
+            setLoading(false);
+            setInitialQuestionsAnswered(true);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          Alert.alert("Error", "An error has occurred, try again later please");
           setLoading(false);
-          setInitialQuestionsAnswered(false);
-          setTimeout(() => {
-            navigation.navigate("User Input");
-          }, 2000);
-        } else {
-          setLoading(false);
-          setInitialQuestionsAnswered(true);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        Alert.alert("Error", "An error has occurred, try again later please");
-        setLoading(false);
-      });
-  }, [navigation, isFocused]);
+        });
+    } else {
+      getDataIsFetched()
+        .then((value) => {
+          if (value === "true") {
+            console.log("Data is fetched");
+            setAppDataFetched(true);
+            setLoading(false);
+          } else {
+            console.log("Data is not fetched");
+            setAppDataFetched(false);
+            setLoading(false);
+            getAppData(user.uid)
+              .then(() => {
+                setLoading(false);
+                setAppDataFetched(true);
+                setDataIsFetched("true");
+              })
+              .catch((error) => {
+                console.log("Error in MainTabs.js: ", error);
+                setLoading(false);
+                setAppDataFetched(false);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [navigation, isFocused, initialQuestionsAnswered]);
 
   if (
     (loading && !initialQuestionsAnswered) ||
-    (!loading && !initialQuestionsAnswered)
+    (!loading && !initialQuestionsAnswered) ||
+    (loading && !appDataFetched) ||
+    (!loading && !appDataFetched)
   ) {
-    return <Loading1 />;
+    return loadingScreen === 1 ? (
+      <Loading1 />
+    ) : loadingScreen === 2 ? (
+      <Loading2 />
+    ) : loadingScreen === 3 ? (
+      <Loading3 />
+    ) : (
+      <Loading4 />
+    );
   } else {
     return (
       <Tab.Navigator

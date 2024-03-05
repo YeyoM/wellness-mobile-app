@@ -60,6 +60,13 @@ export default async function saveEditedRoutine(routine) {
       });
       console.log("ROUTINE UPDATE WRITTEN TO TRANSACTION");
       for (const day of routine.days) {
+        console.log("DAY", day.id);
+        console.log("DAY NAME", day.dayName);
+        console.log("EXERCISES", day.exercises);
+        console.log("TOTAL CALORIES", day.totalCalories);
+        console.log("TOTAL SETS", day.totalSets);
+        console.log("TOTAL DURATION", day.totalDuration);
+
         transaction.update(doc(FIRESTORE, "days", day.id), {
           dayName: day.dayName,
           exercises: day.exercises,
