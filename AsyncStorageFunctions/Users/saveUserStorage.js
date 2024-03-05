@@ -12,7 +12,7 @@ export default async function saveUserStorage(user) {
     throw new Error("User is required");
   }
   try {
-    await AsyncStorage.setItem("user", JSON.stringify(user));
+    await AsyncStorage.setItem("@user", JSON.stringify(user));
   } catch (e) {
     console.log(e);
     throw new Error("Error saving user");

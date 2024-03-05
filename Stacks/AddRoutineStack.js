@@ -10,8 +10,8 @@ import CreatingRoutineAI from "../Screens/AddRoutineScreens/CreatingRoutineAI";
 export default function AddRoutineStack({ route }) {
   const { newRoutineIndex } = route.params;
 
-  if (!newRoutineIndex) {
-    throw new Error("New routine index is required!");
+  if (newRoutineIndex === undefined) {
+    throw new Error("newRoutineIndex is undefined");
   }
 
   const Stack = createNativeStackNavigator();
@@ -62,4 +62,3 @@ export default function AddRoutineStack({ route }) {
     </Stack.Navigator>
   );
 }
-

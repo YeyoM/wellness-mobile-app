@@ -24,10 +24,6 @@ import { EditRoutineContext } from "../context/EditRoutineContext";
 export default function SavedLifts({ route, navigation }) {
   const { routine, setRoutine, currentDay } = useContext(EditRoutineContext);
 
-  const { refreshStorageLifts } = route.params;
-
-  console.log(refreshStorageLifts);
-
   const [exercises, setExercises] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
