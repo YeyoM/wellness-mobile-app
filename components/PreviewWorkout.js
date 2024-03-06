@@ -1,7 +1,12 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 
-export default function PreviewWorkout({ day, navigation, userWeight, userWeightUnit }) {
+export default function PreviewWorkout({
+  day,
+  navigation,
+  userWeight,
+  userWeightUnit,
+}) {
   return (
     <View style={styles.container}>
       <View style={styles.viewContainer}>
@@ -34,7 +39,11 @@ export default function PreviewWorkout({ day, navigation, userWeight, userWeight
           <Pressable
             style={styles.buttonStart}
             onPress={() =>
-              navigation.navigate("Workout In Progress", { day: day, userWeight: userWeight, userWeightUnit: userWeightUnit })
+              navigation.navigate("Workout In Progress", {
+                day: day,
+                userWeight: userWeight,
+                userWeightUnit: userWeightUnit,
+              })
             }
           >
             <Text style={{ color: "white" }}>Start</Text>
@@ -75,9 +84,9 @@ const styles = StyleSheet.create({
 
   buttonStart: {
     width: "30%",
-    backgroundColor: "#0496FF",
+    backgroundColor: "#1565C0",
     height: 36,
-    borderRadius: 90,
+    borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
     justifySelf: "flex-end",

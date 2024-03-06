@@ -128,15 +128,8 @@ const Accordion = ({ routine_, navigation, index }) => {
               <Pressable style={styles.buttonEdit} onPress={() => handleEdit()}>
                 <Text style={{ color: "white" }}>Edit</Text>
               </Pressable>
-              <Pressable
-                style={styles.buttonStart}
-                onPress={() =>
-                  navigation.navigate("Workout In Progress", {
-                    routine: { ...routine_ },
-                  })
-                }
-              >
-                <Text style={{ color: "white" }}>Start</Text>
+              <Pressable style={styles.buttonDelete}>
+                <Text style={{ color: "white" }}>Delete</Text>
               </Pressable>
             </View>
           </Animated.View>
@@ -232,18 +225,18 @@ const styles = StyleSheet.create({
   buttonEdit: {
     width: "48%",
     height: 48,
-    backgroundColor: "#0496FF",
-    borderRadius: 90,
+    backgroundColor: "#1565C0",
+    borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 30,
   },
 
-  buttonStart: {
+  buttonDelete: {
     width: "48%",
     height: 48,
-    backgroundColor: "#0496FF",
-    borderRadius: 90,
+    backgroundColor: "#840505",
+    borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 30,

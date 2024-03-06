@@ -1,6 +1,7 @@
 import React, { useState, useRef, useContext } from "react";
 import {
   View,
+  Alert,
   Text,
   StyleSheet,
   Pressable,
@@ -36,7 +37,7 @@ export default function EditRoutine({ navigation }) {
     clenUpEditRoutine,
   } = useContext(EditRoutineContext);
 
-  const [_error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const refInputRoutineName = useRef(null);
@@ -68,13 +69,14 @@ export default function EditRoutine({ navigation }) {
     try {
       await saveEditedRoutine(routine);
       // add a delay to see the loading spinner
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       setLoading(false);
+      setSuccess(true);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       // go back to the previous screen and refresh the data
       navigation.navigate("Saved Routines", { refresh: true });
     } catch (err) {
       console.log(err);
-      setError("Couldn't save the routine");
+      Alert.alert("Couldn't save the routine");
       setLoading(false);
     }
   };
@@ -130,7 +132,7 @@ export default function EditRoutine({ navigation }) {
           >
             {loading ? (
               <ActivityIndicator size="small" color="#fff" />
-            ) : (
+            ) : success ? null : (
               <Text style={{ color: "#fff", fontSize: 16 }}>Save</Text>
             )}
           </Pressable>
@@ -166,6 +168,11 @@ export default function EditRoutine({ navigation }) {
           setCurrentDay={setCurrentDay}
           totalDays={totalDays}
         />
+        {success ? (
+          <Text style={{ color: "#63D471", fontStyle: "italic" }}>
+            Routine updated correctly!
+          </Text>
+        ) : null}
         <View
           style={{
             width: "100%",
@@ -173,7 +180,7 @@ export default function EditRoutine({ navigation }) {
             backgroundColor: "#0B0B0B",
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
-            marginTop: 20,
+            marginTop: 30,
             paddingTop: 16,
           }}
         >
