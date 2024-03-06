@@ -98,44 +98,48 @@ export default function EditRoutine({ navigation }) {
       <View style={styles.home}>
         {/*aqui la parte de arriba*/}
         <View style={styles.topBar}>
-          <Pressable
-            onPress={() => handleGoBack()}
-            style={{
-              position: "absolute",
-              top: -5,
-              left: 20,
-              height: 36,
-              width: 36,
-              zIndex: 999,
-              backgroundColor: "#131417",
-              borderRadius: 10,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Ionicons name="chevron-back-outline" size={36} color="white" />
-          </Pressable>
-          <Pressable
-            onPress={() => handleSave()}
-            style={{
-              position: "absolute",
-              top: -5,
-              right: 20,
-              height: 36,
-              width: 46,
-              zIndex: 999,
-              backgroundColor: "#157AFF",
-              borderRadius: 10,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {loading ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : success ? null : (
-              <Text style={{ color: "#fff", fontSize: 16 }}>Save</Text>
-            )}
-          </Pressable>
+          {loading || success ? null : (
+            <Pressable
+              onPress={() => handleGoBack()}
+              style={{
+                position: "absolute",
+                top: -5,
+                left: 20,
+                height: 36,
+                width: 36,
+                zIndex: 999,
+                backgroundColor: "#131417",
+                borderRadius: 10,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Ionicons name="chevron-back-outline" size={36} color="white" />
+            </Pressable>
+          )}
+          {success ? null : (
+            <Pressable
+              onPress={() => handleSave()}
+              style={{
+                position: "absolute",
+                top: -5,
+                right: 20,
+                height: 36,
+                width: 46,
+                zIndex: 999,
+                backgroundColor: "#157AFF",
+                borderRadius: 10,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {loading ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : success ? null : (
+                <Text style={{ color: "#fff", fontSize: 16 }}>Save</Text>
+              )}
+            </Pressable>
+          )}
           <View
             style={{
               alignItems: "center",
