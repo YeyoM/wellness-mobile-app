@@ -108,7 +108,7 @@ export default function App() {
                   <Stack.Screen
                     name="Edit Routine"
                     component={EditRoutine}
-                    options={{ headerShown: false }}
+                    options={{ headerShown: false, gestureEnabled: false }}
                   />
                   <Stack.Screen
                     name="Edit Exercise"
