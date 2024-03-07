@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function CurrentExercise({
@@ -14,6 +7,7 @@ export default function CurrentExercise({
   sets,
   weight,
   image,
+  restTime,
   navigation,
 }) {
   return (
@@ -97,7 +91,7 @@ export default function CurrentExercise({
             }}
           >
             <Text style={styles.rest}>Rest</Text>
-            <Text style={styles.rest}>30s</Text>
+            <Text style={styles.rest}>{restTime}s</Text>
           </View>
         </View>
         <View style={styles.right}>
