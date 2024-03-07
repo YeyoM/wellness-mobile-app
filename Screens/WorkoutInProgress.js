@@ -35,6 +35,8 @@ import SaveWorkout from "../FirebaseFunctions/Workouts/SaveWorkout";
 import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
 import calculateTimeLift from "../Utils/calculateTimeLift.js";
 
+import SwipeTimer from "../components/SwipeTimer.js";
+
 export default function WorkoutInProgress({ route, navigation }) {
   const { day, userWeight, userWeightUnit } = route.params;
 
@@ -49,6 +51,9 @@ export default function WorkoutInProgress({ route, navigation }) {
   const [currentExerciseWeight, setCurrentExerciseWeight] = useState(
     day.exercises[0].weight,
   );
+  const [currentExerciseRestTime, setCurrentExerciseRestTime] = useState(
+    day.exercises[0].restTime,
+  );
   const [numberOfExercises] = useState(day.exercises.length);
   const [exercises, setExercises] = useState(day.exercises);
   const [exerciseQueue, setExerciseQueue] = useState(day.exercises.slice(1));
@@ -62,6 +67,8 @@ export default function WorkoutInProgress({ route, navigation }) {
   const [readableTime, setReadableTime] = useState("00:00");
 
   const [loading, setLoading] = useState(false);
+
+  const [showTimer, setShowTimer] = useState(false);
 
   const handleEndWorkout = async () => {
     if (currentExerciseIndex < numberOfExercises - 1) {
@@ -261,6 +268,7 @@ export default function WorkoutInProgress({ route, navigation }) {
       setCurrentExerciseReps(exercises[currentExerciseIndex + 1].numberOfReps);
       setCurrentExerciseSets(exercises[currentExerciseIndex + 1].numberOfSets);
       setCurrentExerciseWeight(exercises[currentExerciseIndex + 1].weight);
+      setCurrentExerciseRestTime(exercises[currentExerciseIndex + 1].restTime);
       // get the mean of the weight and reps of the current exercise and add it to the currentWorkoutInfo state
       let meanReps = 0;
       let meanWeight = 0;
@@ -368,21 +376,50 @@ export default function WorkoutInProgress({ route, navigation }) {
               >
                 {currentExercise.exerciseName}
               </Text>
+              <SwipeTimer
+                readableTime={readableTime}
+                setShowTimer={setShowTimer}
+                restTime={currentExerciseRestTime}
+                currentExerciseIndex={currentExerciseIndex}
+              />
+              {!showTimer ? (
+                <View style={{ display: "flex", flexDirection: "row" }}>
+                  <Ionicons
+                    name="ellipse"
+                    size={18}
+                    color="#157AFF"
+                    style={{ marginRight: 5 }}
+                  />
+                  <Ionicons name="ellipse" size={18} color="#24262B" />
+                </View>
+              ) : (
+                <View style={{ display: "flex", flexDirection: "row" }}>
+                  <Ionicons name="ellipse" size={18} color="#24262B" />
+                  <Ionicons
+                    name="ellipse"
+                    size={18}
+                    color="#157AFF"
+                    style={{ marginRight: 5 }}
+                  />
+                </View>
+              )}
               <Text
                 style={{
-                  color: "white",
-                  fontSize: 90,
+                  color: "#a0a0a0",
+                  fontSize: 12,
                   marginBottom: 20,
-                  fontWeight: "800",
+                  fontStyle: "italic",
+                  marginTop: 10,
                 }}
               >
-                {readableTime}
+                Swipe left on the timer to show the rest timer
               </Text>
               <CurrentExercise
                 exercise={currentExercise.exerciseName}
                 reps={currentExerciseReps}
                 sets={currentExerciseSets}
                 weight={currentExerciseWeight}
+                restTime={currentExerciseRestTime}
                 image={day.image}
                 navigation={navigation}
               />
