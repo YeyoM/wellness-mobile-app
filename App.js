@@ -24,6 +24,8 @@ import NotificationSettings from "./Screens/NotificationSettings";
 import PersonalInfoSettings from "./Screens/PersonalInfoSettings";
 import DeleteAccount from "./Screens/DeleteAccount";
 
+import MyStats from "./Screens/MyStats";
+
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { FIREBASE_AUTH } from "./firebaseConfig";
@@ -118,6 +120,11 @@ export default function App() {
                   <Stack.Screen
                     name="Add Lift"
                     component={AddLift}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="My Stats"
+                    component={MyStats}
                     options={{ headerShown: false }}
                   />
                   <Stack.Screen
