@@ -10,8 +10,8 @@ import {
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 import { LineChart } from "react-native-gifted-charts";
-import { Picker } from "@react-native-picker/picker";
 import { SelectList } from "react-native-dropdown-select-list";
+import CarouselRepsMaxes from "../components/CarouselRepsMaxes";
 
 const customLabel = (val) => {
   return (
@@ -40,6 +40,11 @@ export default function MyStats({ navigation }) {
   ];
 
   const [selectedCategory, setSelectedCategory] = React.useState("Calories");
+
+  const onPressDetailedView = () => {
+    console.log("Pressed");
+    navigation.navigate("Progress Graphs");
+  };
 
   return (
     <View style={styles.container}>
@@ -81,15 +86,35 @@ export default function MyStats({ navigation }) {
               zIndex: 999,
             }}
           >
-            <Text
+            <View
               style={{
-                color: "white",
-                fontSize: 22,
-                marginTop: 10,
+                display: "flex",
+                flexDirection: "column",
+                marginTop: -10,
               }}
             >
-              Progrss Graphs
-            </Text>
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 22,
+                  marginTop: 10,
+                }}
+              >
+                Progress Graphs
+              </Text>
+              <Pressable onPress={() => onPressDetailedView()}>
+                <Text
+                  style={{
+                    color: "#a0a0a0",
+                    fontSize: 14,
+                    fontStyle: "italic",
+                    textDecorationLine: "underline",
+                  }}
+                >
+                  Detailed view
+                </Text>
+              </Pressable>
+            </View>
             <SelectList
               data={data}
               save="value"
@@ -123,16 +148,6 @@ export default function MyStats({ navigation }) {
               <Text style={{ color: "white", fontSize: 18 }}>
                 {selectedCategory}
               </Text>
-              <Text
-                style={{
-                  color: "#a0a0a0",
-                  fontSize: 14,
-                  fontStyle: "italic",
-                  textDecorationLine: "underline",
-                }}
-              >
-                Detailed view
-              </Text>
             </View>
             <LineChart
               hideDataPoints
@@ -140,7 +155,6 @@ export default function MyStats({ navigation }) {
               animationDuration={1200}
               initialSpacing={10}
               data={lineData}
-              curved
               spacing={
                 (Dimensions.get("window").width * 0.8) / (lineData.length + 2)
               }
@@ -153,7 +167,14 @@ export default function MyStats({ navigation }) {
               xAxisColor="#50535B"
               color="#157AFF"
             />
+            <Text style={styles.totals}>1256</Text>
+            <Text style={styles.totalsCategory}>Total Kcal</Text>
           </View>
+          <View style={styles.repMaxesHeader}>
+            <Text style={styles.textHeader}>My one rep maxes</Text>
+            <Text style={styles.textSubHeader}>Edit</Text>
+          </View>
+          <CarouselRepsMaxes />
         </View>
       </ScrollView>
     </View>
@@ -205,5 +226,39 @@ const styles = StyleSheet.create({
     backgroundColor: "#157AFF",
     borderWidth: 0,
     borderRadius: 10,
+  },
+
+  totals: {
+    color: "white",
+    fontSize: 30,
+    fontWeight: "bold",
+    marginTop: 20,
+  },
+
+  totalsCategory: {
+    color: "#a0a0a0",
+    fontSize: 18,
+  },
+
+  repMaxesHeader: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 20,
+    paddingHorizontal: 10,
+  },
+
+  textHeader: {
+    color: "white",
+    fontSize: 22,
+  },
+
+  textSubHeader: {
+    color: "#a0a0a0",
+    fontSize: 14,
+    fontStyle: "italic",
+    textDecorationLine: "underline",
   },
 });

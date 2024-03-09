@@ -25,6 +25,7 @@ import PersonalInfoSettings from "./Screens/PersonalInfoSettings";
 import DeleteAccount from "./Screens/DeleteAccount";
 
 import MyStats from "./Screens/MyStats";
+import ProgressGraphs from "./Screens/ProgressGraphs";
 
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
@@ -125,6 +126,11 @@ export default function App() {
                   <Stack.Screen
                     name="My Stats"
                     component={MyStats}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="Progress Graphs"
+                    component={ProgressGraphs}
                     options={{ headerShown: false }}
                   />
                   <Stack.Screen
