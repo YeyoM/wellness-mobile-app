@@ -11,6 +11,7 @@ import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 import { LineChart } from "react-native-gifted-charts";
 import { Picker } from "@react-native-picker/picker";
+import { SelectList } from "react-native-dropdown-select-list";
 
 const customLabel = (val) => {
   return (
@@ -30,6 +31,12 @@ export default function MyStats({ navigation }) {
     { value: 40, labelComponent: () => customLabel("1/6") },
     { value: 54, labelComponent: () => customLabel("1/7") },
     { value: 0, labelComponent: () => customLabel("1/8") },
+  ];
+
+  const data = [
+    { key: "1", value: "Calories" },
+    { key: "2", value: "Weight" },
+    { key: "3", value: "Time" },
   ];
 
   const [selectedCategory, setSelectedCategory] = React.useState("Calories");
@@ -62,37 +69,60 @@ export default function MyStats({ navigation }) {
           >
             My Stats
           </Text>
-          <Text
+          <View
             style={{
-              color: "white",
-              fontSize: 22,
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
               marginTop: 50,
-              alignSelf: "flex-start",
+              marginBottom: -100,
+              height: 150,
+              zIndex: 999,
             }}
           >
-            Progrss Graphs
-          </Text>
+            <Text
+              style={{
+                color: "white",
+                fontSize: 22,
+                marginTop: 10,
+              }}
+            >
+              Progrss Graphs
+            </Text>
+            <SelectList
+              data={data}
+              save="value"
+              search={false}
+              defaultOption={{ key: "1", value: "Calories" }}
+              setSelected={setSelectedCategory}
+              boxStyles={{
+                backgroundColor: "#157AFF",
+                color: "white",
+                borderWidth: 0,
+                borderRadius: 20,
+                width: 120,
+              }}
+              dropdownStyles={{
+                backgroundColor: "#157AFF",
+                borderWidth: 0,
+                color: "white",
+                borderRadius: 20,
+              }}
+              dropdownItemStyles={{
+                backgroundColor: "#157AFF",
+                color: "white",
+              }}
+              dropdownTextStyles={{
+                color: "white",
+              }}
+            />
+          </View>
           <View style={styles.graphContainer}>
             <View style={styles.graphHeader}>
-              <View style={styles.pickerContainer}>
-                <Picker
-                  style={{ width: "40%", color: "white", height: 40 }}
-                  selectedValue={selectedCategory}
-                  onValueChange={(itemValue, _itemIndex) =>
-                    setSelectedCategory(itemValue)
-                  }
-                  mode="dropdown"
-                  itemStyle={{ fontSize: 14, color: "white" }}
-                >
-                  <Picker.Item
-                    label="Calories"
-                    value={"Calories"}
-                    color="white"
-                  />
-                  <Picker.Item label="Weight" value={"Weight"} />
-                  <Picker.Item label="Time" value={"Time"} />
-                </Picker>
-              </View>
+              <Text style={{ color: "white", fontSize: 18 }}>
+                {selectedCategory}
+              </Text>
               <Text
                 style={{
                   color: "#a0a0a0",
@@ -167,13 +197,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,
+    height: 40,
   },
 
   pickerContainer: {
     width: "50%",
-    backgroundColor: "#24262B",
-    borderWidth: 1,
-    borderColor: "#50535B",
+    backgroundColor: "#157AFF",
+    borderWidth: 0,
     borderRadius: 10,
   },
 });

@@ -31,6 +31,7 @@
     "react-native-date-picker": "^4.3.3",
     "react-native-dotenv": "^3.4.9",
     "react-native-draggable-flatlist": "^4.0.1",
+    "react-native-dropdown-select-list": "^2.0.5",
     "react-native-gesture-handler": "~2.14.0",
     "react-native-gifted-charts": "^1.4.7",
     "react-native-pager-view": "6.2.3",
