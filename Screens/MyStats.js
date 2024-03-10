@@ -172,7 +172,9 @@ export default function MyStats({ navigation }) {
           </View>
           <View style={styles.repMaxesHeader}>
             <Text style={styles.textHeader}>My one rep maxes</Text>
-            <Text style={styles.textSubHeader}>Edit</Text>
+            <Pressable onPress={() => navigation.navigate("One Rep Max List")}>
+              <Text style={styles.textSubHeader}>Edit</Text>
+            </Pressable>
           </View>
           <CarouselRepsMaxes />
         </View>

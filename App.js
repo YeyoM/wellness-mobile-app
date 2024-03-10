@@ -26,6 +26,8 @@ import DeleteAccount from "./Screens/DeleteAccount";
 
 import MyStats from "./Screens/MyStats";
 import ProgressGraphs from "./Screens/ProgressGraphs";
+import OneRepMaxList from "./Screens/OneRepMaxList";
+import EditOneRepMax from "./Screens/EditOneRepMax";
 
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
@@ -131,6 +133,16 @@ export default function App() {
                   <Stack.Screen
                     name="Progress Graphs"
                     component={ProgressGraphs}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="One Rep Max List"
+                    component={OneRepMaxList}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="Edit One Rep Max"
+                    component={EditOneRepMax}
                     options={{ headerShown: false }}
                   />
                   <Stack.Screen
