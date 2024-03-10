@@ -11,8 +11,12 @@ import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 import { LineChart } from "react-native-gifted-charts";
 
-const customLabel = () => {
-  return <View style={{ width: 0, marginLeft: 10 }}></View>;
+const customLabel = (label) => {
+  return (
+    <View style={{ width: 30, marginLeft: 10 }}>
+      <Text style={{ color: "white", fontSize: 10 }}>{label}</Text>
+    </View>
+  );
 };
 
 export default function ProgressGraphs({ navigation }) {
@@ -25,6 +29,9 @@ export default function ProgressGraphs({ navigation }) {
     { value: 40, labelComponent: () => customLabel("1/6") },
     { value: 54, labelComponent: () => customLabel("1/7") },
     { value: 0, labelComponent: () => customLabel("1/8") },
+    { value: 20, labelComponent: () => customLabel("1/9") },
+    { value: 10, labelComponent: () => customLabel("1/10") },
+    { value: 2, labelComponent: () => customLabel("1/11") },
   ];
 
   const data = [
@@ -123,21 +130,115 @@ export default function ProgressGraphs({ navigation }) {
           </View>
           <View style={styles.graphContainer}>
             <LineChart
-              hideDataPoints
               isAnimated
+              width={Dimensions.get("window").width * 0.8}
               animationDuration={1200}
-              initialSpacing={10}
+              initialSpacing={20}
               data={lineData}
-              spacing={
+              /*spacing={
                 (Dimensions.get("window").width * 0.8) / (lineData.length + 2)
-              }
+              } */
+              spacing={40}
               yAxisThickness={0}
               xAxisThickness={0}
-              rulesColor="#01040A"
+              rulesColor="#0B0B0B"
               rulesType="solid"
               xAxisColor="#50535B"
               color="#157AFF"
+              dataPointsColor="#157AFF"
+              pointerConfig={{
+                pointerStripUptoDataPoint: false,
+                pointerVanishDelay: 600000,
+                pointerStripColor: "#0496FF",
+                pointerStripWidth: 2,
+                pointerStripHeight: 160,
+                strokeDashArray: [2, 5],
+                pointerColor: "#0496FF",
+                radius: 5,
+                pointerLabelWidth: 100,
+                pointerLabelHeight: 40,
+                activatePointersOnLongPress: true,
+                pointerLabelComponent: (items) => {
+                  return (
+                    <View
+                      style={{
+                        height: 40,
+                        width: 50,
+                        backgroundColor: "#0496FF",
+                        borderRadius: 4,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        zIndex: 999,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: "white",
+                          fontSize: 9,
+                        }}
+                      >
+                        1 / 1
+                      </Text>
+                      <Text
+                        style={{
+                          color: "white",
+                          fontWeight: "bold",
+                          fontSize: 11,
+                        }}
+                      >
+                        {items[0].value} Kcal
+                      </Text>
+                    </View>
+                  );
+                },
+              }}
             />
+          </View>
+          <View style={styles.info}>
+            <Ionicons
+              name="information-circle-outline"
+              size={14}
+              color="#a0a0a0"
+            />
+            <Text style={styles.infoText}>
+              Swipe left or right on the graph to see more data
+            </Text>
+          </View>
+          <View style={styles.info}>
+            <Ionicons
+              name="information-circle-outline"
+              size={14}
+              color="#a0a0a0"
+            />
+            <Text style={styles.infoText}>
+              Tap and hold on each point to see more details
+            </Text>
+          </View>
+          <View style={styles.categories}>
+            <View style={styles.categorySelected}>
+              <Ionicons name="flame-outline" size={36} color="white" />
+              <Text
+                style={{ color: "white", marginTop: 5, fontWeight: "bold" }}
+              >
+                Calories
+              </Text>
+            </View>
+            <View style={styles.categoryUnselected}>
+              <Ionicons name="time-outline" size={36} color="white" />
+              <Text
+                style={{ color: "white", marginTop: 5, fontWeight: "bold" }}
+              >
+                Time
+              </Text>
+            </View>
+            <View style={styles.categoryUnselected}>
+              <Ionicons name="person-outline" size={36} color="white" />
+              <Text
+                style={{ color: "white", marginTop: 5, fontWeight: "bold" }}
+              >
+                Weight
+              </Text>
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -203,12 +304,58 @@ const styles = StyleSheet.create({
   },
 
   graphContainer: {
-    width: "100%",
+    width: Dimensions.get("window").width,
     marginTop: 20,
-    backgroundColor: "#01040A",
+    backgroundColor: "#0B0B0B",
     display: "flex",
     alignItems: "center",
-    padding: 20,
+    justifyContent: "center",
+    height: 300,
+    borderRadius: 20,
+  },
+
+  info: {
+    display: "flex",
+    flexDirection: "row",
+    marginTop: 5,
+    textAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  infoText: {
+    color: "#a0a0a0",
+    fontSize: 12,
+    marginLeft: 5,
+  },
+
+  categories: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+    marginTop: 30,
+  },
+
+  categorySelected: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#157AFF",
+    width: 80,
+    height: 98,
+    borderRadius: 20,
+  },
+
+  categoryUnselected: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#24262B",
+    width: 80,
+    height: 98,
     borderRadius: 20,
   },
 });
