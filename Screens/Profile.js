@@ -141,16 +141,44 @@ export default function Profile({ route, navigation }) {
         </View>
         <ScrollView style={styles.content}>
           <View style={styles.stats}>
-            <Text
+            <View
               style={{
-                color: "white",
-                fontSize: 24,
-                fontWeight: "bold",
-                marginBottom: 10,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                height: 50,
+                paddingHorizontal: 5,
               }}
             >
-              Statistics
-            </Text>
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 24,
+                  fontWeight: "bold",
+                  marginBottom: 10,
+                }}
+              >
+                Statistics
+              </Text>
+              <Pressable
+                onPress={() => {
+                  navigation.navigate("My Stats");
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#a0a0a0",
+                    fontSize: 14,
+                    marginBottom: 10,
+                    fontStyle: "italic",
+                    textDecorationLine: "underline",
+                  }}
+                >
+                  See more
+                </Text>
+              </Pressable>
+            </View>
+
             <View style={{ flexDirection: "column" }}>
               <View style={styles.stat}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>

@@ -24,6 +24,11 @@ import NotificationSettings from "./Screens/NotificationSettings";
 import PersonalInfoSettings from "./Screens/PersonalInfoSettings";
 import DeleteAccount from "./Screens/DeleteAccount";
 
+import MyStats from "./Screens/MyStats";
+import ProgressGraphs from "./Screens/ProgressGraphs";
+import OneRepMaxList from "./Screens/OneRepMaxList";
+import EditOneRepMax from "./Screens/EditOneRepMax";
+
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { FIREBASE_AUTH } from "./firebaseConfig";
@@ -118,6 +123,26 @@ export default function App() {
                   <Stack.Screen
                     name="Add Lift"
                     component={AddLift}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="My Stats"
+                    component={MyStats}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="Progress Graphs"
+                    component={ProgressGraphs}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="One Rep Max List"
+                    component={OneRepMaxList}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="Edit One Rep Max"
+                    component={EditOneRepMax}
                     options={{ headerShown: false }}
                   />
                   <Stack.Screen

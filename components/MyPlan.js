@@ -49,9 +49,6 @@ export default function MyPlan({ navigation }) {
     getUserStorage()
       .then((data) => {
         if (data) {
-          console.log(data);
-          console.log("Weight: ", data.weight);
-          console.log("Weight unit: ", data.weightUnit);
           setUserWeight(data.weight);
           setUserWeightUnit(data.weightUnit);
         } else {
