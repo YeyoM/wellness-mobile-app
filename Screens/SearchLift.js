@@ -152,6 +152,7 @@ export default function SearchLift({ navigation }) {
       equipment: lift.equipment,
       userId: userId,
       weightRecord: [],
+      oneRepMax: 0,
     };
 
     console.log("Exercise", exercise);
