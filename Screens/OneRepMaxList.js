@@ -15,14 +15,17 @@ export default function OneRepMaxList({ navigation }) {
   const [exercises, setExercises] = React.useState([]);
 
   React.useEffect(() => {
-    getExercisesStorage()
-      .then((exercises) => {
-        setExercises(exercises);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+    const unsubscribe = navigation.addListener("focus", () => {
+      getExercisesStorage()
+        .then((exercises) => {
+          setExercises(exercises);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
@@ -67,7 +70,8 @@ export default function OneRepMaxList({ navigation }) {
                     }
                   >
                     <Text style={{ color: "white", fontSize: 20 }}>
-                      {exercise.exerciseName}
+                      {exercise.exerciseName} - {exercise.oneRepMax}{" "}
+                      {exercise.defaultWeightSystem}
                     </Text>
                     <Ionicons
                       name="chevron-forward-outline"

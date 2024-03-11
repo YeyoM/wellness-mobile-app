@@ -87,7 +87,12 @@ export default function CarouselItem(props) {
       >
         <Animated.Text
           style={[
-            { fontSize: 10, color: "#fff", marginBottom: 10 },
+            {
+              fontSize: 10,
+              color: "#fff",
+              marginBottom: 10,
+              textAlign: "center",
+            },
             labelStyle,
           ]}
         >
@@ -100,7 +105,7 @@ export default function CarouselItem(props) {
             labelStyle,
           ]}
         >
-          {label.weight} {label.defaultWeightSystem}
+          {label.oneRepMax} {label.defaultWeightSystem}
         </Animated.Text>
       </Animated.View>
     </Pressable>

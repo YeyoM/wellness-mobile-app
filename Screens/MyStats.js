@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LineChart } from "react-native-gifted-charts";
 import { SelectList } from "react-native-dropdown-select-list";
 import CarouselRepsMaxes from "../components/CarouselRepsMaxes";
+import getExercisesStorage from "../AsyncStorageFunctions/Exercises/getExercisesStorage.js";
 
 const customLabel = (val) => {
   return (
@@ -40,6 +41,20 @@ export default function MyStats({ navigation }) {
   ];
 
   const [selectedCategory, setSelectedCategory] = React.useState("Calories");
+  const [exercises, setExercises] = React.useState([]);
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      getExercisesStorage()
+        .then((exercises) => {
+          setExercises(exercises);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const onPressDetailedView = () => {
     console.log("Pressed");
@@ -176,7 +191,7 @@ export default function MyStats({ navigation }) {
               <Text style={styles.textSubHeader}>Edit</Text>
             </Pressable>
           </View>
-          <CarouselRepsMaxes />
+          <CarouselRepsMaxes exercises={exercises} />
         </View>
       </ScrollView>
     </View>

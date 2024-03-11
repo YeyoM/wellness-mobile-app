@@ -5,16 +5,9 @@ import React from "react";
 
 import CarouselItemReps from "./CarouselItemReps";
 
-export default function CarouselDays() {
+export default function CarouselDays({ exercises }) {
   const [loop, setLoop] = React.useState(false);
   const r = React.useRef(null);
-
-  //const DATA = [{ day: "Day 1" }, { day: "Day 2" }, { day: "Day 3" }];
-  const DATA = [
-    { exerciseName: "Bench Press", weight: 100, defaultWeightSystem: "lbs" },
-    { exerciseName: "Squat", weight: 200, defaultWeightSystem: "lbs" },
-    { exerciseName: "Deadlift", weight: 300, defaultWeightSystem: "lbs" },
-  ];
 
   return (
     <Carousel
@@ -31,7 +24,7 @@ export default function CarouselDays() {
       }}
       width={120}
       height={120}
-      data={DATA}
+      data={exercises}
       renderItem={({ item, animationValue }) => {
         return (
           <CarouselItemReps
