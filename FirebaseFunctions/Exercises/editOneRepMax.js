@@ -17,9 +17,12 @@ export default async function updateOneRepMax(exercise, oneRepMax) {
     throw new Error("No one rep max provided");
   }
 
+  console.log(exercise);
+  console.log(oneRepMax);
+
   try {
     const db = FIRESTORE;
-    const exerciseRef = doc(db, "exercises", exercise.id);
+    const exerciseRef = doc(db, "exercises", exercise.exerciseId);
     await runTransaction(db, async (transaction) => {
       const exerciseDoc = await transaction.get(exerciseRef);
       if (!exerciseDoc.exists()) {

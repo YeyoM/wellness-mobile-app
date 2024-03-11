@@ -2,6 +2,8 @@ import React from "react";
 import {
   View,
   Text,
+  ActivityIndicator,
+  Alert,
   StyleSheet,
   TextInput,
   ScrollView,
@@ -10,6 +12,8 @@ import {
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 import editOneRepMax from "../FirebaseFunctions/Exercises/editOneRepMax.js";
+import saveExercisesStorage from "../AsyncStorageFunctions/Exercises/saveExercisesStorage.js";
+import getExercisesStorage from "../AsyncStorageFunctions/Exercises/getExercisesStorage.js";
 
 export default function EditOneRepMax({ navigation, route }) {
   const [exercise, setExercise] = React.useState(null);
@@ -21,24 +25,23 @@ export default function EditOneRepMax({ navigation, route }) {
 
   const [loading, setLoading] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
-  const [error, setError] = React.useState(null);
 
   const calculateOneRepMax = () => {
     if (weight && reps) {
+      console.log("Calculating 1RM");
+      console.log(weight, reps);
       const oneRepMax = weight * (1.0278 - 0.0278 * reps);
-      const truncatedOneRepMax = Math.floor(oneRepMax * 100) / 100;
-      setCalculatedOneRepMax(truncatedOneRepMax);
+      console.log(oneRepMax);
+      setCalculatedOneRepMax(oneRepMax.toFixed(0));
     }
   };
 
   const handleWeightChange = (text) => {
     setWeight(text);
-    calculateOneRepMax();
   };
 
   const handleRepsChange = (text) => {
     setReps(text);
-    calculateOneRepMax();
   };
 
   const handleReset = () => {
@@ -51,20 +54,52 @@ export default function EditOneRepMax({ navigation, route }) {
     setOneRepMax(calculatedOneRepMax);
   };
 
+  // update the exercise in the local storage with the new one rep max
+  const updateExercises = async (exercise) => {
+    try {
+      const exercises = await getExercisesStorage();
+      const updatedExercises = exercises.map((ex) => {
+        if (ex.exerciseId === exercise.exerciseId) {
+          ex.oneRepMax = oneRepMax;
+        }
+        return ex;
+      });
+      await saveExercisesStorage(updatedExercises);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSave = async () => {
     if (exercise && oneRepMax) {
       try {
         setLoading(true);
         setSuccess(false);
-        setError(null);
-        await editOneRepMax(exercise.exerciseId, oneRepMax);
+        await editOneRepMax(exercise, oneRepMax);
+        await updateExercises(exercise);
         setSuccess(true);
+        setTimeout(() => {
+          navigation.goBack();
+        }, 1000);
         setLoading(false);
       } catch (error) {
-        setError(error);
         setLoading(false);
+        Alert.alert("Error", "An error occurred while saving your 1RM");
         console.log(error);
       }
+    }
+  };
+
+  const handleAddWeight = () => {
+    console.log("Adding weight");
+    if (oneRepMax !== null && oneRepMax !== undefined) {
+      setOneRepMax(oneRepMax + 1);
+    }
+  };
+
+  const handleSubtractWeight = () => {
+    if (oneRepMax !== null && oneRepMax !== undefined && oneRepMax > 0) {
+      setOneRepMax(oneRepMax - 1);
     }
   };
 
@@ -122,8 +157,21 @@ export default function EditOneRepMax({ navigation, route }) {
           >
             {exercise ? exercise.exerciseName : ""}
           </Text>
-          <Ionicons name="barbell" size={60} color="#0496FF" />
-          <Text style={styles.oneRepMax}>{oneRepMax}</Text>
+          {success ? (
+            <Text style={{ color: "#63D471", fontStyle: "italic" }}>
+              Saved successfully!
+            </Text>
+          ) : null}
+          <Ionicons name="barbell" size={50} color="#0496FF" />
+          <View style={styles.oneRepMaxContainer}>
+            <Pressable onPress={() => handleSubtractWeight()}>
+              <Ionicons name="remove-outline" size={40} color="#0496FF" />
+            </Pressable>
+            <Text style={styles.oneRepMax}>{oneRepMax}</Text>
+            <Pressable onPress={() => handleAddWeight()}>
+              <Ionicons name="add-outline" size={40} color="#0496FF" />
+            </Pressable>
+          </View>
           <Text style={styles.weightUnit}>
             {exercise &&
             exercise.defaultWeightSystem &&
@@ -161,6 +209,11 @@ export default function EditOneRepMax({ navigation, route }) {
                 <Text style={styles.calculatorLabel}>Reps</Text>
               </View>
             </View>
+            <Pressable onPress={calculateOneRepMax}>
+              <Text style={{ color: "#0496FF", fontSize: 16, marginTop: 20 }}>
+                Calculate
+              </Text>
+            </Pressable>
             <View style={styles.calculatorBottom}>
               <Text style={styles.textAprox}>Your approximated 1RM is:</Text>
               <Text style={styles.textOneRepMax}>
@@ -186,11 +239,27 @@ export default function EditOneRepMax({ navigation, route }) {
             </View>
           </View>
           <View style={styles.bottomButtons}>
-            <Pressable style={styles.resetButton} onPress={handleReset}>
-              <Text style={styles.resetButtonText}>Reset</Text>
+            <Pressable
+              style={styles.resetButton}
+              onPress={handleReset}
+              disabled={loading || success}
+            >
+              {!success ? (
+                <Text style={styles.resetButtonText}>Reset</Text>
+              ) : null}
             </Pressable>
-            <Pressable style={styles.saveButton}>
-              <Text style={styles.saveButtonText}>Save</Text>
+            <Pressable
+              style={styles.saveButton}
+              onPress={handleSave}
+              disabled={loading || success}
+            >
+              {loading ? (
+                <ActivityIndicator size="small" color="white" />
+              ) : success ? (
+                <Ionicons name="checkmark" size={24} color="white" />
+              ) : (
+                <Text style={styles.saveButtonText}>Save</Text>
+              )}
             </Pressable>
           </View>
         </View>
@@ -218,9 +287,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
+  oneRepMaxContainer: {
+    width: "80%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+  },
+
   oneRepMax: {
     color: "white",
-    fontSize: 68,
+    fontSize: 80,
     marginTop: 0,
     fontWeight: "800",
     textAlign: "center",

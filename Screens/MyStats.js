@@ -44,14 +44,17 @@ export default function MyStats({ navigation }) {
   const [exercises, setExercises] = React.useState([]);
 
   React.useEffect(() => {
-    getExercisesStorage()
-      .then((exercises) => {
-        setExercises(exercises);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+    const unsubscribe = navigation.addListener("focus", () => {
+      getExercisesStorage()
+        .then((exercises) => {
+          setExercises(exercises);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const onPressDetailedView = () => {
     console.log("Pressed");
