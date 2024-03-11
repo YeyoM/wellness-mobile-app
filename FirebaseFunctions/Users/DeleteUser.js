@@ -21,19 +21,23 @@ export default async function DeleteUserTransaction() {
       if (!userDoc.exists()) {
         throw new Error("User document does not exist, cannot delete user");
       }
+      const routinesDocs = [];
       if (userDoc.data()?.routines.length > 0) {
         for (const routineId of userDoc.data()?.routines) {
           const routineRef = doc(FIRESTORE, "routines", routineId);
           const routineDoc = await transaction.get(routineRef);
           if (routineDoc.exists()) {
-            if (routineDoc.data()?.days.length > 0) {
-              for (const dayId of routineDoc.data()?.days) {
-                const dayRef = doc(FIRESTORE, "days", dayId);
-                transaction.delete(dayRef);
-              }
-            }
-            transaction.delete(routineRef);
+            routinesDocs.push(routineDoc);
           }
+        }
+        for (const routineDoc of routinesDocs) {
+          if (routineDoc.data()?.days.length > 0) {
+            for (const dayId of routineDoc.data()?.days) {
+              const dayRef = doc(FIRESTORE, "days", dayId);
+              transaction.delete(dayRef);
+            }
+          }
+          transaction.delete(routineDoc.ref);
         }
       }
       if (userDoc.data()?.exercises.length > 0) {

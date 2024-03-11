@@ -14,6 +14,7 @@ import { FIRESTORE } from "../../firebaseConfig.js";
  * @param {string} exercise.muscle - the exercise's muscle
  * @param {string} exercise.equipment - the exercise's equipment
  * @param {string} exercise.type - the exercise's type
+ * @param {string} exercise.oneRepMax - the exercise's one rep max
  * @param {string} exercise.userId - the exercise's user id
  * @returns {array} - the updated exercises array
  * @throws {Error} - if the exercise is already in the user's exercises or if the exercise object is not valid
@@ -61,6 +62,11 @@ export default async function addExerciseToUser(userId, exercise) {
 
   if (!exercise.type) {
     throw new Error("No type provided");
+  }
+
+  // one rep max can be 0
+  if (exercise.oneRepMax === undefined) {
+    throw new Error("No one rep max provided");
   }
 
   if (!exercise.userId) {
