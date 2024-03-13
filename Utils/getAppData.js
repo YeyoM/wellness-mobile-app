@@ -2,11 +2,13 @@ import GetUser from "../FirebaseFunctions/Users/GetUser.js";
 import getAllDays from "../FirebaseFunctions/Days/getAllDays.js";
 import { getSavedExercises } from "../FirebaseFunctions/Exercises/getSavedExercises.js";
 import { getSavedRoutines } from "../FirebaseFunctions/Routines/getSavedRoutines.js";
+import getWorkouts from "../FirebaseFunctions/Workouts/GetWorkouts.js";
 
 import saveUserStorage from "../AsyncStorageFunctions/Users/saveUserStorage.js";
 import saveDaysStorage from "../AsyncStorageFunctions/Days/saveDaysStorage.js";
 import saveExercisesStorage from "../AsyncStorageFunctions/Exercises/saveExercisesStorage.js";
 import saveRoutinesStorage from "../AsyncStorageFunctions/Routines/saveRoutinesStorage.js";
+import saveWorkoutsStorage from "../AsyncStorageFunctions/Workouts/saveWorkoutsStorage.js";
 
 /**
  * getAppData
@@ -21,32 +23,37 @@ import saveRoutinesStorage from "../AsyncStorageFunctions/Routines/saveRoutinesS
  * 2. The routines
  * 3. The exercises
  * 4. The days
+ * 5. The workouts
  */
 export default async function getAppData(uid) {
-  // With promise.all
   try {
     const results = await Promise.all([
       await GetUser(uid),
       await getAllDays(),
       await getSavedExercises(uid),
       await getSavedRoutines(uid),
+      await getWorkouts(uid),
     ]);
     console.log("GETAPPDATA, AFTER GETTING ALL DATA: ", results);
     const user = results[0];
     const days = results[1];
     const exercises = results[2];
     const routines = results[3];
+    const workouts = results[4];
     if (user) {
-      saveUserStorage(user);
+      await saveUserStorage(user);
     }
     if (days) {
-      saveDaysStorage(days);
+      await saveDaysStorage(days);
     }
     if (exercises) {
-      saveExercisesStorage(exercises);
+      await saveExercisesStorage(exercises);
     }
     if (routines) {
-      saveRoutinesStorage(routines);
+      await saveRoutinesStorage(routines);
+    }
+    if (workouts) {
+      await saveWorkoutsStorage(workouts);
     }
   } catch (error) {
     console.log("Error in getAppData: ", error);
