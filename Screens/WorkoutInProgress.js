@@ -158,6 +158,7 @@ export default function WorkoutInProgress({ route, navigation }) {
         totalCalories: totalCalories,
         totalWeight: totalWeight ? totalWeight : 1,
         totalTime: readableTime,
+        date: new Date(),
       });
       setLoading(false);
     } catch (error) {

@@ -11,6 +11,7 @@ import { runTransaction, doc, collection } from "firebase/firestore";
  * @param {Number} totalTime
  * @param {Object} day
  * @param {Object} workoutInfo
+ * @param {Object} date
  * @returns {Promise}
  * @throws {Error} iff there is no user logged in, routineId, dayId, workout, totalCalories, totalWeight, or totalTime is missing
  * @description Saves a workout to the database
@@ -22,6 +23,7 @@ export default async function SaveWorkout({
   totalCalories,
   totalWeight,
   totalTime,
+  date,
 }) {
   const userId = FIREBASE_AUTH.currentUser.uid;
 
@@ -51,6 +53,10 @@ export default async function SaveWorkout({
 
   if (!totalTime) {
     throw new Error("Total time is missing!");
+  }
+
+  if (!date) {
+    throw new Error("Date is missing!");
   }
 
   // Create references for the documents we are going to update/modify
@@ -93,6 +99,7 @@ export default async function SaveWorkout({
         totalCalories,
         totalWeight,
         totalTime,
+        date,
       });
       console.log("WORKOUT WRITTEN TO TRANSACTION");
       const userWorkouts = userDoc.data().workouts;

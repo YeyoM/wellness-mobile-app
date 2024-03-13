@@ -16,7 +16,7 @@ export default async function saveWorkoutsStorage(workouts) {
     throw new Error("Routines must be an array");
   }
   try {
-    await AsyncStorage.setItem("@workouts", JSON.stringify(routines));
+    await AsyncStorage.setItem("@workouts", JSON.stringify(workouts));
   } catch (e) {
     console.log(e);
     throw new Error("Error saving workouts to storage");

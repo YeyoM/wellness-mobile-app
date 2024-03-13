@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   ScrollView,
   Pressable,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,6 +14,10 @@ import { LineChart } from "react-native-gifted-charts";
 import { SelectList } from "react-native-dropdown-select-list";
 import CarouselRepsMaxes from "../components/CarouselRepsMaxes";
 import getExercisesStorage from "../AsyncStorageFunctions/Exercises/getExercisesStorage.js";
+import getStatsData from "../AsyncStorageFunctions/getStatsData.js";
+
+import getUserWeightProgressDataForGraph from "../Utils/graphsDataFunctions/getUserWeightProgressDataForGraph.js";
+import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/getUserCaloriesProgressDataForGraph.js";
 
 const customLabel = (val) => {
   return (
@@ -42,6 +47,9 @@ export default function MyStats({ navigation }) {
 
   const [selectedCategory, setSelectedCategory] = React.useState("Calories");
   const [exercises, setExercises] = React.useState([]);
+  const [weightLineData, setWeightLineData] = React.useState([]);
+
+  const [loading, setLoading] = useState(false);
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -55,6 +63,27 @@ export default function MyStats({ navigation }) {
     });
     return unsubscribe;
   }, [navigation]);
+
+  React.useEffect(() => {
+    setLoading(true);
+    getStatsData()
+      .then((stats) => {
+        const weightRecord = stats.weightRecord;
+        const weightProgressData = getUserWeightProgressDataForGraph({
+          weightRecord,
+        });
+        setWeightLineData(weightProgressData);
+        const caloriesProgressData = getUserCaloriesProgressDataForGraph({
+          caloriesRecord: stats.caloriesRecord,
+        });
+        console.log("Calories record", stats.caloriesRecord);
+        console.log(caloriesProgressData);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   const onPressDetailedView = () => {
     console.log("Pressed");
@@ -164,26 +193,82 @@ export default function MyStats({ navigation }) {
                 {selectedCategory}
               </Text>
             </View>
-            <LineChart
-              hideDataPoints
-              isAnimated
-              animationDuration={1200}
-              initialSpacing={10}
-              data={lineData}
-              spacing={
-                (Dimensions.get("window").width * 0.8) / (lineData.length + 2)
-              }
-              thickness={3}
-              yAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
-              xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
-              yAxisThickness={0}
-              rulesColor="#50535B"
-              rulesType="solid"
-              xAxisColor="#50535B"
-              color="#157AFF"
-            />
-            <Text style={styles.totals}>1256</Text>
-            <Text style={styles.totalsCategory}>Total Kcal</Text>
+            {!loading &&
+            weightLineData.length > 0 &&
+            selectedCategory === "Weight" ? (
+              <LineChart
+                hideDataPoints
+                isAnimated
+                animationDuration={1200}
+                initialSpacing={20}
+                data={weightLineData}
+                spacing={40}
+                thickness={3}
+                yAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
+                xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
+                yAxisThickness={0}
+                rulesColor="#50535B"
+                rulesType="solid"
+                xAxisColor="#50535B"
+                color="#157AFF"
+              />
+            ) : !loading && selectedCategory === "Calories" ? (
+              <LineChart
+                hideDataPoints
+                isAnimated
+                animationDuration={1200}
+                initialSpacing={20}
+                data={lineData}
+                spacing={40}
+                thickness={3}
+                yAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
+                xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
+                yAxisThickness={0}
+                rulesColor="#50535B"
+                rulesType="solid"
+                xAxisColor="#50535B"
+                color="#157AFF"
+              />
+            ) : !loading && selectedCategory === "Time" ? (
+              <LineChart
+                hideDataPoints
+                isAnimated
+                animationDuration={1200}
+                initialSpacing={20}
+                data={lineData}
+                spacing={40}
+                thickness={3}
+                yAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
+                xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
+                yAxisThickness={0}
+                rulesColor="#50535B"
+                rulesType="solid"
+                xAxisColor="#50535B"
+                color="#157AFF"
+              />
+            ) : loading ? (
+              <ActivityIndicator size="large" color="#157AFF" />
+            ) : (
+              <Text style={{ color: "white" }}>No data available</Text>
+            )}
+            {selectedCategory === "Calories" ? (
+              <View>
+                <Text style={styles.totals}>2000</Text>
+                <Text style={styles.totalsCategory}>Total Kcal</Text>
+              </View>
+            ) : selectedCategory === "Weight" ? (
+              <View style={styles.weightInfo}>
+                <Ionicons
+                  name="information-outline"
+                  size={14}
+                  color="#a0a0a0"
+                  style={{ marginRight: 5 }}
+                />
+                <Text style={styles.info}>
+                  You can update your weight in the profile section
+                </Text>
+              </View>
+            ) : selectedCategory === "Time" ? null : null}
           </View>
           <View style={styles.repMaxesHeader}>
             <Text style={styles.textHeader}>My one rep maxes</Text>
@@ -224,7 +309,10 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     padding: 20,
+    paddingRight: 0,
+    paddingLeft: 5,
     borderRadius: 20,
+    overflow: "hidden",
   },
 
   graphHeader: {
@@ -236,6 +324,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
     height: 40,
+    paddingHorizontal: 20,
   },
 
   pickerContainer: {
@@ -277,5 +366,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontStyle: "italic",
     textDecorationLine: "underline",
+  },
+
+  weightInfo: {
+    width: "80%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 20,
+  },
+
+  info: {
+    color: "#a0a0a0",
+    fontSize: 12,
+    fontStyle: "italic",
+    marginLeft: 5,
   },
 });
