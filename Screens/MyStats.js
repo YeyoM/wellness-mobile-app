@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   Pressable,
-  Dimensions,
   ActivityIndicator,
 } from "react-native";
 import Constants from "expo-constants";
@@ -18,27 +17,9 @@ import getStatsData from "../AsyncStorageFunctions/getStatsData.js";
 
 import getUserWeightProgressDataForGraph from "../Utils/graphsDataFunctions/getUserWeightProgressDataForGraph.js";
 import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/getUserCaloriesProgressDataForGraph.js";
-
-const customLabel = (val) => {
-  return (
-    <View style={{ width: 20, marginLeft: 10 }}>
-      <Text style={{ color: "#a0a0a0", fontSize: 10 }}>{val}</Text>
-    </View>
-  );
-};
+import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/getUserTimeSpentProgressDataForGraph.js";
 
 export default function MyStats({ navigation }) {
-  const lineData = [
-    { value: 20, labelComponent: () => customLabel("1/1") },
-    { value: 10, labelComponent: () => customLabel("1/2") },
-    { value: 2, labelComponent: () => customLabel("1/3") },
-    { value: 40, labelComponent: () => customLabel("1/4") },
-    { value: 36, labelComponent: () => customLabel("1/5") },
-    { value: 40, labelComponent: () => customLabel("1/6") },
-    { value: 54, labelComponent: () => customLabel("1/7") },
-    { value: 0, labelComponent: () => customLabel("1/8") },
-  ];
-
   const data = [
     { key: "1", value: "Calories" },
     { key: "2", value: "Weight" },
@@ -47,7 +28,13 @@ export default function MyStats({ navigation }) {
 
   const [selectedCategory, setSelectedCategory] = React.useState("Calories");
   const [exercises, setExercises] = React.useState([]);
+
   const [weightLineData, setWeightLineData] = React.useState([]);
+  const [caloriesLineData, setCaloriesLineData] = React.useState([]);
+  const [timeLineData, setTimeLineData] = React.useState([]);
+
+  const [totalCalories, setTotalCalories] = React.useState(0);
+  const [totalTimeSpent, setTotalTimeSpent] = React.useState(0);
 
   const [loading, setLoading] = useState(false);
 
@@ -76,8 +63,11 @@ export default function MyStats({ navigation }) {
         const caloriesProgressData = getUserCaloriesProgressDataForGraph({
           caloriesRecord: stats.caloriesRecord,
         });
-        console.log("Calories record", stats.caloriesRecord);
-        console.log(caloriesProgressData);
+        setCaloriesLineData(caloriesProgressData);
+        const timeProgressData = getUserTimeSpentProgressDataForGraph({
+          timeRecord: stats.totalTimeRecord,
+        });
+        setTimeLineData(timeProgressData);
         setLoading(false);
       })
       .catch((error) => {
@@ -86,7 +76,6 @@ export default function MyStats({ navigation }) {
   }, []);
 
   const onPressDetailedView = () => {
-    console.log("Pressed");
     navigation.navigate("Progress Graphs");
   };
 
@@ -164,7 +153,8 @@ export default function MyStats({ navigation }) {
               save="value"
               search={false}
               defaultOption={{ key: "1", value: "Calories" }}
-              setSelected={setSelectedCategory}
+              setSelected={(value) => setSelectedCategory(value)}
+              onSelected={(value) => setSelectedCategory(value)}
               boxStyles={{
                 backgroundColor: "#157AFF",
                 color: "white",
@@ -193,67 +183,94 @@ export default function MyStats({ navigation }) {
                 {selectedCategory}
               </Text>
             </View>
-            {!loading &&
-            weightLineData.length > 0 &&
-            selectedCategory === "Weight" ? (
-              <LineChart
-                hideDataPoints
-                isAnimated
-                animationDuration={1200}
-                initialSpacing={20}
-                data={weightLineData}
-                spacing={40}
-                thickness={3}
-                yAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
-                xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
-                yAxisThickness={0}
-                rulesColor="#50535B"
-                rulesType="solid"
-                xAxisColor="#50535B"
-                color="#157AFF"
-              />
-            ) : !loading && selectedCategory === "Calories" ? (
-              <LineChart
-                hideDataPoints
-                isAnimated
-                animationDuration={1200}
-                initialSpacing={20}
-                data={lineData}
-                spacing={40}
-                thickness={3}
-                yAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
-                xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
-                yAxisThickness={0}
-                rulesColor="#50535B"
-                rulesType="solid"
-                xAxisColor="#50535B"
-                color="#157AFF"
-              />
-            ) : !loading && selectedCategory === "Time" ? (
-              <LineChart
-                hideDataPoints
-                isAnimated
-                animationDuration={1200}
-                initialSpacing={20}
-                data={lineData}
-                spacing={40}
-                thickness={3}
-                yAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
-                xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
-                yAxisThickness={0}
-                rulesColor="#50535B"
-                rulesType="solid"
-                xAxisColor="#50535B"
-                color="#157AFF"
-              />
-            ) : loading ? (
-              <ActivityIndicator size="large" color="#157AFF" />
-            ) : (
-              <Text style={{ color: "white" }}>No data available</Text>
-            )}
+            <View style={{ overflow: "hidden", width: "100%" }}>
+              {!loading &&
+              weightLineData.length > 0 &&
+              selectedCategory === "Weight" ? (
+                <LineChart
+                  hideDataPoints
+                  isAnimated
+                  animationDuration={1200}
+                  initialSpacing={30}
+                  data={weightLineData}
+                  spacing={40}
+                  thickness={3}
+                  yAxisTextStyle={{
+                    color: "#a0a0a0",
+                    fontSize: 10,
+                    marginRight: 10,
+                  }}
+                  xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
+                  yAxisThickness={0}
+                  rulesColor="#50535B"
+                  rulesType="solid"
+                  xAxisColor="#50535B"
+                  color="#157AFF"
+                  yAxisLabelSuffix={" kg"}
+                />
+              ) : !loading &&
+                caloriesLineData.length > 0 &&
+                selectedCategory === "Calories" ? (
+                <LineChart
+                  hideDataPoints
+                  isAnimated
+                  animationDuration={1200}
+                  initialSpacing={caloriesLineData.length > 10 ? 20 : 40}
+                  data={caloriesLineData}
+                  spacing={caloriesLineData.length > 10 ? 40 : 60}
+                  thickness={3}
+                  yAxisTextStyle={{
+                    color: "#a0a0a0",
+                    fontSize: 10,
+                    marginRight: 10,
+                  }}
+                  xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
+                  yAxisThickness={0}
+                  rulesColor="#50535B"
+                  rulesType="solid"
+                  xAxisColor="#50535B"
+                  color="#157AFF"
+                  yAxisLabelSuffix=" Kcal "
+                />
+              ) : !loading &&
+                timeLineData.length > 0 &&
+                selectedCategory === "Time" ? (
+                <LineChart
+                  hideDataPoints
+                  isAnimated
+                  animationDuration={1200}
+                  initialSpacing={timeLineData.length > 10 ? 20 : 40}
+                  data={timeLineData}
+                  spacing={timeLineData.length > 10 ? 40 : 60}
+                  thickness={3}
+                  yAxisTextStyle={{
+                    color: "#a0a0a0",
+                    fontSize: 10,
+                    marginRight: 10,
+                  }}
+                  xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
+                  yAxisThickness={0}
+                  rulesColor="#50535B"
+                  rulesType="solid"
+                  xAxisColor="#50535B"
+                  color="#157AFF"
+                  yAxisLabelSuffix=" min"
+                />
+              ) : loading ? (
+                <ActivityIndicator size="large" color="#157AFF" />
+              ) : (
+                <Text style={{ color: "white" }}>No data available</Text>
+              )}
+            </View>
             {selectedCategory === "Calories" ? (
-              <View>
-                <Text style={styles.totals}>2000</Text>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.totals}>{totalCalories}</Text>
                 <Text style={styles.totalsCategory}>Total Kcal</Text>
               </View>
             ) : selectedCategory === "Weight" ? (
@@ -268,7 +285,18 @@ export default function MyStats({ navigation }) {
                   You can update your weight in the profile section
                 </Text>
               </View>
-            ) : selectedCategory === "Time" ? null : null}
+            ) : selectedCategory === "Time" ? (
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.totals}>{totalTimeSpent}</Text>
+                <Text style={styles.totalsCategory}>Total minutes spent</Text>
+              </View>
+            ) : null}
           </View>
           <View style={styles.repMaxesHeader}>
             <Text style={styles.textHeader}>My one rep maxes</Text>
@@ -309,8 +337,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     padding: 20,
-    paddingRight: 0,
-    paddingLeft: 5,
     borderRadius: 20,
     overflow: "hidden",
   },
@@ -324,7 +350,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
     height: 40,
-    paddingHorizontal: 20,
   },
 
   pickerContainer: {
