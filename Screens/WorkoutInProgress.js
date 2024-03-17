@@ -147,7 +147,7 @@ export default function WorkoutInProgress({ route, navigation }) {
       userWeight,
       userWeightUnit,
     );
-    totalCalories += calories;
+    totalCalories += calories.toFixed(2);
 
     setLoading(true);
     try {
@@ -158,6 +158,7 @@ export default function WorkoutInProgress({ route, navigation }) {
         totalCalories: totalCalories,
         totalWeight: totalWeight ? totalWeight : 1,
         totalTime: readableTime,
+        date: new Date(),
       });
       setLoading(false);
     } catch (error) {

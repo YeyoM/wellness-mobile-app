@@ -24,7 +24,6 @@ export default function MainTabs({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [initialQuestionsAnswered, setInitialQuestionsAnswered] =
     useState(false);
-  const [appDataFetched, setAppDataFetched] = useState(false);
 
   const [loadingScreen, setLoadingScreen] = useState(null);
 
@@ -86,27 +85,26 @@ export default function MainTabs({ navigation }) {
       getDataIsFetched()
         .then((value) => {
           if (value === "true") {
-            console.log("Data is fetched");
-            setAppDataFetched(true);
             setLoading(false);
           } else {
-            console.log("Data is not fetched");
-            setAppDataFetched(false);
             setLoading(false);
             getAppData(user.uid)
               .then(() => {
                 setLoading(false);
-                setAppDataFetched(true);
                 setDataIsFetched("true");
               })
               .catch((error) => {
                 console.log("Error in MainTabs.js: ", error);
+                Alert.alert(
+                  "Error",
+                  "An error has occurred, try again later please",
+                );
                 setLoading(false);
-                setAppDataFetched(false);
               });
           }
         })
         .catch((error) => {
+          Alert.alert("Error", "An error has occurred, try again later please");
           console.log(error);
         });
     }
@@ -114,9 +112,7 @@ export default function MainTabs({ navigation }) {
 
   if (
     (loading && !initialQuestionsAnswered) ||
-    (!loading && !initialQuestionsAnswered) ||
-    (loading && !appDataFetched) ||
-    (!loading && !appDataFetched)
+    (!loading && !initialQuestionsAnswered)
   ) {
     return loadingScreen === 1 ? (
       <Loading1 />

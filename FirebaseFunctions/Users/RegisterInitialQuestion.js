@@ -45,7 +45,7 @@ export const registerInitialQuestions = async (questions) => {
       trainingDuration: questions.trainingDuration,
       trainingHours: questions.trainingHours,
       email: email,
-      weightRecord: [],
+      weightRecord: [{ date: new Date(), weight: questions.weight }],
       workouts: [],
       routines: [],
       exercises: [],
