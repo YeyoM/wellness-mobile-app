@@ -52,6 +52,8 @@ export default function MyStats({ navigation }) {
   }, [navigation]);
 
   React.useEffect(() => {
+    setSelectedCategory("Calories");
+
     setLoading(true);
     getStatsData()
       .then((stats) => {
@@ -60,13 +62,17 @@ export default function MyStats({ navigation }) {
           weightRecord,
         });
         setWeightLineData(weightProgressData);
-        const caloriesProgressData = getUserCaloriesProgressDataForGraph({
-          caloriesRecord: stats.caloriesRecord,
-        });
+        const { caloriesProgressData, totalCalories } =
+          getUserCaloriesProgressDataForGraph({
+            caloriesRecord: stats.caloriesRecord,
+          });
+        setTotalCalories(totalCalories);
         setCaloriesLineData(caloriesProgressData);
-        const timeProgressData = getUserTimeSpentProgressDataForGraph({
-          timeRecord: stats.totalTimeRecord,
-        });
+        const { timeProgressData, totalTime } =
+          getUserTimeSpentProgressDataForGraph({
+            timeRecord: stats.totalTimeRecord,
+          });
+        setTotalTimeSpent(totalTime);
         setTimeLineData(timeProgressData);
         setLoading(false);
       })
@@ -76,7 +82,13 @@ export default function MyStats({ navigation }) {
   }, []);
 
   const onPressDetailedView = () => {
-    navigation.navigate("Progress Graphs");
+    navigation.navigate("Progress Graphs", {
+      weightLineData,
+      caloriesLineData,
+      timeLineData,
+      totalCalories,
+      totalTimeSpent,
+    });
   };
 
   return (
@@ -294,7 +306,7 @@ export default function MyStats({ navigation }) {
                 }}
               >
                 <Text style={styles.totals}>{totalTimeSpent}</Text>
-                <Text style={styles.totalsCategory}>Total minutes spent</Text>
+                <Text style={styles.totalsCategory}>Total time spent</Text>
               </View>
             ) : null}
           </View>

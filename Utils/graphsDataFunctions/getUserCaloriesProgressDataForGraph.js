@@ -29,6 +29,8 @@ export default function getUserCaloriesProgressDataForGraph({
     nextRecordDate = firebasDateToDate(caloriesRecord[nextRecordIndex].date);
   }
 
+  let totalCalories = currentCalories;
+
   while (currentDate <= today) {
     caloriesProgressData.push({
       date: `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`,
@@ -49,6 +51,7 @@ export default function getUserCaloriesProgressDataForGraph({
       currentDate.getDate() === nextRecordDate.getDate()
     ) {
       currentCalories = caloriesRecord[nextRecordIndex].calories;
+      totalCalories += currentCalories;
       nextRecordIndex++;
       if (nextRecordIndex < caloriesRecord.length) {
         nextRecordDate = firebasDateToDate(
@@ -59,5 +62,6 @@ export default function getUserCaloriesProgressDataForGraph({
       currentCalories = 0;
     }
   }
-  return caloriesProgressData;
+
+  return { caloriesProgressData, totalCalories: Math.round(totalCalories) };
 }

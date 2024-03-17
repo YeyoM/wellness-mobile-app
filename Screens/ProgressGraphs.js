@@ -11,36 +11,62 @@ import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 import { LineChart } from "react-native-gifted-charts";
 
-const customLabel = (label) => {
-  return (
-    <View style={{ width: 30, marginLeft: 10 }}>
-      <Text style={{ color: "white", fontSize: 10 }}>{label}</Text>
-    </View>
-  );
-};
+import RenderProgressGraphs from "../components/RenderProgressGraphs";
 
-export default function ProgressGraphs({ navigation }) {
-  const lineData = [
-    { value: 20, labelComponent: () => customLabel("1/1") },
-    { value: 10, labelComponent: () => customLabel("1/2") },
-    { value: 2, labelComponent: () => customLabel("1/3") },
-    { value: 40, labelComponent: () => customLabel("1/4") },
-    { value: 36, labelComponent: () => customLabel("1/5") },
-    { value: 40, labelComponent: () => customLabel("1/6") },
-    { value: 54, labelComponent: () => customLabel("1/7") },
-    { value: 0, labelComponent: () => customLabel("1/8") },
-    { value: 20, labelComponent: () => customLabel("1/9") },
-    { value: 10, labelComponent: () => customLabel("1/10") },
-    { value: 2, labelComponent: () => customLabel("1/11") },
-  ];
-
-  const data = [
-    { key: "1", value: "Calories" },
-    { key: "2", value: "Weight" },
-    { key: "3", value: "Time" },
-  ];
-
+export default function ProgressGraphs({ navigation, route }) {
   const [selectedCategory, setSelectedCategory] = React.useState("Calories");
+  const [selectedPeriod, setSelectedPeriod] = React.useState("Day");
+
+  const [weightLineData, setWeightLineData] = React.useState([]);
+  const [caloriesLineData, setCaloriesLineData] = React.useState([]);
+  const [timeLineData, setTimeLineData] = React.useState([]);
+
+  const [totalCalories, setTotalCalories] = React.useState(0);
+  const [totalTimeSpent, setTotalTimeSpent] = React.useState(0);
+
+  React.useEffect(() => {
+    if (route.params) {
+      if (route.params.weightLineData) {
+        setWeightLineData(route.params.weightLineData);
+      }
+      if (route.params.caloriesLineData) {
+        setCaloriesLineData(route.params.caloriesLineData);
+      }
+      if (route.params.timeLineData) {
+        setTimeLineData(route.params.timeLineData);
+      }
+      if (route.params.totalCalories) {
+        setTotalCalories(route.params.totalCalories);
+      }
+      if (route.params.totalTimeSpent) {
+        setTotalTimeSpent(route.params.totalTimeSpent);
+      }
+    }
+  }, [route.params]);
+
+  const handleSelectCalories = () => {
+    setSelectedCategory("Calories");
+  };
+
+  const handleSelectTime = () => {
+    setSelectedCategory("Time");
+  };
+
+  const handleSelectWeight = () => {
+    setSelectedCategory("Weight");
+  };
+
+  const handleSelectDay = () => {
+    setSelectedPeriod("Day");
+  };
+
+  const handleSelectWeek = () => {
+    setSelectedPeriod("Week");
+  };
+
+  const handleSelectMonth = () => {
+    setSelectedPeriod("Month");
+  };
 
   return (
     <View style={styles.container}>
@@ -79,15 +105,36 @@ export default function ProgressGraphs({ navigation }) {
             }}
           >
             <View style={styles.pillPicker}>
-              <View style={styles.optionSelected}>
+              <Pressable
+                style={
+                  selectedPeriod === "Day"
+                    ? styles.optionSelected
+                    : styles.optionUnselected
+                }
+                onPress={handleSelectDay}
+              >
                 <Text style={styles.day}>Day</Text>
-              </View>
-              <View style={styles.optionUnselected}>
+              </Pressable>
+              <Pressable
+                style={
+                  selectedPeriod === "Week"
+                    ? styles.optionSelected
+                    : styles.optionUnselected
+                }
+                onPress={handleSelectWeek}
+              >
                 <Text style={styles.day}>Week</Text>
-              </View>
-              <View style={styles.optionUnselected}>
+              </Pressable>
+              <Pressable
+                style={
+                  selectedPeriod === "Month"
+                    ? styles.optionSelected
+                    : styles.optionUnselected
+                }
+                onPress={handleSelectMonth}
+              >
                 <Text style={styles.day}>Month</Text>
-              </View>
+              </Pressable>
             </View>
             <View style={styles.infoHeader}>
               <View
@@ -100,12 +147,20 @@ export default function ProgressGraphs({ navigation }) {
                 <Text
                   style={{ color: "white", fontSize: 13, color: "#a0a0a0" }}
                 >
-                  Total calories
+                  {selectedCategory === "Calories"
+                    ? "Total Calories"
+                    : selectedCategory === "Time"
+                      ? "Total Time"
+                      : ""}
                 </Text>
                 <Text
                   style={{ color: "white", fontSize: 30, fontWeight: "bold" }}
                 >
-                  1256
+                  {selectedCategory === "Calories"
+                    ? `${totalCalories}Kcal`
+                    : selectedCategory === "Time"
+                      ? totalTimeSpent
+                      : ""}
                 </Text>
               </View>
               <View
@@ -118,80 +173,30 @@ export default function ProgressGraphs({ navigation }) {
                 <Text
                   style={{ color: "white", fontSize: 13, color: "#a0a0a0" }}
                 >
-                  Change in Kcal
+                  {selectedCategory === "Calories"
+                    ? "Average Calories"
+                    : selectedCategory === "Time"
+                      ? "Average Time"
+                      : ""}
                 </Text>
                 <Text
                   style={{ color: "white", fontSize: 30, fontWeight: "bold" }}
                 >
-                  21
+                  {selectedCategory === "Calories"
+                    ? "10Kcal"
+                    : selectedCategory === "Time"
+                      ? "50m"
+                      : ""}
                 </Text>
               </View>
             </View>
           </View>
           <View style={styles.graphContainer}>
-            <LineChart
-              isAnimated
-              width={Dimensions.get("window").width * 0.8}
-              animationDuration={1200}
-              initialSpacing={20}
-              data={lineData}
-              /*spacing={
-                (Dimensions.get("window").width * 0.8) / (lineData.length + 2)
-              } */
-              spacing={40}
-              yAxisThickness={0}
-              xAxisThickness={0}
-              rulesColor="#0B0B0B"
-              rulesType="solid"
-              xAxisColor="#50535B"
-              color="#157AFF"
-              dataPointsColor="#157AFF"
-              pointerConfig={{
-                pointerStripUptoDataPoint: false,
-                pointerVanishDelay: 600000,
-                pointerStripColor: "#0496FF",
-                pointerStripWidth: 2,
-                pointerStripHeight: 160,
-                strokeDashArray: [2, 5],
-                pointerColor: "#0496FF",
-                radius: 5,
-                pointerLabelWidth: 100,
-                pointerLabelHeight: 40,
-                activatePointersOnLongPress: true,
-                pointerLabelComponent: (items) => {
-                  return (
-                    <View
-                      style={{
-                        height: 40,
-                        width: 50,
-                        backgroundColor: "#0496FF",
-                        borderRadius: 4,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        zIndex: 999,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: "white",
-                          fontSize: 9,
-                        }}
-                      >
-                        1 / 1
-                      </Text>
-                      <Text
-                        style={{
-                          color: "white",
-                          fontWeight: "bold",
-                          fontSize: 11,
-                        }}
-                      >
-                        {items[0].value} Kcal
-                      </Text>
-                    </View>
-                  );
-                },
-              }}
+            <RenderProgressGraphs
+              category={selectedCategory}
+              weightLineData={weightLineData}
+              caloriesLineData={caloriesLineData}
+              timeLineData={timeLineData}
             />
           </View>
           <View style={styles.info}>
@@ -215,30 +220,51 @@ export default function ProgressGraphs({ navigation }) {
             </Text>
           </View>
           <View style={styles.categories}>
-            <View style={styles.categorySelected}>
+            <Pressable
+              style={
+                selectedCategory === "Calories"
+                  ? styles.categorySelected
+                  : styles.categoryUnselected
+              }
+              onPress={handleSelectCalories}
+            >
               <Ionicons name="flame-outline" size={36} color="white" />
               <Text
                 style={{ color: "white", marginTop: 5, fontWeight: "bold" }}
               >
                 Calories
               </Text>
-            </View>
-            <View style={styles.categoryUnselected}>
+            </Pressable>
+            <Pressable
+              style={
+                selectedCategory === "Time"
+                  ? styles.categorySelected
+                  : styles.categoryUnselected
+              }
+              onPress={handleSelectTime}
+            >
               <Ionicons name="time-outline" size={36} color="white" />
               <Text
                 style={{ color: "white", marginTop: 5, fontWeight: "bold" }}
               >
                 Time
               </Text>
-            </View>
-            <View style={styles.categoryUnselected}>
+            </Pressable>
+            <Pressable
+              style={
+                selectedCategory === "Weight"
+                  ? styles.categorySelected
+                  : styles.categoryUnselected
+              }
+              onPress={handleSelectWeight}
+            >
               <Ionicons name="person-outline" size={36} color="white" />
               <Text
                 style={{ color: "white", marginTop: 5, fontWeight: "bold" }}
               >
                 Weight
               </Text>
-            </View>
+            </Pressable>
           </View>
         </View>
       </ScrollView>

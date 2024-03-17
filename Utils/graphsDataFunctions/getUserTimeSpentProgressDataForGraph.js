@@ -2,6 +2,9 @@ import React from "react";
 import { View, Text } from "react-native";
 import firebasDateToDate from "../firebasDateToDate";
 
+import readableTimeToMinutes from "../readableTimeToMinutes";
+import minutesToReadableTime from "../minutesToReadableTime";
+
 /** getUserTimeSpentProgressDataForGraph
  * @param {object} timeRecord - the user's time record object
  * @returns {array} - an array of objects that can be used to create a graph of the user's time progress over time
@@ -28,10 +31,13 @@ export default function getUserTimeSpentProgressDataForGraph({ timeRecord }) {
     nextRecordDate = firebasDateToDate(timeRecord[nextRecordIndex].date);
   }
 
+  let totalTime = 0;
+
   while (currentDate <= today) {
     let time = null;
     if (currentTotalTime) {
       time = readableTimeToMinutes(currentTotalTime);
+      totalTime += time;
     } else {
       time = 0;
     }
@@ -65,17 +71,6 @@ export default function getUserTimeSpentProgressDataForGraph({ timeRecord }) {
     }
   }
 
-  return timeProgressData;
+  const readableTotalTime = minutesToReadableTime(totalTime);
+  return { timeProgressData, totalTime: readableTotalTime };
 }
-
-/** readbleTimeToMinutes
- * @param {string} time - a string representing a time in the format "MM:SS"
- * @returns {number} - the time in minutes
- * @description - This function will take a string representing a time in the format "MM:SS" and return the time in minutes
- * @example - readableTimeToMinutes("10:30") => 10.5
- * @example - readableTimeToMinutes("10:00") => 10
- */
-const readableTimeToMinutes = (time) => {
-  const [minutes, seconds] = time.split(":");
-  return parseInt(minutes) + parseInt(seconds) / 60;
-};
