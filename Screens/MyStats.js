@@ -19,6 +19,8 @@ import getUserWeightProgressDataForGraph from "../Utils/graphsDataFunctions/getU
 import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/getUserCaloriesProgressDataForGraph.js";
 import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/getUserTimeSpentProgressDataForGraph.js";
 
+import getUserCaloriesProgressDataByWeekForGraph from "../Utils/graphsDataFunctions/CaloriesData/getUserCaloriesProgressDataByWeekForGraph.js";
+
 export default function MyStats({ navigation }) {
   const data = [
     { key: "1", value: "Calories" },

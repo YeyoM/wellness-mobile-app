@@ -55,7 +55,6 @@ export default function MainTabs({ navigation }) {
   }, [loadingScreen]);
 
   useEffect(() => {
-    console.log("MainTabs.js");
     const user = FIREBASE_AUTH.currentUser;
     if (!user) {
       navigation.navigate("Login");
@@ -108,7 +107,7 @@ export default function MainTabs({ navigation }) {
           console.log(error);
         });
     }
-  }, [navigation, isFocused, initialQuestionsAnswered]);
+  }, [navigation, isFocused]);
 
   if (
     (loading && !initialQuestionsAnswered) ||
