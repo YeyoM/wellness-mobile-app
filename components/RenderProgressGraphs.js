@@ -4,11 +4,20 @@ import { View, Text, Dimensions } from "react-native";
 
 export default function RenderProgressGraphs({
   category,
+  selectedPeriod,
   caloriesLineData,
+  caloriesLineDataByMonth,
+  caloriesLineDataByWeek,
   weightLineData,
   timeLineData,
 }) {
-  if (!caloriesLineData || !weightLineData || !timeLineData) {
+  if (
+    !caloriesLineData ||
+    !weightLineData ||
+    !timeLineData ||
+    !caloriesLineDataByMonth ||
+    !caloriesLineDataByWeek
+  ) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text>No data available</Text>
@@ -27,6 +36,9 @@ export default function RenderProgressGraphs({
         spacing={40}
         yAxisThickness={0}
         xAxisThickness={0}
+        yAxisTextStyle={{
+          color: "#0B0B0B",
+        }}
         rulesColor="#0B0B0B"
         rulesType="solid"
         xAxisColor="#50535B"
@@ -90,6 +102,9 @@ export default function RenderProgressGraphs({
         data={timeLineData}
         spacing={40}
         yAxisThickness={0}
+        yAxisTextStyle={{
+          color: "#0B0B0B",
+        }}
         xAxisThickness={0}
         rulesColor="#0B0B0B"
         rulesType="solid"
@@ -150,15 +165,28 @@ export default function RenderProgressGraphs({
         isAnimated
         width={Dimensions.get("window").width * 0.8}
         animationDuration={1200}
-        initialSpacing={20}
-        data={caloriesLineData}
-        spacing={40}
+        initialSpacing={
+          selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
+        }
+        data={
+          selectedPeriod === "Month"
+            ? caloriesLineDataByMonth
+            : selectedPeriod === "Week"
+              ? caloriesLineDataByWeek
+              : caloriesLineData
+        }
+        spacing={
+          selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
+        }
         yAxisThickness={0}
         xAxisThickness={0}
         rulesColor="#0B0B0B"
         rulesType="solid"
-        xAxisColor="#50535B"
+        xAxisColor="#0B0B0B"
         color="#157AFF"
+        yAxisTextStyle={{
+          color: "#0B0B0B",
+        }}
         dataPointsColor="#157AFF"
         pointerConfig={{
           pointerStripUptoDataPoint: false,

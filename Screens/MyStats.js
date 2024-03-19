@@ -19,8 +19,6 @@ import getUserWeightProgressDataForGraph from "../Utils/graphsDataFunctions/getU
 import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/getUserCaloriesProgressDataForGraph.js";
 import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/getUserTimeSpentProgressDataForGraph.js";
 
-import getUserCaloriesProgressDataByWeekForGraph from "../Utils/graphsDataFunctions/CaloriesData/getUserCaloriesProgressDataByWeekForGraph.js";
-
 export default function MyStats({ navigation }) {
   const data = [
     { key: "1", value: "Calories" },
@@ -32,7 +30,15 @@ export default function MyStats({ navigation }) {
   const [exercises, setExercises] = React.useState([]);
 
   const [weightLineData, setWeightLineData] = React.useState([]);
+
   const [caloriesLineData, setCaloriesLineData] = React.useState([]);
+  const [caloriesLineDataByWeek, setCaloriesLineDataByWeek] = React.useState(
+    [],
+  );
+  const [caloriesLineDataByMonth, setCaloriesLineDataByMonth] = React.useState(
+    [],
+  );
+
   const [timeLineData, setTimeLineData] = React.useState([]);
 
   const [totalCalories, setTotalCalories] = React.useState(0);
@@ -64,12 +70,18 @@ export default function MyStats({ navigation }) {
           weightRecord,
         });
         setWeightLineData(weightProgressData);
-        const { caloriesProgressData, totalCalories } =
-          getUserCaloriesProgressDataForGraph({
-            caloriesRecord: stats.caloriesRecord,
-          });
+        const {
+          caloriesProgressData,
+          totalCalories,
+          caloriesProgressDataByWeek,
+          caloriesProgressDataByMonth,
+        } = getUserCaloriesProgressDataForGraph({
+          caloriesRecord: stats.caloriesRecord,
+        });
         setTotalCalories(totalCalories);
         setCaloriesLineData(caloriesProgressData);
+        setCaloriesLineDataByWeek(caloriesProgressDataByWeek);
+        setCaloriesLineDataByMonth(caloriesProgressDataByMonth);
         const { timeProgressData, totalTime } =
           getUserTimeSpentProgressDataForGraph({
             timeRecord: stats.totalTimeRecord,
@@ -87,6 +99,8 @@ export default function MyStats({ navigation }) {
     navigation.navigate("Progress Graphs", {
       weightLineData,
       caloriesLineData,
+      caloriesLineDataByWeek,
+      caloriesLineDataByMonth,
       timeLineData,
       totalCalories,
       totalTimeSpent,

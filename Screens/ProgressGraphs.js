@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
-import { LineChart } from "react-native-gifted-charts";
 
 import RenderProgressGraphs from "../components/RenderProgressGraphs";
 
@@ -18,7 +17,15 @@ export default function ProgressGraphs({ navigation, route }) {
   const [selectedPeriod, setSelectedPeriod] = React.useState("Day");
 
   const [weightLineData, setWeightLineData] = React.useState([]);
+
   const [caloriesLineData, setCaloriesLineData] = React.useState([]);
+  const [caloriesLineDataByWeek, setCaloriesLineDataByWeek] = React.useState(
+    [],
+  );
+  const [caloriesLineDataByMonth, setCaloriesLineDataByMonth] = React.useState(
+    [],
+  );
+
   const [timeLineData, setTimeLineData] = React.useState([]);
 
   const [totalCalories, setTotalCalories] = React.useState(0);
@@ -31,6 +38,12 @@ export default function ProgressGraphs({ navigation, route }) {
       }
       if (route.params.caloriesLineData) {
         setCaloriesLineData(route.params.caloriesLineData);
+      }
+      if (route.params.caloriesLineDataByWeek) {
+        setCaloriesLineDataByWeek(route.params.caloriesLineDataByWeek);
+      }
+      if (route.params.caloriesLineDataByMonth) {
+        setCaloriesLineDataByMonth(route.params.caloriesLineDataByMonth);
       }
       if (route.params.timeLineData) {
         setTimeLineData(route.params.timeLineData);
@@ -194,8 +207,11 @@ export default function ProgressGraphs({ navigation, route }) {
           <View style={styles.graphContainer}>
             <RenderProgressGraphs
               category={selectedCategory}
+              selectedPeriod={selectedPeriod}
               weightLineData={weightLineData}
               caloriesLineData={caloriesLineData}
+              caloriesLineDataByWeek={caloriesLineDataByWeek}
+              caloriesLineDataByMonth={caloriesLineDataByMonth}
               timeLineData={timeLineData}
             />
           </View>
