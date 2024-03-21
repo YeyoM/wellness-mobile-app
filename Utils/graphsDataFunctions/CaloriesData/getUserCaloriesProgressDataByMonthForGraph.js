@@ -6,22 +6,6 @@ import { View, Text } from "react-native";
  * @returns {array} - an array of objects that can be used to create a graph of the user's calories progress over time grouped by month
  * @description - This function will take in the user's calories progress data and return an array of
  * objects that can be used to create a graph of the user's calories progress over time grouped by month.
- * @example
- *                - caloriesProgressData = [
- *                { date: "2021-01-01", calories: 60 },
- *                { date: "2021-01-02", calories: 0 },
- *                { date: "2021-01-03", calories: 0 },
- *                ...
- *                { date: "2021-01-07", calories: 80 },
- *                { date: "2021-01-08", calories: 0 },
- *                ...
- *                { date: "2021-02-14", calories: 80 },
- *                { date: "2021-02-15", calories: 0 },
- *                ]
- *                - getUserCaloriesProgressDataByWeekForGraph({caloriesProgressData}) = [
- *                { month: "2021-01-01", value: 140 },
- *                { month: "2021-02-01", value: 80 },
- *                ]
  */
 export default function getUserCaloriesProgressDataByMonthForGraph({
   caloriesProgressData,
@@ -41,7 +25,7 @@ export default function getUserCaloriesProgressDataByMonthForGraph({
       monthCalories += caloriesProgressData[i].value;
     } else {
       caloriesProgressDataByMonth.push({
-        month: `${currentDate.getFullYear()}-${currentMonth + 1}-01`,
+        month: `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`,
         value: monthCalories,
         label: (
           <View style={{ width: 40, marginLeft: 20 }}>
@@ -58,7 +42,7 @@ export default function getUserCaloriesProgressDataByMonthForGraph({
 
   if (monthCalories > 0) {
     caloriesProgressDataByMonth.push({
-      month: `${currentDate.getFullYear()}-${currentMonth + 1}-01`,
+      month: `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`,
       value: monthCalories,
       label: (
         <View style={{ width: 40, marginLeft: 20 }}>

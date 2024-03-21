@@ -10,13 +10,17 @@ export default function RenderProgressGraphs({
   caloriesLineDataByWeek,
   weightLineData,
   timeLineData,
+  timeLineDataByMonth,
+  timeLineDataByWeek,
 }) {
   if (
     !caloriesLineData ||
     !weightLineData ||
     !timeLineData ||
     !caloriesLineDataByMonth ||
-    !caloriesLineDataByWeek
+    !caloriesLineDataByWeek ||
+    !timeLineDataByMonth ||
+    !timeLineDataByWeek
   ) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -98,9 +102,19 @@ export default function RenderProgressGraphs({
         isAnimated
         width={Dimensions.get("window").width * 0.8}
         animationDuration={1200}
-        initialSpacing={20}
-        data={timeLineData}
-        spacing={40}
+        initialSpacing={
+          selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
+        }
+        data={
+          selectedPeriod === "Month"
+            ? timeLineDataByMonth
+            : selectedPeriod === "Week"
+              ? timeLineDataByWeek
+              : timeLineData
+        }
+        spacing={
+          selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
+        }
         yAxisThickness={0}
         yAxisTextStyle={{
           color: "#0B0B0B",

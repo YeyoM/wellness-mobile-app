@@ -59,7 +59,5 @@ export default function getUserCaloriesProgressDataByWeekForGraph({
     });
   }
 
-  console.log("caloriesProgressDataByWeek", caloriesProgressDataByWeek);
-
   return caloriesProgressDataByWeek;
 }

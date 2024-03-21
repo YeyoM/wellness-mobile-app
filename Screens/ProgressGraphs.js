@@ -27,6 +27,8 @@ export default function ProgressGraphs({ navigation, route }) {
   );
 
   const [timeLineData, setTimeLineData] = React.useState([]);
+  const [timeLineDataByWeek, setTimeLineDataByWeek] = React.useState([]);
+  const [timeLineDataByMonth, setTimeLineDataByMonth] = React.useState([]);
 
   const [totalCalories, setTotalCalories] = React.useState(0);
   const [totalTimeSpent, setTotalTimeSpent] = React.useState(0);
@@ -47,6 +49,12 @@ export default function ProgressGraphs({ navigation, route }) {
       }
       if (route.params.timeLineData) {
         setTimeLineData(route.params.timeLineData);
+      }
+      if (route.params.timeLineDataByWeek) {
+        setTimeLineDataByWeek(route.params.timeLineDataByWeek);
+      }
+      if (route.params.timeLineDataByMonth) {
+        setTimeLineDataByMonth(route.params.timeLineDataByMonth);
       }
       if (route.params.totalCalories) {
         setTotalCalories(route.params.totalCalories);
@@ -213,6 +221,8 @@ export default function ProgressGraphs({ navigation, route }) {
               caloriesLineDataByWeek={caloriesLineDataByWeek}
               caloriesLineDataByMonth={caloriesLineDataByMonth}
               timeLineData={timeLineData}
+              timeLineDataByWeek={timeLineDataByWeek}
+              timeLineDataByMonth={timeLineDataByMonth}
             />
           </View>
           <View style={styles.info}>

@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text } from "react-native";
-import firebasDateToDate from "../firebasDateToDate";
-import getUserCaloriesProgressDataByWeekForGraph from "./CaloriesData/getUserCaloriesProgressDataByWeekForGraph";
-import getUserCaloriesProgressDataByMonthForGraph from "./CaloriesData/getUserCaloriesProgressDataByMonthForGraph";
+import firebasDateToDate from "../../firebasDateToDate";
+import getUserCaloriesProgressDataByWeekForGraph from "./getUserCaloriesProgressDataByWeekForGraph";
+import getUserCaloriesProgressDataByMonthForGraph from "./getUserCaloriesProgressDataByMonthForGraph";
 
 /** getUserCaloriesProgressDataForGraph
  * @param {object} caloriesRecord - the user's calories record object
