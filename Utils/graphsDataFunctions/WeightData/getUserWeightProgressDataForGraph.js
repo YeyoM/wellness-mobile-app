@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
-import firebasDateToDate from "../firebasDateToDate";
+import firebasDateToDate from "../../firebasDateToDate";
 
 /** getUserWeightProgressDataForGraph
  * @param {object} weightRecord - the user's weight record object

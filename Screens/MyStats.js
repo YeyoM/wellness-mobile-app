@@ -15,7 +15,7 @@ import CarouselRepsMaxes from "../components/CarouselRepsMaxes";
 import getExercisesStorage from "../AsyncStorageFunctions/Exercises/getExercisesStorage.js";
 import getStatsData from "../AsyncStorageFunctions/getStatsData.js";
 
-import getUserWeightProgressDataForGraph from "../Utils/graphsDataFunctions/getUserWeightProgressDataForGraph.js";
+import getUserWeightProgressDataForGraph from "../Utils/graphsDataFunctions/WeightData/getUserWeightProgressDataForGraph.js";
 import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/CaloriesData/getUserCaloriesProgressDataForGraph.js";
 import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/TimeData/getUserTimeSpentProgressDataForGraph.js";
 

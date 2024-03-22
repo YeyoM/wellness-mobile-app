@@ -50,8 +50,8 @@ export default function RenderProgressGraphs({
         dataPointsColor="#157AFF"
         pointerConfig={{
           pointerStripUptoDataPoint: false,
-          pointerVanishDelay: 600000,
           pointerStripColor: "#0496FF",
+          pointerVanishDelay: 1000,
           pointerStripWidth: 2,
           pointerStripHeight: 160,
           strokeDashArray: [2, 5],
@@ -76,19 +76,11 @@ export default function RenderProgressGraphs({
                 <Text
                   style={{
                     color: "white",
-                    fontSize: 9,
-                  }}
-                >
-                  1 / 1
-                </Text>
-                <Text
-                  style={{
-                    color: "white",
                     fontWeight: "bold",
                     fontSize: 11,
                   }}
                 >
-                  {items[0].value} Kcal
+                  {items[0].value} Kg
                 </Text>
               </View>
             );
@@ -127,7 +119,7 @@ export default function RenderProgressGraphs({
         dataPointsColor="#157AFF"
         pointerConfig={{
           pointerStripUptoDataPoint: false,
-          pointerVanishDelay: 600000,
+          pointerVanishDelay: 1000,
           pointerStripColor: "#0496FF",
           pointerStripWidth: 2,
           pointerStripHeight: 160,
@@ -153,19 +145,11 @@ export default function RenderProgressGraphs({
                 <Text
                   style={{
                     color: "white",
-                    fontSize: 9,
-                  }}
-                >
-                  1 / 1
-                </Text>
-                <Text
-                  style={{
-                    color: "white",
                     fontWeight: "bold",
                     fontSize: 11,
                   }}
                 >
-                  {items[0].value} Kcal
+                  {items[0].value} min
                 </Text>
               </View>
             );
@@ -204,9 +188,9 @@ export default function RenderProgressGraphs({
         dataPointsColor="#157AFF"
         pointerConfig={{
           pointerStripUptoDataPoint: false,
-          pointerVanishDelay: 600000,
           pointerStripColor: "#0496FF",
           pointerStripWidth: 2,
+          pointerVanishDelay: 1000,
           pointerStripHeight: 160,
           strokeDashArray: [2, 5],
           pointerColor: "#0496FF",
@@ -227,14 +211,6 @@ export default function RenderProgressGraphs({
                   zIndex: 999,
                 }}
               >
-                <Text
-                  style={{
-                    color: "white",
-                    fontSize: 9,
-                  }}
-                >
-                  1 / 1
-                </Text>
                 <Text
                   style={{
                     color: "white",

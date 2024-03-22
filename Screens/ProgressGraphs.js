@@ -172,7 +172,7 @@ export default function ProgressGraphs({ navigation, route }) {
                     ? "Total Calories"
                     : selectedCategory === "Time"
                       ? "Total Time"
-                      : ""}
+                      : "Current Weight"}
                 </Text>
                 <Text
                   style={{ color: "white", fontSize: 30, fontWeight: "bold" }}
@@ -181,7 +181,7 @@ export default function ProgressGraphs({ navigation, route }) {
                     ? `${totalCalories}Kcal`
                     : selectedCategory === "Time"
                       ? totalTimeSpent
-                      : ""}
+                      : "70kg"}
                 </Text>
               </View>
               <View
