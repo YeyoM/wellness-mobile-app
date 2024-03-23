@@ -30,6 +30,8 @@ export default function MyStats({ navigation }) {
   const [exercises, setExercises] = React.useState([]);
 
   const [weightLineData, setWeightLineData] = React.useState([]);
+  const [weightLineDataByWeek, setWeightLineDataByWeek] = React.useState([]);
+  const [weightLineDataByMonth, setWeightLineDataByMonth] = React.useState([]);
 
   const [caloriesLineData, setCaloriesLineData] = React.useState([]);
   const [caloriesLineDataByWeek, setCaloriesLineDataByWeek] = React.useState(
@@ -45,6 +47,7 @@ export default function MyStats({ navigation }) {
 
   const [totalCalories, setTotalCalories] = React.useState(0);
   const [totalTimeSpent, setTotalTimeSpent] = React.useState(0);
+  const [currentWeight, setCurrentWeight] = React.useState(0);
 
   const [loading, setLoading] = useState(false);
 
@@ -68,10 +71,18 @@ export default function MyStats({ navigation }) {
     getStatsData()
       .then((stats) => {
         const weightRecord = stats.weightRecord;
-        const weightProgressData = getUserWeightProgressDataForGraph({
+        const {
+          weightProgressData,
+          weightProgressDataByWeekForGraph,
+          weightProgressDataByMonthForGraph,
+          currentWeight,
+        } = getUserWeightProgressDataForGraph({
           weightRecord,
         });
         setWeightLineData(weightProgressData);
+        setWeightLineDataByWeek(weightProgressDataByWeekForGraph);
+        setWeightLineDataByMonth(weightProgressDataByMonthForGraph);
+        setCurrentWeight(currentWeight);
         const {
           caloriesProgressData,
           totalCalories,
@@ -106,6 +117,8 @@ export default function MyStats({ navigation }) {
   const onPressDetailedView = () => {
     navigation.navigate("Progress Graphs", {
       weightLineData,
+      weightLineDataByWeek,
+      weightLineDataByMonth,
       caloriesLineData,
       caloriesLineDataByWeek,
       caloriesLineDataByMonth,
@@ -114,6 +127,7 @@ export default function MyStats({ navigation }) {
       timeLineDataByMonth,
       totalCalories,
       totalTimeSpent,
+      currentWeight,
     });
   };
 

@@ -17,6 +17,8 @@ export default function ProgressGraphs({ navigation, route }) {
   const [selectedPeriod, setSelectedPeriod] = React.useState("Day");
 
   const [weightLineData, setWeightLineData] = React.useState([]);
+  const [weightLineDataByWeek, setWeightLineDataByWeek] = React.useState([]);
+  const [weightLineDataByMonth, setWeightLineDataByMonth] = React.useState([]);
 
   const [caloriesLineData, setCaloriesLineData] = React.useState([]);
   const [caloriesLineDataByWeek, setCaloriesLineDataByWeek] = React.useState(
@@ -32,11 +34,18 @@ export default function ProgressGraphs({ navigation, route }) {
 
   const [totalCalories, setTotalCalories] = React.useState(0);
   const [totalTimeSpent, setTotalTimeSpent] = React.useState(0);
+  const [currentWeight, setCurrentWeight] = React.useState(0);
 
   React.useEffect(() => {
     if (route.params) {
       if (route.params.weightLineData) {
         setWeightLineData(route.params.weightLineData);
+      }
+      if (route.params.weightLineDataByWeek) {
+        setWeightLineDataByWeek(route.params.weightLineDataByWeek);
+      }
+      if (route.params.weightLineDataByMonth) {
+        setWeightLineDataByMonth(route.params.weightLineDataByMonth);
       }
       if (route.params.caloriesLineData) {
         setCaloriesLineData(route.params.caloriesLineData);
@@ -61,6 +70,9 @@ export default function ProgressGraphs({ navigation, route }) {
       }
       if (route.params.totalTimeSpent) {
         setTotalTimeSpent(route.params.totalTimeSpent);
+      }
+      if (route.params.currentWeight) {
+        setCurrentWeight(route.params.currentWeight);
       }
     }
   }, [route.params]);
@@ -181,7 +193,7 @@ export default function ProgressGraphs({ navigation, route }) {
                     ? `${totalCalories}Kcal`
                     : selectedCategory === "Time"
                       ? totalTimeSpent
-                      : "70kg"}
+                      : `${currentWeight}kg`}
                 </Text>
               </View>
               <View
@@ -217,6 +229,8 @@ export default function ProgressGraphs({ navigation, route }) {
               category={selectedCategory}
               selectedPeriod={selectedPeriod}
               weightLineData={weightLineData}
+              weightLineDataByWeek={weightLineDataByWeek}
+              weightLineDataByMonth={weightLineDataByMonth}
               caloriesLineData={caloriesLineData}
               caloriesLineDataByWeek={caloriesLineDataByWeek}
               caloriesLineDataByMonth={caloriesLineDataByMonth}

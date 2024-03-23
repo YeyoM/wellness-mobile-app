@@ -9,6 +9,8 @@ export default function RenderProgressGraphs({
   caloriesLineDataByMonth,
   caloriesLineDataByWeek,
   weightLineData,
+  weightLineDataByMonth,
+  weightLineDataByWeek,
   timeLineData,
   timeLineDataByMonth,
   timeLineDataByWeek,
@@ -16,6 +18,8 @@ export default function RenderProgressGraphs({
   if (
     !caloriesLineData ||
     !weightLineData ||
+    !weightLineDataByMonth ||
+    !weightLineDataByWeek ||
     !timeLineData ||
     !caloriesLineDataByMonth ||
     !caloriesLineDataByWeek ||
@@ -35,9 +39,19 @@ export default function RenderProgressGraphs({
         isAnimated
         width={Dimensions.get("window").width * 0.8}
         animationDuration={1200}
-        initialSpacing={20}
-        data={weightLineData}
-        spacing={40}
+        initialSpacing={
+          selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
+        }
+        data={
+          selectedPeriod === "Month"
+            ? weightLineDataByMonth
+            : selectedPeriod === "Week"
+              ? weightLineDataByWeek
+              : weightLineData
+        }
+        spacing={
+          selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
+        }
         yAxisThickness={0}
         xAxisThickness={0}
         yAxisTextStyle={{

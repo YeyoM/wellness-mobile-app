@@ -21,7 +21,7 @@ export default function getUserWeightProgressDataByWeekForGraph({
       const averageWeight = weight / week.length;
       const weekDate = new Date(weightProgressData[i].date);
       weightProgressDataByWeek.push({
-        week: weekDate,
+        week: weightProgressData[i].date,
         value: averageWeight,
         label: (
           <View style={{ width: 40, marginLeft: 20 }}>
@@ -46,7 +46,7 @@ export default function getUserWeightProgressDataByWeekForGraph({
       weightProgressData[weightProgressData.length - 1].date,
     );
     weightProgressDataByWeek.push({
-      week: weekDate,
+      week: weightProgressData[weightProgressData.length - 1].date,
       value: averageWeight,
       label: (
         <View style={{ width: 40, marginLeft: 20 }}>
