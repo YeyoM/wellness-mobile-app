@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
-import { LineChart } from "react-native-gifted-charts";
 
 import RenderProgressGraphs from "../components/RenderProgressGraphs";
 
@@ -18,28 +17,62 @@ export default function ProgressGraphs({ navigation, route }) {
   const [selectedPeriod, setSelectedPeriod] = React.useState("Day");
 
   const [weightLineData, setWeightLineData] = React.useState([]);
+  const [weightLineDataByWeek, setWeightLineDataByWeek] = React.useState([]);
+  const [weightLineDataByMonth, setWeightLineDataByMonth] = React.useState([]);
+
   const [caloriesLineData, setCaloriesLineData] = React.useState([]);
+  const [caloriesLineDataByWeek, setCaloriesLineDataByWeek] = React.useState(
+    [],
+  );
+  const [caloriesLineDataByMonth, setCaloriesLineDataByMonth] = React.useState(
+    [],
+  );
+
   const [timeLineData, setTimeLineData] = React.useState([]);
+  const [timeLineDataByWeek, setTimeLineDataByWeek] = React.useState([]);
+  const [timeLineDataByMonth, setTimeLineDataByMonth] = React.useState([]);
 
   const [totalCalories, setTotalCalories] = React.useState(0);
   const [totalTimeSpent, setTotalTimeSpent] = React.useState(0);
+  const [currentWeight, setCurrentWeight] = React.useState(0);
 
   React.useEffect(() => {
     if (route.params) {
       if (route.params.weightLineData) {
         setWeightLineData(route.params.weightLineData);
       }
+      if (route.params.weightLineDataByWeek) {
+        setWeightLineDataByWeek(route.params.weightLineDataByWeek);
+      }
+      if (route.params.weightLineDataByMonth) {
+        setWeightLineDataByMonth(route.params.weightLineDataByMonth);
+      }
       if (route.params.caloriesLineData) {
         setCaloriesLineData(route.params.caloriesLineData);
       }
+      if (route.params.caloriesLineDataByWeek) {
+        setCaloriesLineDataByWeek(route.params.caloriesLineDataByWeek);
+      }
+      if (route.params.caloriesLineDataByMonth) {
+        setCaloriesLineDataByMonth(route.params.caloriesLineDataByMonth);
+      }
       if (route.params.timeLineData) {
         setTimeLineData(route.params.timeLineData);
+      }
+      if (route.params.timeLineDataByWeek) {
+        setTimeLineDataByWeek(route.params.timeLineDataByWeek);
+      }
+      if (route.params.timeLineDataByMonth) {
+        setTimeLineDataByMonth(route.params.timeLineDataByMonth);
       }
       if (route.params.totalCalories) {
         setTotalCalories(route.params.totalCalories);
       }
       if (route.params.totalTimeSpent) {
         setTotalTimeSpent(route.params.totalTimeSpent);
+      }
+      if (route.params.currentWeight) {
+        setCurrentWeight(route.params.currentWeight);
       }
     }
   }, [route.params]);
@@ -151,7 +184,7 @@ export default function ProgressGraphs({ navigation, route }) {
                     ? "Total Calories"
                     : selectedCategory === "Time"
                       ? "Total Time"
-                      : ""}
+                      : "Current Weight"}
                 </Text>
                 <Text
                   style={{ color: "white", fontSize: 30, fontWeight: "bold" }}
@@ -160,7 +193,7 @@ export default function ProgressGraphs({ navigation, route }) {
                     ? `${totalCalories}Kcal`
                     : selectedCategory === "Time"
                       ? totalTimeSpent
-                      : ""}
+                      : `${currentWeight}kg`}
                 </Text>
               </View>
               <View
@@ -194,9 +227,16 @@ export default function ProgressGraphs({ navigation, route }) {
           <View style={styles.graphContainer}>
             <RenderProgressGraphs
               category={selectedCategory}
+              selectedPeriod={selectedPeriod}
               weightLineData={weightLineData}
+              weightLineDataByWeek={weightLineDataByWeek}
+              weightLineDataByMonth={weightLineDataByMonth}
               caloriesLineData={caloriesLineData}
+              caloriesLineDataByWeek={caloriesLineDataByWeek}
+              caloriesLineDataByMonth={caloriesLineDataByMonth}
               timeLineData={timeLineData}
+              timeLineDataByWeek={timeLineDataByWeek}
+              timeLineDataByMonth={timeLineDataByMonth}
             />
           </View>
           <View style={styles.info}>

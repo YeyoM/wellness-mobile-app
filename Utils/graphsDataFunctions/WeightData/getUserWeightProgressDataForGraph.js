@@ -1,6 +1,9 @@
 import React from "react";
 import { View, Text } from "react-native";
-import firebasDateToDate from "../firebasDateToDate";
+import firebasDateToDate from "../../firebasDateToDate";
+
+import getUserWeightProgressDataByWeekForGraph from "./getUserWeightProgressDataByWeekForGraph";
+import getUserWeightProgressDataByMonthForGraph from "./getUserWeightProgressDataByMonthForGraph";
 
 /** getUserWeightProgressDataForGraph
  * @param {object} weightRecord - the user's weight record object
@@ -50,5 +53,23 @@ export default function getUserWeightProgressDataForGraph({ weightRecord }) {
       }
     }
   }
-  return weightProgressData;
+
+  const weightProgressDataByWeekForGraph =
+    getUserWeightProgressDataByWeekForGraph({
+      weightProgressData,
+    });
+
+  const weightProgressDataByMonthForGraph =
+    getUserWeightProgressDataByMonthForGraph({
+      weightProgressData,
+    });
+
+  currentWeight = weightRecord[weightRecord.length - 1].weight;
+
+  return {
+    weightProgressData,
+    weightProgressDataByWeekForGraph,
+    weightProgressDataByMonthForGraph,
+    currentWeight,
+  };
 }

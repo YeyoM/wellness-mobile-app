@@ -1,9 +1,12 @@
 import React from "react";
 import { View, Text } from "react-native";
-import firebasDateToDate from "../firebasDateToDate";
+import firebasDateToDate from "../../firebasDateToDate";
 
-import readableTimeToMinutes from "../readableTimeToMinutes";
-import minutesToReadableTime from "../minutesToReadableTime";
+import readableTimeToMinutes from "../../readableTimeToMinutes";
+import minutesToReadableTime from "../../minutesToReadableTime";
+
+import getUserTimeSpentProgressDataByWeekForGraph from "./getUserTimeSpentProgressDataByWeekForGraph";
+import getUserTimeSpentProgressDataByMonthForGraph from "./getUserTimeSpentProgressDataByMonthForGraph";
 
 /** getUserTimeSpentProgressDataForGraph
  * @param {object} timeRecord - the user's time record object
@@ -17,7 +20,12 @@ import minutesToReadableTime from "../minutesToReadableTime";
  */
 export default function getUserTimeSpentProgressDataForGraph({ timeRecord }) {
   if (!timeRecord || timeRecord.length === 0) {
-    return [];
+    return {
+      timeProgressData: [],
+      totalTime: "0:00",
+      timeProgressDataByWeek: [],
+      timeProgressDataByMonth: [],
+    };
   }
 
   let timeProgressData = [];
@@ -71,6 +79,19 @@ export default function getUserTimeSpentProgressDataForGraph({ timeRecord }) {
     }
   }
 
+  const timeProgressDataByWeek = getUserTimeSpentProgressDataByWeekForGraph({
+    timeProgressData,
+  });
+
+  const timeProgressDataByMonth = getUserTimeSpentProgressDataByMonthForGraph({
+    timeProgressData,
+  });
+
   const readableTotalTime = minutesToReadableTime(totalTime);
-  return { timeProgressData, totalTime: readableTotalTime };
+  return {
+    timeProgressData,
+    totalTime: readableTotalTime,
+    timeProgressDataByWeek,
+    timeProgressDataByMonth,
+  };
 }

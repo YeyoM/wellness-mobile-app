@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text } from "react-native";
-import firebasDateToDate from "../firebasDateToDate";
+import firebasDateToDate from "../../firebasDateToDate";
+import getUserCaloriesProgressDataByWeekForGraph from "./getUserCaloriesProgressDataByWeekForGraph";
+import getUserCaloriesProgressDataByMonthForGraph from "./getUserCaloriesProgressDataByMonthForGraph";
 
 /** getUserCaloriesProgressDataForGraph
  * @param {object} caloriesRecord - the user's calories record object
@@ -63,5 +65,19 @@ export default function getUserCaloriesProgressDataForGraph({
     }
   }
 
-  return { caloriesProgressData, totalCalories: Math.round(totalCalories) };
+  const caloriesProgressDataByWeek = getUserCaloriesProgressDataByWeekForGraph({
+    caloriesProgressData,
+  });
+
+  const caloriesProgressDataByMonth =
+    getUserCaloriesProgressDataByMonthForGraph({
+      caloriesProgressData,
+    });
+
+  return {
+    caloriesProgressData,
+    totalCalories: Math.round(totalCalories),
+    caloriesProgressDataByWeek,
+    caloriesProgressDataByMonth,
+  };
 }

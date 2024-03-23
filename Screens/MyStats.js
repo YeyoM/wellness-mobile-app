@@ -15,9 +15,9 @@ import CarouselRepsMaxes from "../components/CarouselRepsMaxes";
 import getExercisesStorage from "../AsyncStorageFunctions/Exercises/getExercisesStorage.js";
 import getStatsData from "../AsyncStorageFunctions/getStatsData.js";
 
-import getUserWeightProgressDataForGraph from "../Utils/graphsDataFunctions/getUserWeightProgressDataForGraph.js";
-import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/getUserCaloriesProgressDataForGraph.js";
-import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/getUserTimeSpentProgressDataForGraph.js";
+import getUserWeightProgressDataForGraph from "../Utils/graphsDataFunctions/WeightData/getUserWeightProgressDataForGraph.js";
+import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/CaloriesData/getUserCaloriesProgressDataForGraph.js";
+import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/TimeData/getUserTimeSpentProgressDataForGraph.js";
 
 export default function MyStats({ navigation }) {
   const data = [
@@ -30,11 +30,24 @@ export default function MyStats({ navigation }) {
   const [exercises, setExercises] = React.useState([]);
 
   const [weightLineData, setWeightLineData] = React.useState([]);
+  const [weightLineDataByWeek, setWeightLineDataByWeek] = React.useState([]);
+  const [weightLineDataByMonth, setWeightLineDataByMonth] = React.useState([]);
+
   const [caloriesLineData, setCaloriesLineData] = React.useState([]);
+  const [caloriesLineDataByWeek, setCaloriesLineDataByWeek] = React.useState(
+    [],
+  );
+  const [caloriesLineDataByMonth, setCaloriesLineDataByMonth] = React.useState(
+    [],
+  );
+
   const [timeLineData, setTimeLineData] = React.useState([]);
+  const [timeLineDataByWeek, setTimeLineDataByWeek] = React.useState([]);
+  const [timeLineDataByMonth, setTimeLineDataByMonth] = React.useState([]);
 
   const [totalCalories, setTotalCalories] = React.useState(0);
   const [totalTimeSpent, setTotalTimeSpent] = React.useState(0);
+  const [currentWeight, setCurrentWeight] = React.useState(0);
 
   const [loading, setLoading] = useState(false);
 
@@ -58,22 +71,42 @@ export default function MyStats({ navigation }) {
     getStatsData()
       .then((stats) => {
         const weightRecord = stats.weightRecord;
-        const weightProgressData = getUserWeightProgressDataForGraph({
+        const {
+          weightProgressData,
+          weightProgressDataByWeekForGraph,
+          weightProgressDataByMonthForGraph,
+          currentWeight,
+        } = getUserWeightProgressDataForGraph({
           weightRecord,
         });
         setWeightLineData(weightProgressData);
-        const { caloriesProgressData, totalCalories } =
-          getUserCaloriesProgressDataForGraph({
-            caloriesRecord: stats.caloriesRecord,
-          });
+        setWeightLineDataByWeek(weightProgressDataByWeekForGraph);
+        setWeightLineDataByMonth(weightProgressDataByMonthForGraph);
+        setCurrentWeight(currentWeight);
+        const {
+          caloriesProgressData,
+          totalCalories,
+          caloriesProgressDataByWeek,
+          caloriesProgressDataByMonth,
+        } = getUserCaloriesProgressDataForGraph({
+          caloriesRecord: stats.caloriesRecord,
+        });
         setTotalCalories(totalCalories);
         setCaloriesLineData(caloriesProgressData);
-        const { timeProgressData, totalTime } =
-          getUserTimeSpentProgressDataForGraph({
-            timeRecord: stats.totalTimeRecord,
-          });
+        setCaloriesLineDataByWeek(caloriesProgressDataByWeek);
+        setCaloriesLineDataByMonth(caloriesProgressDataByMonth);
+        const {
+          timeProgressData,
+          totalTime,
+          timeProgressDataByWeek,
+          timeProgressDataByMonth,
+        } = getUserTimeSpentProgressDataForGraph({
+          timeRecord: stats.totalTimeRecord,
+        });
         setTotalTimeSpent(totalTime);
         setTimeLineData(timeProgressData);
+        setTimeLineDataByWeek(timeProgressDataByWeek);
+        setTimeLineDataByMonth(timeProgressDataByMonth);
         setLoading(false);
       })
       .catch((error) => {
@@ -84,10 +117,17 @@ export default function MyStats({ navigation }) {
   const onPressDetailedView = () => {
     navigation.navigate("Progress Graphs", {
       weightLineData,
+      weightLineDataByWeek,
+      weightLineDataByMonth,
       caloriesLineData,
+      caloriesLineDataByWeek,
+      caloriesLineDataByMonth,
       timeLineData,
+      timeLineDataByWeek,
+      timeLineDataByMonth,
       totalCalories,
       totalTimeSpent,
+      currentWeight,
     });
   };
 
