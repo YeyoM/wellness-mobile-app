@@ -24,6 +24,7 @@ export default function EditProfile({ route, navigation }) {
     weightUnit,
     heightUnit,
     privateProfile,
+    weightRecord,
   } = route.params;
 
   const [name_, setName] = React.useState(name);
@@ -32,6 +33,7 @@ export default function EditProfile({ route, navigation }) {
   const [height_, setHeight] = React.useState(height);
   const [weightUnit_, setWeightUnit] = React.useState(weightUnit);
   const [heightUnit_, setHeightUnit] = React.useState(heightUnit);
+  const [weightRecord_, setWeightRecord] = React.useState(weightRecord);
 
   const [setSwitch, setSetSwitch] = React.useState(showHeightAndWeight);
   const [setSwitch2, setSetSwitch2] = React.useState(privateProfile);
@@ -63,6 +65,7 @@ export default function EditProfile({ route, navigation }) {
         weightUnit: weightUnit_,
         heightUnit: heightUnit_,
         privateProfile: setSwitch2,
+        weightRecord: weightRecord_,
         userId: user.uid,
       });
       navigation.navigate("Profile", { refresh: true });

@@ -49,7 +49,7 @@ export const registerInitialQuestions = async (questions) => {
       workouts: [],
       routines: [],
       exercises: [],
-      showwHeightAndWeight: true,
+      showHeightAndWeight: true,
       finishedWorkouts: 0,
       hoursTrained: 0,
       achievements: 0,
