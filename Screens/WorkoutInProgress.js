@@ -32,10 +32,14 @@ import CurrentExercise from "../components/CurrentExercise";
 import SetsTable from "../components/SetsTable";
 
 import SaveWorkout from "../FirebaseFunctions/Workouts/SaveWorkout";
+import getWorkouts from "../FirebaseFunctions/Workouts/GetWorkouts.js";
+import saveWorkoutsStorage from "../AsyncStorageFunctions/Workouts/saveWorkoutsStorage.js";
 import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
 import calculateTimeLift from "../Utils/calculateTimeLift.js";
 
 import SwipeTimer from "../components/SwipeTimer.js";
+
+import { FIREBASE_AUTH } from "../firebaseConfig.js";
 
 export default function WorkoutInProgress({ route, navigation }) {
   const { day, userWeight, userWeightUnit } = route.params;
@@ -62,6 +66,8 @@ export default function WorkoutInProgress({ route, navigation }) {
 
   const [currentCalories, setCurrentCalories] = useState(0);
 
+  const [currentTotalWeight, setCurrentTotalWeight] = useState(0);
+
   const [startTime, setStartTime] = useState(null);
   const [time, setTime] = useState(0);
   const [readableTime, setReadableTime] = useState("00:00");
@@ -71,6 +77,18 @@ export default function WorkoutInProgress({ route, navigation }) {
   const [showTimer, setShowTimer] = useState(false);
 
   const handleEndWorkout = async () => {
+    const user = FIREBASE_AUTH.currentUser;
+
+    if (!user) {
+      Alert.alert("Please log in to save the workout", "", [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+      ]);
+      return;
+    }
+
     if (currentExerciseIndex < numberOfExercises - 1) {
       Alert.alert(
         "Are you sure you want to end the workout?",
@@ -119,9 +137,11 @@ export default function WorkoutInProgress({ route, navigation }) {
     // If they are, add the last exercise to the currentWorkoutInfo state
     let meanReps = 0;
     let meanWeight = 0;
+    let totalWeightExercise = 0;
     for (let i = 0; i < currentSets.length; i++) {
       meanReps += parseInt(currentSets[i].reps);
       meanWeight += parseInt(currentSets[i].weight);
+      totalWeightExercise += parseInt(currentSets[i].weight);
     }
     meanReps /= currentSets.length;
     meanWeight /= currentSets.length;
@@ -137,7 +157,6 @@ export default function WorkoutInProgress({ route, navigation }) {
     ];
     // calculate the total calories, weight and time
     let totalCalories = 0;
-    let totalWeight = 0;
     const duration = calculateTimeLift(
       currentSets.length,
       currentExercise.restTime / 60,
@@ -148,7 +167,7 @@ export default function WorkoutInProgress({ route, navigation }) {
       userWeightUnit,
     );
     totalCalories += calories.toFixed(2);
-
+    totalCalories = parseFloat(totalCalories);
     setLoading(true);
     try {
       await SaveWorkout({
@@ -156,11 +175,22 @@ export default function WorkoutInProgress({ route, navigation }) {
         routineId: day.routineId,
         dayId: day.dayId,
         totalCalories: totalCalories,
-        totalWeight: totalWeight ? totalWeight : 1,
+        totalWeight: totalWeightExercise + currentTotalWeight,
         totalTime: readableTime,
         date: new Date(),
       });
+
+      // refresh the user's data (workouts) and save to async storage
+      const workouts = await getWorkouts(user.uid);
+      await saveWorkoutsStorage(workouts);
+
       setLoading(false);
+      navigation.navigate("Workout Finished 1", {
+        day: day,
+        totalCalories,
+        totalWeight: totalWeightExercise + currentTotalWeight,
+        totalTime: readableTime,
+      });
     } catch (error) {
       console.log(error);
       Alert.alert("Error saving the workout", "Please try again later", [
@@ -172,7 +202,6 @@ export default function WorkoutInProgress({ route, navigation }) {
       setLoading(false);
       return;
     }
-    navigation.navigate("Workout Finished 1", { day: day });
   };
 
   useEffect(() => {
@@ -273,13 +302,14 @@ export default function WorkoutInProgress({ route, navigation }) {
       // get the mean of the weight and reps of the current exercise and add it to the currentWorkoutInfo state
       let meanReps = 0;
       let meanWeight = 0;
+      let totalWeightExercise = 0;
       for (let i = 0; i < currentSets.length; i++) {
         meanReps += parseInt(currentSets[i].reps);
         meanWeight += parseInt(currentSets[i].weight);
+        totalWeightExercise += parseInt(currentSets[i].weight);
       }
       meanReps /= currentSets.length;
       meanWeight /= currentSets.length;
-
       setCurrentWorkoutInfo([
         ...currentWorkoutInfo,
         {
@@ -290,6 +320,7 @@ export default function WorkoutInProgress({ route, navigation }) {
           exerciseId: currentExercise.exerciseId,
         },
       ]);
+      setCurrentTotalWeight(currentTotalWeight + totalWeightExercise);
       const sets = exercises[currentExerciseIndex + 1].numberOfSets;
       const weight = exercises[currentExerciseIndex + 1].weight;
       const reps = exercises[currentExerciseIndex + 1].numberOfReps;

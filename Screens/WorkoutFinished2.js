@@ -6,10 +6,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { Dimensions } from "react-native";
 import Constants from "expo-constants";
 
+import Cooking from "./LoadingTransitionScreens/Cooking.js";
+
 import * as Progress from "react-native-progress";
 
 export default function WorkoutFinished2({ route, navigation }) {
-  const { routine } = route.params;
+  const { day, totalCalories, totalWeight, totalTime } = route.params;
 
   return (
     <ScrollView style={styles.container}>
@@ -131,7 +133,12 @@ export default function WorkoutFinished2({ route, navigation }) {
             marginVertical: 40,
           }}
           onPress={() =>
-            navigation.navigate("Share Workout", { routine: routine })
+            navigation.navigate("Share Workout", {
+              day: day,
+              totalCalories: totalCalories,
+              totalWeight: totalWeight,
+              totalTime: totalTime,
+            })
           }
         >
           <Text style={{ color: "white", fontSize: 20 }}>Continue</Text>

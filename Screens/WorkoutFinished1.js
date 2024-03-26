@@ -13,7 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 
 export default function WorkoutFinished1({ route, navigation }) {
-  const { routine } = route.params;
+  const { day, totalCalories, totalWeight, totalTime } = route.params;
 
   return (
     <ScrollView style={styles.container}>
@@ -73,7 +73,7 @@ export default function WorkoutFinished1({ route, navigation }) {
               <Text
                 style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
               >
-                200
+                {totalCalories}
               </Text>
               <Text
                 style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
@@ -116,7 +116,7 @@ export default function WorkoutFinished1({ route, navigation }) {
               <Text
                 style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
               >
-                120
+                {totalWeight}
               </Text>
               <Text
                 style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
@@ -160,12 +160,12 @@ export default function WorkoutFinished1({ route, navigation }) {
               <Text
                 style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
               >
-                1.5
+                {totalTime}
               </Text>
               <Text
                 style={{ color: "white", fontSize: 20, fontWeight: "bold" }}
               >
-                Hours
+                Minutes
               </Text>
             </View>
           </View>
@@ -217,7 +217,12 @@ export default function WorkoutFinished1({ route, navigation }) {
             marginVertical: 40,
           }}
           onPress={() =>
-            navigation.navigate("Workout Finished 2", { routine: routine })
+            navigation.navigate("Workout Finished 2", {
+              day: day,
+              totalCalories: totalCalories,
+              totalWeight: totalWeight,
+              totalTime: totalTime,
+            })
           }
         >
           <Text style={{ color: "white", fontSize: 20 }}>Continue</Text>
@@ -241,4 +246,3 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-
