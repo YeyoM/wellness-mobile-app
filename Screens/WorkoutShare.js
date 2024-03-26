@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,9 +11,28 @@ import { CircularProgressBase } from "react-native-circular-progress-indicator";
 import { Ionicons } from "@expo/vector-icons";
 
 import Constants from "expo-constants";
+import readableTimeToMinutes from "../Utils/readableTimeToMinutes.js";
 
 export default function WorkoutShare({ route, navigation }) {
-  const { routine } = route.params;
+  const { day, totalCalories, totalWeight, totalTime } = route.params;
+
+  const [progressCalories, setProgressCalories] = useState(0);
+  const [progressWeight, setProgressWeight] = useState(0);
+  const [progressTime, setProgressTime] = useState(0);
+
+  useEffect(() => {
+    const realTime = readableTimeToMinutes(totalTime);
+    // for the progressTime, if the time is more than 60 minutes, then the progress will be 100%
+    // else, the progress will be the percentage of the time spent
+    if (realTime >= 60) {
+      setProgressTime(100);
+    } else {
+      setProgressTime((realTime / 60) * 100);
+    }
+
+    setProgressCalories((totalCalories / 300) * 100);
+    setProgressWeight((totalWeight / 300) * 100);
+  }, []);
 
   const props = {
     activeStrokeWidth: 20,
@@ -52,24 +71,24 @@ export default function WorkoutShare({ route, navigation }) {
         </Text>
         <CircularProgressBase
           {...props}
-          value={80}
+          value={progressCalories}
           radius={125}
           activeStrokeColor={"#FF4242"}
           inActiveStrokeColor={"#FF4242"}
         >
           <CircularProgressBase
             {...props}
-            value={87}
+            value={progressWeight}
             radius={100}
-            activeStrokeColor={"#0496FF"}
-            inActiveStrokeColor={"#0496FF"}
+            activeStrokeColor={"#E05A0F"}
+            inActiveStrokeColor={"#E05A0F"}
           >
             <CircularProgressBase
               {...props}
-              value={62}
+              value={progressTime}
               radius={75}
-              activeStrokeColor={"#E05A0F"}
-              inActiveStrokeColor={"#E05A0F"}
+              activeStrokeColor={"#0496FF"}
+              inActiveStrokeColor={"#0496FF"}
             />
           </CircularProgressBase>
         </CircularProgressBase>
@@ -105,7 +124,7 @@ export default function WorkoutShare({ route, navigation }) {
                 marginTop: 10,
               }}
             >
-              200
+              {totalCalories}
             </Text>
             <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
               Calories
@@ -132,7 +151,7 @@ export default function WorkoutShare({ route, navigation }) {
                 marginTop: 10,
               }}
             >
-              120
+              {totalWeight}
             </Text>
             <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
               Kg
@@ -159,10 +178,10 @@ export default function WorkoutShare({ route, navigation }) {
                 marginTop: 10,
               }}
             >
-              1.5
+              {totalTime}
             </Text>
             <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>
-              Hours
+              Minutes
             </Text>
           </View>
         </View>

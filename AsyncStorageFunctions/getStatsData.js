@@ -13,15 +13,20 @@ export default async function getStatsData() {
   const user = await getUserStorage();
   const workouts = await getWorkoutsStorage();
 
-  // from the user extract the weight history
-  // from each workout, extract the totalTime and the totalCalories
   const weightRecord = user.weightRecord;
   const caloriesRecord = [];
   const totalTimeRecord = [];
   workouts.map((workout) => {
+    if (
+      workout.date === undefined ||
+      workout.totalCalories === undefined ||
+      workout.totalTime === undefined
+    ) {
+      return;
+    }
     const calories = {
       date: workout.date,
-      calories: workout.totalCalories,
+      calories: parseFloat(workout.totalCalories),
     };
     const totalTime = {
       date: workout.date,
