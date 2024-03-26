@@ -27,31 +27,49 @@ export default function Profile({ route, navigation }) {
       navigation.navigate("Login");
       return;
     }
-    setIsLoading(true);
-    getUserStorage()
-      .then((data) => {
-        if (data) {
-          setIsLoading(false);
+
+    if (route.params && route.params.refresh) {
+      console.log("refreshing profile");
+      GetUser(user.uid)
+        .then((data) => {
+          saveUserStorage(data);
           setProfileData(data);
-        } else {
-          GetUser(user.uid)
-            .then((data) => {
-              saveUserStorage(data);
-              setProfileData(data);
-            })
-            .catch((error) => {
-              Alert.alert("Error", error.message);
-              navigation.navigate("Home");
-            })
-            .finally(() => {
-              setIsLoading(false);
-            });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        navigation.navigate("Home");
-      });
+        })
+        .catch((error) => {
+          Alert.alert("Error", error.message);
+          navigation.navigate("Home");
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+      route.params.refresh = false;
+    } else {
+      setIsLoading(true);
+      getUserStorage()
+        .then((data) => {
+          if (data) {
+            setIsLoading(false);
+            setProfileData(data);
+          } else {
+            GetUser(user.uid)
+              .then((data) => {
+                saveUserStorage(data);
+                setProfileData(data);
+              })
+              .catch((error) => {
+                Alert.alert("Error", error.message);
+                navigation.navigate("Home");
+              })
+              .finally(() => {
+                setIsLoading(false);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          navigation.navigate("Home");
+        });
+    }
     setIsLoading(false);
   }, [route.params]);
 
@@ -116,7 +134,8 @@ export default function Profile({ route, navigation }) {
           <View style={styles.bottom}>
             <Pressable
               style={styles.editButton}
-              onPress={() =>
+              onPress={() => {
+                console.log(profileData);
                 navigation.navigate("User Update", {
                   screen: "Edit Profile",
                   params: {
@@ -128,9 +147,10 @@ export default function Profile({ route, navigation }) {
                     heightUnit: profileData?.heightUnit,
                     showHeightAndWeight: profileData?.showHeightAndWeight,
                     privateProfile: profileData?.privateProfile,
+                    weightRecord: profileData?.weightRecord,
                   },
-                })
-              }
+                });
+              }}
             >
               <Text style={{ color: "white" }}>Edit Profile</Text>
             </Pressable>

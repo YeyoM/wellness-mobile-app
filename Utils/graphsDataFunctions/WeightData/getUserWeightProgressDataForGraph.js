@@ -19,6 +19,7 @@ export default function getUserWeightProgressDataForGraph({ weightRecord }) {
   if (weightRecord.length === 0) {
     return [];
   }
+
   const today = new Date();
   const firstDate = firebasDateToDate(weightRecord[0].date);
   const lastDate = firebasDateToDate(
@@ -44,10 +45,10 @@ export default function getUserWeightProgressDataForGraph({ weightRecord }) {
       currentWeight = weightRecord[weightRecord.length - 1].weight;
     } else {
       for (let i = 0; i < weightRecord.length; i++) {
-        if (
-          currentDate.getTime() ===
-          firebasDateToDate(weightRecord[i].date).getTime()
-        ) {
+        let currentDateCompare = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
+        let date_ = firebasDateToDate(weightRecord[i].date);
+        let compareDate = `${date_.getFullYear()}-${date_.getMonth() + 1}-${date_.getDate()}`;
+        if (currentDateCompare === compareDate) {
           currentWeight = weightRecord[i].weight;
         }
       }
