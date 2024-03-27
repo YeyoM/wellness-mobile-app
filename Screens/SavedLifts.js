@@ -135,9 +135,15 @@ export default function SavedLifts({ route, navigation }) {
     setRoutine((prevRoutine) => {
       const newRoutine = { ...prevRoutine };
       newRoutine.days[currentDay].exercises.push(newLift);
-      newRoutine.days[currentDay].totalDuration += Math.round(time);
-      newRoutine.days[currentDay].totalCalories += Math.round(calories);
-      newRoutine.days[currentDay].totalSets += lift.defaultNumberOfSets;
+      newRoutine.days[currentDay].totalDuration =
+        parseFloat(newRoutine.days[currentDay].totalDuration) +
+        parseFloat(Math.round(time));
+      newRoutine.days[currentDay].totalCalories =
+        parseFloat(newRoutine.days[currentDay].totalCalories) +
+        parseFloat(Math.round(calories));
+      newRoutine.days[currentDay].totalSets =
+        parseFloat(newRoutine.days[currentDay].totalSets) +
+        parseFloat(newLift.numberOfSets);
       return newRoutine;
     });
 
