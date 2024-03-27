@@ -84,7 +84,6 @@ export default function EditRoutine({ navigation }) {
   const handleGoBack = async () => {
     // get the routine before edit from the async async-storage
     const routineBeforeEdit = await getRoutineBeforeEdit();
-    console.log(routineBeforeEdit);
     navigation.navigate("Saved Routines", {
       beforeEdit: true,
       beforeEditIndex: routineBeforeEditIndex,
@@ -240,17 +239,17 @@ export default function EditRoutine({ navigation }) {
                 <Text
                   style={{ color: "#9095A1", fontSize: 12, marginRight: 5 }}
                 >
-                  {routine.days[currentDay].totalDuration ?? 0} min
+                  {parseFloat(routine.days[currentDay].totalDuration) ?? 0} min
                 </Text>
                 <Text
                   style={{ color: "#9095A1", fontSize: 12, marginRight: 5 }}
                 >
-                  {routine.days[currentDay].totalSets ?? 0} sets
+                  {parseFloat(routine.days[currentDay].totalSets ?? 0)} sets
                 </Text>
                 <Text
                   style={{ color: "#9095A1", fontSize: 12, marginRight: 5 }}
                 >
-                  {routine.days[currentDay].totalCalories ?? 0} cal
+                  {parseFloat(routine.days[currentDay].totalCalories) ?? 0} cal
                 </Text>
               </View>
             </View>

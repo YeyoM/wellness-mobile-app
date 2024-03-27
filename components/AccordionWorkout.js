@@ -91,12 +91,14 @@ const Accordion = ({ routine_, navigation, index }) => {
                   <Text style={styles.routineInfo}>
                     {day.exercises?.length} exercises
                   </Text>
-                  <Text style={styles.routineInfo}>{day.totalSets} sets</Text>
                   <Text style={styles.routineInfo}>
-                    {day.totalCalories} calories
+                    {parseInt(day.totalSets)} sets
                   </Text>
                   <Text style={styles.routineInfo}>
-                    {day.totalDuration} minutes
+                    {parseFloat(day.totalCalories)} calories
+                  </Text>
+                  <Text style={styles.routineInfo}>
+                    {parseFloat(day.totalDuration)} minutes
                   </Text>
                 </View>
                 {routine_.days.exercises &&

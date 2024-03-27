@@ -31,9 +31,15 @@ export default function PreviewWorkout({
           <View style={{ flexDirection: "column", width: "70%" }}>
             <Text style={styles.textTitle}>{day.dayName}</Text>
             <View style={{ flexDirection: "row", width: "70%" }}>
-              <Text style={styles.dayInfo}>{day.totalDuration} min</Text>
-              <Text style={styles.dayInfo}>{day.totalCalories} cal</Text>
-              <Text style={styles.dayInfo}>{day.totalSets} sets</Text>
+              <Text style={styles.dayInfo}>
+                {parseFloat(day.totalDuration)} min
+              </Text>
+              <Text style={styles.dayInfo}>
+                {parseFloat(day.totalCalories)} cal
+              </Text>
+              <Text style={styles.dayInfo}>
+                {parseFloat(day.totalSets)} sets
+              </Text>
             </View>
           </View>
           <Pressable

@@ -55,8 +55,6 @@ export default function SavedRoutines({ navigation, route }) {
   }, [route]);
 
   useEffect(() => {
-    // get the user id, to get the user's routines
-    console.log("SavedRoutines.js");
     const user = FIREBASE_AUTH.currentUser;
     if (user) {
       setUser(user);
@@ -149,7 +147,7 @@ export default function SavedRoutines({ navigation, route }) {
               marginBottom: 20,
             }}
           >
-            Scroll down to refresh{" "}
+            {refreshing ? "Refreshing..." : "Pull down to refresh"}
           </Text>
           <Pressable
             style={styles.createContainer}

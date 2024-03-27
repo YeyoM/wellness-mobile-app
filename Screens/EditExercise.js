@@ -75,9 +75,6 @@ export default function EditExercise({ route, navigation }) {
 
   // update the calories and total time when the user changes the reps, sets, weight, or rest time
   useEffect(() => {
-    console.log("updating");
-    console.log(reps, sets, weight, restTime);
-    console.log(userWeight, userWeightUnit);
     setTotalDuration(calculateTimeLift(sets, restTime));
     setCalories(
       calculateCaloriesLift(
@@ -86,8 +83,6 @@ export default function EditExercise({ route, navigation }) {
         userWeightUnit,
       ),
     );
-    console.log("calories", calories);
-    console.log("totalDuration", totalDuration);
   }, [reps, sets, weight, restTime, userWeight, userWeightUnit]);
 
   const handleApply = () => {
