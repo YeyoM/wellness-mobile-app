@@ -59,6 +59,7 @@ export default async function createRoutine(userId, routine) {
       totalCalories: "0",
       totalSets: "0",
       exercises: [],
+      userId: userId,
     };
     newDays.push(newDay);
     const newDayRef = doc(collection(FIRESTORE, "days"));
