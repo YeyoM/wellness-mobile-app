@@ -6,8 +6,12 @@ import React from "react";
 import CarouselItemReps from "./CarouselItemReps";
 
 export default function CarouselDays({ exercises }) {
-  const [loop, setLoop] = React.useState(false);
+  const [loop, _setLoop] = React.useState(false);
   const r = React.useRef(null);
+
+  if (!exercises) {
+    return null;
+  }
 
   return (
     <Carousel
