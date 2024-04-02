@@ -4,10 +4,8 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 const Tab = createMaterialTopTabNavigator();
 
 import { FIREBASE_AUTH } from "../firebaseConfig";
-import { UserAnsweredInitialQuestions } from "../FirebaseFunctions/Users/UserAnsweredInitialQuestions";
 
 import Constants from "expo-constants";
-import PrimaryNotification from "../components/PrimaryNotification";
 import { Ionicons } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
 
@@ -18,9 +16,10 @@ import GetUser from "../FirebaseFunctions/Users/GetUser";
 import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage";
 import saveUserStorage from "../AsyncStorageFunctions/Users/saveUserStorage";
 
-export default function Home({ navigation }) {
+export default function Home({ navigation, route }) {
   const [user, setUser] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshDays, setRefreshDays] = useState(false);
 
   useEffect(() => {
     const user = FIREBASE_AUTH.currentUser;
@@ -55,6 +54,13 @@ export default function Home({ navigation }) {
       });
     setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    if (route.params?.refresh) {
+      setRefreshDays(true);
+      route.params.refresh = false;
+    }
+  }, [route.params?.refresh]);
 
   return (
     <View style={styles.container}>
@@ -110,7 +116,16 @@ export default function Home({ navigation }) {
               headerShown: false,
             }}
           >
-            <Tab.Screen name="My Plan" component={MyPlan} />
+            <Tab.Screen
+              name="My Plan"
+              children={() => (
+                <MyPlan
+                  navigation={navigation}
+                  refresh={refreshDays}
+                  setRefresh={setRefreshDays}
+                />
+              )}
+            />
             <Tab.Screen name="Crowdmeter" component={Crowdmeter} />
           </Tab.Navigator>
         </View>
