@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
-  TextInput,
   View,
   Text,
   StyleSheet,
@@ -146,6 +145,7 @@ export default function SavedRoutines({ navigation, route }) {
                   routine_={routine}
                   navigation={navigation}
                   index={index}
+                  onRefresh={onRefresh}
                 />
               );
             })

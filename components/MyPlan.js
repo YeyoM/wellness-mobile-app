@@ -12,7 +12,7 @@ import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage";
 import getDaysStorage from "../AsyncStorageFunctions/Days/getDaysStorage.js";
 import saveDaysStorage from "../AsyncStorageFunctions/Days/saveDaysStorage.js";
 
-export default function MyPlan({ navigation }) {
+export default function MyPlan({ navigation, refresh, setRefresh }) {
   const [days, setDays] = useState([]);
   const [error, setError] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -75,6 +75,11 @@ export default function MyPlan({ navigation }) {
       setRefreshing(false);
     }
   }, []);
+
+  useEffect(() => {
+    onRefresh();
+    setRefresh(false);
+  }, [refresh]);
 
   return (
     <View style={styles.container}>
