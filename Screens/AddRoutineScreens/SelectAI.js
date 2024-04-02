@@ -9,7 +9,6 @@ import { CreateRoutineContext } from "../../context/CreateRoutineContext";
 
 export default function SelectAI({ navigation, route }) {
   const { setGeneratedAI } = useContext(CreateRoutineContext);
-  console.log(route.params);
 
   const [selectAI, setSelectAI] = useState(true);
   const [selectNoAI, setSelectNoAI] = useState(false);
@@ -35,12 +34,12 @@ export default function SelectAI({ navigation, route }) {
 
     if (selectAI) {
       setGeneratedAI(true);
-      navigation.navigate("Select Number Days Per Week AI");
+      navigation.navigate("Select Routine Image AI");
     }
 
     if (selectNoAI) {
       setGeneratedAI(false);
-      navigation.navigate("Select Number Days Per Week");
+      navigation.navigate("Select Routine Image");
     }
   };
 
