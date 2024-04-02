@@ -8,29 +8,50 @@ import {
   Pressable,
   ScrollView,
   ActivityIndicator,
+  Linking,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useState, useContext } from "react";
-
-import { CreateRoutineContext } from "../../context/CreateRoutineContext";
-
 import TopNavigationBar from "../../components/TopNavigationBar";
-
 import RoutineImageSelect from "../../components/RoutineImageSelect";
+import getPicturesByKeyword from "../../Utils/unsplash/getPicturesByKeyword";
+import { CreateRoutineContext } from "../../context/CreateRoutineContext";
 
 export default function SelectRoutineImage({ navigation, route }) {
   const { setImage } = useContext(CreateRoutineContext);
 
   const [loading, setLoading] = useState(false);
+  const [keyword, setKeyword] = useState("");
   const [images, setImages] = useState([]);
   const [error, setError] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
 
-  const handleSearch = () => {};
-  const handleContinue = ({ image }) => {};
+  const handleSearch = () => {
+    setLoading(true);
+    setError(false);
+    getPicturesByKeyword(keyword)
+      .then((data) => {
+        setImages(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setError(true);
+        setLoading(false);
+      });
+  };
+
+  const handleContinue = ({ image }) => {
+    setImage(image.urls.regular);
+    navigation.navigate("Select Number Days Per Week");
+  };
+
   const handleSkip = () => {
     setImage("");
     navigation.navigate("Select Number Days Per Week");
+  };
+
+  const handleViewOriginal = ({ image }) => {
+    Linking.openURL(image.links.html);
   };
 
   return (
@@ -75,14 +96,37 @@ export default function SelectRoutineImage({ navigation, route }) {
               width: "84%",
               marginBottom: 20,
             }}
+            value={keyword}
+            onChangeText={(text) => setKeyword(text)}
           />
           <Pressable style={styles.buttonSearch} onPress={() => handleSearch()}>
             <Ionicons name="search" size={24} color="#fff" />
           </Pressable>
         </View>
       </View>
-      <ScrollView style={{ flex: 1 }}>
-        <RoutineImageSelect />
+      <ScrollView
+        style={{
+          flex: 1,
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          marginBottom: 80,
+        }}
+      >
+        {images && images.length > 0 ? (
+          images.map((image, index) => (
+            <RoutineImageSelect
+              key={index}
+              image={image}
+              handleSelect={() => handleContinue({ image })}
+              handleViewOriginal={() => handleViewOriginal({ image })}
+            />
+          ))
+        ) : loading ? (
+          <ActivityIndicator size="large" color="#fff" />
+        ) : error ? (
+          <Text style={{ color: "#fff" }}>Error loading images</Text>
+        ) : null}
       </ScrollView>
       <Pressable onPress={() => handleSkip()} style={styles.buttonSkip}>
         <Text style={styles.buttonSkipText}>Skip</Text>
@@ -103,10 +147,11 @@ const styles = StyleSheet.create({
   },
 
   content: {
-    flex: 1,
     width: "100%",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-end",
+    height: Dimensions.get("window").height * 0.4,
+    marginBottom: 20,
   },
 
   buttonSearch: {
@@ -122,7 +167,7 @@ const styles = StyleSheet.create({
   buttonSkip: {
     width: "85%",
     paddingVertical: 16,
-    backgroundColor: "#24262B",
+    backgroundColor: "#fff",
     borderRadius: 24,
     display: "flex",
     justifyContent: "center",
@@ -131,7 +176,7 @@ const styles = StyleSheet.create({
   },
 
   buttonSkipText: {
-    color: "#fff",
+    color: "#0b0b0b",
     textAlign: "center",
     fontSize: 18,
     fontWeight: "bold",

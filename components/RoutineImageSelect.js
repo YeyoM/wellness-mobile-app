@@ -1,20 +1,24 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 
-export default function RoutineImageSelect({ image }) {
+export default function RoutineImageSelect({
+  image,
+  handleSelect,
+  handleViewOriginal,
+}) {
   return (
     <View style={styles.container}>
       <Image
         source={{
-          uri: "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+          uri: image.urls.small,
         }}
         style={styles.image}
       />
       <View style={styles.bottom}>
-        <Pressable style={styles.selectButton}>
+        <Pressable style={styles.selectButton} onPress={handleSelect}>
           <Text style={styles.selectText}>Select</Text>
         </Pressable>
-        <Pressable>
+        <Pressable onPress={handleViewOriginal}>
           <Text style={styles.viewOriginalText}>View Original</Text>
         </Pressable>
       </View>
@@ -26,14 +30,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#24262B",
-    width: "100%",
-    height: 240,
+    width: "85%",
+    height: 260,
     borderRadius: 14,
     padding: 10,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    marginBottom: 40,
+    alignSelf: "center",
   },
 
   image: {
-    width: 300,
+    width: "100%",
     height: 180,
     borderRadius: 14,
   },
@@ -42,7 +51,8 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 10,
+    alignItems: "flex-end",
+    padding: 6,
   },
 
   selectButton: {

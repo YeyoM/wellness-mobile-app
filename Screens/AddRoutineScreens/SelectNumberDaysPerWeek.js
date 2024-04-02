@@ -17,8 +17,6 @@ import { EditRoutineContext } from "../../context/EditRoutineContext.js";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import createRoutine from "../../FirebaseFunctions/Routines/createRoutine.js";
 
-import SuccessNotification from "../../components/SuccessNotification";
-
 export default function SelectNumberDaysPerWeek({ route, navigation }) {
   const {
     numberOfDays,

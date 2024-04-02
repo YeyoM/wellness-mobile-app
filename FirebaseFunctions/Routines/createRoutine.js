@@ -55,9 +55,9 @@ export default async function createRoutine(userId, routine) {
     const newDay = {
       dayName: `Day ${i + 1}`,
       routineId: newRoutineRef.id,
-      totalDuration: "0",
-      totalCalories: "0",
-      totalSets: "0",
+      totalDuration: 0,
+      totalCalories: 0,
+      totalSets: 0,
       exercises: [],
       userId: userId,
     };
