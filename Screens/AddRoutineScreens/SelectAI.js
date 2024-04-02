@@ -34,7 +34,7 @@ export default function SelectAI({ navigation, route }) {
 
     if (selectAI) {
       setGeneratedAI(true);
-      navigation.navigate("Select Number Days Per Week AI");
+      navigation.navigate("Select Routine Image AI");
     }
 
     if (selectNoAI) {

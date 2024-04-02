@@ -111,44 +111,7 @@ export default function SavedRoutines({ navigation, route }) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <View style={{ display: "flex", alignItems: "center" }}>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              width: "90%",
-              justifyContent: "space-between",
-            }}
-          >
-            <TextInput
-              placeholder="Search"
-              placeholderTextColor="rgba(147, 146, 154, 1)"
-              style={{
-                height: 50,
-                borderWidth: 0,
-                borderRadius: 14,
-                paddingHorizontal: 20,
-                backgroundColor: "#1F1F1F",
-                color: "#fff",
-                width: "84%",
-                marginBottom: 20,
-              }}
-            />
-            <Pressable style={styles.button}>
-              <Ionicons name="filter-outline" size={30} color="#0496FF" />
-            </Pressable>
-          </View>
-          <Text
-            style={{
-              color: "#a0a0a0",
-              fontSize: 13,
-              textAlign: "center",
-              marginBottom: 20,
-            }}
-          >
-            {refreshing ? "Refreshing..." : "Pull down to refresh"}
-          </Text>
+        <View style={{ display: "flex", alignItems: "center", marginTop: 20 }}>
           <Pressable
             style={styles.createContainer}
             onPress={() =>
@@ -160,6 +123,16 @@ export default function SavedRoutines({ navigation, route }) {
             <Text style={styles.create}>Add new routine</Text>
             <Ionicons name="create-outline" size={30} color="#0496FF" />
           </Pressable>
+          <Text
+            style={{
+              color: "#a0a0a0",
+              fontSize: 13,
+              textAlign: "center",
+              marginVertical: 20,
+            }}
+          >
+            {refreshing ? "Refreshing..." : "Pull down to refresh"}
+          </Text>
           {!refreshing && !routines ? (
             <Text style={{ color: "#fff", fontSize: 20, marginTop: 20 }}>
               You don't have any routines yet

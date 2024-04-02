@@ -46,7 +46,9 @@ export default function SelectRoutineImage({ navigation, route }) {
   };
 
   const handleSkip = () => {
-    setImage("");
+    setImage(
+      "https://images.unsplash.com/photo-1585314062604-1a357de8b000?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Z3JheXxlbnwwfHwwfHx8MA%3D%3D",
+    );
     navigation.navigate("Select Number Days Per Week");
   };
 

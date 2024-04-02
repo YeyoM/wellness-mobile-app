@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import SelectAI from "../Screens/AddRoutineScreens/SelectAI";
 import SelectRoutineImage from "../Screens/AddRoutineScreens/SelectRoutineImage.js";
+import SelectRoutineImageAI from "../Screens/AddRoutineScreens/SelectRoutineImageAI.js";
 import SelectNumberDaysPerWeek from "../Screens/AddRoutineScreens/SelectNumberDaysPerWeek";
 import SelectNUmberDaysPerWeekAI from "../Screens/AddRoutineScreens/SelectNumberDaysPerWeekAI";
 import SelectWorkoutDuration from "../Screens/AddRoutineScreens/SelectWorkoutDuration";
@@ -27,6 +28,12 @@ export default function AddRoutineStack({ route }) {
       <Stack.Screen
         name="Select AI"
         component={SelectAI}
+        options={{ headerShown: false, gestureEnabled: false }}
+        initialParams={{ newRoutineIndex }}
+      />
+      <Stack.Screen
+        name="Select Routine Image AI"
+        component={SelectRoutineImageAI}
         options={{ headerShown: false, gestureEnabled: false }}
         initialParams={{ newRoutineIndex }}
       />
