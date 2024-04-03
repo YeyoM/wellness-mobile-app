@@ -107,7 +107,7 @@ export default function MyPlan({ navigation, refresh, setRefresh }) {
             </Text>
           )}
           <View
-            style={{ flexDirection: "column", marginTop: 20, width: "90%" }}
+            style={{ flexDirection: "column", marginTop: 20, width: "95%" }}
           >
             {days && days.length > 0 && !refreshing ? (
               days.map((day, index) => {

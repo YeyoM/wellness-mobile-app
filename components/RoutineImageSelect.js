@@ -19,7 +19,7 @@ export default function RoutineImageSelect({
           <Text style={styles.selectText}>Select</Text>
         </Pressable>
         <Pressable onPress={handleViewOriginal}>
-          <Text style={styles.viewOriginalText}>View Original</Text>
+          <Text style={styles.viewOriginalText}>Full view</Text>
         </Pressable>
       </View>
     </View>
@@ -31,9 +31,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#24262B",
     width: "85%",
-    height: 260,
-    borderRadius: 14,
-    padding: 10,
+    height: 255,
+    borderRadius: 15,
+    paddingHorizontal: 8,
+    paddingBottom: 5,
+    paddingTop: 10,
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
