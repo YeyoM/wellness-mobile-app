@@ -35,14 +35,14 @@ export default async function getAllDays() {
     for (const routine of routines) {
       const dayIds = routine.days;
       const image = routine.image;
+      const routineName = routine.routineName;
       for (const id of dayIds) {
         const dayDocRef = doc(FIRESTORE, "days", id);
         const dayDocSnap = await getDoc(dayDocRef);
         const dayDocData = dayDocSnap.data();
         dayDocData.image = image;
-        // add the id to the day object
         dayDocData.dayId = id;
-        console.log("DAY DOC DATA: ", dayDocData);
+        dayDocData.routineName = routineName;
         days.push(dayDocData);
       }
     }
