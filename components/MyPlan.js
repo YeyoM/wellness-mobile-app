@@ -135,6 +135,7 @@ export default function MyPlan({ navigation, refresh, setRefresh }) {
                         day={day}
                         userWeight={userWeight}
                         userWeightUnit={userWeightUnit}
+                        navigation={navigation}
                       />
                     );
                   }
@@ -146,6 +147,7 @@ export default function MyPlan({ navigation, refresh, setRefresh }) {
                     day={day}
                     userWeight={userWeight}
                     userWeightUnit={userWeightUnit}
+                    navigation={navigation}
                   />
                 ))
               )
