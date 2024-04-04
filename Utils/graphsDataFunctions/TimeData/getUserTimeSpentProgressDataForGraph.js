@@ -74,6 +74,20 @@ export default function getUserTimeSpentProgressDataForGraph({ timeRecord }) {
       if (nextRecordIndex < timeRecord.length) {
         nextRecordDate = firebasDateToDate(timeRecord[nextRecordIndex].date);
       }
+      // check if there are no more records with the same date
+      while (
+        nextRecordDate &&
+        currentDate.getFullYear() === nextRecordDate.getFullYear() &&
+        currentDate.getMonth() === nextRecordDate.getMonth() &&
+        currentDate.getDate() === nextRecordDate.getDate()
+      ) {
+        nextRecordIndex++;
+        if (nextRecordIndex < timeRecord.length) {
+          nextRecordDate = firebasDateToDate(timeRecord[nextRecordIndex].date);
+        } else {
+          nextRecordDate = null;
+        }
+      }
     } else {
       currentTotalTime = 0;
     }
