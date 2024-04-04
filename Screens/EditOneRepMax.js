@@ -28,10 +28,7 @@ export default function EditOneRepMax({ navigation, route }) {
 
   const calculateOneRepMax = () => {
     if (weight && reps) {
-      console.log("Calculating 1RM");
-      console.log(weight, reps);
-      const oneRepMax = weight * (1.0278 - 0.0278 * reps);
-      console.log(oneRepMax);
+      const oneRepMax = weight / (1.0278 - 0.0278 * reps);
       setCalculatedOneRepMax(oneRepMax.toFixed(0));
     }
   };
