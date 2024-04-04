@@ -11,6 +11,7 @@ import getAllDays from "../FirebaseFunctions/Days/getAllDays";
 import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage";
 import getDaysStorage from "../AsyncStorageFunctions/Days/getDaysStorage.js";
 import saveDaysStorage from "../AsyncStorageFunctions/Days/saveDaysStorage.js";
+import getFavoriteRoutine from "../AsyncStorageFunctions/Routines/getFavoriteRoutine.js";
 
 export default function MyPlan({ navigation, refresh, setRefresh }) {
   const [days, setDays] = useState([]);
@@ -18,6 +19,7 @@ export default function MyPlan({ navigation, refresh, setRefresh }) {
   const [refreshing, setRefreshing] = useState(false);
   const [userWeight, setUserWeight] = useState(null);
   const [userWeightUnit, setUserWeightUnit] = useState(null);
+  const [favoriteRoutine, setFavoriteRoutine] = useState(null);
 
   useEffect(() => {
     // Check in the async storage if the user has saved days
@@ -28,6 +30,7 @@ export default function MyPlan({ navigation, refresh, setRefresh }) {
     setRefreshing(true);
     getDaysStorage().then((days) => {
       if (days) {
+        console.log(days);
         setDays(days);
         setRefreshing(false);
         setError(false);
@@ -60,6 +63,17 @@ export default function MyPlan({ navigation, refresh, setRefresh }) {
         navigation.navigate("Home");
       });
   }, []);
+
+  useEffect(() => {
+    getFavoriteRoutine()
+      .then((routine) => {
+        console.log(routine);
+        setFavoriteRoutine(routine);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [refresh, setRefresh, days, setDays]);
 
   // user weight and weight unit from storage
   const onRefresh = React.useCallback(async () => {
@@ -110,17 +124,31 @@ export default function MyPlan({ navigation, refresh, setRefresh }) {
             style={{ flexDirection: "column", marginTop: 20, width: "95%" }}
           >
             {days && days.length > 0 && !refreshing ? (
-              days.map((day, index) => {
-                return (
+              // if there is a fav routine, just display the days in which
+              // day.routineId === favoriteRoutine.id, else display all days
+              favoriteRoutine ? (
+                days.map((day, index) => {
+                  if (day.routineId === favoriteRoutine.id) {
+                    return (
+                      <PreviewWorkout
+                        key={index}
+                        day={day}
+                        userWeight={userWeight}
+                        userWeightUnit={userWeightUnit}
+                      />
+                    );
+                  }
+                })
+              ) : (
+                days.map((day, index) => (
                   <PreviewWorkout
+                    key={index}
                     day={day}
                     userWeight={userWeight}
                     userWeightUnit={userWeightUnit}
-                    navigation={navigation}
-                    key={index}
                   />
-                );
-              })
+                ))
+              )
             ) : error ? (
               <Text style={{ color: "#fff" }}>
                 Oops! Something went wrong. Please try again later.

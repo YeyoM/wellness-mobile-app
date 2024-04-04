@@ -1,5 +1,5 @@
 import { Image, Alert, Pressable, StyleSheet, Text, View } from "react-native";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Animated, {
   useAnimatedRef,
   useSharedValue,
@@ -9,12 +9,20 @@ import Animated, {
   useDerivedValue,
   withTiming,
 } from "react-native-reanimated";
-
+import { Ionicons } from "@expo/vector-icons";
 import { EditRoutineContext } from "../context/EditRoutineContext.js";
 import deleteRoutine from "../FirebaseFunctions/Routines/deleteRoutine.js";
 import { FIREBASE_AUTH } from "../firebaseConfig.js";
 
-const Accordion = ({ routine_, navigation, index, onRefresh }) => {
+const Accordion = ({
+  routine_,
+  navigation,
+  index,
+  onRefresh,
+  isFavRoutine,
+  setFavoriteRoutine,
+  deleteFavoriteRoutine,
+}) => {
   const listRef = useAnimatedRef();
   const heightValue = useSharedValue(0);
   const open = useSharedValue(false);
@@ -51,6 +59,7 @@ const Accordion = ({ routine_, navigation, index, onRefresh }) => {
         {
           text: "Delete",
           onPress: async () => {
+            deleteFavoriteRoutine();
             setLoading(true);
             setSuccess(false);
             try {
@@ -94,28 +103,52 @@ const Accordion = ({ routine_, navigation, index, onRefresh }) => {
         }}
         style={styles.viewContainer}
       >
-        <Image
-          source={{ uri: routine_.image }}
-          style={{
-            width: "100%",
-            height: 200,
-            resizeMode: "cover",
-            borderRadius: 14,
-          }}
-        />
+        <View style={styles.imageContainer}>
+          <Image
+            source={{ uri: routine_.image }}
+            style={{
+              width: "100%",
+              height: 200,
+              resizeMode: "cover",
+              borderRadius: 14,
+            }}
+          />
+          {isFavRoutine ? (
+            <Pressable
+              style={styles.buttonFavorite}
+              onPress={() => deleteFavoriteRoutine()}
+            >
+              <Ionicons name="heart" size={24} color="white" />
+            </Pressable>
+          ) : (
+            <Pressable
+              style={styles.buttonFavorite}
+              onPress={() => setFavoriteRoutine(routine_)}
+            >
+              <Ionicons name="heart-outline" size={24} color="white" />
+            </Pressable>
+          )}
+        </View>
         <View
           style={{
+            display: "flex",
             flexDirection: "row",
             justifyContent: "space-between",
+            alignItems: "center",
+            padding: 5,
             width: "100%",
           }}
         >
-          <Text style={styles.textTitle}>{routine_.routineName}</Text>
+          <View style={{ flexDirection: "column", alignItems: "flex-start" }}>
+            <Text style={styles.textTitle}>{routine_.routineName}</Text>
+            <Text style={styles.routineInfo_}>
+              {routine_.numberOfDays} days
+            </Text>
+          </View>
+          <View style={styles.textTapContainer}>
+            <Text style={styles.textTap}>{isOpen ? "Close" : "View"}</Text>
+          </View>
         </View>
-        <View style={{ flexDirection: "row", width: "100%" }}>
-          <Text style={styles.routineInfo}>{routine_.numberOfDays} days</Text>
-        </View>
-        <Text style={styles.textTap}>Tap to {isOpen ? "close" : "open"}</Text>
       </Pressable>
       <Animated.View style={heightAnimationStyle}>
         <Animated.View style={styles.contentContainer} ref={listRef}>
@@ -149,16 +182,18 @@ const Accordion = ({ routine_, navigation, index, onRefresh }) => {
             ))}
             <View style={styles.buttonContainer}>
               <Pressable style={styles.buttonEdit} onPress={() => handleEdit()}>
-                <Text style={{ color: "white" }}>Edit</Text>
+                <Text style={{ color: "white", fontSize: 16 }}>Edit</Text>
               </Pressable>
               <Pressable
                 style={styles.buttonDelete}
                 onPress={() => handleDelete()}
               >
                 {loading ? (
-                  <Text style={{ color: "white" }}>Loading...</Text>
+                  <Text style={{ color: "white", fontSize: 16 }}>
+                    Loading...
+                  </Text>
                 ) : (
-                  <Text style={{ color: "white" }}>Delete</Text>
+                  <Text style={{ color: "white", fontSize: 16 }}>Delete</Text>
                 )}
               </Pressable>
             </View>
@@ -191,7 +226,22 @@ const styles = StyleSheet.create({
   textTitle: {
     fontSize: 20,
     color: "white",
-    marginTop: 10,
+  },
+
+  imageContainer: {
+    width: "100%",
+    height: 200,
+    overflow: "hidden",
+    borderRadius: 14,
+  },
+
+  buttonFavorite: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    backgroundColor: "#157AFF",
+    padding: 10,
+    borderRadius: 14,
   },
 
   viewContainer: {
@@ -211,6 +261,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 
+  routineInfo_: {
+    fontSize: 14,
+    color: "white",
+  },
+
   routineInfo: {
     fontSize: 11,
     color: "white",
@@ -218,11 +273,21 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 
-  textTap: {
-    fontSize: 12,
-    color: "white",
-    marginTop: 10,
+  textTapContainer: {
+    backgroundColor: "#157AFF",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     alignSelf: "flex-end",
+  },
+
+  textTap: {
+    fontSize: 14,
+    color: "white",
+    alignSelf: "center",
   },
 
   singleDay: {
@@ -262,7 +327,7 @@ const styles = StyleSheet.create({
   buttonEdit: {
     width: "48%",
     height: 48,
-    backgroundColor: "#1565C0",
+    backgroundColor: "#157AFF",
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
