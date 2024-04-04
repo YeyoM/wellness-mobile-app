@@ -15,6 +15,9 @@ import ErrorNotification from "../components/ErrorNotification";
 
 import saveRoutinesStorage from "../AsyncStorageFunctions/Routines/saveRoutinesStorage.js";
 import getRoutinesStorage from "../AsyncStorageFunctions/Routines/getRoutinesStorage.js";
+import getFavoriteRoutine from "../AsyncStorageFunctions/Routines/getFavoriteRoutine.js";
+import setFavoriteRoutine from "../AsyncStorageFunctions/Routines/setFavoriteRoutine.js";
+import deleteFavoriteRoutine from "../AsyncStorageFunctions/Routines/deleteFavoriteRoutine.js";
 
 import { getSavedRoutines } from "../FirebaseFunctions/Routines/getSavedRoutines.js";
 import { FIREBASE_AUTH } from "../firebaseConfig.js";
@@ -23,6 +26,7 @@ export default function SavedRoutines({ navigation, route }) {
   const [refreshing, setRefreshing] = useState(false);
 
   const [routines, setRoutines] = useState(null);
+  const [favRoutine, setFavRoutine] = useState(null);
   const [_user, setUser] = useState(null);
   const [error, setError] = useState(false);
 
@@ -66,6 +70,15 @@ export default function SavedRoutines({ navigation, route }) {
     getRoutinesStorage().then((routines) => {
       if (routines) {
         setRoutines(routines);
+        getFavoriteRoutine()
+          .then((favRoutine) => {
+            console.log(favRoutine);
+            setFavRoutine(favRoutine);
+          })
+          .catch((error) => {
+            console.log(error);
+            setFavRoutine(null);
+          });
       } else {
         getSavedRoutines(user.uid)
           .then((routines) => {
@@ -100,6 +113,25 @@ export default function SavedRoutines({ navigation, route }) {
       setRefreshing(false);
     }
   }, []);
+
+  const handleSetFavorite = async (routine) => {
+    setFavRoutine(null);
+    try {
+      await setFavoriteRoutine(routine);
+      setFavRoutine(routine);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleRemoveFavorite = async () => {
+    try {
+      await deleteFavoriteRoutine();
+      setFavRoutine(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -146,6 +178,11 @@ export default function SavedRoutines({ navigation, route }) {
                   navigation={navigation}
                   index={index}
                   onRefresh={onRefresh}
+                  isFavRoutine={
+                    favRoutine && favRoutine.id === routine.id ? true : false
+                  }
+                  setFavoriteRoutine={handleSetFavorite}
+                  deleteFavoriteRoutine={handleRemoveFavorite}
                 />
               );
             })
