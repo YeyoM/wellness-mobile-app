@@ -58,14 +58,14 @@ export default function WorkoutInProgress({ route, navigation }) {
   const [currentExerciseRestTime, setCurrentExerciseRestTime] = useState(
     day.exercises[0].restTime,
   );
+
   const [numberOfExercises] = useState(day.exercises.length);
   const [exercises, setExercises] = useState(day.exercises);
   const [exerciseQueue, setExerciseQueue] = useState(day.exercises.slice(1));
   const [currentSets, setCurrentSets] = useState();
-  const [currentWorkoutInfo, setCurrentWorkoutInfo] = useState([]); // This is the state that will be sent to the databas
+  const [currentWorkoutInfo, setCurrentWorkoutInfo] = useState([]);
 
   const [currentCalories, setCurrentCalories] = useState(0);
-
   const [currentTotalWeight, setCurrentTotalWeight] = useState(0);
 
   const [startTime, setStartTime] = useState(null);
@@ -89,76 +89,68 @@ export default function WorkoutInProgress({ route, navigation }) {
       return;
     }
 
-    if (currentExerciseIndex < numberOfExercises - 1) {
-      Alert.alert(
-        "Are you sure you want to end the workout?",
-        "You still have exercises left, progress will be lost",
-        [
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          {
-            text: "End Workout",
-            style: "destructive",
-            onPress: () => navigation.goBack(),
-          },
-        ],
-      );
-      return;
-    }
-    // Check if the current sets are finished
-    let finished = true;
-    for (let i = 0; i < currentSets.length; i++) {
-      if (!currentSets[i].finished) {
-        finished = false;
+    // check if the user has already finished all the exercises
+    // or if the user has finished all the sets of the last exercise
+    let finishedExercises = currentExerciseIndex === numberOfExercises - 1;
+    let finishedSets = finishedExercises;
+    if (finishedExercises) {
+      for (let i = 0; i < currentSets.length; i++) {
+        if (!currentSets[i].finished) {
+          finishedSets = false;
+        }
       }
     }
-    if (!finished) {
+    const numberOfSetsFinished = currentSets.filter(
+      (set) => set.finished,
+    ).length;
+
+    if (!finishedExercises || !finishedSets) {
       Alert.alert(
         "Are you sure you want to end the workout?",
-        "You still have sets left, progress will be lost",
+        "You still have exercises or sets left, progress will be saved only for the finished exercises and sets",
         [
           {
             text: "Cancel",
-            onPress: () => console.log("Cancel Pressed"),
             style: "cancel",
           },
           {
             text: "End Workout",
             style: "destructive",
-            onPress: () => navigation.goBack(),
+            onPress: () => endWorkout(numberOfSetsFinished),
           },
         ],
       );
       return;
+    } else {
+      endWorkout();
     }
-    // If they are, add the last exercise to the currentWorkoutInfo state
+  };
+
+  const endWorkout = async (numberOfSetsFinished) => {
+    const user = FIREBASE_AUTH.currentUser;
     let meanReps = 0;
     let meanWeight = 0;
     let totalWeightExercise = 0;
-    for (let i = 0; i < currentSets.length; i++) {
+    for (let i = 0; i < numberOfSetsFinished; i++) {
       meanReps += parseInt(currentSets[i].reps);
       meanWeight += parseInt(currentSets[i].weight);
       totalWeightExercise += parseInt(currentSets[i].weight);
     }
-    meanReps /= currentSets.length;
-    meanWeight /= currentSets.length;
+    meanReps /= numberOfSetsFinished;
+    meanWeight /= numberOfSetsFinished;
     const finalWorkoutInfo = [
       ...currentWorkoutInfo,
       {
         exerciseName: currentExercise.exerciseName,
         exerciseReps: meanReps,
-        exerciseSets: currentSets.length,
+        exerciseSets: numberOfSetsFinished,
         exerciseWeight: meanWeight,
         exerciseId: currentExercise.exerciseId,
       },
     ];
-    // calculate the total calories, weight and time
     let totalCalories = 0;
     const duration = calculateTimeLift(
-      currentSets.length,
+      numberOfSetsFinished,
       currentExercise.restTime / 60,
     );
     const calories = calculateCaloriesLift(
@@ -168,6 +160,12 @@ export default function WorkoutInProgress({ route, navigation }) {
     );
     totalCalories += calories.toFixed(2);
     totalCalories = parseFloat(totalCalories);
+
+    console.log("final workout info", finalWorkoutInfo);
+    console.log("total calories", totalCalories);
+    console.log("total weight", totalWeightExercise + currentTotalWeight);
+    console.log("total time", readableTime);
+
     setLoading(true);
     try {
       await SaveWorkout({
@@ -254,9 +252,6 @@ export default function WorkoutInProgress({ route, navigation }) {
   }, [startTime]);
 
   const handleNextExercise = () => {
-    // Check if the currentsets are finished
-    // If not, alert the user to finish the sets
-    // If they are, move to the next exercise
     let finished = true;
     for (let i = 0; i < currentSets.length; i++) {
       if (!currentSets[i].finished) {
@@ -279,8 +274,6 @@ export default function WorkoutInProgress({ route, navigation }) {
     }
 
     if (currentExerciseIndex < numberOfExercises - 1) {
-      // The user weight and unit comes from Home -> AsyncStorage -> MyPlan -> PreviewWorkout -> here
-      // TODO: calculate the calories and weight of the current exercise
       const duration = calculateTimeLift(
         currentSets.length,
         exercises[currentExerciseIndex].restTime / 60,

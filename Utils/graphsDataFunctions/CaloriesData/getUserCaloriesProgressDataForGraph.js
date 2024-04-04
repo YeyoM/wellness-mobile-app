@@ -60,6 +60,22 @@ export default function getUserCaloriesProgressDataForGraph({
           caloriesRecord[nextRecordIndex].date,
         );
       }
+      // check if there are no more records with the same date
+      while (
+        nextRecordDate &&
+        currentDate.getFullYear() === nextRecordDate.getFullYear() &&
+        currentDate.getMonth() === nextRecordDate.getMonth() &&
+        currentDate.getDate() === nextRecordDate.getDate()
+      ) {
+        nextRecordIndex++;
+        if (nextRecordIndex < caloriesRecord.length) {
+          nextRecordDate = firebasDateToDate(
+            caloriesRecord[nextRecordIndex].date,
+          );
+        } else {
+          nextRecordDate = null;
+        }
+      }
     } else {
       currentCalories = 0;
     }
