@@ -35,11 +35,11 @@ import SaveWorkout from "../FirebaseFunctions/Workouts/SaveWorkout";
 import getWorkouts from "../FirebaseFunctions/Workouts/GetWorkouts.js";
 import saveWorkoutsStorage from "../AsyncStorageFunctions/Workouts/saveWorkoutsStorage.js";
 import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
-import calculateTimeLift from "../Utils/calculateTimeLift.js";
 
 import SwipeTimer from "../components/SwipeTimer.js";
 
 import { FIREBASE_AUTH } from "../firebaseConfig.js";
+import readableTimeToMinutes from "../Utils/readableTimeToMinutes.js";
 
 export default function WorkoutInProgress({ route, navigation }) {
   const { day, userWeight, userWeightUnit } = route.params;
@@ -65,7 +65,6 @@ export default function WorkoutInProgress({ route, navigation }) {
   const [currentSets, setCurrentSets] = useState();
   const [currentWorkoutInfo, setCurrentWorkoutInfo] = useState([]);
 
-  const [currentCalories, setCurrentCalories] = useState(0);
   const [currentTotalWeight, setCurrentTotalWeight] = useState(0);
 
   const [startTime, setStartTime] = useState(null);
@@ -149,10 +148,7 @@ export default function WorkoutInProgress({ route, navigation }) {
       },
     ];
     let totalCalories = 0;
-    const duration = calculateTimeLift(
-      numberOfSetsFinished,
-      currentExercise.restTime / 60,
-    );
+    const duration = readableTimeToMinutes(readableTime);
     const calories = calculateCaloriesLift(
       duration,
       userWeight,
@@ -274,17 +270,6 @@ export default function WorkoutInProgress({ route, navigation }) {
     }
 
     if (currentExerciseIndex < numberOfExercises - 1) {
-      const duration = calculateTimeLift(
-        currentSets.length,
-        exercises[currentExerciseIndex].restTime / 60,
-      );
-      const calories = calculateCaloriesLift(
-        duration,
-        userWeight,
-        userWeightUnit,
-      );
-      // Add the calories and weight to the currentCalories and currentWeight states
-      setCurrentCalories(currentCalories + calories);
       setExerciseQueue(exerciseQueue.slice(1));
       setCurrentExercise(exercises[currentExerciseIndex + 1]);
       setCurrentExerciseIndex(currentExerciseIndex + 1);

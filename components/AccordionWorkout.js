@@ -175,7 +175,7 @@ const Accordion = ({
                     {parseFloat(day.totalCalories)} calories
                   </Text>
                   <Text style={styles.routineInfo}>
-                    {parseFloat(day.totalDuration)} minutes
+                    {Math.round(parseFloat(day.totalDuration))} minutes
                   </Text>
                 </View>
               </View>

@@ -42,7 +42,7 @@ export default function PreviewWorkout({
             </Text>
             <View style={{ flexDirection: "row", width: "70%" }}>
               <Text style={styles.dayInfo}>
-                {parseFloat(day.totalDuration)} min
+                {Math.round(parseFloat(day.totalDuration))} min
               </Text>
               <Text style={styles.dayInfo}>
                 {parseFloat(day.totalSets)} sets

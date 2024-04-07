@@ -75,10 +75,10 @@ export default function EditExercise({ route, navigation }) {
 
   // update the calories and total time when the user changes the reps, sets, weight, or rest time
   useEffect(() => {
-    setTotalDuration(calculateTimeLift(sets, restTime));
+    setTotalDuration(calculateTimeLift(reps, sets, restTime * 60));
     setCalories(
       calculateCaloriesLift(
-        calculateTimeLift(sets, restTime),
+        calculateTimeLift(reps, sets, 60),
         userWeight,
         userWeightUnit,
       ),
@@ -109,7 +109,7 @@ export default function EditExercise({ route, navigation }) {
         return Math.round(
           acc +
             calculateCaloriesLift(
-              calculateTimeLift(ex.numberOfSets, ex.restTime / 60),
+              calculateTimeLift(ex.numberOfReps, ex.numberOfSets, 60),
               userWeight,
               userWeightUnit,
             ),
@@ -123,7 +123,7 @@ export default function EditExercise({ route, navigation }) {
       newRoutine.days[currentDay].totalDuration = newRoutine.days[
         currentDay
       ].exercises.reduce((acc, ex) => {
-        return acc + calculateTimeLift(ex.numberOfSets, ex.restTime / 60);
+        return acc + calculateTimeLift(ex.numberOfReps, ex.numberOfSets, 60);
       }, 0);
       return newRoutine;
     });

@@ -122,14 +122,11 @@ export default function SavedLifts({ route, navigation }) {
 
     // calculate the time and calories of the new lift
     const time = calculateTimeLift(
+      lift.defaultNumberOfReps,
       lift.defaultNumberOfSets,
-      lift.defaultRestTime / 60,
+      lift.defaultRestTime,
     );
-    const calories = calculateCaloriesLift(
-      calculateTimeLift(lift.defaultNumberOfSets, lift.defaultRestTime / 60),
-      userWeight,
-      userWeightUnit,
-    );
+    const calories = calculateCaloriesLift(time, userWeight, userWeightUnit);
 
     // add lift to the exercise list of the current day
     setRoutine((prevRoutine) => {

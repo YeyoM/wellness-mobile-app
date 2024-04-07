@@ -24,9 +24,9 @@ export default function calculateCaloriesLift(
   let calories;
 
   if (weightUnit === "kg") {
-    calories = userWeight * timeLifting * 0.0525;
+    calories = userWeight * timeLifting * 0.0713;
   } else {
-    calories = userWeight * 0.453592 * timeLifting * 0.0525;
+    calories = userWeight * 0.453592 * timeLifting * 0.0713;
   }
 
   return calories;

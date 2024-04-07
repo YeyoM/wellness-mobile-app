@@ -52,9 +52,13 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
       const exercise = newRoutine.days[day].exercises.find(
         (exercise) => exercise.exerciseId === id,
       );
-      const { numberOfSets, weight: exerciseWeight, restTime } = exercise;
-      const time = calculateTimeLift(numberOfSets, restTime / 60);
-      const calories = calculateCaloriesLift(time, weight, weightUnit);
+      const { numberOfSets, restTime, numberOfReps } = exercise;
+      const time = calculateTimeLift(numberOfReps, numberOfSets, restTime);
+      const calories = calculateCaloriesLift(
+        calculateTimeLift(numberOfReps, numberOfSets, 60),
+        weight,
+        weightUnit,
+      );
       newRoutine.days[day].exercises = newRoutine.days[day].exercises.filter(
         (exercise) => exercise.exerciseId !== id,
       );
