@@ -30,13 +30,13 @@ export default function EditExercise({ route, navigation }) {
   const [sets, setSets] = useState(exercise.numberOfSets);
   const [weight, setWeight] = useState(exercise.weight);
   const [restTime, setRestTime] = useState(exercise.restTime / 60);
-  const [system, setSystem] = useState("lbs");
 
   const [calories, setCalories] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
 
   const [userWeight, setUserWeight] = useState(0);
   const [userWeightUnit, setUserWeightUnit] = useState("kg");
+  const [userGender, setUserGender] = useState("Male");
 
   const progress_reps = useSharedValue(exercise.numberOfReps);
   const min_reps = useSharedValue(1);
@@ -65,6 +65,7 @@ export default function EditExercise({ route, navigation }) {
         const data = docSnap.data();
         setUserWeight(data.weight);
         setUserWeightUnit(data.weightUnit);
+        setUserGender(data.gender);
       } else {
         console.log("No such document!");
       }
@@ -81,9 +82,10 @@ export default function EditExercise({ route, navigation }) {
         calculateTimeLift(reps, sets, 60),
         userWeight,
         userWeightUnit,
+        userGender,
       ),
     );
-  }, [reps, sets, weight, restTime, userWeight, userWeightUnit]);
+  }, [reps, sets, weight, restTime, userWeight, userWeightUnit, userGender]);
 
   const handleApply = () => {
     setRoutine((prevRoutine) => {
@@ -112,6 +114,7 @@ export default function EditExercise({ route, navigation }) {
               calculateTimeLift(ex.numberOfReps, ex.numberOfSets, 60),
               userWeight,
               userWeightUnit,
+              userGender,
             ),
         );
       }, 0);

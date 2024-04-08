@@ -42,7 +42,7 @@ import { FIREBASE_AUTH } from "../firebaseConfig.js";
 import readableTimeToMinutes from "../Utils/readableTimeToMinutes.js";
 
 export default function WorkoutInProgress({ route, navigation }) {
-  const { day, userWeight, userWeightUnit } = route.params;
+  const { day, userWeight, userWeightUnit, userGender } = route.params;
 
   const [currentExercise, setCurrentExercise] = useState(day.exercises[0]);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
@@ -153,6 +153,7 @@ export default function WorkoutInProgress({ route, navigation }) {
       duration,
       userWeight,
       userWeightUnit,
+      userGender,
     );
     totalCalories += calories.toFixed(2);
     totalCalories = parseFloat(totalCalories);

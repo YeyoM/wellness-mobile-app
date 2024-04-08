@@ -6,6 +6,7 @@ export default function PreviewWorkout({
   navigation,
   userWeight,
   userWeightUnit,
+  userGender,
 }) {
   return (
     <View style={styles.container}>
@@ -54,13 +55,16 @@ export default function PreviewWorkout({
           </View>
           <Pressable
             style={styles.buttonStart}
-            onPress={() =>
+            onPress={() => {
+              console.log("Start workout");
+              console.log(navigation);
               navigation.navigate("Workout In Progress", {
                 day: day,
                 userWeight: userWeight,
                 userWeightUnit: userWeightUnit,
-              })
-            }
+                userGender: userGender,
+              });
+            }}
           >
             <Text style={{ color: "white", fontSize: 12 }}>Start workout</Text>
           </Pressable>

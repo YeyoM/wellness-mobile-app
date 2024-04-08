@@ -112,12 +112,15 @@ export default function SavedLifts({ route, navigation }) {
     const profileData = await getUserStorage();
     let userWeight = null;
     let userWeightUnit = null;
+    let userGender = null;
     // TODO, handle the case where the app does not have the user's info
     if (!profileData) {
+      console.log("no user data");
       return;
     } else {
       userWeight = profileData.weight;
       userWeightUnit = profileData.weightUnit;
+      userGender = profile.gender;
     }
 
     // calculate the time and calories of the new lift
@@ -126,7 +129,13 @@ export default function SavedLifts({ route, navigation }) {
       lift.defaultNumberOfSets,
       lift.defaultRestTime,
     );
-    const calories = calculateCaloriesLift(time, userWeight, userWeightUnit);
+
+    const calories = calculateCaloriesLift(
+      time,
+      userWeight,
+      userWeightUnit,
+      userGender,
+    );
 
     // add lift to the exercise list of the current day
     setRoutine((prevRoutine) => {
@@ -193,7 +202,7 @@ export default function SavedLifts({ route, navigation }) {
               marginBottom: 20,
             }}
           >
-            Scroll down to refresh{" "}
+            Scroll down to refresh
           </Text>
           {/** User's saved lifts */}
           {error && (

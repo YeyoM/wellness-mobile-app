@@ -19,6 +19,7 @@ export default function MyPlan({ navigation, refresh, setRefresh }) {
   const [refreshing, setRefreshing] = useState(false);
   const [userWeight, setUserWeight] = useState(null);
   const [userWeightUnit, setUserWeightUnit] = useState(null);
+  const [userGender, setUserGender] = useState(null);
   const [favoriteRoutine, setFavoriteRoutine] = useState(null);
 
   useEffect(() => {
@@ -54,7 +55,9 @@ export default function MyPlan({ navigation, refresh, setRefresh }) {
         if (data) {
           setUserWeight(data.weight);
           setUserWeightUnit(data.weightUnit);
+          setUserGender(data.gender);
         } else {
+          console.log("No user data found");
           return;
         }
       })
@@ -132,9 +135,11 @@ export default function MyPlan({ navigation, refresh, setRefresh }) {
                     return (
                       <PreviewWorkout
                         key={index}
+                        navigation={navigation}
                         day={day}
                         userWeight={userWeight}
                         userWeightUnit={userWeightUnit}
+                        userGender={userGender}
                       />
                     );
                   }
@@ -143,9 +148,11 @@ export default function MyPlan({ navigation, refresh, setRefresh }) {
                 days.map((day, index) => (
                   <PreviewWorkout
                     key={index}
+                    navigation={navigation}
                     day={day}
                     userWeight={userWeight}
                     userWeightUnit={userWeightUnit}
+                    userGender={userGender}
                   />
                 ))
               )

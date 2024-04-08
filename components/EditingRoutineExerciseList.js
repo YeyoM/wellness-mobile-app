@@ -45,7 +45,7 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
     const userDocRef = doc(FIRESTORE, "users", user.uid);
     const userDoc = await getDoc(userDocRef);
     // get the user's weight and weightUnit
-    const { weight, weightUnit } = userDoc.data();
+    const { weight, weightUnit, gender } = userDoc.data();
 
     setRoutine((prevRoutine) => {
       const newRoutine = { ...prevRoutine };
@@ -58,6 +58,7 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
         calculateTimeLift(numberOfReps, numberOfSets, 60),
         weight,
         weightUnit,
+        gender,
       );
       newRoutine.days[day].exercises = newRoutine.days[day].exercises.filter(
         (exercise) => exercise.exerciseId !== id,
@@ -118,8 +119,8 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
                 {item.exercise.exerciseName}
               </Text>
               <Text style={{ color: "#9095A1", fontSize: 12, marginLeft: 16 }}>
-                {item.exercise.numberOfSets} sets of{" "}
-                {item.exercise.numberOfReps} reps, {item.exercise.weight}{" "}
+                {item.exercise.numberOfSets} sets of
+                {item.exercise.numberOfReps} reps, {item.exercise.weight}
                 {item.exercise.weightSystem}
               </Text>
             </View>
