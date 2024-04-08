@@ -237,6 +237,7 @@ export default function MyStats({ navigation }) {
             </View>
             <View style={{ overflow: "hidden", width: "100%" }}>
               {!loading &&
+              weightLineData &&
               weightLineData.length > 0 &&
               selectedCategory === "Weight" ? (
                 <LineChart
@@ -261,15 +262,20 @@ export default function MyStats({ navigation }) {
                   yAxisLabelSuffix={" kg"}
                 />
               ) : !loading &&
+                caloriesLineData &&
                 caloriesLineData.length > 0 &&
                 selectedCategory === "Calories" ? (
                 <LineChart
                   hideDataPoints
                   isAnimated
                   animationDuration={1200}
-                  initialSpacing={caloriesLineData.length > 10 ? 20 : 40}
+                  initialSpacing={
+                    caloriesLineData && caloriesLineData.length > 10 ? 20 : 40
+                  }
                   data={caloriesLineData}
-                  spacing={caloriesLineData.length > 10 ? 40 : 60}
+                  spacing={
+                    caloriesLineData && caloriesLineData.length > 10 ? 40 : 60
+                  }
                   thickness={3}
                   yAxisTextStyle={{
                     color: "#a0a0a0",
@@ -285,15 +291,18 @@ export default function MyStats({ navigation }) {
                   yAxisLabelSuffix=" Kcal "
                 />
               ) : !loading &&
+                timeLineData &&
                 timeLineData.length > 0 &&
                 selectedCategory === "Time" ? (
                 <LineChart
                   hideDataPoints
                   isAnimated
                   animationDuration={1200}
-                  initialSpacing={timeLineData.length > 10 ? 20 : 40}
+                  initialSpacing={
+                    timeLineData && timeLineData.length > 10 ? 20 : 40
+                  }
                   data={timeLineData}
-                  spacing={timeLineData.length > 10 ? 40 : 60}
+                  spacing={timeLineData && timeLineData.length > 10 ? 40 : 60}
                   thickness={3}
                   yAxisTextStyle={{
                     color: "#a0a0a0",

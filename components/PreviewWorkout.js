@@ -56,7 +56,6 @@ export default function PreviewWorkout({
           <Pressable
             style={styles.buttonStart}
             onPress={() => {
-              console.log("Start workout");
               console.log(navigation);
               navigation.navigate("Workout In Progress", {
                 day: day,
