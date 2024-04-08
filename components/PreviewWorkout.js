@@ -6,6 +6,7 @@ export default function PreviewWorkout({
   navigation,
   userWeight,
   userWeightUnit,
+  userGender,
 }) {
   return (
     <View style={styles.container}>
@@ -42,7 +43,7 @@ export default function PreviewWorkout({
             </Text>
             <View style={{ flexDirection: "row", width: "70%" }}>
               <Text style={styles.dayInfo}>
-                {parseFloat(day.totalDuration)} min
+                {Math.round(parseFloat(day.totalDuration))} min
               </Text>
               <Text style={styles.dayInfo}>
                 {parseFloat(day.totalSets)} sets
@@ -55,12 +56,12 @@ export default function PreviewWorkout({
           <Pressable
             style={styles.buttonStart}
             onPress={() => {
-              console.log("aqui");
               console.log(navigation);
               navigation.navigate("Workout In Progress", {
                 day: day,
                 userWeight: userWeight,
                 userWeightUnit: userWeightUnit,
+                userGender: userGender,
               });
             }}
           >

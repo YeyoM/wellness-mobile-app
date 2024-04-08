@@ -30,13 +30,13 @@ export default function EditExercise({ route, navigation }) {
   const [sets, setSets] = useState(exercise.numberOfSets);
   const [weight, setWeight] = useState(exercise.weight);
   const [restTime, setRestTime] = useState(exercise.restTime / 60);
-  const [system, setSystem] = useState("lbs");
 
   const [calories, setCalories] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
 
   const [userWeight, setUserWeight] = useState(0);
   const [userWeightUnit, setUserWeightUnit] = useState("kg");
+  const [userGender, setUserGender] = useState("Male");
 
   const progress_reps = useSharedValue(exercise.numberOfReps);
   const min_reps = useSharedValue(1);
@@ -65,6 +65,7 @@ export default function EditExercise({ route, navigation }) {
         const data = docSnap.data();
         setUserWeight(data.weight);
         setUserWeightUnit(data.weightUnit);
+        setUserGender(data.gender);
       } else {
         console.log("No such document!");
       }
@@ -75,15 +76,16 @@ export default function EditExercise({ route, navigation }) {
 
   // update the calories and total time when the user changes the reps, sets, weight, or rest time
   useEffect(() => {
-    setTotalDuration(calculateTimeLift(sets, restTime));
+    setTotalDuration(calculateTimeLift(reps, sets, restTime * 60));
     setCalories(
       calculateCaloriesLift(
-        calculateTimeLift(sets, restTime),
+        calculateTimeLift(reps, sets, 60),
         userWeight,
         userWeightUnit,
+        userGender,
       ),
     );
-  }, [reps, sets, weight, restTime, userWeight, userWeightUnit]);
+  }, [reps, sets, weight, restTime, userWeight, userWeightUnit, userGender]);
 
   const handleApply = () => {
     setRoutine((prevRoutine) => {
@@ -109,9 +111,10 @@ export default function EditExercise({ route, navigation }) {
         return Math.round(
           acc +
             calculateCaloriesLift(
-              calculateTimeLift(ex.numberOfSets, ex.restTime / 60),
+              calculateTimeLift(ex.numberOfReps, ex.numberOfSets, 60),
               userWeight,
               userWeightUnit,
+              userGender,
             ),
         );
       }, 0);
@@ -123,7 +126,7 @@ export default function EditExercise({ route, navigation }) {
       newRoutine.days[currentDay].totalDuration = newRoutine.days[
         currentDay
       ].exercises.reduce((acc, ex) => {
-        return acc + calculateTimeLift(ex.numberOfSets, ex.restTime / 60);
+        return acc + calculateTimeLift(ex.numberOfReps, ex.numberOfSets, 60);
       }, 0);
       return newRoutine;
     });

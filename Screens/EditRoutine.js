@@ -239,7 +239,10 @@ export default function EditRoutine({ navigation }) {
                 <Text
                   style={{ color: "#9095A1", fontSize: 12, marginRight: 5 }}
                 >
-                  {parseFloat(routine.days[currentDay].totalDuration) ?? 0} min
+                  {Math.round(
+                    parseFloat(routine.days[currentDay].totalDuration),
+                  ) ?? 0}{" "}
+                  min
                 </Text>
                 <Text
                   style={{ color: "#9095A1", fontSize: 12, marginRight: 5 }}

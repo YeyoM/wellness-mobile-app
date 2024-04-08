@@ -8,6 +8,7 @@ export default function calculateCaloriesLift(
   timeLifting,
   userWeight,
   weightUnit,
+  userGender,
 ) {
   if (timeLifting < 0) {
     throw new Error("timeLifting must be a positive number");
@@ -21,12 +22,28 @@ export default function calculateCaloriesLift(
     throw new Error("weightUnit must be either 'kg' or 'lbs'");
   }
 
+  if (
+    userGender !== "Male" &&
+    userGender !== "Female" &&
+    userGender !== "Other"
+  ) {
+    throw new Error("userGender must be either 'Male', 'Female' or 'Other'");
+  }
+
   let calories;
 
   if (weightUnit === "kg") {
-    calories = userWeight * timeLifting * 0.0525;
+    if (userGender === "Female") {
+      calories = userWeight * timeLifting * 0.0637;
+    } else {
+      calories = userWeight * timeLifting * 0.0713;
+    }
   } else {
-    calories = userWeight * 0.453592 * timeLifting * 0.0525;
+    if (userGender === "Female") {
+      calories = userWeight * 0.453592 * timeLifting * 0.0637;
+    } else {
+      calories = userWeight * 0.453592 * timeLifting * 0.0713;
+    }
   }
 
   return calories;
