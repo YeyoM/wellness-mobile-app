@@ -1,11 +1,18 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  ScrollView,
+  Pressable,
+} from "react-native";
 import { EditRoutineContext } from "../context/EditRoutineContext.js";
 import deleteRoutine from "../FirebaseFunctions/Routines/deleteRoutine.js";
 import { FIREBASE_AUTH } from "../firebaseConfig.js";
 import PreviewWorkout from "../components/PreviewWorkout.js";
 import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage.js";
+import deleteFavoriteRoutine from "../AsyncStorageFunctions/Routines/deleteFavoriteRoutine.js";
 
 import Constants from "expo-constants";
 
@@ -17,6 +24,9 @@ export default function DaysList({ navigation, route }) {
   const [userWeightUnit, setUserWeightUnit] = useState(null);
   const [userGender, setUserGender] = useState(null);
   const [index, setIndex] = useState(null);
+
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const { initializeEditRoutine } = useContext(EditRoutineContext);
 
@@ -40,10 +50,23 @@ export default function DaysList({ navigation, route }) {
 
   useEffect(() => {
     if (route.params && route.params.routine) {
-      console.log(route.params.routine.days);
-      console.log(route.params.routine.routineName);
+      let days = [];
+      if (
+        !route.params.routine.days ||
+        route.params.routine.days.length === 0
+      ) {
+        console.log("No days found");
+        return;
+      }
+      for (let i = 0; i < route.params.routine.days.length; i++) {
+        let day = route.params.routine.days[i];
+        day.image = route.params.routine.image;
+        day.dayId = day.id;
+        days.push(day);
+        console.log(day);
+      }
       setRoutine(route.params.routine);
-      setDays(route.params.routine.days);
+      setDays(days);
       setRoutineName(route.params.routine.routineName);
     }
 
@@ -56,6 +79,47 @@ export default function DaysList({ navigation, route }) {
     // initialize the edit routine context with the routine
     await initializeEditRoutine(routine, index);
     navigation.push("Edit Routine");
+  };
+
+  const handleDelete = async () => {
+    console.log("delete");
+    Alert.alert(
+      "Delete Routine",
+      "Are you sure you want to delete this routine?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: async () => {
+            deleteFavoriteRoutine();
+            setLoading(true);
+            setSuccess(false);
+            try {
+              await deleteRoutine(FIREBASE_AUTH.currentUser.uid, routine);
+              setLoading(false);
+              setSuccess(true);
+              navigation.navigate("Home", { refresh: true });
+              navigation.navigate("Saved Routines", { refresh: true });
+            } catch (error) {
+              setLoading(false);
+              setSuccess(false);
+              Alert.alert("Error", "There was an error deleting the routine", [
+                {
+                  text: "OK",
+                  onPress: () => console.log("OK Pressed"),
+                },
+              ]);
+              console.log(error);
+            }
+          },
+          style: "destructive",
+        },
+      ],
+    );
   };
 
   return (
@@ -108,6 +172,13 @@ export default function DaysList({ navigation, route }) {
             )}
           </View>
         </View>
+        <Pressable style={styles.buttonDelete} onPress={() => handleDelete()}>
+          {loading ? (
+            <Text style={{ color: "white", fontSize: 16 }}>Loading...</Text>
+          ) : (
+            <Text style={{ color: "white", fontSize: 16 }}>Delete</Text>
+          )}
+        </Pressable>
       </ScrollView>
     </View>
   );
@@ -133,7 +204,7 @@ const styles = StyleSheet.create({
   buttonEdit: {
     width: "30%",
     height: 40,
-    backgroundColor: "#157AFF",
+    backgroundColor: "#1565C0",
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
@@ -144,5 +215,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#0496FF",
     marginBottom: 30,
+  },
+
+  buttonDelete: {
+    width: "90%",
+    height: 52,
+    backgroundColor: "#840505",
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+    alignSelf: "center",
+    marginBottom: 50,
   },
 });

@@ -121,7 +121,7 @@ export default function WorkoutInProgress({ route, navigation }) {
       );
       return;
     } else {
-      endWorkout();
+      endWorkout(numberOfSetsFinished);
     }
   };
 
@@ -135,6 +135,9 @@ export default function WorkoutInProgress({ route, navigation }) {
       meanWeight += parseInt(currentSets[i].weight);
       totalWeightExercise += parseInt(currentSets[i].weight);
     }
+    console.log("mean reps", meanReps);
+    console.log("mean weight", meanWeight);
+    console.log("number of sets finished", numberOfSetsFinished);
     meanReps /= numberOfSetsFinished;
     meanWeight /= numberOfSetsFinished;
     const finalWorkoutInfo = [

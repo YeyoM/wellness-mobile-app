@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
   buttonEdit: {
     width: "48%",
     height: 48,
-    backgroundColor: "#157AFF",
+    backgroundColor: "#1565C0",
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",

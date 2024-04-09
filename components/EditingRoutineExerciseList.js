@@ -119,7 +119,7 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
                 {item.exercise.exerciseName}
               </Text>
               <Text style={{ color: "#9095A1", fontSize: 12, marginLeft: 16 }}>
-                {item.exercise.numberOfSets} sets of
+                {item.exercise.numberOfSets} sets of {``}
                 {item.exercise.numberOfReps} reps, {item.exercise.weight}
                 {item.exercise.weightSystem}
               </Text>
