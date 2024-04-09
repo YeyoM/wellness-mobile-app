@@ -63,7 +63,7 @@ export default function RenderProgressGraphs({
         color="#157AFF"
         dataPointsColor="#157AFF"
         pointerConfig={{
-          pointerStripUptoDataPoint: false,
+          pointerStripUptoDataPoint: true,
           pointerStripColor: "#0496FF",
           pointerVanishDelay: 1000,
           pointerStripWidth: 2,
@@ -84,7 +84,6 @@ export default function RenderProgressGraphs({
                   borderRadius: 4,
                   justifyContent: "center",
                   alignItems: "center",
-                  zIndex: 999,
                 }}
               >
                 <Text
@@ -94,7 +93,7 @@ export default function RenderProgressGraphs({
                     fontSize: 11,
                   }}
                 >
-                  {items[0].value} Kg
+                  {items[0].value.toFixed(2)} Kg
                 </Text>
               </View>
             );
@@ -132,7 +131,7 @@ export default function RenderProgressGraphs({
         color="#157AFF"
         dataPointsColor="#157AFF"
         pointerConfig={{
-          pointerStripUptoDataPoint: false,
+          pointerStripUptoDataPoint: true,
           pointerVanishDelay: 1000,
           pointerStripColor: "#0496FF",
           pointerStripWidth: 2,
@@ -163,7 +162,7 @@ export default function RenderProgressGraphs({
                     fontSize: 11,
                   }}
                 >
-                  {items[0].value} min
+                  {items[0].value.toFixed(2)} min
                 </Text>
               </View>
             );
@@ -201,7 +200,7 @@ export default function RenderProgressGraphs({
         }}
         dataPointsColor="#157AFF"
         pointerConfig={{
-          pointerStripUptoDataPoint: false,
+          pointerStripUptoDataPoint: true,
           pointerStripColor: "#0496FF",
           pointerStripWidth: 2,
           pointerVanishDelay: 1000,
@@ -232,7 +231,7 @@ export default function RenderProgressGraphs({
                     fontSize: 11,
                   }}
                 >
-                  {items[0].value} Kcal
+                  {items[0].value.toFixed(2)} Kcal
                 </Text>
               </View>
             );
