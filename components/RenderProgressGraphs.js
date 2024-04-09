@@ -78,12 +78,14 @@ export default function RenderProgressGraphs({
             return (
               <View
                 style={{
-                  height: 40,
+                  height: 18,
+                  marginTop: 22,
                   width: 50,
                   backgroundColor: "#0496FF",
                   borderRadius: 4,
                   justifyContent: "center",
                   alignItems: "center",
+                  zIndex: 999,
                 }}
               >
                 <Text
@@ -146,7 +148,8 @@ export default function RenderProgressGraphs({
             return (
               <View
                 style={{
-                  height: 40,
+                  height: 18,
+                  marginTop: 22,
                   width: 50,
                   backgroundColor: "#0496FF",
                   borderRadius: 4,
@@ -215,7 +218,8 @@ export default function RenderProgressGraphs({
             return (
               <View
                 style={{
-                  height: 40,
+                  height: 18,
+                  marginTop: 22,
                   width: 50,
                   backgroundColor: "#0496FF",
                   borderRadius: 4,
