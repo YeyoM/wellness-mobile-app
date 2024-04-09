@@ -17,6 +17,7 @@ import AddRoutineStack from "./Stacks/AddRoutineStack";
 import EditRoutine from "./Screens/EditRoutine";
 import EditExercise from "./Screens/EditExercise";
 import AddLift from "./Screens/AddLift";
+import DaysList from "./Screens/DaysList";
 
 import MainTabs from "./Stacks/MainTabs";
 import AccountSettings from "./Screens/AccountSettings";
@@ -83,6 +84,11 @@ export default function App() {
                   <Stack.Screen
                     name="User Update"
                     component={UpdateUserInfoStack}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="Days List"
+                    component={DaysList}
                     options={{ headerShown: false }}
                   />
                   <Stack.Screen

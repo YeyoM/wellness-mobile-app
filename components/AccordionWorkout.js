@@ -88,21 +88,7 @@ const Accordion = ({
 
   return (
     <View style={styles.container}>
-      <Pressable
-        onPress={() => {
-          if (heightValue.value === 0) {
-            runOnUI(() => {
-              "worklet";
-              heightValue.value = withTiming(measure(listRef).height);
-            })();
-          } else {
-            heightValue.value = withTiming(0);
-          }
-          open.value = !open.value;
-          setIsOpen(!isOpen);
-        }}
-        style={styles.viewContainer}
-      >
+      <View style={styles.viewContainer}>
         <View style={styles.imageContainer}>
           <Image
             source={{ uri: routine_.image }}
@@ -145,11 +131,16 @@ const Accordion = ({
               {routine_.numberOfDays} days
             </Text>
           </View>
-          <View style={styles.textTapContainer}>
-            <Text style={styles.textTap}>{isOpen ? "Close" : "View"}</Text>
-          </View>
+          <Pressable
+            style={styles.textTapContainer}
+            onPress={() => {
+              navigation.navigate("Days List", { routine: routine_, index });
+            }}
+          >
+            <Text style={styles.textTap}>View</Text>
+          </Pressable>
         </View>
-      </Pressable>
+      </View>
       <Animated.View style={heightAnimationStyle}>
         <Animated.View style={styles.contentContainer} ref={listRef}>
           <Animated.View style={[styles.content, { opacity: progress }]}>
@@ -216,16 +207,22 @@ export default Accordion;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#24262B",
-    marginHorizontal: 10,
-    marginVertical: 10,
-    borderRadius: 14,
+    borderRadius: 15,
     overflow: "hidden",
     width: "90%",
+    marginBottom: 20,
   },
 
   textTitle: {
-    fontSize: 20,
+    fontSize: 16,
     color: "white",
+    marginTop: 10,
+  },
+
+  viewContainer: {
+    padding: 10,
+    flexDirection: "column",
+    alignItems: "center",
   },
 
   imageContainer: {
@@ -239,21 +236,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     right: 10,
-    backgroundColor: "#157AFF",
+    backgroundColor: "#1565C0",
     padding: 10,
     borderRadius: 14,
-  },
-
-  viewContainer: {
-    padding: 10,
-    flexDirection: "column",
-    alignItems: "center",
-  },
-
-  contentContainer: {
-    position: "absolute",
-    width: "100%",
-    top: 0,
   },
 
   content: {
@@ -262,30 +247,24 @@ const styles = StyleSheet.create({
   },
 
   routineInfo_: {
-    fontSize: 14,
-    color: "white",
-  },
-
-  routineInfo: {
-    fontSize: 11,
-    color: "white",
-    marginRight: 8,
-    marginTop: 5,
+    fontSize: 12,
+    color: "#a0a0a0",
+    marginTop: 2,
   },
 
   textTapContainer: {
-    backgroundColor: "#157AFF",
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 10,
-    display: "flex",
+    width: "35%",
+    backgroundColor: "#1565C0",
+    height: 36,
+    borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
+    justifySelf: "flex-end",
     alignSelf: "flex-end",
   },
 
   textTap: {
-    fontSize: 14,
+    fontSize: 12,
     color: "white",
     alignSelf: "center",
   },
@@ -327,7 +306,7 @@ const styles = StyleSheet.create({
   buttonEdit: {
     width: "48%",
     height: 48,
-    backgroundColor: "#157AFF",
+    backgroundColor: "#1565C0",
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",

@@ -39,7 +39,7 @@ export default function PreviewWorkout({
             }}
           >
             <Text style={styles.textTitle}>
-              {day.dayName} - {day.routineName}
+              {day.dayName} {day.routineName ? `- ${day.routineName}` : ""}
             </Text>
             <View style={{ flexDirection: "row", width: "70%" }}>
               <Text style={styles.dayInfo}>
@@ -56,7 +56,6 @@ export default function PreviewWorkout({
           <Pressable
             style={styles.buttonStart}
             onPress={() => {
-              console.log(navigation);
               navigation.navigate("Workout In Progress", {
                 day: day,
                 userWeight: userWeight,

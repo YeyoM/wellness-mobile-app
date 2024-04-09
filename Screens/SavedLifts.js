@@ -95,9 +95,6 @@ export default function SavedLifts({ route, navigation }) {
       return;
     }
 
-    console.log("adding lift");
-    console.log(lift);
-
     const newLift = {
       exerciseId: lift.exerciseId,
       exerciseName: lift.exerciseName,
@@ -120,7 +117,7 @@ export default function SavedLifts({ route, navigation }) {
     } else {
       userWeight = profileData.weight;
       userWeightUnit = profileData.weightUnit;
-      userGender = profile.gender;
+      userGender = profileData.gender;
     }
 
     // calculate the time and calories of the new lift
