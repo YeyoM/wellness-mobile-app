@@ -18,12 +18,14 @@ import getStatsData from "../AsyncStorageFunctions/getStatsData.js";
 import getUserWeightProgressDataForGraph from "../Utils/graphsDataFunctions/WeightData/getUserWeightProgressDataForGraph.js";
 import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/CaloriesData/getUserCaloriesProgressDataForGraph.js";
 import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/TimeData/getUserTimeSpentProgressDataForGraph.js";
+import getUserWeightLiftedProgressDataForGraph from "../Utils/graphsDataFunctions/WeightLiftedData/getUserWeightLiftedProgressDataForGraph.js";
 
 export default function MyStats({ navigation }) {
   const data = [
     { key: "1", value: "Calories" },
-    { key: "2", value: "Weight" },
+    { key: "2", value: "Weight Lifted" },
     { key: "3", value: "Time" },
+    { key: "4", value: "User Weight" },
   ];
 
   const [selectedCategory, setSelectedCategory] = React.useState("Calories");
@@ -48,6 +50,13 @@ export default function MyStats({ navigation }) {
   const [totalCalories, setTotalCalories] = React.useState(0);
   const [totalTimeSpent, setTotalTimeSpent] = React.useState(0);
   const [currentWeight, setCurrentWeight] = React.useState(0);
+  const [totalWeightLifted, setTotalWeightLifted] = React.useState(0);
+
+  const [weightLiftedLineData, setWeightLiftedLineData] = React.useState([]);
+  const [weightLiftedLineDataByWeek, setWeightLiftedLineDataByWeek] =
+    React.useState([]);
+  const [weightLiftedLineDataByMonth, setWeightLiftedLineDataByMonth] =
+    React.useState([]);
 
   const [loading, setLoading] = useState(false);
 
@@ -107,6 +116,18 @@ export default function MyStats({ navigation }) {
         setTimeLineData(timeProgressData);
         setTimeLineDataByWeek(timeProgressDataByWeek);
         setTimeLineDataByMonth(timeProgressDataByMonth);
+        const {
+          weightLiftedProgressData,
+          totalWeightLifted,
+          weightLiftedProgressDataByWeek,
+          weightLiftedProgressDataByMonth,
+        } = getUserWeightLiftedProgressDataForGraph({
+          weightLiftedRecord: stats.weightLiftedRecord,
+        });
+        setWeightLiftedLineData(weightLiftedProgressData);
+        setWeightLiftedLineDataByWeek(weightLiftedProgressDataByWeek);
+        setWeightLiftedLineDataByMonth(weightLiftedProgressDataByMonth);
+        setTotalWeightLifted(totalWeightLifted);
         setLoading(false);
       })
       .catch((error) => {
@@ -125,9 +146,13 @@ export default function MyStats({ navigation }) {
       timeLineData,
       timeLineDataByWeek,
       timeLineDataByMonth,
+      weightLiftedLineData,
+      weightLiftedLineDataByWeek,
+      weightLiftedLineDataByMonth,
+      currentWeight,
       totalCalories,
       totalTimeSpent,
-      currentWeight,
+      totalWeightLifted,
     });
   };
 
@@ -239,7 +264,32 @@ export default function MyStats({ navigation }) {
               {!loading &&
               weightLineData &&
               weightLineData.length > 0 &&
-              selectedCategory === "Weight" ? (
+              selectedCategory === "Weight Lifted" ? (
+                <LineChart
+                  hideDataPoints
+                  isAnimated
+                  animationDuration={1200}
+                  initialSpacing={30}
+                  data={weightLiftedLineData}
+                  spacing={40}
+                  thickness={3}
+                  yAxisTextStyle={{
+                    color: "#a0a0a0",
+                    fontSize: 10,
+                    marginRight: 10,
+                  }}
+                  xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
+                  yAxisThickness={0}
+                  rulesColor="#50535B"
+                  rulesType="solid"
+                  xAxisColor="#50535B"
+                  color="#157AFF"
+                  yAxisLabelSuffix={" kg"}
+                />
+              ) : !loading &&
+                weightLineData &&
+                weightLineData.length > 0 &&
+                selectedCategory === "User Weight" ? (
                 <LineChart
                   hideDataPoints
                   isAnimated
@@ -334,16 +384,17 @@ export default function MyStats({ navigation }) {
                 <Text style={styles.totals}>{totalCalories}</Text>
                 <Text style={styles.totalsCategory}>Total Kcal</Text>
               </View>
-            ) : selectedCategory === "Weight" ? (
-              <View style={styles.weightInfo}>
-                <Ionicons
-                  name="information-outline"
-                  size={14}
-                  color="#a0a0a0"
-                  style={{ marginRight: 5 }}
-                />
-                <Text style={styles.info}>
-                  You can update your weight in the profile section
+            ) : selectedCategory === "Weight Lifted" ? (
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.totals}>{totalWeightLifted}</Text>
+                <Text style={styles.totalsCategory}>
+                  Total weight lifted (kg)
                 </Text>
               </View>
             ) : selectedCategory === "Time" ? (
@@ -356,6 +407,17 @@ export default function MyStats({ navigation }) {
               >
                 <Text style={styles.totals}>{totalTimeSpent}</Text>
                 <Text style={styles.totalsCategory}>Total time spent</Text>
+              </View>
+            ) : selectedCategory === "User Weight" ? (
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.totals}>{currentWeight}</Text>
+                <Text style={styles.totalsCategory}>Current weight (kg)</Text>
               </View>
             ) : null}
           </View>

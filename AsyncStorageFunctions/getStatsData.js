@@ -16,11 +16,13 @@ export default async function getStatsData() {
   const weightRecord = user.weightRecord;
   const caloriesRecord = [];
   const totalTimeRecord = [];
+  const weightLiftedRecord = [];
   workouts.map((workout) => {
     if (
       workout.date === undefined ||
       workout.totalCalories === undefined ||
-      workout.totalTime === undefined
+      workout.totalTime === undefined ||
+      workout.totalWeight === undefined
     ) {
       return;
     }
@@ -32,13 +34,19 @@ export default async function getStatsData() {
       date: workout.date,
       time: workout.totalTime,
     };
+    const weightLifted = {
+      date: workout.date,
+      weightLifted: parseFloat(workout.totalWeight),
+    };
     caloriesRecord.push(calories);
     totalTimeRecord.push(totalTime);
+    weightLiftedRecord.push(weightLifted);
   });
   const statsData = {
     weightRecord,
     caloriesRecord,
     totalTimeRecord,
+    weightLiftedRecord,
   };
   return statsData;
 }

@@ -32,9 +32,16 @@ export default function ProgressGraphs({ navigation, route }) {
   const [timeLineDataByWeek, setTimeLineDataByWeek] = React.useState([]);
   const [timeLineDataByMonth, setTimeLineDataByMonth] = React.useState([]);
 
+  const [weightLiftedLineData, setWeightLiftedLineData] = React.useState([]);
+  const [weightLiftedLineDataByWeek, setWeightLiftedLineDataByWeek] =
+    React.useState([]);
+  const [weightLiftedLineDataByMonth, setWeightLiftedLineDataByMonth] =
+    React.useState([]);
+
   const [totalCalories, setTotalCalories] = React.useState(0);
   const [totalTimeSpent, setTotalTimeSpent] = React.useState(0);
   const [currentWeight, setCurrentWeight] = React.useState(0);
+  const [totalWeightLifted, setTotalWeightLifted] = React.useState(0);
 
   React.useEffect(() => {
     if (route.params) {
@@ -65,6 +72,17 @@ export default function ProgressGraphs({ navigation, route }) {
       if (route.params.timeLineDataByMonth) {
         setTimeLineDataByMonth(route.params.timeLineDataByMonth);
       }
+      if (route.params.weightLiftedLineData) {
+        setWeightLiftedLineData(route.params.weightLiftedLineData);
+      }
+      if (route.params.weightLiftedLineDataByWeek) {
+        setWeightLiftedLineDataByWeek(route.params.weightLiftedLineDataByWeek);
+      }
+      if (route.params.weightLiftedLineDataByMonth) {
+        setWeightLiftedLineDataByMonth(
+          route.params.weightLiftedLineDataByMonth,
+        );
+      }
       if (route.params.totalCalories) {
         setTotalCalories(route.params.totalCalories);
       }
@@ -73,6 +91,9 @@ export default function ProgressGraphs({ navigation, route }) {
       }
       if (route.params.currentWeight) {
         setCurrentWeight(route.params.currentWeight);
+      }
+      if (route.params.totalWeightLifted) {
+        setTotalWeightLifted(route.params.totalWeightLifted);
       }
     }
   }, [route.params]);
@@ -87,6 +108,10 @@ export default function ProgressGraphs({ navigation, route }) {
 
   const handleSelectWeight = () => {
     setSelectedCategory("Weight");
+  };
+
+  const handleSelectWeightLifted = () => {
+    setSelectedCategory("Weight Lifted");
   };
 
   const handleSelectDay = () => {
@@ -184,7 +209,9 @@ export default function ProgressGraphs({ navigation, route }) {
                     ? "Total Calories"
                     : selectedCategory === "Time"
                       ? "Total Time"
-                      : "Current Weight"}
+                      : selectedCategory === "Weight"
+                        ? "Current Weight"
+                        : "Total Weight Lifted"}
                 </Text>
                 <Text
                   style={{ color: "white", fontSize: 30, fontWeight: "bold" }}
@@ -193,7 +220,9 @@ export default function ProgressGraphs({ navigation, route }) {
                     ? `${totalCalories}Kcal`
                     : selectedCategory === "Time"
                       ? totalTimeSpent
-                      : `${currentWeight}kg`}
+                      : selectedCategory === "Weight"
+                        ? `${currentWeight}kg`
+                        : `${totalWeightLifted}kg`}
                 </Text>
               </View>
               <View
@@ -216,9 +245,9 @@ export default function ProgressGraphs({ navigation, route }) {
                   style={{ color: "white", fontSize: 30, fontWeight: "bold" }}
                 >
                   {selectedCategory === "Calories"
-                    ? "10Kcal"
+                    ? ""
                     : selectedCategory === "Time"
-                      ? "50m"
+                      ? ""
                       : ""}
                 </Text>
               </View>
@@ -237,6 +266,9 @@ export default function ProgressGraphs({ navigation, route }) {
               timeLineData={timeLineData}
               timeLineDataByWeek={timeLineDataByWeek}
               timeLineDataByMonth={timeLineDataByMonth}
+              weightLiftedLineData={weightLiftedLineData}
+              weightLiftedLineDataByWeek={weightLiftedLineDataByWeek}
+              weightLiftedLineDataByMonth={weightLiftedLineDataByMonth}
             />
           </View>
           <View style={styles.info}>
@@ -292,6 +324,37 @@ export default function ProgressGraphs({ navigation, route }) {
             </Pressable>
             <Pressable
               style={
+                selectedCategory === "Weight Lifted"
+                  ? styles.categorySelected
+                  : styles.categoryUnselected
+              }
+              onPress={handleSelectWeightLifted}
+            >
+              <Ionicons name="barbell-outline" size={36} color="white" />
+              <Text
+                style={{
+                  color: "white",
+                  marginTop: 5,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                Weight Lifted
+              </Text>
+            </Pressable>
+          </View>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              marginTop: 20,
+              marginBottom: 40,
+              width: "95%",
+            }}
+          >
+            <Pressable
+              style={
                 selectedCategory === "Weight"
                   ? styles.categorySelected
                   : styles.categoryUnselected
@@ -300,9 +363,14 @@ export default function ProgressGraphs({ navigation, route }) {
             >
               <Ionicons name="person-outline" size={36} color="white" />
               <Text
-                style={{ color: "white", marginTop: 5, fontWeight: "bold" }}
+                style={{
+                  color: "white",
+                  marginTop: 5,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
               >
-                Weight
+                User Weight
               </Text>
             </Pressable>
           </View>
@@ -398,8 +466,8 @@ const styles = StyleSheet.create({
   categories: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
+    justifyContent: "space-between",
+    width: "95%",
     marginTop: 30,
   },
 
@@ -410,7 +478,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#157AFF",
     width: 80,
-    height: 98,
+    height: 110,
     borderRadius: 20,
   },
 
@@ -421,7 +489,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#24262B",
     width: 80,
-    height: 98,
+    height: 110,
     borderRadius: 20,
   },
 });
