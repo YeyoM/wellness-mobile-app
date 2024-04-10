@@ -17,7 +17,7 @@
     "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/material-top-tabs": "^6.6.5",
     "@react-navigation/native-stack": "^6.9.17",
-    "expo": "~50.0.14",
+    "expo": "~50.0.15",
     "expo-checkbox": "~2.7.0",
     "expo-haptics": "~12.8.1",
     "expo-status-bar": "~1.11.1",

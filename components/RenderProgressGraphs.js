@@ -14,6 +14,9 @@ export default function RenderProgressGraphs({
   timeLineData,
   timeLineDataByMonth,
   timeLineDataByWeek,
+  weightLiftedLineData,
+  weightLiftedLineDataByMonth,
+  weightLiftedLineDataByWeek,
 }) {
   if (
     !caloriesLineData ||
@@ -24,7 +27,10 @@ export default function RenderProgressGraphs({
     !caloriesLineDataByMonth ||
     !caloriesLineDataByWeek ||
     !timeLineDataByMonth ||
-    !timeLineDataByWeek
+    !timeLineDataByWeek ||
+    !weightLiftedLineData ||
+    !weightLiftedLineDataByMonth ||
+    !weightLiftedLineDataByWeek
   ) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -48,6 +54,75 @@ export default function RenderProgressGraphs({
             : selectedPeriod === "Week"
               ? weightLineDataByWeek
               : weightLineData
+        }
+        spacing={
+          selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
+        }
+        yAxisThickness={0}
+        xAxisThickness={0}
+        yAxisTextStyle={{
+          color: "#0B0B0B",
+        }}
+        rulesColor="#0B0B0B"
+        rulesType="solid"
+        xAxisColor="#50535B"
+        color="#157AFF"
+        dataPointsColor="#157AFF"
+        pointerConfig={{
+          pointerStripUptoDataPoint: false,
+          pointerStripColor: "#0496FF",
+          pointerVanishDelay: 1000,
+          pointerStripWidth: 2,
+          pointerStripHeight: 160,
+          strokeDashArray: [2, 5],
+          pointerColor: "#0496FF",
+          radius: 5,
+          pointerLabelWidth: 100,
+          pointerLabelHeight: 40,
+          activatePointersOnLongPress: true,
+          pointerLabelComponent: (items) => {
+            return (
+              <View
+                style={{
+                  height: 40,
+                  width: 50,
+                  backgroundColor: "#0496FF",
+                  borderRadius: 4,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 999,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "white",
+                    fontWeight: "bold",
+                    fontSize: 11,
+                  }}
+                >
+                  {items[0].value} Kg
+                </Text>
+              </View>
+            );
+          },
+        }}
+      />
+    );
+  } else if (category === "Weight Lifted") {
+    return (
+      <LineChart
+        isAnimated
+        width={Dimensions.get("window").width * 0.8}
+        animationDuration={1200}
+        initialSpacing={
+          selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
+        }
+        data={
+          selectedPeriod === "Month"
+            ? weightLiftedLineDataByMonth
+            : selectedPeriod === "Week"
+              ? weightLiftedLineDataByWeek
+              : weightLiftedLineData
         }
         spacing={
           selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
