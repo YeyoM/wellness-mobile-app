@@ -243,9 +243,12 @@ export default function WorkoutInProgress({ route, navigation }) {
         setStartTime(new Date());
       }
       if (nextAppState === "active") {
-        const endTime = new Date();
-        const difference = endTime - startTime;
-        setTime((time) => time + Math.floor(difference / 1000));
+        if (startTime !== null) {
+          const endTime = new Date();
+          const difference = endTime - startTime;
+          setTime((time) => time + Math.floor(difference / 1000));
+          setStartTime(null);
+        }
       }
     });
     return () => subscription.remove();
