@@ -273,14 +273,16 @@ export default function WorkoutInProgress({ route, navigation }) {
       return;
     }
 
+    const nextExercise = exerciseQueue[0];
+    console.log(nextExercise);
     if (currentExerciseIndex < numberOfExercises - 1) {
       setExerciseQueue(exerciseQueue.slice(1));
-      setCurrentExercise(exercises[currentExerciseIndex + 1]);
       setCurrentExerciseIndex(currentExerciseIndex + 1);
-      setCurrentExerciseReps(exercises[currentExerciseIndex + 1].numberOfReps);
-      setCurrentExerciseSets(exercises[currentExerciseIndex + 1].numberOfSets);
-      setCurrentExerciseWeight(exercises[currentExerciseIndex + 1].weight);
-      setCurrentExerciseRestTime(exercises[currentExerciseIndex + 1].restTime);
+      setCurrentExercise(nextExercise);
+      setCurrentExerciseReps(nextExercise.numberOfReps);
+      setCurrentExerciseSets(nextExercise.numberOfSets);
+      setCurrentExerciseWeight(nextExercise.weight);
+      setCurrentExerciseRestTime(nextExercise.restTime);
       // get the mean of the weight and reps of the current exercise and add it to the currentWorkoutInfo state
       let meanReps = 0;
       let meanWeight = 0;
@@ -303,9 +305,9 @@ export default function WorkoutInProgress({ route, navigation }) {
         },
       ]);
       setCurrentTotalWeight(currentTotalWeight + totalWeightExercise);
-      const sets = exercises[currentExerciseIndex + 1].numberOfSets;
-      const weight = exercises[currentExerciseIndex + 1].weight;
-      const reps = exercises[currentExerciseIndex + 1].numberOfReps;
+      const sets = nextExercise.numberOfSets;
+      const weight = nextExercise.weight;
+      const reps = nextExercise.numberOfReps;
       const initialSets = [];
       for (let i = 0; i < sets; i++) {
         initialSets.push({ reps: reps, weight: weight, finished: false });
@@ -514,7 +516,9 @@ export default function WorkoutInProgress({ route, navigation }) {
                       keyExtractor={(item) =>
                         `draggable-item-${item.exerciseName}`
                       }
-                      onDragEnd={({ data }) => setExercises(data)}
+                      onDragEnd={({ data }) => {
+                        setExerciseQueue(data);
+                      }}
                     />
                   </NestableScrollContainer>
                 )}
