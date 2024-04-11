@@ -115,6 +115,8 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
                   marginLeft: 16,
                   maxWidth: 180,
                 }}
+                numberOfLines={2}
+                ellipsizeMode="tail"
               >
                 {item.exercise.exerciseName}
               </Text>

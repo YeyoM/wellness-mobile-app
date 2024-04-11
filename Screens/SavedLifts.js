@@ -253,7 +253,9 @@ export default function SavedLifts({ route, navigation }) {
                     fontSize: 20,
                     textAlign: "center",
                     width: "48%",
+                    textAlign: "left",
                   }}
+                  numberOfLines={2}
                 >
                   {lift.exerciseName}
                 </Text>
