@@ -308,13 +308,12 @@ export default function SearchLift({ navigation }) {
                 </Pressable>
                 <View
                   style={{
-                    width: "80%",
+                    width: "70%",
                     padding: 10,
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "flex-start",
-                    marginLeft: 10,
                   }}
                 >
                   <Text
@@ -322,7 +321,9 @@ export default function SearchLift({ navigation }) {
                       color: "#fff",
                       fontSize: 20,
                       textAlign: "left",
+                      marginRight: 10,
                     }}
+                    numberOfLines={2}
                   >
                     {lift.exerciseName}
                   </Text>
