@@ -7,11 +7,29 @@ import CarouselItemReps from "./CarouselItemReps";
 
 export default function CarouselDays({ exercises }) {
   const [loop, _setLoop] = React.useState(false);
+  const [allowedExercises, setAllowedExercises] = React.useState([]);
   const r = React.useRef(null);
 
   if (!exercises) {
     return null;
   }
+
+  React.useEffect(() => {
+    const allowed = [
+      "Barbell Bench Press",
+      "Barbell Deadlift",
+      "Barbell Squat",
+      "Barbell Seated Shoulder Press",
+    ];
+    const allowedOneRepMaxes = new Set(allowed);
+    const filteredExercises = [];
+    exercises.forEach((exercise) => {
+      if (allowedOneRepMaxes.has(exercise.exerciseName)) {
+        filteredExercises.push(exercise);
+      }
+    });
+    setAllowedExercises(filteredExercises);
+  }, [exercises]);
 
   return (
     <Carousel
@@ -28,7 +46,7 @@ export default function CarouselDays({ exercises }) {
       }}
       width={120}
       height={120}
-      data={exercises}
+      data={allowedExercises}
       renderItem={({ item, animationValue }) => {
         return (
           <CarouselItemReps

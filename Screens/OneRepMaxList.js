@@ -15,10 +15,23 @@ export default function OneRepMaxList({ navigation }) {
   const [exercises, setExercises] = React.useState([]);
 
   React.useEffect(() => {
+    const allowed = [
+      "Barbell Bench Press",
+      "Barbell Deadlift",
+      "Barbell Squat",
+      "Barbell Seated Shoulder Press",
+    ];
+    const allowedOneRepMaxes = new Set(allowed);
     const unsubscribe = navigation.addListener("focus", () => {
       getExercisesStorage()
         .then((exercises) => {
-          setExercises(exercises);
+          const filteredExercises = [];
+          exercises.forEach((exercise) => {
+            if (allowedOneRepMaxes.has(exercise.exerciseName)) {
+              filteredExercises.push(exercise);
+            }
+          });
+          setExercises(filteredExercises);
         })
         .catch((error) => {
           console.log(error);
