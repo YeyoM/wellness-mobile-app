@@ -17,22 +17,19 @@ import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
 
 import getExercisesStorage from "../AsyncStorageFunctions/Exercises/getExercisesStorage.js";
 import saveExercisesStorage from "../AsyncStorageFunctions/Exercises/saveExercisesStorage.js";
-import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage.js";
 
 import { EditRoutineContext } from "../context/EditRoutineContext";
+import { AppContext } from "../context/AppContext.js";
 
 export default function SavedLifts({ route, navigation }) {
   const { routine, setRoutine, currentDay } = useContext(EditRoutineContext);
+  const { user } = useContext(AppContext);
 
   const [exercises, setExercises] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Check in the async storage if the user has saved excercises
-    // If the user has saved exercises, set them in the state
-    // If the user doesn't have saved exercises, fetch them from the API
-    // and save them in the async storage
     setRefreshing(true);
     getExercisesStorage().then((exercises) => {
       if (exercises) {
@@ -106,19 +103,9 @@ export default function SavedLifts({ route, navigation }) {
     };
 
     // get the user's weight from the async storage
-    const profileData = await getUserStorage();
-    let userWeight = null;
-    let userWeightUnit = null;
-    let userGender = null;
-    // TODO, handle the case where the app does not have the user's info
-    if (!profileData) {
-      console.log("no user data");
-      return;
-    } else {
-      userWeight = profileData.weight;
-      userWeightUnit = profileData.weightUnit;
-      userGender = profileData.gender;
-    }
+    userWeight = user.weight;
+    userWeightUnit = user.weightUnit;
+    userGender = user.gender;
 
     // calculate the time and calories of the new lift
     const time = calculateTimeLift(

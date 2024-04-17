@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   View,
   Text,
@@ -8,18 +8,21 @@ import {
 } from "react-native";
 import PreviewWorkout from "./PreviewWorkout";
 import getAllDays from "../FirebaseFunctions/Days/getAllDays";
-import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage";
 import getDaysStorage from "../AsyncStorageFunctions/Days/getDaysStorage.js";
 import saveDaysStorage from "../AsyncStorageFunctions/Days/saveDaysStorage.js";
 import getFavoriteRoutine from "../AsyncStorageFunctions/Routines/getFavoriteRoutine.js";
 
+import { AppContext } from "../context/AppContext.js";
+
 export default function MyPlan({ navigation, refresh, setRefresh }) {
+  const { user } = useContext(AppContext);
+
   const [days, setDays] = useState([]);
   const [error, setError] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [userWeight, setUserWeight] = useState(null);
-  const [userWeightUnit, setUserWeightUnit] = useState(null);
-  const [userGender, setUserGender] = useState(null);
+  const [userWeight, _setUserWeight] = useState(user.weight);
+  const [userWeightUnit, _setUserWeightUnit] = useState(user.weightUnit);
+  const [userGender, _setUserGender] = useState(user.gender);
   const [favoriteRoutine, setFavoriteRoutine] = useState(null);
 
   useEffect(() => {
@@ -50,21 +53,6 @@ export default function MyPlan({ navigation, refresh, setRefresh }) {
           });
       }
     });
-    getUserStorage()
-      .then((data) => {
-        if (data) {
-          setUserWeight(data.weight);
-          setUserWeightUnit(data.weightUnit);
-          setUserGender(data.gender);
-        } else {
-          console.log("No user data found");
-          return;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        navigation.navigate("Home");
-      });
   }, []);
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   Dimensions,
   Alert,
+  Platform,
 } from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";

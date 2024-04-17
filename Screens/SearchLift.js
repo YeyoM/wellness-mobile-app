@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import {
   View,
   TextInput,
@@ -14,13 +14,14 @@ import { WELLNESS_NINJA_API_KEY } from "@env";
 
 import getExercisesStorage from "../AsyncStorageFunctions/Exercises/getExercisesStorage.js";
 import saveExercisesStorage from "../AsyncStorageFunctions/Exercises/saveExercisesStorage.js";
-import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage.js";
 
 import addExerciseToUser from "../FirebaseFunctions/Exercises/addExerciseToUser.js";
 
-import { FIREBASE_AUTH } from "../firebaseConfig";
+import { AppContext } from "../context/AppContext.js";
 
 export default function SearchLift({ navigation }) {
+  const { firebaseUser, user } = useContext(AppContext);
+
   const [loading, setLoading] = useState(false);
   const [exercises, setExercises] = useState(null);
   const [error, setError] = useState(null);
@@ -117,8 +118,7 @@ export default function SearchLift({ navigation }) {
     }
 
     // save the lift in to the database
-    const user = FIREBASE_AUTH.currentUser;
-    if (!user) {
+    if (!firebaseUser) {
       setTimeout(() => {
         setError(null);
       }, 2000);
@@ -126,8 +126,7 @@ export default function SearchLift({ navigation }) {
       return;
     }
 
-    const profileData = await getUserStorage();
-    let weightUnit = profileData.weightUnit ? profileData.weightUnit : "lbs";
+    let weightUnit = user.weightUnit ? user.weightUnit : "lbs";
     if (weightUnit === "lbs") {
       defaultWeight = 80;
     } else {
@@ -137,7 +136,7 @@ export default function SearchLift({ navigation }) {
     console.log("Weight unit", weightUnit);
     console.log("Default weight", defaultWeight);
 
-    const userId = user.uid;
+    const userId = firebaseUser.uid;
     console.log("Saving lift to user", userId);
 
     const exercise = {

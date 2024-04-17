@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   View,
   ScrollView,
@@ -7,75 +7,20 @@ import {
   Pressable,
   Dimensions,
   ActivityIndicator,
-  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-import { FIREBASE_AUTH } from "../firebaseConfig";
+import { AppContext } from "../context/AppContext.js";
 
-import GetUser from "../FirebaseFunctions/Users/GetUser.js";
-import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage.js";
-import saveUserStorage from "../AsyncStorageFunctions/Users/saveUserStorage.js";
 import getWorkoutsStorage from "../AsyncStorageFunctions/Workouts/getWorkoutsStorage.js";
-
 import readableTimeToMinutes from "../Utils/readableTimeToMinutes.js";
 
-export default function Profile({ route, navigation }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [profileData, setProfileData] = useState(null);
+export default function Profile({ navigation }) {
+  const { user } = useContext(AppContext);
+
+  const [isLoading, _setIsLoading] = useState(false);
   const [finishedWorkouts, setFinishedWorkouts] = useState(0);
   const [hoursTrained, setHoursTrained] = useState(0);
-
-  useEffect(() => {
-    const user = FIREBASE_AUTH.currentUser;
-    if (!user) {
-      navigation.navigate("Login");
-      return;
-    }
-
-    if (route.params && route.params.refresh) {
-      GetUser(user.uid)
-        .then((data) => {
-          saveUserStorage(data);
-          setProfileData(data);
-        })
-        .catch((error) => {
-          Alert.alert("Error", error.message);
-          navigation.navigate("Home");
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-      route.params.refresh = false;
-    } else {
-      setIsLoading(true);
-      getUserStorage()
-        .then((data) => {
-          if (data) {
-            setIsLoading(false);
-            setProfileData(data);
-          } else {
-            GetUser(user.uid)
-              .then((data) => {
-                saveUserStorage(data);
-                setProfileData(data);
-              })
-              .catch((error) => {
-                Alert.alert("Error", error.message);
-                navigation.navigate("Home");
-              })
-              .finally(() => {
-                setIsLoading(false);
-              });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          navigation.navigate("Home");
-        });
-    }
-    setIsLoading(false);
-  }, [route.params]);
 
   // finished workouts and hours trained
   useEffect(() => {
@@ -117,22 +62,20 @@ export default function Profile({ route, navigation }) {
       >
         <View style={styles.header}>
           <View style={styles.left}>
-            <Text style={styles.name}>{profileData?.name}</Text>
-            <Text style={styles.bio}>
-              {profileData?.bio ? profileData.bio : "no bio"}
-            </Text>
+            <Text style={styles.name}>{user?.name}</Text>
+            <Text style={styles.bio}>{user?.bio ? user.bio : "no bio"}</Text>
           </View>
           <View style={styles.right}>
             <Pressable
               onPress={() => {
                 navigation.navigate("Account Settings", {
-                  pushNotifications: profileData?.pushNotifications,
-                  workoutReminders: profileData?.workoutReminders,
-                  sound: profileData?.sound,
-                  vibrations: profileData?.vibrations,
-                  gym: profileData?.gym,
-                  age: profileData?.age,
-                  gender: profileData?.gender,
+                  pushNotifications: user?.pushNotifications,
+                  workoutReminders: user?.workoutReminders,
+                  sound: user?.sound,
+                  vibrations: user?.vibrations,
+                  gym: user?.gym,
+                  age: user?.age,
+                  gender: user?.gender,
                 });
               }}
             >
@@ -141,15 +84,15 @@ export default function Profile({ route, navigation }) {
           </View>
         </View>
         <View style={styles.subHeader}>
-          {profileData?.showHeightAndWeight ? (
+          {user?.showHeightAndWeight ? (
             <View style={styles.top}>
               <View style={{ flexDirection: "column", alignItems: "center" }}>
-                <Text style={styles.weight}>{profileData?.weight}</Text>
-                <Text style={styles.unit}>{profileData?.weightUnit}</Text>
+                <Text style={styles.weight}>{user?.weight}</Text>
+                <Text style={styles.unit}>{user?.weightUnit}</Text>
               </View>
               <View style={{ flexDirection: "column", alignItems: "center" }}>
-                <Text style={styles.weight}>{profileData?.height}</Text>
-                <Text style={styles.unit}>{profileData?.heightUnit}</Text>
+                <Text style={styles.weight}>{user?.height}</Text>
+                <Text style={styles.unit}>{user?.heightUnit}</Text>
               </View>
             </View>
           ) : null}
@@ -160,15 +103,15 @@ export default function Profile({ route, navigation }) {
                 navigation.navigate("User Update", {
                   screen: "Edit Profile",
                   params: {
-                    name: profileData?.name,
-                    bio: profileData?.bio,
-                    weight: profileData?.weight,
-                    height: profileData?.height,
-                    weightUnit: profileData?.weightUnit,
-                    heightUnit: profileData?.heightUnit,
-                    showHeightAndWeight: profileData?.showHeightAndWeight,
-                    privateProfile: profileData?.privateProfile,
-                    weightRecord: profileData?.weightRecord,
+                    name: user?.name,
+                    bio: user?.bio,
+                    weight: user?.weight,
+                    height: user?.height,
+                    weightUnit: user?.weightUnit,
+                    heightUnit: user?.heightUnit,
+                    showHeightAndWeight: user?.showHeightAndWeight,
+                    privateProfile: user?.privateProfile,
+                    weightRecord: user?.weightRecord,
                   },
                 });
               }}

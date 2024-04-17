@@ -11,8 +11,10 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
-import SaveProfileChanges from "../FirebaseFunctions/Users/SaveProfileChanges";
 import { FIREBASE_AUTH } from "../firebaseConfig";
+
+import SaveProfileChanges from "../FirebaseFunctions/Users/SaveProfileChanges";
+import { AppContext } from "../context/AppContext.js";
 
 export default function EditProfile({ route, navigation }) {
   const {
@@ -26,6 +28,8 @@ export default function EditProfile({ route, navigation }) {
     privateProfile,
     weightRecord,
   } = route.params;
+
+  const { refreshUser } = React.useContext(AppContext);
 
   const [name_, setName] = React.useState(name);
   const [bio_, setBio] = React.useState(bio);
@@ -68,7 +72,8 @@ export default function EditProfile({ route, navigation }) {
         weightRecord: weightRecord_,
         userId: user.uid,
       });
-      navigation.navigate("Profile", { refresh: true });
+      await refreshUser();
+      navigation.navigate("Profile");
     } catch (e) {
       console.log(e);
     } finally {

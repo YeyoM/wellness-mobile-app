@@ -87,6 +87,8 @@ export default async function SaveProfileChanges({
   if (weightRecord.length > 0) {
     const lastWeightUpdate = weightRecord[weightRecord.length - 1].date;
     const today = new Date().toISOString().split("T")[0];
+    console.log("today", today);
+    console.log("last", lastWeightUpdate);
     const lastDate = firebasDateToDate(lastWeightUpdate)
       .toISOString()
       .split("T")[0];
@@ -101,7 +103,15 @@ export default async function SaveProfileChanges({
   }
 
   for (let i = 0; i < weightRecord.length; i++) {
-    weightRecord[i].date = firebasDateToDate(weightRecord[i].date);
+    console.log("weight Record", weightRecord[i].date);
+    if (
+      weightRecord[i].date.seconds !== undefined &&
+      weightRecord[i].date.nanoseconds !== undefined
+    ) {
+      weightRecord[i].date = firebasDateToDate(weightRecord[i].date);
+    } else {
+      weightRecord[i].date = new Date(weightRecord[i].date);
+    }
   }
 
   try {

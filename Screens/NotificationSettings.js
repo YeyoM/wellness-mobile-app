@@ -8,13 +8,16 @@ import {
   Switch,
   ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 import SaveNotificationSettingsChanges from "../FirebaseFunctions/Users/SaveNotificationSettingsChanges";
 import { FIREBASE_AUTH } from "../firebaseConfig";
+import { AppContext } from "../context/AppContext.js";
 
 export default function NotificationSettings({ route, navigation }) {
+  const { refreshUser } = useContext(AppContext);
+
   const { pushNotifications, workoutReminders, sound, vibrations } =
     route.params;
   const [soundEnabled, setSoundEnabled] = useState(sound);
@@ -40,8 +43,8 @@ export default function NotificationSettings({ route, navigation }) {
         sound: soundEnabled,
         vibrations: vibrationEnabled,
       });
-      console.log("Notification settings updated successfully!");
-      navigation.navigate("Profile", { refresh: true });
+      await refreshUser();
+      navigation.navigate("Profile");
     } catch (error) {
       console.log(error.message);
     } finally {
