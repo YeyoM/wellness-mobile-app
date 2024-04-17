@@ -16,10 +16,15 @@ import { FIREBASE_AUTH } from "../firebaseConfig";
 import GetUser from "../FirebaseFunctions/Users/GetUser.js";
 import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage.js";
 import saveUserStorage from "../AsyncStorageFunctions/Users/saveUserStorage.js";
+import getWorkoutsStorage from "../AsyncStorageFunctions/Workouts/getWorkoutsStorage.js";
+
+import readableTimeToMinutes from "../Utils/readableTimeToMinutes.js";
 
 export default function Profile({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   const [profileData, setProfileData] = useState(null);
+  const [finishedWorkouts, setFinishedWorkouts] = useState(0);
+  const [hoursTrained, setHoursTrained] = useState(0);
 
   useEffect(() => {
     const user = FIREBASE_AUTH.currentUser;
@@ -29,7 +34,6 @@ export default function Profile({ route, navigation }) {
     }
 
     if (route.params && route.params.refresh) {
-      console.log("refreshing profile");
       GetUser(user.uid)
         .then((data) => {
           saveUserStorage(data);
@@ -72,6 +76,24 @@ export default function Profile({ route, navigation }) {
     }
     setIsLoading(false);
   }, [route.params]);
+
+  // finished workouts and hours trained
+  useEffect(() => {
+    getWorkoutsStorage()
+      .then((data) => {
+        let finished = 0;
+        let time = 0;
+        data.forEach((workout) => {
+          finished++;
+          time += readableTimeToMinutes(workout.totalTime);
+        });
+        setFinishedWorkouts(finished);
+        setHoursTrained(Math.floor(time / 60));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -135,7 +157,6 @@ export default function Profile({ route, navigation }) {
             <Pressable
               style={styles.editButton}
               onPress={() => {
-                console.log(profileData);
                 navigation.navigate("User Update", {
                   screen: "Edit Profile",
                   params: {
@@ -231,7 +252,7 @@ export default function Profile({ route, navigation }) {
                       fontSize: 16,
                     }}
                   >
-                    {profileData?.finishedWorkouts}
+                    {finishedWorkouts}
                   </Text>
                 </View>
               </View>
@@ -248,7 +269,6 @@ export default function Profile({ route, navigation }) {
                     Hours Trained
                   </Text>
                 </View>
-
                 <View
                   style={{
                     backgroundColor: "#0496FF",
@@ -263,7 +283,7 @@ export default function Profile({ route, navigation }) {
                       fontSize: 16,
                     }}
                   >
-                    {profileData?.hoursTrained}
+                    {hoursTrained}
                   </Text>
                 </View>
               </View>
