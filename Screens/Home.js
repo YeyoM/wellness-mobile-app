@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { View, Text, StyleSheet, Image, Alert } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 const Tab = createMaterialTopTabNavigator();
-
-import { FIREBASE_AUTH } from "../firebaseConfig";
 
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
@@ -12,55 +10,10 @@ import * as Progress from "react-native-progress";
 import MyPlan from "../components/MyPlan";
 import Crowdmeter from "../components/Crowdmeter";
 
-import GetUser from "../FirebaseFunctions/Users/GetUser";
-import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage";
-import saveUserStorage from "../AsyncStorageFunctions/Users/saveUserStorage";
+import { AppContext } from "../context/AppContext";
 
-export default function Home({ navigation, route }) {
-  const [user, setUser] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [refreshDays, setRefreshDays] = useState(false);
-
-  useEffect(() => {
-    const user = FIREBASE_AUTH.currentUser;
-    if (!user) {
-      navigation.navigate("Login");
-      return;
-    }
-    setIsLoading(true);
-    getUserStorage()
-      .then((data) => {
-        if (data) {
-          setIsLoading(false);
-          setUser(data);
-        } else {
-          GetUser(user.uid)
-            .then((data) => {
-              saveUserStorage(data);
-              setUser(data);
-            })
-            .catch((error) => {
-              Alert.alert("Error", error.message);
-              navigation.navigate("Home");
-            })
-            .finally(() => {
-              setIsLoading(false);
-            });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        navigation.navigate("Home");
-      });
-    setIsLoading(false);
-  }, []);
-
-  useEffect(() => {
-    if (route.params?.refresh) {
-      setRefreshDays(true);
-      route.params.refresh = false;
-    }
-  }, [route.params?.refresh]);
+export default function Home({ navigation }) {
+  const { user } = useContext(AppContext);
 
   return (
     <View style={styles.container}>
@@ -118,13 +71,7 @@ export default function Home({ navigation, route }) {
           >
             <Tab.Screen
               name="My Plan"
-              children={() => (
-                <MyPlan
-                  navigation={navigation}
-                  refresh={refreshDays}
-                  setRefresh={setRefreshDays}
-                />
-              )}
+              children={() => <MyPlan navigation={navigation} />}
             />
             <Tab.Screen name="Crowdmeter" component={Crowdmeter} />
           </Tab.Navigator>

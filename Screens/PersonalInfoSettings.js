@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   View,
   ScrollView,
@@ -12,8 +12,11 @@ import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import { FIREBASE_AUTH } from "../firebaseConfig";
 import SavePersonalInfoChanges from "../FirebaseFunctions/Users/SavePersonalInfoChanges";
+import { AppContext } from "../context/AppContext.js";
 
 export default function PersonalInfoSettings({ route, navigation }) {
+  const { refreshUser } = React.useContext(AppContext);
+
   const { gym, age, gender } = route.params;
 
   const [email, setEmail] = useState("");
@@ -40,7 +43,8 @@ export default function PersonalInfoSettings({ route, navigation }) {
       }
       await SavePersonalInfoChanges({ uid: user.uid, gym: gym_ });
       setLoading(false);
-      navigation.navigate("Profile", { refresh: true });
+      await refreshUser();
+      navigation.navigate("Profile");
     } catch (error) {
       setLoading(false);
       console.log(error);

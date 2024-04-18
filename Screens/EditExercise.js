@@ -5,9 +5,6 @@ import { useSharedValue } from "react-native-reanimated";
 import { Slider, HapticModeEnum } from "react-native-awesome-slider";
 import * as Haptics from "expo-haptics";
 
-import { FIREBASE_AUTH, FIRESTORE } from "../firebaseConfig.js";
-import { doc, getDoc } from "firebase/firestore"; // to get the user weight
-
 import calculateCaloriesLift from "../Utils/calculateCaloriesLift";
 import calculateTimeLift from "../Utils/calculateTimeLift";
 
@@ -15,6 +12,7 @@ import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 
 import { EditRoutineContext } from "../context/EditRoutineContext";
+import { AppContext } from "../context/AppContext.js";
 
 export default function EditExercise({ route, navigation }) {
   if (route.params === undefined) {
@@ -23,6 +21,7 @@ export default function EditExercise({ route, navigation }) {
   }
 
   const { setRoutine, currentDay } = useContext(EditRoutineContext);
+  const { user } = useContext(AppContext);
 
   const { exercise } = route.params;
 
@@ -34,9 +33,9 @@ export default function EditExercise({ route, navigation }) {
   const [calories, setCalories] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
 
-  const [userWeight, setUserWeight] = useState(0);
-  const [userWeightUnit, setUserWeightUnit] = useState("kg");
-  const [userGender, setUserGender] = useState("Male");
+  const [userWeight, _setUserWeight] = useState(user.weight);
+  const [userWeightUnit, _setUserWeightUnit] = useState(user.weightUnit);
+  const [userGender, _setUserGender] = useState(user.gender);
 
   const progress_reps = useSharedValue(exercise.numberOfReps);
   const min_reps = useSharedValue(1);
@@ -55,24 +54,6 @@ export default function EditExercise({ route, navigation }) {
   const max_restTime = useSharedValue(8);
 
   const handleReset = () => {};
-
-  useEffect(() => {
-    const getUserWeight = async () => {
-      const uid = FIREBASE_AUTH.currentUser.uid;
-      const docRef = doc(FIRESTORE, "users", uid);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setUserWeight(data.weight);
-        setUserWeightUnit(data.weightUnit);
-        setUserGender(data.gender);
-      } else {
-        console.log("No such document!");
-      }
-    };
-
-    getUserWeight();
-  }, []);
 
   // update the calories and total time when the user changes the reps, sets, weight, or rest time
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -12,7 +12,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { LineChart } from "react-native-gifted-charts";
 import { SelectList } from "react-native-dropdown-select-list";
 import CarouselRepsMaxes from "../components/CarouselRepsMaxes";
-import getExercisesStorage from "../AsyncStorageFunctions/Exercises/getExercisesStorage.js";
 import getStatsData from "../AsyncStorageFunctions/getStatsData.js";
 
 import getUserWeightProgressDataForGraph from "../Utils/graphsDataFunctions/WeightData/getUserWeightProgressDataForGraph.js";
@@ -20,7 +19,11 @@ import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/Ca
 import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/TimeData/getUserTimeSpentProgressDataForGraph.js";
 import getUserWeightLiftedProgressDataForGraph from "../Utils/graphsDataFunctions/WeightLiftedData/getUserWeightLiftedProgressDataForGraph.js";
 
+import { AppContext } from "../context/AppContext.js";
+
 export default function MyStats({ navigation }) {
+  const { exercises } = useContext(AppContext);
+
   const data = [
     { key: "1", value: "Calories" },
     { key: "2", value: "Weight Lifted" },
@@ -28,52 +31,35 @@ export default function MyStats({ navigation }) {
     { key: "4", value: "User Weight" },
   ];
 
-  const [selectedCategory, setSelectedCategory] = React.useState("Calories");
-  const [exercises, setExercises] = React.useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("Calories");
 
-  const [weightLineData, setWeightLineData] = React.useState([]);
-  const [weightLineDataByWeek, setWeightLineDataByWeek] = React.useState([]);
-  const [weightLineDataByMonth, setWeightLineDataByMonth] = React.useState([]);
+  const [weightLineData, setWeightLineData] = useState([]);
+  const [weightLineDataByWeek, setWeightLineDataByWeek] = useState([]);
+  const [weightLineDataByMonth, setWeightLineDataByMonth] = useState([]);
 
-  const [caloriesLineData, setCaloriesLineData] = React.useState([]);
-  const [caloriesLineDataByWeek, setCaloriesLineDataByWeek] = React.useState(
+  const [caloriesLineData, setCaloriesLineData] = useState([]);
+  const [caloriesLineDataByWeek, setCaloriesLineDataByWeek] = useState([]);
+  const [caloriesLineDataByMonth, setCaloriesLineDataByMonth] = useState([]);
+
+  const [timeLineData, setTimeLineData] = useState([]);
+  const [timeLineDataByWeek, setTimeLineDataByWeek] = useState([]);
+  const [timeLineDataByMonth, setTimeLineDataByMonth] = useState([]);
+
+  const [totalCalories, setTotalCalories] = useState(0);
+  const [totalTimeSpent, setTotalTimeSpent] = useState(0);
+  const [currentWeight, setCurrentWeight] = useState(0);
+  const [totalWeightLifted, setTotalWeightLifted] = useState(0);
+
+  const [weightLiftedLineData, setWeightLiftedLineData] = useState([]);
+  const [weightLiftedLineDataByWeek, setWeightLiftedLineDataByWeek] = useState(
     [],
   );
-  const [caloriesLineDataByMonth, setCaloriesLineDataByMonth] = React.useState(
-    [],
-  );
-
-  const [timeLineData, setTimeLineData] = React.useState([]);
-  const [timeLineDataByWeek, setTimeLineDataByWeek] = React.useState([]);
-  const [timeLineDataByMonth, setTimeLineDataByMonth] = React.useState([]);
-
-  const [totalCalories, setTotalCalories] = React.useState(0);
-  const [totalTimeSpent, setTotalTimeSpent] = React.useState(0);
-  const [currentWeight, setCurrentWeight] = React.useState(0);
-  const [totalWeightLifted, setTotalWeightLifted] = React.useState(0);
-
-  const [weightLiftedLineData, setWeightLiftedLineData] = React.useState([]);
-  const [weightLiftedLineDataByWeek, setWeightLiftedLineDataByWeek] =
-    React.useState([]);
   const [weightLiftedLineDataByMonth, setWeightLiftedLineDataByMonth] =
-    React.useState([]);
+    useState([]);
 
   const [loading, setLoading] = useState(false);
 
-  React.useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      getExercisesStorage()
-        .then((exercises) => {
-          setExercises(exercises);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    });
-    return unsubscribe;
-  }, [navigation]);
-
-  React.useEffect(() => {
+  useEffect(() => {
     setSelectedCategory("Calories");
 
     setLoading(true);

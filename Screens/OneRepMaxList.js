@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,10 +9,11 @@ import {
 } from "react-native";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
-import getExercisesStorage from "../AsyncStorageFunctions/Exercises/getExercisesStorage.js";
+import { AppContext } from "../context/AppContext";
 
 export default function OneRepMaxList({ navigation }) {
-  const [exercises, setExercises] = React.useState([]);
+  const { exercises } = useContext(AppContext);
+  const [oneRepMaxExercises, setOneRepMaxExercises] = useState([]);
 
   React.useEffect(() => {
     const allowed = [
@@ -23,19 +24,13 @@ export default function OneRepMaxList({ navigation }) {
     ];
     const allowedOneRepMaxes = new Set(allowed);
     const unsubscribe = navigation.addListener("focus", () => {
-      getExercisesStorage()
-        .then((exercises) => {
-          const filteredExercises = [];
-          exercises.forEach((exercise) => {
-            if (allowedOneRepMaxes.has(exercise.exerciseName)) {
-              filteredExercises.push(exercise);
-            }
-          });
-          setExercises(filteredExercises);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      const filteredExercises = [];
+      exercises.forEach((exercise) => {
+        if (allowedOneRepMaxes.has(exercise.exerciseName)) {
+          filteredExercises.push(exercise);
+        }
+      });
+      setOneRepMaxExercises(filteredExercises);
     });
     return unsubscribe;
   }, [navigation]);
@@ -70,8 +65,8 @@ export default function OneRepMaxList({ navigation }) {
             Select the 1RM you want to edit
           </Text>
           <View style={styles.listContainer}>
-            {exercises &&
-              exercises.map((exercise, index) => {
+            {oneRepMaxExercises &&
+              oneRepMaxExercises.map((exercise, index) => {
                 return (
                   <Pressable
                     key={index}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -7,96 +7,30 @@ import {
   RefreshControl,
 } from "react-native";
 import PreviewWorkout from "./PreviewWorkout";
-import getAllDays from "../FirebaseFunctions/Days/getAllDays";
-import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage";
-import getDaysStorage from "../AsyncStorageFunctions/Days/getDaysStorage.js";
-import saveDaysStorage from "../AsyncStorageFunctions/Days/saveDaysStorage.js";
-import getFavoriteRoutine from "../AsyncStorageFunctions/Routines/getFavoriteRoutine.js";
 
-export default function MyPlan({ navigation, refresh, setRefresh }) {
-  const [days, setDays] = useState([]);
+import { AppContext } from "../context/AppContext.js";
+
+export default function MyPlan({ navigation }) {
+  const { user, days, favoriteRoutine, refreshDays } = useContext(AppContext);
+
   const [error, setError] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [userWeight, setUserWeight] = useState(null);
-  const [userWeightUnit, setUserWeightUnit] = useState(null);
-  const [userGender, setUserGender] = useState(null);
-  const [favoriteRoutine, setFavoriteRoutine] = useState(null);
-
-  useEffect(() => {
-    // Check in the async storage if the user has saved days
-    // If the user has saved days, set them in the state
-    // If the user doesn't have saved days, fetch them from the API
-    // and save them in the async storage
-    setError(false);
-    setRefreshing(true);
-    getDaysStorage().then((days) => {
-      if (days) {
-        console.log(days);
-        setDays(days);
-        setRefreshing(false);
-        setError(false);
-      } else {
-        getAllDays()
-          .then((days) => {
-            setDays(days);
-            saveDaysStorage(days);
-            setRefreshing(false);
-            setError(false);
-          })
-          .catch((error) => {
-            console.log(error);
-            setError(true);
-            setRefreshing(false);
-          });
-      }
-    });
-    getUserStorage()
-      .then((data) => {
-        if (data) {
-          setUserWeight(data.weight);
-          setUserWeightUnit(data.weightUnit);
-          setUserGender(data.gender);
-        } else {
-          console.log("No user data found");
-          return;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        navigation.navigate("Home");
-      });
-  }, []);
-
-  useEffect(() => {
-    getFavoriteRoutine()
-      .then((routine) => {
-        console.log(routine);
-        setFavoriteRoutine(routine);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [refresh, setRefresh, days, setDays]);
+  const [userWeight, _setUserWeight] = useState(user.weight);
+  const [userWeightUnit, _setUserWeightUnit] = useState(user.weightUnit);
+  const [userGender, _setUserGender] = useState(user.gender);
 
   // user weight and weight unit from storage
   const onRefresh = React.useCallback(async () => {
     try {
       setRefreshing(true);
       setError(false);
-      const days = await getAllDays();
-      setDays(days);
-      saveDaysStorage(days);
+      await refreshDays();
       setRefreshing(false);
     } catch (error) {
       setError(true);
       setRefreshing(false);
     }
   }, []);
-
-  useEffect(() => {
-    onRefresh();
-    setRefresh(false);
-  }, [refresh]);
 
   return (
     <View style={styles.container}>

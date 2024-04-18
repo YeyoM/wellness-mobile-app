@@ -7,46 +7,31 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
-import { EditRoutineContext } from "../context/EditRoutineContext.js";
 import deleteRoutine from "../FirebaseFunctions/Routines/deleteRoutine.js";
 import { FIREBASE_AUTH } from "../firebaseConfig.js";
 import PreviewWorkout from "../components/PreviewWorkout.js";
-import getUserStorage from "../AsyncStorageFunctions/Users/getUserStorage.js";
 import deleteFavoriteRoutine from "../AsyncStorageFunctions/Routines/deleteFavoriteRoutine.js";
+
+import { EditRoutineContext } from "../context/EditRoutineContext.js";
+import { AppContext } from "../context/AppContext.js";
 
 import Constants from "expo-constants";
 
 export default function DaysList({ navigation, route }) {
+  const { initializeEditRoutine } = useContext(EditRoutineContext);
+  const { user, refreshDays, setFavoriteRoutine, refreshRoutines } =
+    useContext(AppContext);
+
   const [days, setDays] = useState(null);
   const [routine, setRoutine] = useState(null);
   const [routineName, setRoutineName] = useState(null);
-  const [userWeight, setUserWeight] = useState(null);
-  const [userWeightUnit, setUserWeightUnit] = useState(null);
-  const [userGender, setUserGender] = useState(null);
+  const [userWeight, _setUserWeight] = useState(user.weight);
+  const [userWeightUnit, _setUserWeightUnit] = useState(user.weightUnit);
+  const [userGender, _setUserGender] = useState(user.gender);
   const [index, setIndex] = useState(null);
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-
-  const { initializeEditRoutine } = useContext(EditRoutineContext);
-
-  useEffect(() => {
-    getUserStorage()
-      .then((data) => {
-        if (data) {
-          setUserWeight(data.weight);
-          setUserWeightUnit(data.weightUnit);
-          setUserGender(data.gender);
-        } else {
-          console.log("No user data found");
-          return;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        navigation.navigate("Home");
-      });
-  }, []);
 
   useEffect(() => {
     if (route.params && route.params.routine) {
@@ -63,14 +48,13 @@ export default function DaysList({ navigation, route }) {
         day.image = route.params.routine.image;
         day.dayId = day.id;
         days.push(day);
-        console.log(day);
       }
       setRoutine(route.params.routine);
       setDays(days);
       setRoutineName(route.params.routine.routineName);
     }
 
-    if (route.params && route.params.index) {
+    if (route.params && route.params.index !== null) {
       setIndex(route.params.index);
     }
   }, [route]);
@@ -96,14 +80,16 @@ export default function DaysList({ navigation, route }) {
           text: "Delete",
           onPress: async () => {
             deleteFavoriteRoutine();
+            setFavoriteRoutine(null);
             setLoading(true);
             setSuccess(false);
             try {
               await deleteRoutine(FIREBASE_AUTH.currentUser.uid, routine);
               setLoading(false);
               setSuccess(true);
-              navigation.navigate("Home", { refresh: true });
-              navigation.navigate("Saved Routines", { refresh: true });
+              await refreshDays();
+              await refreshRoutines();
+              navigation.navigate("Saved Routines");
             } catch (error) {
               setLoading(false);
               setSuccess(false);

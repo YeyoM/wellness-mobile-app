@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import {
   View,
   Text,
@@ -13,95 +13,43 @@ import Constants from "expo-constants";
 import Accordion from "../components/AccordionWorkout";
 import ErrorNotification from "../components/ErrorNotification";
 
-import saveRoutinesStorage from "../AsyncStorageFunctions/Routines/saveRoutinesStorage.js";
-import getRoutinesStorage from "../AsyncStorageFunctions/Routines/getRoutinesStorage.js";
-import getFavoriteRoutine from "../AsyncStorageFunctions/Routines/getFavoriteRoutine.js";
-import setFavoriteRoutine from "../AsyncStorageFunctions/Routines/setFavoriteRoutine.js";
-import deleteFavoriteRoutine from "../AsyncStorageFunctions/Routines/deleteFavoriteRoutine.js";
-
-import { getSavedRoutines } from "../FirebaseFunctions/Routines/getSavedRoutines.js";
-import { FIREBASE_AUTH } from "../firebaseConfig.js";
+import { AppContext } from "../context/AppContext.js";
 
 export default function SavedRoutines({ navigation, route }) {
-  const [refreshing, setRefreshing] = useState(false);
+  const {
+    routines,
+    setRoutines,
+    updateRoutines,
+    refreshRoutines,
+    favoriteRoutine,
+    updateFavoriteRoutine,
+    removeFavoriteRoutine,
+  } = useContext(AppContext);
 
-  const [routines, setRoutines] = useState(null);
-  const [favRoutine, setFavRoutine] = useState(null);
-  const [_user, setUser] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (route.params && route.params.refresh) {
-      console.log("refreshing");
-      const user = FIREBASE_AUTH.currentUser;
-      setRefreshing(true);
-      getSavedRoutines(user.uid)
-        .then((routines) => {
-          setRoutines(routines);
-          setRefreshing(false);
-        })
-        .catch((error) => {
-          console.log(error);
-          setError("Couldn't get your routines");
-          setRefreshing(false);
-        });
-      route.params.refresh = false;
-    } else if (route.params && route.params.beforeEdit) {
+    if (route.params && route.params.beforeEdit) {
+      console.log("a");
+      console.log(route.params.routineBeforeEdit);
       const newRoutines = [...routines];
       newRoutines[route.params.beforeEditIndex] =
         route.params.routineBeforeEdit;
-      setRoutines(newRoutines);
+      console.log(newRoutines);
+      updateRoutines(newRoutines);
       route.params.beforeEdit = false;
       route.params.beforeEditIndex = null;
       route.params.routineBeforeEdit = null;
     }
   }, [route]);
 
-  useEffect(() => {
-    const user = FIREBASE_AUTH.currentUser;
-    if (user) {
-      setUser(user);
-    } else {
-      navigation.navigate("Login");
-    }
-
-    // before getting the routines, check if there routines in the async storage
-    // if there is, get them from there, if not, get them from the database
-    getRoutinesStorage().then((routines) => {
-      if (routines) {
-        setRoutines(routines);
-        getFavoriteRoutine()
-          .then((favRoutine) => {
-            console.log(favRoutine);
-            setFavRoutine(favRoutine);
-          })
-          .catch((error) => {
-            console.log(error);
-            setFavRoutine(null);
-          });
-      } else {
-        getSavedRoutines(user.uid)
-          .then((routines) => {
-            saveRoutinesStorage(routines);
-          })
-          .catch((error) => {
-            console.log(error);
-            setError("Couldn't get your routines");
-          });
-      }
-    });
-  }, []);
-
   const onRefresh = useCallback(async () => {
-    const user = FIREBASE_AUTH.currentUser;
-    const routinesBeforeRefresh = await getRoutinesStorage();
+    const routinesBeforeRefresh = routines;
     setRoutines(null);
     setRefreshing(true);
     try {
-      console.log("refreshing");
-      const refreshedRoutines = await getSavedRoutines(user.uid);
-      setRoutines(refreshedRoutines);
-      await saveRoutinesStorage(refreshedRoutines);
+      await refreshRoutines();
       setRefreshing(false);
     } catch (error) {
       console.log(error);
@@ -113,25 +61,6 @@ export default function SavedRoutines({ navigation, route }) {
       setRefreshing(false);
     }
   }, []);
-
-  const handleSetFavorite = async (routine) => {
-    setFavRoutine(null);
-    try {
-      await setFavoriteRoutine(routine);
-      setFavRoutine(routine);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleRemoveFavorite = async () => {
-    try {
-      await deleteFavoriteRoutine();
-      setFavRoutine(null);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -179,10 +108,12 @@ export default function SavedRoutines({ navigation, route }) {
                   index={index}
                   onRefresh={onRefresh}
                   isFavRoutine={
-                    favRoutine && favRoutine.id === routine.id ? true : false
+                    favoriteRoutine && favoriteRoutine.id === routine.id
+                      ? true
+                      : false
                   }
-                  setFavoriteRoutine={handleSetFavorite}
-                  deleteFavoriteRoutine={handleRemoveFavorite}
+                  setFavoriteRoutine={updateFavoriteRoutine}
+                  deleteFavoriteRoutine={removeFavoriteRoutine}
                 />
               );
             })
