@@ -413,14 +413,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#24262B",
     paddingVertical: 5,
     borderRadius: 20,
-    borderRadius: 20,
     paddingHorizontal: 20,
   },
 
   optionSelected: {
     backgroundColor: "#157AFF",
     paddingVertical: 5,
-    borderRadius: 20,
     borderRadius: 20,
     paddingHorizontal: 20,
   },
