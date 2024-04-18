@@ -12,17 +12,8 @@ import Crowdmeter from "../components/Crowdmeter";
 
 import { AppContext } from "../context/AppContext";
 
-export default function Home({ navigation, route }) {
+export default function Home({ navigation }) {
   const { user } = useContext(AppContext);
-
-  const [refreshDays, setRefreshDays] = useState(false);
-
-  useEffect(() => {
-    if (route.params?.refresh) {
-      setRefreshDays(true);
-      route.params.refresh = false;
-    }
-  }, [route.params?.refresh]);
 
   return (
     <View style={styles.container}>
@@ -80,13 +71,7 @@ export default function Home({ navigation, route }) {
           >
             <Tab.Screen
               name="My Plan"
-              children={() => (
-                <MyPlan
-                  navigation={navigation}
-                  refresh={refreshDays}
-                  setRefresh={setRefreshDays}
-                />
-              )}
+              children={() => <MyPlan navigation={navigation} />}
             />
             <Tab.Screen name="Crowdmeter" component={Crowdmeter} />
           </Tab.Navigator>

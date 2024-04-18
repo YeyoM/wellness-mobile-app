@@ -1,91 +1,15 @@
-import { Image, Alert, Pressable, StyleSheet, Text, View } from "react-native";
-import React, { useState, useContext, useEffect } from "react";
-import Animated, {
-  useAnimatedRef,
-  useSharedValue,
-  useAnimatedStyle,
-  runOnUI,
-  measure,
-  useDerivedValue,
-  withTiming,
-} from "react-native-reanimated";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import React, { useContext } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { EditRoutineContext } from "../context/EditRoutineContext.js";
-import deleteRoutine from "../FirebaseFunctions/Routines/deleteRoutine.js";
-import { FIREBASE_AUTH } from "../firebaseConfig.js";
 
 const Accordion = ({
   routine_,
   navigation,
   index,
-  onRefresh,
   isFavRoutine,
   setFavoriteRoutine,
   deleteFavoriteRoutine,
 }) => {
-  const listRef = useAnimatedRef();
-  const heightValue = useSharedValue(0);
-  const open = useSharedValue(false);
-  const progress = useDerivedValue(() =>
-    open.value ? withTiming(1) : withTiming(0),
-  );
-  const [isOpen, setIsOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-
-  const { initializeEditRoutine } = useContext(EditRoutineContext);
-
-  const heightAnimationStyle = useAnimatedStyle(() => ({
-    height: heightValue.value,
-  }));
-
-  const handleEdit = async () => {
-    // initialize the edit routine context with the routine
-    await initializeEditRoutine(routine_, index);
-    navigation.push("Edit Routine");
-  };
-
-  const handleDelete = async () => {
-    console.log("delete");
-    Alert.alert(
-      "Delete Routine",
-      "Are you sure you want to delete this routine?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        {
-          text: "Delete",
-          onPress: async () => {
-            deleteFavoriteRoutine();
-            setLoading(true);
-            setSuccess(false);
-            try {
-              await deleteRoutine(FIREBASE_AUTH.currentUser.uid, routine_);
-              setLoading(false);
-              setSuccess(true);
-              onRefresh(); // Refresh the routines
-              navigation.navigate("Home", { refresh: true });
-            } catch (error) {
-              setLoading(false);
-              setSuccess(false);
-              Alert.alert("Error", "There was an error deleting the routine", [
-                {
-                  text: "OK",
-                  onPress: () => console.log("OK Pressed"),
-                },
-              ]);
-              console.log(error);
-            }
-          },
-          style: "destructive",
-        },
-      ],
-    );
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.viewContainer}>
@@ -141,63 +65,6 @@ const Accordion = ({
           </Pressable>
         </View>
       </View>
-      <Animated.View style={heightAnimationStyle}>
-        <Animated.View style={styles.contentContainer} ref={listRef}>
-          <Animated.View style={[styles.content, { opacity: progress }]}>
-            {routine_.days.map((day, index) => (
-              <View style={styles.singleDay} key={index}>
-                <Text style={{ color: "#fff", fontSize: 20, marginBottom: 10 }}>
-                  {day.dayName}
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    width: "100%",
-                  }}
-                >
-                  <Text style={styles.routineInfo}>
-                    {day.exercises?.length} exercises
-                  </Text>
-                  <Text style={styles.routineInfo}>
-                    {parseInt(day.totalSets)} sets
-                  </Text>
-                  <Text style={styles.routineInfo}>
-                    {parseFloat(day.totalCalories)} calories
-                  </Text>
-                  <Text style={styles.routineInfo}>
-                    {Math.round(parseFloat(day.totalDuration))} minutes
-                  </Text>
-                </View>
-              </View>
-            ))}
-            <View style={styles.buttonContainer}>
-              <Pressable style={styles.buttonEdit} onPress={() => handleEdit()}>
-                <Text style={{ color: "white", fontSize: 16 }}>Edit</Text>
-              </Pressable>
-              <Pressable
-                style={styles.buttonDelete}
-                onPress={() => handleDelete()}
-              >
-                {loading ? (
-                  <Text style={{ color: "white", fontSize: 16 }}>
-                    Loading...
-                  </Text>
-                ) : (
-                  <Text style={{ color: "white", fontSize: 16 }}>Delete</Text>
-                )}
-              </Pressable>
-            </View>
-            {success ? (
-              <Text
-                style={{ color: "#98ff8c", marginTop: 10, fontStyle: "italic" }}
-              >
-                Routine deleted successfully, refreshing...
-              </Text>
-            ) : null}
-          </Animated.View>
-        </Animated.View>
-      </Animated.View>
     </View>
   );
 };

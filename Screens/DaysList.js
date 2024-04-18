@@ -19,7 +19,8 @@ import Constants from "expo-constants";
 
 export default function DaysList({ navigation, route }) {
   const { initializeEditRoutine } = useContext(EditRoutineContext);
-  const { user } = useContext(AppContext);
+  const { user, refreshDays, setFavoriteRoutine, refreshRoutines } =
+    useContext(AppContext);
 
   const [days, setDays] = useState(null);
   const [routine, setRoutine] = useState(null);
@@ -80,14 +81,16 @@ export default function DaysList({ navigation, route }) {
           text: "Delete",
           onPress: async () => {
             deleteFavoriteRoutine();
+            setFavoriteRoutine(null);
             setLoading(true);
             setSuccess(false);
             try {
               await deleteRoutine(FIREBASE_AUTH.currentUser.uid, routine);
               setLoading(false);
               setSuccess(true);
-              navigation.navigate("Home", { refresh: true });
-              navigation.navigate("Saved Routines", { refresh: true });
+              await refreshDays();
+              await refreshRoutines();
+              navigation.navigate("Saved Routines");
             } catch (error) {
               setLoading(false);
               setSuccess(false);

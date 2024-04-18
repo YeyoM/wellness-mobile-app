@@ -20,6 +20,7 @@ import { FIREBASE_AUTH } from "../firebaseConfig.js";
 import saveEditedRoutine from "../FirebaseFunctions/Routines/saveEditedRoutine.js";
 
 import { EditRoutineContext } from "../context/EditRoutineContext";
+import { AppContext } from "../context/AppContext.js";
 
 export default function EditRoutine({ navigation }) {
   const {
@@ -36,6 +37,8 @@ export default function EditRoutine({ navigation }) {
     getRoutineBeforeEdit,
     clenUpEditRoutine,
   } = useContext(EditRoutineContext);
+
+  const { refreshRoutines, refreshDays } = useContext(AppContext);
 
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -71,9 +74,9 @@ export default function EditRoutine({ navigation }) {
       // add a delay to see the loading spinner
       setLoading(false);
       setSuccess(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // go back to the previous screen and refresh the data
-      navigation.navigate("Saved Routines", { refresh: true });
+      await refreshRoutines();
+      await refreshDays();
+      navigation.navigate("Saved Routines");
     } catch (err) {
       console.log(err);
       Alert.alert("Couldn't save the routine");
@@ -173,7 +176,7 @@ export default function EditRoutine({ navigation }) {
         />
         {success ? (
           <Text style={{ color: "#63D471", fontStyle: "italic" }}>
-            Routine updated correctly!
+            Routine updated correctly! Redirecting...
           </Text>
         ) : null}
         <View
