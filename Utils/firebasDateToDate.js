@@ -9,9 +9,7 @@ export default function firebasDateToDate(date) {
   }
 
   if (date.seconds === undefined || date.nanoseconds === undefined) {
-    console.log("here");
-    console.log(date);
-    throw new Error("Date is not a firebase date");
+    return new Date(date);
   }
   return new Date(date.seconds * 1000 + date.nanoseconds / 1000000);
 }

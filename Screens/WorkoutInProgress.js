@@ -43,7 +43,7 @@ import { AppContext } from "../context/AppContext.js";
 export default function WorkoutInProgress({ route, navigation }) {
   const { day, userWeight, userWeightUnit, userGender } = route.params;
 
-  const { firebaseUser, refreshWorkouts } = useContext(AppContext);
+  const { firebaseUser, refreshNewWorkout } = useContext(AppContext);
 
   const [currentExercise, setCurrentExercise] = useState(day.exercises[0]);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
@@ -132,9 +132,6 @@ export default function WorkoutInProgress({ route, navigation }) {
       meanWeight += parseInt(currentSets[i].weight);
       totalWeightExercise += parseInt(currentSets[i].weight);
     }
-    console.log("mean reps", meanReps);
-    console.log("mean weight", meanWeight);
-    console.log("number of sets finished", numberOfSetsFinished);
     meanReps /= numberOfSetsFinished;
     meanWeight /= numberOfSetsFinished;
     const finalWorkoutInfo = [
@@ -160,7 +157,7 @@ export default function WorkoutInProgress({ route, navigation }) {
 
     setLoading(true);
     try {
-      await SaveWorkout({
+      const savedWorkout = await SaveWorkout({
         workout: finalWorkoutInfo,
         routineId: day.routineId,
         dayId: day.dayId,
@@ -170,8 +167,9 @@ export default function WorkoutInProgress({ route, navigation }) {
         date: new Date(),
       });
 
+      console.log(savedWorkout);
       // refresh the user's data (workouts) and save to async storage
-      await refreshWorkouts();
+      refreshNewWorkout(savedWorkout);
 
       setLoading(false);
       navigation.navigate("Workout Finished 1", {

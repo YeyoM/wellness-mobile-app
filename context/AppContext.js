@@ -21,7 +21,6 @@ import saveWorkoutsStorage from "../AsyncStorageFunctions/Workouts/saveWorkoutsS
 
 // Days Related Imports
 import getAllDays from "../FirebaseFunctions/Days/getAllDays.js";
-import getSpecificDays from "../FirebaseFunctions/Days/getSpecificDays.js";
 import getDaysStorage from "../AsyncStorageFunctions/Days/getDaysStorage.js";
 import saveDaysStorage from "../AsyncStorageFunctions/Days/saveDaysStorage.js";
 
@@ -169,6 +168,12 @@ export const AppContextProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const refreshNewWorkout = async (workout) => {
+    // Refresh the state and async storage by adding the new workout
+    const updatedWorkouts = [...workouts, workout];
+    await updateWorkouts(updatedWorkouts);
   };
 
   // DAYS METHODS AND LISTENERS
@@ -335,6 +340,7 @@ export const AppContextProvider = ({ children }) => {
         setWorkouts,
         updateWorkouts,
         refreshWorkouts,
+        refreshNewWorkout,
         days,
         setDays,
         updateDays,
