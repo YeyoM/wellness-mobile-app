@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -10,83 +10,24 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { getSavedExercises } from "../FirebaseFunctions/Exercises/getSavedExercises.js";
 
 import calculateTimeLift from "../Utils/calculateTimeLift.js";
 import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
-
-import getExercisesStorage from "../AsyncStorageFunctions/Exercises/getExercisesStorage.js";
-import saveExercisesStorage from "../AsyncStorageFunctions/Exercises/saveExercisesStorage.js";
 
 import { EditRoutineContext } from "../context/EditRoutineContext";
 import { AppContext } from "../context/AppContext.js";
 
 export default function SavedLifts({ route, navigation }) {
   const { routine, setRoutine, currentDay } = useContext(EditRoutineContext);
-  const { user } = useContext(AppContext);
+  const { user, exercises, refreshExercises } = useContext(AppContext);
 
-  const [exercises, setExercises] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    setRefreshing(true);
-    getExercisesStorage().then((exercises) => {
-      if (exercises) {
-        console.log("exercises from storage");
-        setExercises(exercises);
-      } else {
-        console.log("exercises from API");
-        getSavedExercises(routine.userId)
-          .then((exercises) => {
-            console.log("saving exercises in storage");
-            setExercises(exercises);
-            saveExercisesStorage(exercises);
-            setRefreshing(false);
-          })
-          .catch((err) => {
-            setError(err);
-            setRefreshing(false);
-          });
-      }
-    });
-    setRefreshing(false);
-  }, []);
-
-  useEffect(() => {
-    if (route.params?.refreshStorageLifts) {
-      console.log("refreshing storage lifts");
-      getExercisesStorage().then((exercises) => {
-        if (exercises) {
-          console.log("exercises from storage");
-          setExercises(exercises);
-        } else {
-          console.log("exercises from API");
-          getSavedExercises(routine.userId)
-            .then((exercises) => {
-              console.log("saving exercises in storage");
-              setExercises(exercises);
-              saveExercisesStorage(exercises);
-              setRefreshing(false);
-            })
-            .catch((err) => {
-              setError(err);
-              setRefreshing(false);
-            });
-        }
-      });
-    }
-  }, [route.params]);
-
   const handleAddLift = async ({ lift }) => {
-    console.log("adding lift");
-
-    // check if the lift is already in the exercise list of the current day
-    // if it is, don't add it
     const isAlreadyInList = routine.days[currentDay].exercises.find(
       (exercise) => exercise.exerciseId === lift.id,
     );
-    // TODO add a message to the user if the lift is already in the list
     if (isAlreadyInList) {
       Alert.alert("This lift is already in the list");
       return;
@@ -143,11 +84,7 @@ export default function SavedLifts({ route, navigation }) {
 
   const onRefresh = React.useCallback(async () => {
     try {
-      setRefreshing(true);
-      const exercises = await getSavedExercises(routine.userId);
-      setExercises(exercises);
-      saveExercisesStorage(exercises);
-      setRefreshing(false);
+      await refreshExercises();
     } catch (err) {
       setError(err);
       setRefreshing(false);

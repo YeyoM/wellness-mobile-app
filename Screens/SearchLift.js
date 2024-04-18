@@ -12,24 +12,22 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { WELLNESS_NINJA_API_KEY } from "@env";
 
-import getExercisesStorage from "../AsyncStorageFunctions/Exercises/getExercisesStorage.js";
-import saveExercisesStorage from "../AsyncStorageFunctions/Exercises/saveExercisesStorage.js";
-
 import addExerciseToUser from "../FirebaseFunctions/Exercises/addExerciseToUser.js";
 
 import { AppContext } from "../context/AppContext.js";
 
 export default function SearchLift({ navigation }) {
-  const { firebaseUser, user } = useContext(AppContext);
+  const { firebaseUser, user, exercises, refreshExercises, updateExercises } =
+    useContext(AppContext);
 
   const [loading, setLoading] = useState(false);
-  const [exercises, setExercises] = useState(null);
+  const [searchedExercises, setSearchedExercises] = useState(null);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
   const [inputName, setInputName] = useState("");
-  const [inputType, setInputType] = useState("strength");
-  const [inputMuscle, setInputMuscle] = useState("chest");
+  const [inputType, _setInputType] = useState("strength");
+  const [inputMuscle, _setInputMuscle] = useState("chest");
 
   const scrollViewRef = useRef();
 
@@ -69,7 +67,7 @@ export default function SearchLift({ navigation }) {
 
       console.log("Exercises", exercises);
 
-      setExercises(exercises);
+      setSearchedExercises(exercises);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -82,23 +80,14 @@ export default function SearchLift({ navigation }) {
   };
 
   const checkIfLiftExists = async (lift) => {
-    // check if the lift is already in the async storage
-    // if it is, don't save it
-    try {
-      const jsonValue = await getExercisesStorage();
-      const exercises = jsonValue != null ? JSON.parse(jsonValue) : null;
-      if (exercises) {
-        const exists = exercises.find(
-          (exercise) => exercise.exerciseName === lift.exerciseName,
-        );
-        if (exists) {
-          return true;
-        }
-      }
-    } catch (error) {
-      console.log(error);
+    const exists = exercises.find(
+      (exercise) => exercise.exerciseName === lift.exerciseName,
+    );
+    if (exists) {
+      return true;
+    } else {
+      return false;
     }
-    return false;
   };
 
   const handleSaveLift = async ({ lift }) => {
@@ -160,17 +149,18 @@ export default function SearchLift({ navigation }) {
       const updatedExercises = await addExerciseToUser(userId, exercise);
       if (updatedExercises) {
         try {
-          await saveExercisesStorage(updatedExercises);
+          await updateExercises(updatedExercises);
           setTimeout(() => {
             setSuccess(null);
           }, 2000);
           setLoading(false);
           setSuccess("Lift saved");
-          setExercises(null);
+          setSearchedExercises(null);
           setInputName("");
 
-          //navigation.jumpTo("Saved Lifts", { refreshStorageLifts: true });
-          navigation.navigate("Saved Lifts", { refreshStorageLifts: true });
+          // refresh the exercises in the context
+          refreshExercises();
+          navigation.navigate("Saved Lifts");
         } catch (error) {
           console.log(error);
           setTimeout(() => {
@@ -260,8 +250,8 @@ export default function SearchLift({ navigation }) {
           </Pressable>
         </View>
         <View style={styles.exercises}>
-          {exercises &&
-            exercises.map((lift) => (
+          {searchedExercises &&
+            searchedExercises.map((lift) => (
               <View
                 style={{
                   display: "flex",

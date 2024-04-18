@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -12,19 +12,21 @@ import {
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 import editOneRepMax from "../FirebaseFunctions/Exercises/editOneRepMax.js";
-import saveExercisesStorage from "../AsyncStorageFunctions/Exercises/saveExercisesStorage.js";
-import getExercisesStorage from "../AsyncStorageFunctions/Exercises/getExercisesStorage.js";
+
+import { AppContext } from "../context/AppContext.js";
 
 export default function EditOneRepMax({ navigation, route }) {
-  const [exercise, setExercise] = React.useState(null);
-  const [oneRepMax, setOneRepMax] = React.useState(null);
-  const [calculatedOneRepMax, setCalculatedOneRepMax] = React.useState(null);
+  const { exercises, updateExercises } = useContext(AppContext);
 
-  const [weight, setWeight] = React.useState(null);
-  const [reps, setReps] = React.useState(null);
+  const [exercise, setExercise] = useState(null);
+  const [oneRepMax, setOneRepMax] = useState(null);
+  const [calculatedOneRepMax, setCalculatedOneRepMax] = useState(null);
 
-  const [loading, setLoading] = React.useState(false);
-  const [success, setSuccess] = React.useState(false);
+  const [weight, setWeight] = useState(null);
+  const [reps, setReps] = useState(null);
+
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const calculateOneRepMax = () => {
     if (weight && reps) {
@@ -52,16 +54,15 @@ export default function EditOneRepMax({ navigation, route }) {
   };
 
   // update the exercise in the local storage with the new one rep max
-  const updateExercises = async (exercise) => {
+  const updateExercises_ = async (exercise) => {
     try {
-      const exercises = await getExercisesStorage();
       const updatedExercises = exercises.map((ex) => {
         if (ex.exerciseId === exercise.exerciseId) {
           ex.oneRepMax = oneRepMax;
         }
         return ex;
       });
-      await saveExercisesStorage(updatedExercises);
+      await updateExercises(updatedExercises);
     } catch (error) {
       console.log(error);
     }
@@ -73,7 +74,7 @@ export default function EditOneRepMax({ navigation, route }) {
         setLoading(true);
         setSuccess(false);
         await editOneRepMax(exercise, oneRepMax);
-        await updateExercises(exercise);
+        await updateExercises_(exercise);
         setSuccess(true);
         setTimeout(() => {
           navigation.goBack();
