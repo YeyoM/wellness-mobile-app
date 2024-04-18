@@ -38,7 +38,8 @@ export default function EditRoutine({ navigation }) {
     clenUpEditRoutine,
   } = useContext(EditRoutineContext);
 
-  const { refreshRoutines, refreshDays } = useContext(AppContext);
+  const { refreshSpecificRoutine, refreshSpecificDaysFromRoutine } =
+    useContext(AppContext);
 
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -71,11 +72,11 @@ export default function EditRoutine({ navigation }) {
     setLoading(true);
     try {
       await saveEditedRoutine(routine);
-      // add a delay to see the loading spinner
+      // refresh just the routine that was edited
+      await refreshSpecificRoutine(routine);
+      refreshSpecificDaysFromRoutine(routine);
       setLoading(false);
       setSuccess(true);
-      await refreshRoutines();
-      await refreshDays();
       navigation.navigate("Saved Routines");
     } catch (err) {
       console.log(err);

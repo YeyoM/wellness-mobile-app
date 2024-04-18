@@ -21,11 +21,13 @@ import saveWorkoutsStorage from "../AsyncStorageFunctions/Workouts/saveWorkoutsS
 
 // Days Related Imports
 import getAllDays from "../FirebaseFunctions/Days/getAllDays.js";
+import getSpecificDays from "../FirebaseFunctions/Days/getSpecificDays.js";
 import getDaysStorage from "../AsyncStorageFunctions/Days/getDaysStorage.js";
 import saveDaysStorage from "../AsyncStorageFunctions/Days/saveDaysStorage.js";
 
 // Routines Related Imports
 import { getSavedRoutines } from "../FirebaseFunctions/Routines/getSavedRoutines.js";
+import { getSavedRoutine } from "../FirebaseFunctions/Routines/getSavedRoutine.js";
 import getRoutinesStorage from "../AsyncStorageFunctions/Routines/getRoutinesStorage.js";
 import saveRoutinesStorage from "../AsyncStorageFunctions/Routines/saveRoutinesStorage.js";
 
@@ -208,6 +210,34 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
+  const refreshSpecificDaysFromRoutine = async (routine) => {
+    const ids = new Set();
+
+    for (const day of routine.days) {
+      ids.add(day.dayId);
+    }
+
+    const notRefreshedDays = days.filter((day) => !ids.has(day.dayId));
+    const refreshedRoutine = routines.find((r) => r.id === routine.id);
+
+    const refreshedDays = refreshedRoutine.days;
+    const newDays = [...notRefreshedDays, ...refreshedDays];
+    await updateDays(newDays);
+  };
+
+  const deleteDaysState = async (routine) => {
+    // Delete from async storage and state the days contained in the routine
+    const ids = new Set();
+
+    for (const day of routine.days) {
+      ids.add(day.dayId);
+    }
+
+    const updatedDays = days.filter((day) => !ids.has(day.dayId));
+    await updateDays(updatedDays);
+    setDays(updatedDays);
+  };
+
   // ROUTINES METHODS AND LISTENERS
   useEffect(() => {
     getRoutinesStorage()
@@ -245,6 +275,26 @@ export const AppContextProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const refreshSpecificRoutine = async (routine) => {
+    try {
+      if (firebaseUser) {
+        const refreshedRoutine = await getSavedRoutine(routine.id);
+        const updatedRoutines = routines.map((r) =>
+          r.id === refreshedRoutine.id ? refreshedRoutine : r,
+        );
+        await updateRoutines(updatedRoutines);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteRoutineState = async (routine) => {
+    const updatedRoutines = routines.filter((r) => r.id !== routine.id);
+    await updateRoutines(updatedRoutines);
+    setRoutines(updatedRoutines);
   };
 
   // FAVORITE ROUTINE METHODS AND LISTENERS
@@ -289,10 +339,14 @@ export const AppContextProvider = ({ children }) => {
         setDays,
         updateDays,
         refreshDays,
+        refreshSpecificDaysFromRoutine,
+        deleteDaysState,
         routines,
         setRoutines,
         updateRoutines,
         refreshRoutines,
+        refreshSpecificRoutine,
+        deleteRoutineState,
         favoriteRoutine,
         setFavoriteRoutine,
         updateFavoriteRoutine,
