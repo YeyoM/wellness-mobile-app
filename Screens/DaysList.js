@@ -48,14 +48,13 @@ export default function DaysList({ navigation, route }) {
         day.image = route.params.routine.image;
         day.dayId = day.id;
         days.push(day);
-        console.log(day);
       }
       setRoutine(route.params.routine);
       setDays(days);
       setRoutineName(route.params.routine.routineName);
     }
 
-    if (route.params && route.params.index) {
+    if (route.params && route.params.index !== null) {
       setIndex(route.params.index);
     }
   }, [route]);

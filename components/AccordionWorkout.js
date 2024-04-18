@@ -1,5 +1,5 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import React, { useContext } from "react";
+import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 
 const Accordion = ({
@@ -58,7 +58,10 @@ const Accordion = ({
           <Pressable
             style={styles.textTapContainer}
             onPress={() => {
-              navigation.navigate("Days List", { routine: routine_, index });
+              navigation.navigate("Days List", {
+                routine: routine_,
+                index: index,
+              });
             }}
           >
             <Text style={styles.textTap}>View</Text>
