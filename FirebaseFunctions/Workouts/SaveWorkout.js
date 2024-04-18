@@ -84,42 +84,57 @@ export default async function SaveWorkout({
   }
 
   try {
-    await runTransaction(FIRESTORE, async (transaction) => {
-      const userDoc = await transaction.get(userRef);
-      const exercisesDocs = [];
-      for (let i = 0; i < exerciseRefs.length; i++) {
-        const exerciseDoc = await transaction.get(exerciseRefs[i]);
-        exercisesDocs.push(exerciseDoc);
-      }
-      transaction.set(newWorkoutRef, {
-        userId,
-        routineId,
-        dayId,
-        workout,
-        totalCalories,
-        totalWeight,
-        totalTime,
-        date,
-      });
-      console.log("WORKOUT WRITTEN TO TRANSACTION");
-      const userWorkouts = userDoc.data().workouts;
-      userWorkouts.push(newWorkoutRef.id);
-      transaction.update(userRef, { workouts: userWorkouts });
-      console.log("USER WORKOUTS UPDATE WRITTEN TO TRANSACTION");
-      exerciseRefs.forEach((exerciseRef, index) => {
-        const weightHistory = exercisesDocs[index].data().weightRecord;
-        const newWeightHistory = {
-          date: new Date(),
-          weight: workout[index].exerciseWeight,
-        };
-        weightHistory.push(newWeightHistory);
-        transaction.update(exerciseRef, {
-          weightRecord: weightHistory,
+    const savedWorkout = await runTransaction(
+      FIRESTORE,
+      async (transaction) => {
+        const userDoc = await transaction.get(userRef);
+        const exercisesDocs = [];
+        for (let i = 0; i < exerciseRefs.length; i++) {
+          const exerciseDoc = await transaction.get(exerciseRefs[i]);
+          exercisesDocs.push(exerciseDoc);
+        }
+        transaction.set(newWorkoutRef, {
+          userId,
+          routineId,
+          dayId,
+          workout,
+          totalCalories,
+          totalWeight,
+          totalTime,
+          date,
         });
-      });
-      console.log("EXERCISES WEIGHT HISTORY WRITTEN TO TRANSACTION");
-    });
+        console.log("WORKOUT WRITTEN TO TRANSACTION");
+        const userWorkouts = userDoc.data().workouts;
+        userWorkouts.push(newWorkoutRef.id);
+        transaction.update(userRef, { workouts: userWorkouts });
+        console.log("USER WORKOUTS UPDATE WRITTEN TO TRANSACTION");
+        exerciseRefs.forEach((exerciseRef, index) => {
+          const weightHistory = exercisesDocs[index].data().weightRecord;
+          const newWeightHistory = {
+            date: new Date(),
+            weight: workout[index].exerciseWeight,
+          };
+          weightHistory.push(newWeightHistory);
+          transaction.update(exerciseRef, {
+            weightRecord: weightHistory,
+          });
+        });
+        console.log("EXERCISES WEIGHT HISTORY WRITTEN TO TRANSACTION");
+        return {
+          id: newWorkoutRef.id,
+          userId,
+          routineId,
+          dayId,
+          workout,
+          totalCalories,
+          totalWeight,
+          totalTime,
+          date,
+        };
+      },
+    );
     console.log("Transaction executed correctly");
+    return savedWorkout;
   } catch (error) {
     console.error("Error running transaction: ", error);
     throw new Error("Error running transaction: ", error);
