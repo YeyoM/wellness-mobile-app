@@ -10,13 +10,11 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
+import readableTimeToMinutes from "../Utils/readableTimeToMinutes.js";
 import { AppContext } from "../context/AppContext.js";
 
-import getWorkoutsStorage from "../AsyncStorageFunctions/Workouts/getWorkoutsStorage.js";
-import readableTimeToMinutes from "../Utils/readableTimeToMinutes.js";
-
 export default function Profile({ navigation }) {
-  const { user } = useContext(AppContext);
+  const { user, workouts } = useContext(AppContext);
 
   const [isLoading, _setIsLoading] = useState(false);
   const [finishedWorkouts, setFinishedWorkouts] = useState(0);
@@ -24,20 +22,14 @@ export default function Profile({ navigation }) {
 
   // finished workouts and hours trained
   useEffect(() => {
-    getWorkoutsStorage()
-      .then((data) => {
-        let finished = 0;
-        let time = 0;
-        data.forEach((workout) => {
-          finished++;
-          time += readableTimeToMinutes(workout.totalTime);
-        });
-        setFinishedWorkouts(finished);
-        setHoursTrained(Math.floor(time / 60));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    let finished = 0;
+    let time = 0;
+    workouts.forEach((workout) => {
+      finished++;
+      time += readableTimeToMinutes(workout.totalTime);
+    });
+    setFinishedWorkouts(finished);
+    setHoursTrained(Math.floor(time / 60));
   }, []);
 
   return (

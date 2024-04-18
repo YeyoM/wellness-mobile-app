@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   Platform,
@@ -20,6 +20,7 @@ import {
   GestureHandlerRootView,
   ScrollView,
 } from "react-native-gesture-handler";
+
 import DraggableFlatList, {
   ScaleDecorator,
   NestableScrollContainer,
@@ -30,19 +31,19 @@ import Constants from "expo-constants";
 
 import CurrentExercise from "../components/CurrentExercise";
 import SetsTable from "../components/SetsTable";
-
-import SaveWorkout from "../FirebaseFunctions/Workouts/SaveWorkout";
-import getWorkouts from "../FirebaseFunctions/Workouts/GetWorkouts.js";
-import saveWorkoutsStorage from "../AsyncStorageFunctions/Workouts/saveWorkoutsStorage.js";
-import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
-
 import SwipeTimer from "../components/SwipeTimer.js";
 
-import { FIREBASE_AUTH } from "../firebaseConfig.js";
+import SaveWorkout from "../FirebaseFunctions/Workouts/SaveWorkout";
+
+import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
 import readableTimeToMinutes from "../Utils/readableTimeToMinutes.js";
+
+import { AppContext } from "../context/AppContext.js";
 
 export default function WorkoutInProgress({ route, navigation }) {
   const { day, userWeight, userWeightUnit, userGender } = route.params;
+
+  const { firebaseUser, refreshWorkouts } = useContext(AppContext);
 
   const [currentExercise, setCurrentExercise] = useState(day.exercises[0]);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
@@ -60,7 +61,6 @@ export default function WorkoutInProgress({ route, navigation }) {
   );
 
   const [numberOfExercises] = useState(day.exercises.length);
-  const [exercises, setExercises] = useState(day.exercises);
   const [exerciseQueue, setExerciseQueue] = useState(day.exercises.slice(1));
   const [currentSets, setCurrentSets] = useState();
   const [currentWorkoutInfo, setCurrentWorkoutInfo] = useState([]);
@@ -76,9 +76,7 @@ export default function WorkoutInProgress({ route, navigation }) {
   const [showTimer, setShowTimer] = useState(false);
 
   const handleEndWorkout = async () => {
-    const user = FIREBASE_AUTH.currentUser;
-
-    if (!user) {
+    if (!firebaseUser) {
       Alert.alert("Please log in to save the workout", "", [
         {
           text: "Cancel",
@@ -126,7 +124,6 @@ export default function WorkoutInProgress({ route, navigation }) {
   };
 
   const endWorkout = async (numberOfSetsFinished) => {
-    const user = FIREBASE_AUTH.currentUser;
     let meanReps = 0;
     let meanWeight = 0;
     let totalWeightExercise = 0;
@@ -161,11 +158,6 @@ export default function WorkoutInProgress({ route, navigation }) {
     totalCalories += calories.toFixed(2);
     totalCalories = parseFloat(totalCalories);
 
-    console.log("final workout info", finalWorkoutInfo);
-    console.log("total calories", totalCalories);
-    console.log("total weight", totalWeightExercise + currentTotalWeight);
-    console.log("total time", readableTime);
-
     setLoading(true);
     try {
       await SaveWorkout({
@@ -179,8 +171,7 @@ export default function WorkoutInProgress({ route, navigation }) {
       });
 
       // refresh the user's data (workouts) and save to async storage
-      const workouts = await getWorkouts(user.uid);
-      await saveWorkoutsStorage(workouts);
+      await refreshWorkouts();
 
       setLoading(false);
       navigation.navigate("Workout Finished 1", {

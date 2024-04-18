@@ -14,10 +14,16 @@ import { getSavedExercises } from "../FirebaseFunctions/Exercises/getSavedExerci
 import getExercisesStorage from "../AsyncStorageFunctions/Exercises/getExercisesStorage.js";
 import saveExercisesStorage from "../AsyncStorageFunctions/Exercises/saveExercisesStorage.js";
 
+// Workout Related Imports
+import getWorkouts from "../FirebaseFunctions/Workouts/GetWorkouts.js";
+import getWorkoutsStorage from "../AsyncStorageFunctions/Workouts/getWorkoutsStorage.js";
+import saveWorkoutsStorage from "../AsyncStorageFunctions/Workouts/saveWorkoutsStorage.js";
+
 export const AppContextProvider = ({ children }) => {
   const [firebaseUser, setFirebaseUser] = useState(null);
   const [user, setUser] = useState(null);
   const [exercises, setExercises] = useState([]);
+  const [workouts, setWorkouts] = useState([]);
 
   // FIREBASE USER METHODS AND LISTENERS
   useEffect(() => {
@@ -104,6 +110,45 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
+  // WORKOUTS METHODS AND LISTENERS
+  useEffect(() => {
+    getWorkoutsStorage()
+      .then((workouts) => {
+        if (workouts) {
+          setWorkouts(workouts);
+        } else {
+          if (firebaseUser) {
+            getWorkouts(firebaseUser.uid).then((workouts) => {
+              setWorkouts(workouts);
+              saveWorkoutsStorage(workouts);
+            });
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const updateWorkouts = async (workouts) => {
+    setWorkouts(workouts);
+    await saveWorkoutsStorage(workouts);
+  };
+
+  const refreshWorkouts = async () => {
+    try {
+      if (firebaseUser) {
+        const workouts = await getWorkouts(firebaseUser.uid);
+        setWorkouts(workouts);
+        await saveWorkoutsStorage(workouts);
+      } else {
+        setWorkouts([]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -117,6 +162,10 @@ export const AppContextProvider = ({ children }) => {
         setExercises,
         updateExercises,
         refreshExercises,
+        workouts,
+        setWorkouts,
+        updateWorkouts,
+        refreshWorkouts,
       }}
     >
       {children}
