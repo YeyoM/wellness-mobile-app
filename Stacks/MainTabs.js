@@ -6,6 +6,8 @@ import { Ionicons } from "@expo/vector-icons";
 import Home from "../Screens/Home";
 import SavedRoutines from "../Screens/SavedRoutines";
 import Profile from "../Screens/Profile";
+import Search from "../Screens/Search";
+
 import Loading1 from "../Screens/LoadingTransitionScreens/Loading1.js";
 import Loading2 from "../Screens/LoadingTransitionScreens/Loading2.js";
 import Loading3 from "../Screens/LoadingTransitionScreens/Loading3.js";
@@ -135,6 +137,8 @@ export default function MainTabs({ navigation }) {
               iconName = focused ? "person" : "person-outline";
             } else if (route.name === "Saved Routines") {
               iconName = focused ? "heart" : "heart-outline";
+            } else if (route.name === "Search") {
+              iconName = focused ? "search" : "search-outline";
             }
 
             return <Ionicons name={iconName} size={28} color={color} />;
@@ -153,6 +157,7 @@ export default function MainTabs({ navigation }) {
         style={{ backgroundColor: "#0B0B0B" }}
       >
         <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Search" component={Search} />
         <Tab.Screen name="Saved Routines" component={SavedRoutines} />
         <Tab.Screen name="Profile" component={Profile} />
       </Tab.Navigator>
