@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, {
+  useCallback,
+  useRef,
+  useState,
+  useEffect,
+  useContext,
+} from "react";
+
 import {
   View,
   Text,
@@ -6,21 +13,37 @@ import {
   Alert,
   ScrollView,
   Pressable,
+  Image,
 } from "react-native";
-import deleteRoutine from "../FirebaseFunctions/Routines/deleteRoutine.js";
+
+import * as Clipboard from "expo-clipboard";
+
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+
 import { FIREBASE_AUTH } from "../firebaseConfig.js";
-import PreviewWorkout from "../components/PreviewWorkout.js";
+import deleteRoutine from "../FirebaseFunctions/Routines/deleteRoutine.js";
 import deleteFavoriteRoutine from "../AsyncStorageFunctions/Routines/deleteFavoriteRoutine.js";
+
+import PreviewWorkout from "../components/PreviewWorkout.js";
 
 import { EditRoutineContext } from "../context/EditRoutineContext.js";
 import { AppContext } from "../context/AppContext.js";
 
 import Constants from "expo-constants";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function DaysList({ navigation, route }) {
   const { initializeEditRoutine } = useContext(EditRoutineContext);
   const { user, deleteDaysState, setFavoriteRoutine, deleteRoutineState } =
     useContext(AppContext);
+
+  const bottomSheetRef = useRef(null);
+
+  const handleSheetChanges = useCallback((index) => {
+    console.log("handleSheetChanges", index);
+  }, []);
 
   const [days, setDays] = useState(null);
   const [routine, setRoutine] = useState(null);
@@ -63,6 +86,40 @@ export default function DaysList({ navigation, route }) {
     // initialize the edit routine context with the routine
     await initializeEditRoutine(routine, index);
     navigation.push("Edit Routine");
+  };
+
+  const handleShare = async () => {
+    bottomSheetRef.current.expand();
+  };
+
+  const handleCopyId = async () => {
+    await Clipboard.setStringAsync(routine.id);
+    Alert.alert(
+      "Routine ID Copied",
+      "You can now share this ID with your friends!",
+      [
+        {
+          text: "Awesome!",
+          onPress: () => console.log("OK Pressed"),
+        },
+      ],
+    );
+  };
+
+  const handleCopyLink = async () => {
+    await Clipboard.setStringAsync(
+      `https://www.wellness.com/routine/${routine.id}`,
+    );
+    Alert.alert(
+      "Link Copied",
+      "You can now share this link with your friends!",
+      [
+        {
+          text: "Awesome!",
+          onPress: () => console.log("OK Pressed"),
+        },
+      ],
+    );
   };
 
   const handleDelete = async () => {
@@ -109,64 +166,148 @@ export default function DaysList({ navigation, route }) {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView
-        style={{ width: "100%", marginTop: Constants.statusBarHeight }}
-      >
-        <View
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginTop: 20,
-            width: "100%",
-          }}
+    <GestureHandlerRootView style={styles.container}>
+      <View>
+        <ScrollView
+          style={{ width: "100%", marginTop: Constants.statusBarHeight }}
         >
-          <View style={styles.header}>
-            <Text
-              style={{
-                color: "#fff",
-                fontSize: 30,
-                fontWeight: "bold",
-                textAlign: "left",
-              }}
+          <View
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginTop: 20,
+              width: "100%",
+            }}
+          >
+            <View style={styles.header}>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontSize: 30,
+                  fontWeight: "bold",
+                  textAlign: "left",
+                }}
+              >
+                {routineName}
+              </Text>
+              <Pressable style={styles.buttonEdit} onPress={() => handleEdit()}>
+                <Text style={{ color: "white", fontSize: 16 }}>Edit</Text>
+              </Pressable>
+            </View>
+            <View style={{ width: "90%", alignItems: "center" }}>
+              {!days ? (
+                <Text style={{ color: "#fff", fontSize: 20, marginTop: 20 }}>
+                  Getting your routine info...
+                </Text>
+              ) : (
+                days &&
+                days.map((day, index) => {
+                  return (
+                    <PreviewWorkout
+                      key={index}
+                      navigation={navigation}
+                      day={day}
+                      userWeight={userWeight}
+                      userWeightUnit={userWeightUnit}
+                      userGender={userGender}
+                    />
+                  );
+                })
+              )}
+            </View>
+          </View>
+          <View style={styles.buttonsContainer}>
+            <Pressable
+              style={styles.buttonDelete}
+              onPress={() => handleDelete()}
             >
-              {routineName}
-            </Text>
-            <Pressable style={styles.buttonEdit} onPress={() => handleEdit()}>
-              <Text style={{ color: "white", fontSize: 16 }}>Edit</Text>
+              {loading ? (
+                <Text style={{ color: "white", fontSize: 16 }}>Loading...</Text>
+              ) : (
+                <Text style={{ color: "white", fontSize: 16 }}>Delete</Text>
+              )}
+            </Pressable>
+            <Pressable style={styles.buttonShare} onPress={() => handleShare()}>
+              <Text style={{ color: "white", fontSize: 16, marginRight: 6 }}>
+                Share
+              </Text>
+              <Ionicons name="share-outline" size={20} color="white" />
             </Pressable>
           </View>
-          <View style={{ width: "90%", alignItems: "center" }}>
-            {!days ? (
-              <Text style={{ color: "#fff", fontSize: 20, marginTop: 20 }}>
-                Getting your routine info...
-              </Text>
-            ) : (
-              days &&
-              days.map((day, index) => {
-                return (
-                  <PreviewWorkout
-                    key={index}
-                    navigation={navigation}
-                    day={day}
-                    userWeight={userWeight}
-                    userWeightUnit={userWeightUnit}
-                    userGender={userGender}
-                  />
-                );
-              })
+        </ScrollView>
+        <BottomSheet
+          ref={bottomSheetRef}
+          index={-1}
+          snapPoints={["60%", "70%"]}
+          onChange={handleSheetChanges}
+          enablePanDownToClose={true}
+          backgroundStyle={{ backgroundColor: "#292929" }}
+          handleIndicatorStyle={{ backgroundColor: "#fff" }}
+        >
+          <BottomSheetView style={styles.shareContainer}>
+            <Pressable onPress={() => bottomSheetRef.current.close()}>
+              <Text style={{ color: "#007AC8", fontSize: 18 }}>Done</Text>
+            </Pressable>
+            {days && days[0] && days[0].image && (
+              <Image
+                source={{ uri: days[0].image }}
+                style={{
+                  width: "100%",
+                  height: 200,
+                  marginTop: 20,
+                  borderRadius: 16,
+                }}
+              />
             )}
-          </View>
-        </View>
-        <Pressable style={styles.buttonDelete} onPress={() => handleDelete()}>
-          {loading ? (
-            <Text style={{ color: "white", fontSize: 16 }}>Loading...</Text>
-          ) : (
-            <Text style={{ color: "white", fontSize: 16 }}>Delete</Text>
-          )}
-        </Pressable>
-      </ScrollView>
-    </View>
+            <View style={styles.routineInfo}>
+              <Text style={{ color: "#fff", fontSize: 24 }}>{routineName}</Text>
+              <Text style={{ color: "#a0a0a0", fontSize: 16 }}>
+                {days && days.length} Days
+              </Text>
+            </View>
+            <View style={styles.routineId}>
+              <Text style={styles.routeIdText} numberOfLines={1}>
+                Routine ID: {routine && routine.id}
+              </Text>
+              <Pressable onPress={() => handleCopyId()}>
+                <Ionicons name="copy-outline" size={24} color="#007AC8" />
+              </Pressable>
+            </View>
+            <Text
+              style={{
+                color: "#a0a0a0",
+                fontSize: 12,
+                marginTop: 10,
+                textAlign: "center",
+                fontStyle: "italic",
+              }}
+            >
+              Share this routine ID with your friends and tell them to enter it
+              on the search page to find your routine.
+            </Text>
+            <View style={styles.routineId}>
+              <Text style={styles.routineLink} numberOfLines={1}>
+                https://www.wellness.com/routine/{routine && routine.id}
+              </Text>
+              <Pressable onPress={() => handleCopyLink()}>
+                <Ionicons name="copy-outline" size={24} color="#007AC8" />
+              </Pressable>
+            </View>
+            <Text
+              style={{
+                color: "#a0a0a0",
+                fontSize: 12,
+                marginTop: 8,
+                textAlign: "center",
+                fontStyle: "italic",
+              }}
+            >
+              Or share the link above with your friends
+            </Text>
+          </BottomSheetView>
+        </BottomSheet>
+      </View>
+    </GestureHandlerRootView>
   );
 }
 
@@ -203,15 +344,77 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
 
+  buttonsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+    marginTop: 20,
+    marginBottom: 60,
+  },
+
   buttonDelete: {
-    width: "90%",
-    height: 52,
+    width: "40%",
+    paddingVertical: 18,
     backgroundColor: "#840505",
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20,
     alignSelf: "center",
-    marginBottom: 50,
+  },
+
+  buttonShare: {
+    width: "40%",
+    paddingVertical: 18,
+    backgroundColor: "#1565C0",
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    alignSelf: "center",
+  },
+
+  shareContainer: {
+    flex: 1,
+    backgroundColor: "#292929",
+    padding: 16,
+    height: "100%",
+  },
+
+  routineInfo: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    marginTop: 20,
+  },
+
+  routineId: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    marginTop: 20,
+  },
+
+  routeIdText: {
+    color: "#fff",
+    fontSize: 16,
+    width: "80%",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  },
+
+  routineLink: {
+    color: "#007AC8",
+    fontSize: 17,
+    width: "80%",
+    textAlign: "center",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
 });
