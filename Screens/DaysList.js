@@ -14,6 +14,7 @@ import {
   ScrollView,
   Pressable,
   Image,
+  Share,
 } from "react-native";
 
 import * as Clipboard from "expo-clipboard";
@@ -41,9 +42,7 @@ export default function DaysList({ navigation, route }) {
 
   const bottomSheetRef = useRef(null);
 
-  const handleSheetChanges = useCallback((index) => {
-    console.log("handleSheetChanges", index);
-  }, []);
+  const handleSheetChanges = useCallback((index) => {}, []);
 
   const [days, setDays] = useState(null);
   const [routine, setRoutine] = useState(null);
@@ -93,7 +92,7 @@ export default function DaysList({ navigation, route }) {
   };
 
   const handleCopyId = async () => {
-    await Clipboard.setStringAsync(routine.id);
+    await Clipboard.setStringAsync(`routine/${routine.id}`);
     Alert.alert(
       "Routine ID Copied",
       "You can now share this ID with your friends!",
@@ -106,20 +105,24 @@ export default function DaysList({ navigation, route }) {
     );
   };
 
-  const handleCopyLink = async () => {
-    await Clipboard.setStringAsync(
-      `https://www.wellness.com/routine/${routine.id}`,
-    );
-    Alert.alert(
-      "Link Copied",
-      "You can now share this link with your friends!",
-      [
-        {
-          text: "Awesome!",
-          onPress: () => console.log("OK Pressed"),
-        },
-      ],
-    );
+  const handleShareLink = async () => {
+    const devLink = `exp://192.168.1.76:8081/?resource=routine&id=${routine.id}`;
+    const prodLink = `wellness://?resource=routine&id=${routine.id}`;
+
+    try {
+      const result = await Share.share({
+        message: `Check out this routine I found on Wellness: ${devLink}`,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log("Shared with activity type of", result.activityType);
+        } else {
+          console.log("Shared");
+        }
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   const handleDelete = async () => {
@@ -238,7 +241,7 @@ export default function DaysList({ navigation, route }) {
         <BottomSheet
           ref={bottomSheetRef}
           index={-1}
-          snapPoints={["60%", "70%"]}
+          snapPoints={["65%", "75%"]}
           onChange={handleSheetChanges}
           enablePanDownToClose={true}
           backgroundStyle={{ backgroundColor: "#292929" }}
@@ -265,9 +268,15 @@ export default function DaysList({ navigation, route }) {
                 {days && days.length} Days
               </Text>
             </View>
+            <Pressable
+              onPress={() => handleShareLink()}
+              style={styles.shareLink}
+            >
+              <Text style={{ color: "#fff", fontSize: 18 }}>Share Link</Text>
+            </Pressable>
             <View style={styles.routineId}>
               <Text style={styles.routeIdText} numberOfLines={1}>
-                Routine ID: {routine && routine.id}
+                Routine ID: {routine && `routine/${routine.id}`}
               </Text>
               <Pressable onPress={() => handleCopyId()}>
                 <Ionicons name="copy-outline" size={24} color="#007AC8" />
@@ -282,27 +291,8 @@ export default function DaysList({ navigation, route }) {
                 fontStyle: "italic",
               }}
             >
-              Share this routine ID with your friends and tell them to enter it
-              on the search page to find your routine.
-            </Text>
-            <View style={styles.routineId}>
-              <Text style={styles.routineLink} numberOfLines={1}>
-                https://www.wellness.com/routine/{routine && routine.id}
-              </Text>
-              <Pressable onPress={() => handleCopyLink()}>
-                <Ionicons name="copy-outline" size={24} color="#007AC8" />
-              </Pressable>
-            </View>
-            <Text
-              style={{
-                color: "#a0a0a0",
-                fontSize: 12,
-                marginTop: 8,
-                textAlign: "center",
-                fontStyle: "italic",
-              }}
-            >
-              Or share the link above with your friends
+              Or share this routine ID with your friends and tell them to enter
+              it on the search page to find your routine.
             </Text>
           </BottomSheetView>
         </BottomSheet>
@@ -404,17 +394,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     width: "80%",
     overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
   },
 
-  routineLink: {
-    color: "#007AC8",
-    fontSize: 17,
-    width: "80%",
-    textAlign: "center",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
+  shareLink: {
+    width: "100%",
+    paddingVertical: 18,
+    backgroundColor: "#007AC8",
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
   },
 });
