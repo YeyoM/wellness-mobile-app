@@ -26,7 +26,7 @@ import saveDaysStorage from "../AsyncStorageFunctions/Days/saveDaysStorage.js";
 
 // Routines Related Imports
 import { getSavedRoutines } from "../FirebaseFunctions/Routines/getSavedRoutines.js";
-import { getSavedRoutine } from "../FirebaseFunctions/Routines/getSavedRoutine.js";
+import { getRoutine } from "../FirebaseFunctions/Routines/getRoutine.js";
 import getRoutinesStorage from "../AsyncStorageFunctions/Routines/getRoutinesStorage.js";
 import saveRoutinesStorage from "../AsyncStorageFunctions/Routines/saveRoutinesStorage.js";
 
@@ -285,7 +285,7 @@ export const AppContextProvider = ({ children }) => {
   const refreshSpecificRoutine = async (routine) => {
     try {
       if (firebaseUser) {
-        const refreshedRoutine = await getSavedRoutine(routine.id);
+        const refreshedRoutine = await getRoutine(routine.id);
         const updatedRoutines = routines.map((r) =>
           r.id === refreshedRoutine.id ? refreshedRoutine : r,
         );
