@@ -48,6 +48,18 @@ export default function SharedRoutine({ navigation, route }) {
           navigation.goBack();
           return;
         }
+        // chack if routine is already saved
+        // some routines might have a property called originalRoutineId
+        routines.forEach((r) => {
+          if (r.originalRoutineId === routineId) {
+            setError(
+              "This routine is already saved, if you want to update it, please go to your routines and update it from there",
+            );
+            setLoading(false);
+            navigation.goBack();
+            return;
+          }
+        });
         setRoutine(routine);
         setLoading(false);
       })
@@ -67,7 +79,6 @@ export default function SharedRoutine({ navigation, route }) {
         cleanedRoutine,
         exercises,
       );
-      console.log("New routine: ", newRoutine);
       updateRoutines([...routines, newRoutine]);
       updateDays([...days, ...newRoutine.days]);
       updateExercises([...exercises, ...newExercises]);

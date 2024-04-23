@@ -31,11 +31,8 @@ export default function MainTabs({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [initialQuestionsAnswered, setInitialQuestionsAnswered] =
     useState(false);
-  const [isDataFetched, setIsDataFetched] = useState(false);
 
   const [loadingScreen, setLoadingScreen] = useState(null);
-
-  const isFocused = useIsFocused();
 
   const setDataIsFetched = async (value) => {
     try {
@@ -70,7 +67,6 @@ export default function MainTabs({ navigation }) {
     }
     setLoading(true);
     if (!initialQuestionsAnswered) {
-      console.log("Checking if user answered initial questions");
       UserAnsweredInitialQuestions(user.uid)
         .then((result) => {
           if (result === false) {
@@ -87,15 +83,11 @@ export default function MainTabs({ navigation }) {
           Alert.alert("Error", "An error has occurred, try again later please");
         });
     } else {
-      console.log("Checking if data is fetched");
       getDataIsFetched()
         .then((value) => {
-          console.log("is loading: ", loading);
           if (value === "true") {
-            console.log("data is fetched");
             setLoading(false);
           } else {
-            console.log("data is not fetched");
             getAppData(user.uid)
               .then(({ user, days, exercises, routines, workouts }) => {
                 setUser(user);
@@ -103,10 +95,7 @@ export default function MainTabs({ navigation }) {
                 setExercises(exercises);
                 setRoutines(routines);
                 setWorkouts(workouts);
-                console.log("?????");
-                console.log(workouts);
                 setDataIsFetched("true").then(() => {
-                  console.log("finished setting data is fetched");
                   setLoading(false);
                 });
               })
