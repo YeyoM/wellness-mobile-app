@@ -16,7 +16,7 @@ import { FIRESTORE } from "../../firebaseConfig.js";
  * @param {string} exercise.type - the exercise's type
  * @param {string} exercise.oneRepMax - the exercise's one rep max
  * @param {string} exercise.userId - the exercise's user id
- * @returns {array} - the updated exercises array
+ * @returns {object} - the new exercise object
  * @throws {Error} - if the exercise is already in the user's exercises or if the exercise object is not valid
  */
 export default async function addExerciseToUser(userId, exercise) {
@@ -77,47 +77,25 @@ export default async function addExerciseToUser(userId, exercise) {
   const newExerciseRef = doc(collection(FIRESTORE, "exercises"));
 
   try {
-    const newExercises = await runTransaction(
-      FIRESTORE,
-      async (transaction) => {
-        const userDoc = await transaction.get(userRef);
-        const userExercisesIds = userDoc.data().exercises;
-        const exercises = [];
-        for (const id of userExercisesIds) {
-          const exerciseDocRef = doc(FIRESTORE, "exercises", id);
-          const exerciseDoc = await transaction.get(exerciseDocRef);
-          const exerciseData = exerciseDoc.data();
-          const userExercise = {
-            id: id,
-            ...exerciseData,
-          };
-          if (exercise.exerciseName === userExercise.exerciseName) {
-            throw new Error("Exercise already saved");
-          }
-          exercises.push(userExercise);
-        }
-        console.log("GETTING EXERCISES SUCCEEDED TRANSACTION");
-        const newExerciseId = newExerciseRef.id;
-        const newExercise = {
-          ...exercise,
-          exerciseId: newExerciseId,
-        };
-        console.log(newExercise);
-        transaction.set(newExerciseRef, newExercise);
-        console.log("ADDING EXERCISE SUCCEEDED TRANSACTION");
-        const updatedExercises = [...userExercisesIds, newExerciseId];
-        transaction.update(userRef, {
-          exercises: updatedExercises,
-        });
-        console.log("UPDATING USER SUCCEEDED TRANSACTION");
-        exercises.push(newExercise);
-        console.log(exercises);
-        return exercises;
-      },
-    );
+    const newExercise = await runTransaction(FIRESTORE, async (transaction) => {
+      const userDoc = await transaction.get(userRef);
+      const userExercisesIds = userDoc.data().exercises;
+      const newExerciseId = newExerciseRef.id;
+      const newExercise = {
+        ...exercise,
+        exerciseId: newExerciseId,
+      };
+      transaction.set(newExerciseRef, newExercise);
+      console.log("ADDING EXERCISE SUCCEEDED TRANSACTION");
+      const updatedExercises = [...userExercisesIds, newExerciseId];
+      transaction.update(userRef, {
+        exercises: updatedExercises,
+      });
+      console.log("UPDATING USER SUCCEEDED TRANSACTION");
+      return newExercise;
+    });
     console.log("TRANSACTION SUCCEEDED");
-    console.log(newExercises);
-    return newExercises;
+    return newExercise;
   } catch (err) {
     console.error("TRANSACTION FAILED: ", err);
     throw new Error(err);
