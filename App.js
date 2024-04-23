@@ -1,5 +1,9 @@
 import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  NavigationContainerRefContext,
+} from "@react-navigation/native";
+
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Signup from "./Screens/Signup";
@@ -30,9 +34,12 @@ import ProgressGraphs from "./Screens/ProgressGraphs";
 import OneRepMaxList from "./Screens/OneRepMaxList";
 import EditOneRepMax from "./Screens/EditOneRepMax";
 
+import SharedRoutine from "./Screens/SharedRoutine";
+
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { FIREBASE_AUTH } from "./firebaseConfig";
+import { useURL, parse, addEventListener } from "expo-linking";
 
 import { AppContextProvider } from "./context/AppContext";
 import { InitialScreensProvider } from "./context/InitialScreensContext";
@@ -44,6 +51,15 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const [user, setUser] = useState(null);
 
+  const navigationRef = React.useRef();
+  const isNavigationReady = React.useContext(NavigationContainerRefContext);
+
+  useEffect(() => {
+    if (isNavigationReady) {
+      navigationRef.current = isNavigationReady.getCurrentNavigationContainer();
+    }
+  }, [isNavigationReady]);
+
   useEffect(() => {
     onAuthStateChanged(FIREBASE_AUTH, (user) => {
       if (user) {
@@ -54,12 +70,30 @@ export default function App() {
     });
   }, []);
 
+  useEffect(() => {
+    addEventListener("url", handleDeepLink);
+    return () => {};
+  }, []);
+
+  const handleDeepLink = (event) => {
+    const { queryParams } = parse(event.url);
+
+    if (queryParams.id && queryParams.resource) {
+      if (queryParams.resource === "routine") {
+        console.log("Routine ID: " + queryParams.id);
+        navigationRef.current.navigate("Shared Routine", {
+          routineId: queryParams.id,
+        });
+      }
+    }
+  };
+
   return (
     <AppContextProvider>
       <InitialScreensProvider>
         <CreateRoutineProvider>
           <EditRoutineProvider>
-            <NavigationContainer>
+            <NavigationContainer ref={navigationRef}>
               <Stack.Navigator>
                 {user ? (
                   <Stack.Group>
@@ -171,6 +205,11 @@ export default function App() {
                     <Stack.Screen
                       name="Delete Account"
                       component={DeleteAccount}
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="Shared Routine"
+                      component={SharedRoutine}
                       options={{ headerShown: false }}
                     />
                   </Stack.Group>

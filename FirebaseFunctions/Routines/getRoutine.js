@@ -2,13 +2,13 @@ import { doc, getDoc } from "firebase/firestore";
 import { FIRESTORE } from "../../firebaseConfig.js";
 
 /**
- * getSavedRoutine
+ * getRoutine
  * @param {string} routineId - The routine id
  * @returns {Array} - Array of routine objects
  * @throws {Error} - If the routine id is not provided
  * @description - This function gets a specific routine from Firestore
  */
-export const getSavedRoutine = async (routineId) => {
+export const getRoutine = async (routineId) => {
   if (!routineId) {
     throw new Error("Routine id is required!");
   }

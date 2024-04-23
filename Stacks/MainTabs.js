@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useIsFocused } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -6,6 +6,8 @@ import { Ionicons } from "@expo/vector-icons";
 import Home from "../Screens/Home";
 import SavedRoutines from "../Screens/SavedRoutines";
 import Profile from "../Screens/Profile";
+import Search from "../Screens/Search";
+
 import Loading1 from "../Screens/LoadingTransitionScreens/Loading1.js";
 import Loading2 from "../Screens/LoadingTransitionScreens/Loading2.js";
 import Loading3 from "../Screens/LoadingTransitionScreens/Loading3.js";
@@ -18,16 +20,19 @@ import getAppData from "../Utils/getAppData.js";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { AppContext } from "../context/AppContext.js";
+
 const Tab = createBottomTabNavigator();
 
 export default function MainTabs({ navigation }) {
-  const [loading, setLoading] = useState(true);
+  const { setUser, setDays, setExercises, setRoutines, setWorkouts } =
+    useContext(AppContext);
+
+  const [loading, setLoading] = useState(false);
   const [initialQuestionsAnswered, setInitialQuestionsAnswered] =
     useState(false);
 
   const [loadingScreen, setLoadingScreen] = useState(null);
-
-  const isFocused = useIsFocused();
 
   const setDataIsFetched = async (value) => {
     try {
@@ -65,20 +70,17 @@ export default function MainTabs({ navigation }) {
       UserAnsweredInitialQuestions(user.uid)
         .then((result) => {
           if (result === false) {
-            setLoading(false);
             setInitialQuestionsAnswered(false);
             setTimeout(() => {
               navigation.navigate("User Input");
             }, 2000);
           } else {
-            setLoading(false);
             setInitialQuestionsAnswered(true);
           }
         })
         .catch((error) => {
           console.log(error);
           Alert.alert("Error", "An error has occurred, try again later please");
-          setLoading(false);
         });
     } else {
       getDataIsFetched()
@@ -86,11 +88,16 @@ export default function MainTabs({ navigation }) {
           if (value === "true") {
             setLoading(false);
           } else {
-            setLoading(false);
             getAppData(user.uid)
-              .then(() => {
-                setLoading(false);
-                setDataIsFetched("true");
+              .then(({ user, days, exercises, routines, workouts }) => {
+                setUser(user);
+                setDays(days);
+                setExercises(exercises);
+                setRoutines(routines);
+                setWorkouts(workouts);
+                setDataIsFetched("true").then(() => {
+                  setLoading(false);
+                });
               })
               .catch((error) => {
                 console.log("Error in MainTabs.js: ", error);
@@ -105,13 +112,15 @@ export default function MainTabs({ navigation }) {
         .catch((error) => {
           Alert.alert("Error", "An error has occurred, try again later please");
           console.log(error);
+          setLoading(false);
         });
     }
-  }, [navigation, isFocused]);
+  }, [navigation, initialQuestionsAnswered]);
 
   if (
     (loading && !initialQuestionsAnswered) ||
-    (!loading && !initialQuestionsAnswered)
+    (!loading && !initialQuestionsAnswered) ||
+    loading
   ) {
     return loadingScreen === 1 ? (
       <Loading1 />
@@ -135,6 +144,8 @@ export default function MainTabs({ navigation }) {
               iconName = focused ? "person" : "person-outline";
             } else if (route.name === "Saved Routines") {
               iconName = focused ? "heart" : "heart-outline";
+            } else if (route.name === "Search") {
+              iconName = focused ? "search" : "search-outline";
             }
 
             return <Ionicons name={iconName} size={28} color={color} />;
@@ -153,6 +164,7 @@ export default function MainTabs({ navigation }) {
         style={{ backgroundColor: "#0B0B0B" }}
       >
         <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Search" component={Search} />
         <Tab.Screen name="Saved Routines" component={SavedRoutines} />
         <Tab.Screen name="Profile" component={Profile} />
       </Tab.Navigator>

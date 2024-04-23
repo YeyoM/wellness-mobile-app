@@ -20,7 +20,7 @@ export default function Home({ navigation }) {
       <View style={styles.home}>
         <View style={styles.header}>
           <View>
-            <Text style={styles.headerText}>Hello {user.name}!</Text>
+            <Text style={styles.headerText}>Hello {user?.name}!</Text>
             <Text style={styles.headerText_}>
               Get ready to level up your fitness
             </Text>

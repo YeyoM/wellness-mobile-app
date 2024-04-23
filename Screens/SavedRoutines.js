@@ -31,12 +31,9 @@ export default function SavedRoutines({ navigation, route }) {
 
   useEffect(() => {
     if (route.params && route.params.beforeEdit) {
-      console.log("a");
-      console.log(route.params.routineBeforeEdit);
       const newRoutines = [...routines];
       newRoutines[route.params.beforeEditIndex] =
         route.params.routineBeforeEdit;
-      console.log(newRoutines);
       updateRoutines(newRoutines);
       route.params.beforeEdit = false;
       route.params.beforeEditIndex = null;

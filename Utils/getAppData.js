@@ -26,6 +26,10 @@ import saveWorkoutsStorage from "../AsyncStorageFunctions/Workouts/saveWorkoutsS
  * 5. The workouts
  */
 export default async function getAppData(uid) {
+  if (!uid) {
+    throw new Error("No uid provided");
+  }
+
   try {
     const results = await Promise.all([
       await GetUser(uid),
@@ -34,7 +38,6 @@ export default async function getAppData(uid) {
       await getSavedRoutines(uid),
       await getWorkouts(uid),
     ]);
-    console.log("GETAPPDATA, AFTER GETTING ALL DATA: ", results);
     const user = results[0];
     const days = results[1];
     const exercises = results[2];
@@ -55,6 +58,8 @@ export default async function getAppData(uid) {
     if (workouts) {
       await saveWorkoutsStorage(workouts);
     }
+
+    return { user, days, exercises, routines, workouts };
   } catch (error) {
     console.log("Error in getAppData: ", error);
     throw new Error("Error in getAppData: ", error);
