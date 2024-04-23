@@ -323,6 +323,16 @@ export const AppContextProvider = ({ children }) => {
     await deleteFavoriteRoutine();
   };
 
+  const resetContext = () => {
+    setFirebaseUser(null);
+    setUser(null);
+    setExercises([]);
+    setWorkouts([]);
+    setDays([]);
+    setRoutines([]);
+    setFavoriteRoutine(null);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -357,6 +367,7 @@ export const AppContextProvider = ({ children }) => {
         setFavoriteRoutine,
         updateFavoriteRoutine,
         removeFavoriteRoutine,
+        resetContext,
       }}
     >
       {children}

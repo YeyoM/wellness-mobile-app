@@ -15,9 +15,9 @@ export default function MyPlan({ navigation }) {
 
   const [error, setError] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [userWeight, _setUserWeight] = useState(user.weight);
-  const [userWeightUnit, _setUserWeightUnit] = useState(user.weightUnit);
-  const [userGender, _setUserGender] = useState(user.gender);
+  const [userWeight, _setUserWeight] = useState(user?.weight);
+  const [userWeightUnit, _setUserWeightUnit] = useState(user?.weightUnit);
+  const [userGender, _setUserGender] = useState(user?.gender);
 
   // user weight and weight unit from storage
   const onRefresh = React.useCallback(async () => {

@@ -31,10 +31,10 @@ export const registerInitialQuestions = async (questions) => {
     await setDoc(doc(FIRESTORE, "users", userId), {
       name: questions.name,
       gender: questions.gender,
-      age: questions.age,
-      weight: questions.weight,
+      age: parseInt(questions.age),
+      weight: parseFloat(questions.weight),
       weightUnit: questions.weightUnit,
-      height: questions.height,
+      height: parseFloat(questions.height),
       heightUnit: questions.heightUnit,
       prevExperience: questions.prevExperience,
       fitnessLevel: questions.fitnessLevel,
@@ -63,6 +63,7 @@ export const registerInitialQuestions = async (questions) => {
       badges: [],
     });
   } catch (error) {
+    console.log(error);
     throw new Error("Error setting document: ", error);
   }
 };

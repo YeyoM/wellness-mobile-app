@@ -7,7 +7,7 @@ import {
   Dimensions,
   Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { FIREBASE_AUTH } from "../firebaseConfig";
 import { signOut } from "firebase/auth";
 import Constants from "expo-constants";
@@ -15,6 +15,7 @@ import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AppContext } from "../context/AppContext";
 
 export default function AccountSettings({ route, navigation }) {
   const {
@@ -27,6 +28,8 @@ export default function AccountSettings({ route, navigation }) {
     gender,
   } = route.params;
 
+  const { resetContext } = useContext(AppContext);
+
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -34,7 +37,17 @@ export default function AccountSettings({ route, navigation }) {
   const handleSignOut = async () => {
     try {
       // clear async storage
-      await AsyncStorage.clear();
+      await AsyncStorage.multiRemove([
+        "@user",
+        "@exercises",
+        "@workouts",
+        "@routines",
+        "@days",
+        "@favoriteRoutine",
+        "@routineBeforeEdit",
+        "dataIsFetched",
+      ]);
+      resetContext();
       await signOut(FIREBASE_AUTH);
       setLoading(false);
       setTimeout(() => {

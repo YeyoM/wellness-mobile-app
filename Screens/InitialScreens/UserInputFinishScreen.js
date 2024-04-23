@@ -42,7 +42,6 @@ export default function UserInputFinishScreen({ navigation }) {
     try {
       setLoading(true);
       await registerInitialQuestionsFunction();
-      console.log(navigation.getState());
       navigation.getParent().dispatch(
         CommonActions.navigate({
           name: "Main Tabs",

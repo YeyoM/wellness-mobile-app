@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   ActivityIndicator,
   View,
@@ -9,12 +9,26 @@ import {
 } from "react-native";
 
 import { getRoutine } from "../FirebaseFunctions/Routines/getRoutine";
+import cleanSharedRoutine from "../Utils/cleanSharedRoutine";
+import saveSharedRoutine from "../FirebaseFunctions/Routines/saveSharedRoutine";
+
+import { AppContext } from "../context/AppContext.js";
 
 export default function SharedRoutine({ navigation, route }) {
   const { routineId } = route.params;
+  const {
+    firebaseUser,
+    exercises,
+    routines,
+    days,
+    updateDays,
+    updateExercises,
+    updateRoutines,
+  } = useContext(AppContext);
 
   const [routine, setRoutine] = useState(null);
 
+  const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -22,16 +36,49 @@ export default function SharedRoutine({ navigation, route }) {
     setLoading(true);
     getRoutine(routineId)
       .then((routine) => {
+        if (!routine) {
+          setError("Routine not found");
+          setLoading(false);
+          navigation.goBack();
+          return;
+        }
+        if (routine.userId === firebaseUser.uid) {
+          setError("You can't save your own routine");
+          setLoading(false);
+          navigation.goBack();
+          return;
+        }
         setRoutine(routine);
         setLoading(false);
       })
       .catch((error) => {
-        setError(error);
         setLoading(false);
+        setError("There was an error getting the routine");
+        console.log(error);
       });
   }, []);
 
-  const handleSaveRoutine = () => {};
+  const handleSaveRoutine = async () => {
+    try {
+      setSaving(true);
+      const cleanedRoutine = await cleanSharedRoutine(routine);
+      const { newRoutine, newExercises } = await saveSharedRoutine(
+        firebaseUser.uid,
+        cleanedRoutine,
+        exercises,
+      );
+      console.log("New routine: ", newRoutine);
+      updateRoutines([...routines, newRoutine]);
+      updateDays([...days, ...newRoutine.days]);
+      updateExercises([...exercises, ...newExercises]);
+      setSaving(false);
+      navigation.navigate("Home");
+    } catch (error) {
+      console.log(error);
+      setError("There was an error saving the routine");
+      setSaving(false);
+    }
+  };
 
   const handeDismiss = () => {
     navigation.goBack();
@@ -42,6 +89,8 @@ export default function SharedRoutine({ navigation, route }) {
       <Text style={styles.header}>Someone shared a routine with you!</Text>
       {loading ? (
         <ActivityIndicator size="large" color="#fff" />
+      ) : !loading && error ? (
+        <Text style={{ color: "red" }}>{error}</Text>
       ) : (
         <View style={styles.routineContainer}>
           {routine && (
@@ -76,14 +125,18 @@ export default function SharedRoutine({ navigation, route }) {
               </View>
             </View>
           )}
-          <View style={styles.buttonsContainer}>
-            <Pressable onPress={handeDismiss} style={styles.dismissButton}>
-              <Text style={styles.dismissButtonText}>Dismiss</Text>
-            </Pressable>
-            <Pressable onPress={handleSaveRoutine} style={styles.saveButton}>
-              <Text style={styles.saveButtonText}>Save Routine</Text>
-            </Pressable>
-          </View>
+          {saving ? (
+            <Text style={{ color: "#fff" }}>Saving routine...</Text>
+          ) : (
+            <View style={styles.buttonsContainer}>
+              <Pressable onPress={handeDismiss} style={styles.dismissButton}>
+                <Text style={styles.dismissButtonText}>Dismiss</Text>
+              </Pressable>
+              <Pressable onPress={handleSaveRoutine} style={styles.saveButton}>
+                <Text style={styles.saveButtonText}>Save Routine</Text>
+              </Pressable>
+            </View>
+          )}
         </View>
       )}
     </View>

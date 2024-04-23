@@ -33,6 +33,8 @@ export default function SavedLifts({ route, navigation }) {
       return;
     }
 
+    console.log("LIFT: ", lift);
+
     const newLift = {
       exerciseId: lift.exerciseId,
       exerciseName: lift.exerciseName,
@@ -41,6 +43,9 @@ export default function SavedLifts({ route, navigation }) {
       weight: lift.defaultWeight,
       weightSystem: lift.defaultWeightSystem,
       restTime: lift.defaultRestTime,
+      equipment: lift.equipment,
+      muscle: lift.muscle,
+      type: lift.type,
     };
 
     // get the user's weight from the async storage

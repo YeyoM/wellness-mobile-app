@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useIsFocused } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -20,12 +20,18 @@ import getAppData from "../Utils/getAppData.js";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { AppContext } from "../context/AppContext.js";
+
 const Tab = createBottomTabNavigator();
 
 export default function MainTabs({ navigation }) {
-  const [loading, setLoading] = useState(true);
+  const { setUser, setDays, setExercises, setRoutines, setWorkouts } =
+    useContext(AppContext);
+
+  const [loading, setLoading] = useState(false);
   const [initialQuestionsAnswered, setInitialQuestionsAnswered] =
     useState(false);
+  const [isDataFetched, setIsDataFetched] = useState(false);
 
   const [loadingScreen, setLoadingScreen] = useState(null);
 
@@ -64,35 +70,45 @@ export default function MainTabs({ navigation }) {
     }
     setLoading(true);
     if (!initialQuestionsAnswered) {
+      console.log("Checking if user answered initial questions");
       UserAnsweredInitialQuestions(user.uid)
         .then((result) => {
           if (result === false) {
-            setLoading(false);
             setInitialQuestionsAnswered(false);
             setTimeout(() => {
               navigation.navigate("User Input");
             }, 2000);
           } else {
-            setLoading(false);
             setInitialQuestionsAnswered(true);
           }
         })
         .catch((error) => {
           console.log(error);
           Alert.alert("Error", "An error has occurred, try again later please");
-          setLoading(false);
         });
     } else {
+      console.log("Checking if data is fetched");
       getDataIsFetched()
         .then((value) => {
+          console.log("is loading: ", loading);
           if (value === "true") {
+            console.log("data is fetched");
             setLoading(false);
           } else {
-            setLoading(false);
+            console.log("data is not fetched");
             getAppData(user.uid)
-              .then(() => {
-                setLoading(false);
-                setDataIsFetched("true");
+              .then(({ user, days, exercises, routines, workouts }) => {
+                setUser(user);
+                setDays(days);
+                setExercises(exercises);
+                setRoutines(routines);
+                setWorkouts(workouts);
+                console.log("?????");
+                console.log(workouts);
+                setDataIsFetched("true").then(() => {
+                  console.log("finished setting data is fetched");
+                  setLoading(false);
+                });
               })
               .catch((error) => {
                 console.log("Error in MainTabs.js: ", error);
@@ -107,13 +123,15 @@ export default function MainTabs({ navigation }) {
         .catch((error) => {
           Alert.alert("Error", "An error has occurred, try again later please");
           console.log(error);
+          setLoading(false);
         });
     }
-  }, [navigation, isFocused]);
+  }, [navigation, initialQuestionsAnswered]);
 
   if (
     (loading && !initialQuestionsAnswered) ||
-    (!loading && !initialQuestionsAnswered)
+    (!loading && !initialQuestionsAnswered) ||
+    loading
   ) {
     return loadingScreen === 1 ? (
       <Loading1 />
