@@ -17,7 +17,7 @@ import addExerciseToUser from "../FirebaseFunctions/Exercises/addExerciseToUser.
 import { AppContext } from "../context/AppContext.js";
 
 export default function SearchLift({ navigation }) {
-  const { firebaseUser, user, exercises, refreshExercises, updateExercises } =
+  const { firebaseUser, user, refreshUser, exercises, updateExercises } =
     useContext(AppContext);
 
   const [loading, setLoading] = useState(false);
@@ -146,10 +146,10 @@ export default function SearchLift({ navigation }) {
     console.log("Exercise", exercise);
     setLoading(true);
     try {
-      const updatedExercises = await addExerciseToUser(userId, exercise);
-      if (updatedExercises) {
+      const newExercise = await addExerciseToUser(userId, exercise);
+      if (newExercise) {
         try {
-          await updateExercises(updatedExercises);
+          await updateExercises([...exercises, newExercise]);
           setTimeout(() => {
             setSuccess(null);
           }, 2000);
@@ -157,9 +157,7 @@ export default function SearchLift({ navigation }) {
           setSuccess("Lift saved");
           setSearchedExercises(null);
           setInputName("");
-
-          // refresh the exercises in the context
-          refreshExercises();
+          refreshUser();
           navigation.navigate("Saved Lifts");
         } catch (error) {
           console.log(error);
