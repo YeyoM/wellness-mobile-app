@@ -13,6 +13,7 @@ import { useState, useContext } from "react";
 import TopNavigationBar from "../../components/TopNavigationBar";
 import { CreateRoutineContext } from "../../context/CreateRoutineContext.js";
 import { EditRoutineContext } from "../../context/EditRoutineContext.js";
+import { AppContext } from "../../context/AppContext.js";
 
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import createRoutine from "../../FirebaseFunctions/Routines/createRoutine.js";
@@ -29,12 +30,19 @@ export default function SelectNumberDaysPerWeek({ route, navigation }) {
     image,
   } = useContext(CreateRoutineContext);
 
+  const { initializeEditRoutine } = useContext(EditRoutineContext);
+
+  const {
+    routines,
+    updateRoutines,
+    days: allDays,
+    updateDays,
+  } = useContext(AppContext);
+
   const { newRoutineIndex } = route.params;
 
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-
-  const { initializeEditRoutine } = useContext(EditRoutineContext);
 
   const handleContinue = async () => {
     setLoading(true);
@@ -64,6 +72,8 @@ export default function SelectNumberDaysPerWeek({ route, navigation }) {
 
     try {
       const newRoutine = await createRoutine(userId, routine);
+      await updateRoutines([...routines, newRoutine]);
+      await updateDays([...allDays, ...newRoutine.days]);
       setSuccess(true);
       setLoading(false);
       setTimeout(async () => {

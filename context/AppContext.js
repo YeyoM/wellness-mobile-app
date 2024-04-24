@@ -46,6 +46,16 @@ export const AppContextProvider = ({ children }) => {
   // Miscellanous objects
   const [favoriteRoutine, setFavoriteRoutine] = useState(null);
 
+  useEffect(() => {
+    console.log("Days refreshed");
+    console.log(days);
+  }, [days]);
+
+  useEffect(() => {
+    console.log("Routines refreshed");
+    console.log(routines);
+  }, [routines]);
+
   // FIREBASE USER METHODS AND LISTENERS
   useEffect(() => {
     FIREBASE_AUTH.onAuthStateChanged((user) => {
@@ -235,10 +245,16 @@ export const AppContextProvider = ({ children }) => {
     const ids = new Set();
 
     for (const day of routine.days) {
-      ids.add(day.dayId);
+      if (day.dayId) {
+        ids.add(day.dayId);
+      } else if (day.id) {
+        ids.add(day.id);
+      }
     }
 
-    const updatedDays = days.filter((day) => !ids.has(day.dayId));
+    const updatedDays = days.filter(
+      (day) => !ids.has(day.dayId) && !ids.has(day.id),
+    );
     await updateDays(updatedDays);
     setDays(updatedDays);
   };

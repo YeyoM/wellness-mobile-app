@@ -111,6 +111,7 @@ export default async function createRoutine(userId, routine) {
       }
       const day = daySnap.data();
       day.id = daySnap.id;
+      day.image = routine.image;
       days.push(day);
     }
 
