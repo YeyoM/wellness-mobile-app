@@ -6,6 +6,7 @@ import { Slider, HapticModeEnum } from "react-native-awesome-slider";
 import * as Haptics from "expo-haptics";
 
 import calculateCaloriesLift from "../Utils/calculateCaloriesLift";
+import calculateCaloriesCardioExercise from "../Utils/calculateCaloriesCardioExercise.js";
 import calculateTimeLift from "../Utils/calculateTimeLift";
 
 import Constants from "expo-constants";
@@ -99,6 +100,23 @@ export default function EditExercise({ route, navigation }) {
             ),
         );
       }, 0);
+      newRoutine.days[currentDay].totalCalories += newRoutine.days[
+        currentDay
+      ].cardioExercises.reduce((acc, ex) => {
+        return Math.round(
+          acc +
+            calculateCaloriesCardioExercise(
+              userWeight,
+              userWeightUnit,
+              ex.exerciseName,
+              ex.duration,
+              ex.resistanceLevel,
+              ex.incline,
+              ex.speed,
+            ),
+        );
+      }, 0);
+
       newRoutine.days[currentDay].totalSets = newRoutine.days[
         currentDay
       ].exercises.reduce((acc, ex) => {
@@ -108,6 +126,11 @@ export default function EditExercise({ route, navigation }) {
         currentDay
       ].exercises.reduce((acc, ex) => {
         return acc + calculateTimeLift(ex.numberOfReps, ex.numberOfSets, 60);
+      }, 0);
+      newRoutine.days[currentDay].totalDuration += newRoutine.days[
+        currentDay
+      ].cardioExercises.reduce((acc, ex) => {
+        return acc + ex.duration;
       }, 0);
       return newRoutine;
     });

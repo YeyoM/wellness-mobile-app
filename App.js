@@ -20,6 +20,7 @@ import UpdateUserInfoStack from "./Stacks/UpdateUserInfoStack";
 import AddRoutineStack from "./Stacks/AddRoutineStack";
 import EditRoutine from "./Screens/EditRoutine";
 import EditExercise from "./Screens/EditExercise";
+import EditCardioExercise from "./Screens/EditCardioExercise";
 import AddLift from "./Screens/AddLift";
 import DaysList from "./Screens/DaysList";
 
@@ -160,6 +161,11 @@ export default function App() {
                     <Stack.Screen
                       name="Edit Exercise"
                       component={EditExercise}
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="Edit Cardio Exercise"
+                      component={EditCardioExercise}
                       options={{ headerShown: false }}
                     />
                     <Stack.Screen

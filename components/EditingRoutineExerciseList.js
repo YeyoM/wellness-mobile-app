@@ -15,6 +15,7 @@ import SwipeableItem, {
 import { Ionicons } from "@expo/vector-icons";
 
 import { EditRoutineContext } from "../context/EditRoutineContext";
+import { AppContext } from "../context/AppContext.js";
 
 import { FIRESTORE, FIREBASE_AUTH } from "../firebaseConfig.js";
 import { doc, getDoc } from "firebase/firestore";
@@ -22,30 +23,40 @@ import { doc, getDoc } from "firebase/firestore";
 import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
 import calculateTimeLift from "../Utils/calculateTimeLift.js";
 
-export default function EditingRoutineExerciseList({ navigation, exercices }) {
+export default function EditingRoutineExerciseList({
+  navigation,
+  exercices,
+  cardioExercises,
+}) {
   const { routine, setRoutine, currentDay } = useContext(EditRoutineContext);
+  const { user } = useContext(AppContext);
 
-  const NUM_ITEMS = exercices.length;
+  const NUM_ITEMS_NORMAL = exercices.length;
+  const NUM_ITEMS_CARDIO = cardioExercises ? cardioExercises.length : 0;
 
-  const initialData = Array.from({ length: NUM_ITEMS }, (_, index) => ({
-    key: `item-${Math.random()}`,
-    exercise: exercices[index],
-    day: currentDay,
-  }));
+  const initialDataNormal = Array.from(
+    { length: NUM_ITEMS_NORMAL },
+    (_, index) => ({
+      key: `lift-${exercices[index].exerciseName}`,
+      exercise: exercices[index],
+      day: currentDay,
+    }),
+  );
+
+  const initialDataCardio = Array.from(
+    { length: NUM_ITEMS_CARDIO },
+    (_, index) => ({
+      key: `cardio-${cardioExercises[index].exerciseName}`,
+      exercise: cardioExercises[index],
+      day: currentDay,
+    }),
+  );
+
+  const initialData = initialDataNormal.concat(initialDataCardio);
 
   const deleteExercise = async (id, day) => {
-    // update the calories, sets, and duration of the day
-    // first, calculate the calories, sets, and duration of the exercise
-    const user = FIREBASE_AUTH.currentUser;
-
-    if (!user) {
-      return;
-    }
-
-    const userDocRef = doc(FIRESTORE, "users", user.uid);
-    const userDoc = await getDoc(userDocRef);
     // get the user's weight and weightUnit
-    const { weight, weightUnit, gender } = userDoc.data();
+    const { weight, weightUnit, gender } = user;
 
     setRoutine((prevRoutine) => {
       const newRoutine = { ...prevRoutine };
@@ -70,6 +81,37 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
     });
   };
 
+  const deleteCardioExercise = (exerciseName, day) => {
+    setRoutine((prevRoutine) => {
+      const newRoutine = { ...prevRoutine };
+      const exercise = newRoutine.days[day].cardioExercises.find(
+        (exercise) => exercise.exerciseName === exerciseName,
+      );
+      if (!exercise) {
+        return newRoutine;
+      }
+      newRoutine.days[day].cardioExercises = newRoutine.days[
+        day
+      ].cardioExercises.filter(
+        (exercise) => exercise.exerciseName !== exerciseName,
+      );
+      const { duration } = exercise;
+      newRoutine.days[day].totalDuration -= duration;
+      newRoutine.days[day].totalCalories -= Math.round(
+        calculateCaloriesCardioExercise(
+          user.weight,
+          user.weightUnit,
+          exerciseName,
+          exercise.duration,
+          exercise.resistanceLevel,
+          exercise.incline,
+          exercise.speed,
+        ),
+      );
+      return newRoutine;
+    });
+  };
+
   const renderItem = useCallback(({ item }) => {
     return (
       <SwipeableItem
@@ -80,6 +122,7 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
             item={item}
             initialData={initialData}
             deleteExercise={deleteExercise}
+            deleteCardioExercise={deleteCardioExercise}
             navigation={navigation}
             currentDay={currentDay}
             routine={routine}
@@ -120,11 +163,21 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
               >
                 {item.exercise.exerciseName}
               </Text>
-              <Text style={{ color: "#9095A1", fontSize: 12, marginLeft: 16 }}>
-                {item.exercise.numberOfSets} sets of {``}
-                {item.exercise.numberOfReps} reps, {item.exercise.weight}
-                {item.exercise.weightSystem}
-              </Text>
+              {item.key.includes("lift") ? (
+                <Text
+                  style={{ color: "#9095A1", fontSize: 12, marginLeft: 16 }}
+                >
+                  {item.exercise.numberOfSets} sets of {``}
+                  {item.exercise.numberOfReps} reps, {item.exercise.weight}
+                  {item.exercise.weightSystem}
+                </Text>
+              ) : (
+                <Text
+                  style={{ color: "#9095A1", fontSize: 12, marginLeft: 16 }}
+                >
+                  {item.exercise.duration} minutes
+                </Text>
+              )}
             </View>
           </View>
           <Pressable
@@ -146,29 +199,6 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          width: "90%",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          marginBottom: 10,
-        }}
-      >
-        <Ionicons name="information-circle-outline" size={12} color="#a0a0a0" />
-        <Text
-          style={{
-            color: "#a0a0a0",
-            fontSize: 12,
-            fontStyle: "italic",
-            alignSelf: "flex-end",
-            marginLeft: 2,
-          }}
-        >
-          Swipe left to edit or delete a lift
-        </Text>
-      </View>
       <FlatList
         keyExtractor={(item) => item.key}
         data={initialData}
@@ -180,7 +210,12 @@ export default function EditingRoutineExerciseList({ navigation, exercices }) {
   );
 }
 
-const UnderlayLeft = ({ item, deleteExercise, navigation }) => {
+const UnderlayLeft = ({
+  item,
+  deleteExercise,
+  navigation,
+  deleteCardioExercise,
+}) => {
   const { close } = useSwipeableItemParams();
   const id = item.exercise.exerciseId;
   return (
@@ -189,7 +224,11 @@ const UnderlayLeft = ({ item, deleteExercise, navigation }) => {
         onPress={() => {
           close();
           setTimeout(() => {
-            deleteExercise(id, item.day);
+            if (item.key.includes("lift")) {
+              deleteExercise(id, item.day);
+            } else {
+              deleteCardioExercise(item.exercise.exerciseName, item.day);
+            }
           }, 200);
         }}
         style={{
@@ -209,9 +248,15 @@ const UnderlayLeft = ({ item, deleteExercise, navigation }) => {
         onPress={() => {
           close();
           setTimeout(() => {
-            navigation.navigate("Edit Exercise", {
-              exercise: item.exercise,
-            });
+            if (item.key.includes("lift")) {
+              navigation.navigate("Edit Exercise", {
+                exercise: item.exercise,
+              });
+            } else {
+              navigation.navigate("Edit Cardio Exercise", {
+                exercise: item.exercise,
+              });
+            }
           }, 200);
         }}
         style={{

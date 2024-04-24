@@ -273,14 +273,42 @@ export default function EditRoutine({ navigation }) {
               <Text
                 style={{ color: "#9095A1", fontSize: 10, textAlign: "center" }}
               >
-                Add Lift
+                Add Exercise
               </Text>
             </Pressable>
+          </View>
+          <View
+            style={{
+              width: "90%",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              marginBottom: 10,
+            }}
+          >
+            <Ionicons
+              name="information-circle-outline"
+              size={12}
+              color="#a0a0a0"
+            />
+            <Text
+              style={{
+                color: "#a0a0a0",
+                fontSize: 12,
+                fontStyle: "italic",
+                alignSelf: "flex-end",
+                marginLeft: 2,
+              }}
+            >
+              Swipe left to edit or delete a lift
+            </Text>
           </View>
           <View style={styles.containerExercises}>
             <View style={styles.exercises}>
               <EditingRoutineExerciseList
                 exercices={routine.days[currentDay].exercises}
+                cardioExercises={routine.days[currentDay].cardioExercises ?? []}
                 navigation={navigation}
               />
             </View>
