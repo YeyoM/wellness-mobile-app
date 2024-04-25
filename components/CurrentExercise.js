@@ -6,9 +6,14 @@ export default function CurrentExercise({
   reps,
   sets,
   weight,
-  image,
   restTime,
+  time,
+  incline,
+  resistance,
+  speed,
+  image,
   navigation,
+  type,
 }) {
   return (
     <View style={styles.container}>
@@ -24,76 +29,148 @@ export default function CurrentExercise({
         />
       </View>
       <View style={styles.bottom}>
-        <View style={styles.left}>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              paddingHorizontal: 10,
-              borderRightColor: "#a0a0a0",
-            }}
-          >
-            <Text style={styles.reps}>Reps</Text>
-            <Text style={styles.reps}>{reps}</Text>
+        {type === "lift" ? (
+          <View style={styles.left}>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                paddingHorizontal: 10,
+                borderRightColor: "#a0a0a0",
+              }}
+            >
+              <Text style={styles.reps}>Reps</Text>
+              <Text style={styles.reps}>{reps}</Text>
+            </View>
+            <View
+              style={{
+                width: 1,
+                height: 30,
+                backgroundColor: "#a0a0a0",
+              }}
+            />
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                paddingHorizontal: 10,
+                borderRightColor: "#a0a0a0",
+              }}
+            >
+              <Text style={styles.sets}>Sets</Text>
+              <Text style={styles.sets}>{sets}</Text>
+            </View>
+            <View
+              style={{
+                width: 1,
+                height: 30,
+                backgroundColor: "#a0a0a0",
+              }}
+            />
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                paddingHorizontal: 10,
+                borderRightColor: "#a0a0a0",
+              }}
+            >
+              <Text style={styles.weight}>Weight</Text>
+              <Text style={styles.weight}>{weight}kg</Text>
+            </View>
+            <View
+              style={{
+                width: 1,
+                height: 30,
+                backgroundColor: "#a0a0a0",
+              }}
+            />
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                paddingHorizontal: 10,
+              }}
+            >
+              <Text style={styles.rest}>Rest</Text>
+              <Text style={styles.rest}>{restTime}s</Text>
+            </View>
           </View>
-          <View
-            style={{
-              width: 1,
-              height: 30,
-              backgroundColor: "#a0a0a0",
-            }}
-          />
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              paddingHorizontal: 10,
-              borderRightColor: "#a0a0a0",
-            }}
-          >
-            <Text style={styles.sets}>Sets</Text>
-            <Text style={styles.sets}>{sets}</Text>
+        ) : (
+          <View style={styles.left}>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                paddingHorizontal: 10,
+                borderRightColor: "#a0a0a0",
+              }}
+            >
+              <Text style={styles.reps}>Duration</Text>
+              <Text style={styles.reps}>{time} min</Text>
+            </View>
+            <View
+              style={{
+                width: 1,
+                height: 30,
+                backgroundColor: "#a0a0a0",
+              }}
+            />
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                paddingHorizontal: 10,
+                borderRightColor: "#a0a0a0",
+              }}
+            >
+              <Text style={styles.sets}>Incline</Text>
+              <Text style={styles.sets}>{incline ? incline : "N/A"}</Text>
+            </View>
+            <View
+              style={{
+                width: 1,
+                height: 30,
+                backgroundColor: "#a0a0a0",
+              }}
+            />
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                paddingHorizontal: 10,
+              }}
+            >
+              <Text style={styles.rest}>Resistance</Text>
+              <Text style={styles.rest}>{resistance ? resistance : "N/A"}</Text>
+            </View>
+            <View
+              style={{
+                width: 1,
+                height: 30,
+                backgroundColor: "#a0a0a0",
+              }}
+            />
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                paddingHorizontal: 10,
+              }}
+            >
+              <Text style={styles.rest}>Speed</Text>
+              <Text style={styles.rest}>{speed ? speed : "N/A"}</Text>
+            </View>
           </View>
-          <View
-            style={{
-              width: 1,
-              height: 30,
-              backgroundColor: "#a0a0a0",
-            }}
-          />
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              paddingHorizontal: 10,
-              borderRightColor: "#a0a0a0",
-            }}
-          >
-            <Text style={styles.weight}>Weight</Text>
-            <Text style={styles.weight}>{weight}kg</Text>
-          </View>
-          <View
-            style={{
-              width: 1,
-              height: 30,
-              backgroundColor: "#a0a0a0",
-            }}
-          />
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              paddingHorizontal: 10,
-            }}
-          >
-            <Text style={styles.rest}>Rest</Text>
-            <Text style={styles.rest}>{restTime}s</Text>
-          </View>
-        </View>
+        )}
         <View style={styles.right}>
           <TouchableOpacity onPress={() => navigation.navigate("Workout")}>
             <Ionicons name="play-circle-outline" size={32} color="white" />

@@ -1,6 +1,13 @@
 import { FIRESTORE, FIREBASE_AUTH } from "../../firebaseConfig.js";
 import { runTransaction, doc, collection } from "firebase/firestore";
 
+const cardioExercises = new Set([
+  "Treadmill",
+  "Elliptical",
+  "Stationary Bike",
+  "Rowing Machine",
+]);
+
 /**
  * SaveWorkout
  * @param {Object} workout
@@ -26,6 +33,11 @@ export default async function SaveWorkout({
   date,
 }) {
   const userId = FIREBASE_AUTH.currentUser.uid;
+
+  console.log(workout);
+
+  console.log("hello?");
+  console.log(FIRESTORE);
 
   if (!userId) {
     throw new Error("User is not logged in!");
@@ -54,18 +66,23 @@ export default async function SaveWorkout({
   if (!totalTime) {
     throw new Error("Total time is missing!");
   }
+  console.log("hello?");
 
   if (!date) {
     throw new Error("Date is missing!");
   }
 
+  console.log("hello?");
+
   // Create references for the documents we are going to update/modify
   const userRef = doc(FIRESTORE, "users", userId);
   const newWorkoutRef = doc(collection(FIRESTORE, "workouts"));
-  const exerciseRefs = workout.map((exercise) => {
-    const exerciseId = exercise.exerciseId;
-    return doc(FIRESTORE, "exercises", exerciseId);
-  });
+  const exerciseRefs = [];
+  for (let i = 0; i < workout.length; i++) {
+    if (!cardioExercises.has(workout[i].exerciseName)) {
+      exerciseRefs.push(doc(FIRESTORE, "exercises", workout[i].exerciseId));
+    }
+  }
 
   if (!userRef) {
     throw new Error("User does not exist!");
@@ -73,10 +90,6 @@ export default async function SaveWorkout({
 
   if (!exerciseRefs) {
     throw new Error("Exercises do not exist!");
-  }
-
-  if (exerciseRefs.length !== workout.length) {
-    throw new Error("Some exercises do not exist!");
   }
 
   if (!newWorkoutRef) {
@@ -87,12 +100,15 @@ export default async function SaveWorkout({
     const savedWorkout = await runTransaction(
       FIRESTORE,
       async (transaction) => {
+        console.log("Transaction started");
         const userDoc = await transaction.get(userRef);
         const exercisesDocs = [];
+        console.log("USER DOC RETRIEVED");
         for (let i = 0; i < exerciseRefs.length; i++) {
           const exerciseDoc = await transaction.get(exerciseRefs[i]);
           exercisesDocs.push(exerciseDoc);
         }
+        console.log("EXERCISES DOCS RETRIEVED");
         transaction.set(newWorkoutRef, {
           userId,
           routineId,
@@ -108,13 +124,19 @@ export default async function SaveWorkout({
         userWorkouts.push(newWorkoutRef.id);
         transaction.update(userRef, { workouts: userWorkouts });
         console.log("USER WORKOUTS UPDATE WRITTEN TO TRANSACTION");
+        console.log(exerciseRefs);
+        console.log(exercisesDocs);
         exerciseRefs.forEach((exerciseRef, index) => {
+          console.log(exercisesDocs[index].data());
           const weightHistory = exercisesDocs[index].data().weightRecord;
           const newWeightHistory = {
             date: new Date(),
             weight: workout[index].exerciseWeight,
           };
           weightHistory.push(newWeightHistory);
+          console.log("Weight history: ", weightHistory);
+          console.log("New weight history: ", newWeightHistory);
+
           transaction.update(exerciseRef, {
             weightRecord: weightHistory,
           });

@@ -220,10 +220,10 @@ export const AppContextProvider = ({ children }) => {
     const ids = new Set();
 
     for (const day of routine.days) {
-      ids.add(day.dayId);
+      ids.add(day.id);
     }
 
-    const notRefreshedDays = days.filter((day) => !ids.has(day.dayId));
+    const notRefreshedDays = days.filter((day) => !ids.has(day.id));
     const refreshedRoutine = routines.find((r) => r.id === routine.id);
 
     const refreshedDays = refreshedRoutine.days;
@@ -236,16 +236,10 @@ export const AppContextProvider = ({ children }) => {
     const ids = new Set();
 
     for (const day of routine.days) {
-      if (day.dayId) {
-        ids.add(day.dayId);
-      } else if (day.id) {
-        ids.add(day.id);
-      }
+      ids.add(day.id);
     }
 
-    const updatedDays = days.filter(
-      (day) => !ids.has(day.dayId) && !ids.has(day.id),
-    );
+    const updatedDays = days.filter((day) => !ids.has(day.id));
     await updateDays(updatedDays);
     setDays(updatedDays);
   };

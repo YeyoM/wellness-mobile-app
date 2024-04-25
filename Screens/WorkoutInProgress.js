@@ -38,42 +38,142 @@ import SaveWorkout from "../FirebaseFunctions/Workouts/SaveWorkout";
 import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
 import readableTimeToMinutes from "../Utils/readableTimeToMinutes.js";
 
+import calculateCaloriesCardioExercise from "../Utils/calculateCaloriesCardioExercise.js";
+
 import { AppContext } from "../context/AppContext.js";
+
+const cardioExercises = new Set([
+  "Treadmill",
+  "Elliptical",
+  "Stationary Bike",
+  "Rowing Machine",
+]);
 
 export default function WorkoutInProgress({ route, navigation }) {
   const { day, userWeight, userWeightUnit, userGender } = route.params;
 
   const { firebaseUser, refreshNewWorkout } = useContext(AppContext);
 
-  const [currentExercise, setCurrentExercise] = useState(day.exercises[0]);
-  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
-  const [currentExerciseReps, setCurrentExerciseReps] = useState(
-    day.exercises[0].numberOfReps,
-  );
-  const [currentExerciseSets, setCurrentExerciseSets] = useState(
-    day.exercises[0].numberOfSets,
-  );
-  const [currentExerciseWeight, setCurrentExerciseWeight] = useState(
-    day.exercises[0].weight,
-  );
-  const [currentExerciseRestTime, setCurrentExerciseRestTime] = useState(
-    day.exercises[0].restTime,
-  );
+  const [startWorkout, setStartWorkout] = useState(false);
 
-  const [numberOfExercises] = useState(day.exercises.length);
-  const [exerciseQueue, setExerciseQueue] = useState(day.exercises.slice(1));
+  const [currentExercise, setCurrentExercise] = useState(null);
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(null);
+  const [currentExerciseType, setCurrentExerciseType] = useState(null);
+
+  const [currentExerciseReps, setCurrentExerciseReps] = useState(null);
+  const [currentExerciseSets, setCurrentExerciseSets] = useState(null);
+  const [currentExerciseWeight, setCurrentExerciseWeight] = useState(null);
+  const [currentExerciseRestTime, setCurrentExerciseRestTime] = useState(null);
+
+  const [currentExerciseTime, setCurrentExerciseTime] = useState(null);
+  const [currentExerciseIncline, setCurrentExerciseIncline] = useState(null);
+  const [currentExerciseResistance, setCurrentExerciseResistance] =
+    useState(null);
+  const [currentExerciseSpeed, setCurrentExerciseSpeed] = useState(null);
+
+  const [numberOfExercises] = useState(
+    day.exercises.length + day.cardioExercises?.length,
+  );
+  const [exerciseQueue, setExerciseQueue] = useState([]);
   const [currentSets, setCurrentSets] = useState();
   const [currentWorkoutInfo, setCurrentWorkoutInfo] = useState([]);
 
   const [currentTotalWeight, setCurrentTotalWeight] = useState(0);
 
   const [startTime, setStartTime] = useState(null);
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(null);
   const [readableTime, setReadableTime] = useState("00:00");
+  const [showTimer, setShowTimer] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
-  const [showTimer, setShowTimer] = useState(false);
+  // initialize the exerciseQueue state with the exercises from the day
+  useEffect(() => {
+    if (!startWorkout) {
+      const exercises = day.exercises;
+      const cardioExercises = day.cardioExercises || [];
+      const queue = [];
+      for (let i = 0; i < exercises.length; i++) {
+        queue.push(exercises[i]);
+      }
+      for (let i = 0; i < cardioExercises.length; i++) {
+        queue.push(cardioExercises[i]);
+      }
+      setExerciseQueue(queue);
+    }
+  }, []);
+
+  useEffect(() => {
+    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
+  }, []);
+
+  useEffect(() => {
+    if (time !== null) {
+      const interval = setInterval(() => {
+        setTime((time) => time + 1);
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        setReadableTime(
+          `${minutes < 10 ? "0" + minutes : minutes}:${
+            seconds < 10 ? "0" + seconds : seconds
+          }`,
+        );
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [time]);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (nextAppState === "background") {
+        setStartTime(new Date());
+      }
+      if (nextAppState === "active") {
+        if (startTime !== null) {
+          const endTime = new Date();
+          const difference = endTime - startTime;
+          setTime((time) => time + Math.floor(difference / 1000));
+          setStartTime(null);
+        }
+      }
+    });
+    return () => subscription.remove();
+  }, [startTime]);
+
+  const handleStartWorkout = () => {
+    const exercise = exerciseQueue[0];
+    setCurrentExercise(exercise);
+    setCurrentExerciseIndex(0);
+
+    if (cardioExercises.has(exercise.exerciseName)) {
+      setCurrentExerciseType("cardio");
+      setCurrentExerciseTime(exercise.duration);
+      setCurrentExerciseIncline(exercise.incline ? exercise.incline : 0);
+      setCurrentExerciseResistance(
+        exercise.resistanceLevel ? exercise.resistanceLevel : 0,
+      );
+      setCurrentExerciseSpeed(exercise.speed ? exercise.speed : 0);
+    } else {
+      setCurrentExerciseType("lift");
+      setCurrentExerciseReps(exercise.numberOfReps);
+      setCurrentExerciseSets(exercise.numberOfSets);
+      setCurrentExerciseWeight(exercise.weight);
+      setCurrentExerciseRestTime(exercise.restTime);
+      const sets = exercise.numberOfSets;
+      const weight = exercise.weight;
+      const reps = exercise.numberOfReps;
+      const initialSets = [];
+      for (let i = 0; i < sets; i++) {
+        initialSets.push({ reps: reps, weight: weight, finished: false });
+      }
+      setCurrentSets(initialSets);
+    }
+
+    setExerciseQueue(exerciseQueue.slice(1));
+    setStartWorkout(true);
+    setStartTime(new Date());
+    setTime(0);
+  };
 
   const handleEndWorkout = async () => {
     if (!firebaseUser) {
@@ -86,20 +186,24 @@ export default function WorkoutInProgress({ route, navigation }) {
       return;
     }
 
+    if (!startWorkout) {
+      navigation.goBack();
+      return;
+    }
+
     // check if the user has already finished all the exercises
     // or if the user has finished all the sets of the last exercise
     let finishedExercises = currentExerciseIndex === numberOfExercises - 1;
     let finishedSets = finishedExercises;
-    if (finishedExercises) {
+    let numberOfSetsFinished = 0;
+    if (finishedExercises && currentExerciseType === "lift") {
       for (let i = 0; i < currentSets.length; i++) {
         if (!currentSets[i].finished) {
           finishedSets = false;
         }
       }
+      numberOfSetsFinished = currentSets.filter((set) => set.finished).length;
     }
-    const numberOfSetsFinished = currentSets.filter(
-      (set) => set.finished,
-    ).length;
 
     if (!finishedExercises || !finishedSets) {
       Alert.alert(
@@ -124,43 +228,99 @@ export default function WorkoutInProgress({ route, navigation }) {
   };
 
   const endWorkout = async (numberOfSetsFinished) => {
-    let meanReps = 0;
-    let meanWeight = 0;
+    let finalWorkoutInfo;
     let totalWeightExercise = 0;
-    for (let i = 0; i < numberOfSetsFinished; i++) {
-      meanReps += parseInt(currentSets[i].reps);
-      meanWeight += parseInt(currentSets[i].weight);
-      totalWeightExercise += parseInt(currentSets[i].weight);
+
+    if (currentExerciseType === "cardio") {
+      finalWorkoutInfo = [
+        ...currentWorkoutInfo,
+        {
+          exerciseName: currentExercise.exerciseName,
+          exerciseTime: currentExercise.duration,
+          exerciseIncline: currentExercise.incline || 0,
+          exerciseResistance: currentExercise.resistanceLevel || 0,
+          exerciseSpeed: currentExercise.speed || 0,
+        },
+      ];
+    } else {
+      let meanReps = 0;
+      let meanWeight = 0;
+      for (let i = 0; i < numberOfSetsFinished; i++) {
+        meanReps += parseInt(currentSets[i].reps);
+        meanWeight += parseInt(currentSets[i].weight);
+        totalWeightExercise += parseInt(currentSets[i].weight);
+      }
+      meanReps /= numberOfSetsFinished;
+      meanWeight /= numberOfSetsFinished;
+      finalWorkoutInfo = [
+        ...currentWorkoutInfo,
+        {
+          exerciseName: currentExercise.exerciseName,
+          exerciseReps: meanReps,
+          exerciseSets: numberOfSetsFinished,
+          exerciseWeight: meanWeight,
+          exerciseId: currentExercise.exerciseId,
+        },
+      ];
     }
-    meanReps /= numberOfSetsFinished;
-    meanWeight /= numberOfSetsFinished;
-    const finalWorkoutInfo = [
-      ...currentWorkoutInfo,
-      {
-        exerciseName: currentExercise.exerciseName,
-        exerciseReps: meanReps,
-        exerciseSets: numberOfSetsFinished,
-        exerciseWeight: meanWeight,
-        exerciseId: currentExercise.exerciseId,
-      },
-    ];
+
     let totalCalories = 0;
-    const duration = readableTimeToMinutes(readableTime);
-    const calories = calculateCaloriesLift(
-      duration,
+    let caloriesCardio = 0;
+    let caloriesLift = 0;
+
+    let totalDuration = 0;
+    let cardioDuration = 0;
+    let liftDuration = 0;
+
+    totalDuration = readableTimeToMinutes(readableTime);
+
+    for (let i = 0; i < finalWorkoutInfo.length; i++) {
+      if (cardioExercises.has(finalWorkoutInfo[i].exerciseName)) {
+        cardioDuration += finalWorkoutInfo[i].exerciseTime;
+        caloriesCardio += calculateCaloriesCardioExercise(
+          userWeight,
+          userWeightUnit,
+          finalWorkoutInfo[i].exerciseName,
+          finalWorkoutInfo[i].exerciseTime,
+          finalWorkoutInfo[i].exerciseResistance,
+          finalWorkoutInfo[i].exerciseIncline,
+          finalWorkoutInfo[i].exerciseSpeed,
+        );
+      }
+    }
+
+    if (totalDuration - cardioDuration < 0) {
+      liftDuration = totalDuration;
+    } else {
+      liftDuration = totalDuration - cardioDuration;
+    }
+
+    caloriesLift = calculateCaloriesLift(
+      liftDuration,
       userWeight,
       userWeightUnit,
       userGender,
     );
-    totalCalories += calories.toFixed(2);
+
+    totalCalories += caloriesLift;
+    totalCalories += caloriesCardio;
     totalCalories = parseFloat(totalCalories);
 
     setLoading(true);
     try {
+      console.log({
+        workout: finalWorkoutInfo,
+        routineId: day.routineId,
+        dayId: day.id,
+        totalCalories: totalCalories,
+        totalWeight: totalWeightExercise + currentTotalWeight,
+        totalTime: readableTime,
+        date: new Date(),
+      });
       const savedWorkout = await SaveWorkout({
         workout: finalWorkoutInfo,
         routineId: day.routineId,
-        dayId: day.dayId,
+        dayId: day.id,
         totalCalories: totalCalories,
         totalWeight: totalWeightExercise + currentTotalWeight,
         totalTime: readableTime,
@@ -191,64 +351,14 @@ export default function WorkoutInProgress({ route, navigation }) {
     }
   };
 
-  useEffect(() => {
-    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
-  }, []);
-
-  // Initialize the currentSets state with the sets from the first exercise
-  useEffect(() => {
-    const sets = day.exercises[0].numberOfSets;
-    const weight = day.exercises[0].weight;
-    const reps = day.exercises[0].numberOfReps;
-    const initialSets = [];
-    for (let i = 0; i < sets; i++) {
-      initialSets.push({ reps: reps, weight: weight, finished: false });
-    }
-    setCurrentSets(initialSets);
-  }, []);
-
-  // Start the timer when the component mounts
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTime((time) => time + 1);
-      const minutes = Math.floor(time / 60);
-      const seconds = time % 60;
-      setReadableTime(
-        `${minutes < 10 ? "0" + minutes : minutes}:${
-          seconds < 10 ? "0" + seconds : seconds
-        }`,
-      );
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [time]);
-
-  // When the app is in the background, save the time
-  // and when it comes back to the foreground, calculate the time
-  // and set the time state to the difference
-  // between the current time and the time when the app went to the background
-  useEffect(() => {
-    const subscription = AppState.addEventListener("change", (nextAppState) => {
-      if (nextAppState === "background") {
-        setStartTime(new Date());
-      }
-      if (nextAppState === "active") {
-        if (startTime !== null) {
-          const endTime = new Date();
-          const difference = endTime - startTime;
-          setTime((time) => time + Math.floor(difference / 1000));
-          setStartTime(null);
-        }
-      }
-    });
-    return () => subscription.remove();
-  }, [startTime]);
-
   const handleNextExercise = () => {
     let finished = true;
-    for (let i = 0; i < currentSets.length; i++) {
-      if (!currentSets[i].finished) {
-        finished = false;
-        break;
+    if (currentExerciseType === "lift") {
+      for (let i = 0; i < currentSets.length; i++) {
+        if (!currentSets[i].finished) {
+          finished = false;
+          break;
+        }
       }
     }
     if (!finished) {
@@ -265,20 +375,33 @@ export default function WorkoutInProgress({ route, navigation }) {
       return;
     }
 
-    const nextExercise = exerciseQueue[0];
-    console.log(nextExercise);
-    if (currentExerciseIndex < numberOfExercises - 1) {
-      setExerciseQueue(exerciseQueue.slice(1));
-      setCurrentExerciseIndex(currentExerciseIndex + 1);
-      setCurrentExercise(nextExercise);
-      setCurrentExerciseReps(nextExercise.numberOfReps);
-      setCurrentExerciseSets(nextExercise.numberOfSets);
-      setCurrentExerciseWeight(nextExercise.weight);
-      setCurrentExerciseRestTime(nextExercise.restTime);
+    let totalWeightExercise = 0;
+
+    // save the current exercise info to the currentWorkoutInfo state
+    if (currentExerciseType === "cardio") {
+      console.log("Updating current workout info (cardio)");
+      console.log({
+        exerciseName: currentExercise.exerciseName,
+        exerciseTime: currentExercise.duration,
+        exerciseIncline: currentExercise.incline,
+        exerciseResistance: currentExercise.resistanceLevel,
+        exerciseSpeed: currentExercise.speed,
+      });
+      setCurrentWorkoutInfo([
+        ...currentWorkoutInfo,
+        {
+          exerciseName: currentExercise.exerciseName,
+          exerciseId: currentExercise.exerciseName,
+          exerciseTime: currentExercise.duration,
+          exerciseIncline: currentExercise.incline || 0,
+          exerciseResistance: currentExercise.resistanceLevel || 0,
+          exerciseSpeed: currentExercise.speed || 0,
+        },
+      ]);
+    } else {
       // get the mean of the weight and reps of the current exercise and add it to the currentWorkoutInfo state
       let meanReps = 0;
       let meanWeight = 0;
-      let totalWeightExercise = 0;
       for (let i = 0; i < currentSets.length; i++) {
         meanReps += parseInt(currentSets[i].reps);
         meanWeight += parseInt(currentSets[i].weight);
@@ -286,6 +409,14 @@ export default function WorkoutInProgress({ route, navigation }) {
       }
       meanReps /= currentSets.length;
       meanWeight /= currentSets.length;
+      console.log("Updating current workout info (lift)");
+      console.log({
+        exerciseName: currentExercise.exerciseName,
+        exerciseReps: meanReps,
+        exerciseSets: currentSets.length,
+        exerciseWeight: meanWeight,
+        exerciseId: currentExercise.exerciseId,
+      });
       setCurrentWorkoutInfo([
         ...currentWorkoutInfo,
         {
@@ -297,32 +428,60 @@ export default function WorkoutInProgress({ route, navigation }) {
         },
       ]);
       setCurrentTotalWeight(currentTotalWeight + totalWeightExercise);
-      const sets = nextExercise.numberOfSets;
-      const weight = nextExercise.weight;
-      const reps = nextExercise.numberOfReps;
-      const initialSets = [];
-      for (let i = 0; i < sets; i++) {
-        initialSets.push({ reps: reps, weight: weight, finished: false });
+    }
+
+    const nextExercise = exerciseQueue[0];
+
+    if (cardioExercises.has(nextExercise.exerciseName)) {
+      setCurrentExerciseType("cardio");
+      setExerciseQueue(exerciseQueue.slice(1));
+      setCurrentExerciseIndex(currentExerciseIndex + 1);
+      setCurrentExercise(nextExercise);
+      setCurrentExerciseTime(nextExercise.duration);
+      setCurrentExerciseIncline(nextExercise.incline);
+      setCurrentExerciseResistance(nextExercise.resistanceLevel);
+      setCurrentExerciseSpeed(nextExercise.speed);
+    } else {
+      if (currentExerciseIndex < numberOfExercises - 1) {
+        setCurrentExerciseType("lift");
+        setExerciseQueue(exerciseQueue.slice(1));
+        setCurrentExerciseIndex(currentExerciseIndex + 1);
+        setCurrentExercise(nextExercise);
+        setCurrentExerciseReps(nextExercise.numberOfReps);
+        setCurrentExerciseSets(nextExercise.numberOfSets);
+        setCurrentExerciseWeight(nextExercise.weight);
+        setCurrentExerciseRestTime(nextExercise.restTime);
+        const sets = nextExercise.numberOfSets;
+        const weight = nextExercise.weight;
+        const reps = nextExercise.numberOfReps;
+        const initialSets = [];
+        for (let i = 0; i < sets; i++) {
+          initialSets.push({ reps: reps, weight: weight, finished: false });
+        }
+        setCurrentSets(initialSets);
       }
-      setCurrentSets(initialSets);
     }
   };
 
   const handleTap = () => {
     // Check if the current reps or weight are empty
-    for (let i = 0; i < currentSets.length; i++) {
-      if (currentSets[i].reps === "") {
-        // If they are, fill them with 0
-        let newSets = [...currentSets];
-        newSets[i].reps = 0;
-        setCurrentSets(newSets);
+    if (startWorkout && currentExerciseType === "lift") {
+      for (let i = 0; i < currentSets.length; i++) {
+        if (currentSets[i].reps === "") {
+          // If they are, fill them with 0
+          let newSets = [...currentSets];
+          newSets[i].reps = 0;
+          setCurrentSets(newSets);
+        }
+        if (currentSets[i].weight === "") {
+          // If they are, fill them with 0
+          let newSets = [...currentSets];
+          newSets[i].weight = 0;
+          setCurrentSets(newSets);
+        }
       }
-      if (currentSets[i].weight === "") {
-        // If they are, fill them with 0
-        let newSets = [...currentSets];
-        newSets[i].weight = 0;
-        setCurrentSets(newSets);
-      }
+    } else {
+      return;
     }
     // Dismiss the keyboard
     Keyboard.dismiss();
@@ -382,15 +541,24 @@ export default function WorkoutInProgress({ route, navigation }) {
                   textAlign: "center",
                 }}
               >
-                {currentExercise.exerciseName}
+                {startWorkout
+                  ? currentExercise.exerciseName
+                  : "Press start when ready"}
               </Text>
-              <SwipeTimer
-                readableTime={readableTime}
-                setShowTimer={setShowTimer}
-                restTime={currentExerciseRestTime}
-                currentExerciseIndex={currentExerciseIndex}
-              />
-              {!showTimer ? (
+              {startWorkout ? (
+                <SwipeTimer
+                  readableTime={readableTime}
+                  setShowTimer={setShowTimer}
+                  restTime={
+                    currentExerciseType === "lift"
+                      ? currentExerciseRestTime
+                      : currentExerciseTime * 60
+                  }
+                  type={currentExerciseType}
+                  currentExerciseIndex={currentExerciseIndex}
+                />
+              ) : null}
+              {startWorkout && !showTimer ? (
                 <View style={{ display: "flex", flexDirection: "row" }}>
                   <Ionicons
                     name="ellipse"
@@ -400,7 +568,7 @@ export default function WorkoutInProgress({ route, navigation }) {
                   />
                   <Ionicons name="ellipse" size={18} color="#24262B" />
                 </View>
-              ) : (
+              ) : startWorkout && showTimer ? (
                 <View style={{ display: "flex", flexDirection: "row" }}>
                   <Ionicons name="ellipse" size={18} color="#24262B" />
                   <Ionicons
@@ -410,32 +578,53 @@ export default function WorkoutInProgress({ route, navigation }) {
                     style={{ marginRight: 5 }}
                   />
                 </View>
-              )}
-              <Text
-                style={{
-                  color: "#a0a0a0",
-                  fontSize: 12,
-                  marginBottom: 20,
-                  fontStyle: "italic",
-                  marginTop: 10,
-                }}
-              >
-                Swipe left on the timer to show the rest timer
-              </Text>
-              <CurrentExercise
-                exercise={currentExercise.exerciseName}
-                reps={currentExerciseReps}
-                sets={currentExerciseSets}
-                weight={currentExerciseWeight}
-                restTime={currentExerciseRestTime}
-                image={day.image}
-                navigation={navigation}
-              />
-              <SetsTable
-                currentSets={currentSets}
-                setCurrentSets={setCurrentSets}
-              />
-              {currentExerciseIndex < numberOfExercises - 1 ? (
+              ) : null}
+              {startWorkout ? (
+                <Text
+                  style={{
+                    color: "#a0a0a0",
+                    fontSize: 12,
+                    marginBottom: 20,
+                    fontStyle: "italic",
+                    marginTop: 10,
+                  }}
+                >
+                  Swipe left on the timer to show the{" "}
+                  {currentExerciseType === "lift" ? "rest" : "exercise"} timer
+                </Text>
+              ) : null}
+              {startWorkout && currentExerciseType === "lift" ? (
+                <CurrentExercise
+                  exercise={currentExercise.exerciseName}
+                  reps={currentExerciseReps}
+                  sets={currentExerciseSets}
+                  weight={currentExerciseWeight}
+                  restTime={currentExerciseRestTime}
+                  image={day.image}
+                  navigation={navigation}
+                  type="lift"
+                />
+              ) : startWorkout && currentExerciseType === "cardio" ? (
+                <CurrentExercise
+                  exercise={currentExercise.exerciseName}
+                  time={currentExerciseTime}
+                  incline={currentExerciseIncline}
+                  resistance={currentExerciseResistance}
+                  speed={currentExerciseSpeed}
+                  image={day.image}
+                  navigation={navigation}
+                  type="cardio"
+                />
+              ) : null}
+              {startWorkout && currentExerciseType === "lift" ? (
+                <SetsTable
+                  currentSets={currentSets}
+                  setCurrentSets={setCurrentSets}
+                />
+              ) : startWorkout && currentExerciseType === "cardio" ? (
+                <Text>Something else here</Text>
+              ) : null}
+              {startWorkout && currentExerciseIndex < numberOfExercises - 1 ? (
                 <Pressable
                   style={{
                     backgroundColor: "#157AFF",
@@ -458,7 +647,39 @@ export default function WorkoutInProgress({ route, navigation }) {
                       marginRight: 10,
                     }}
                   >
-                    Next Lift
+                    Next Exercise
+                  </Text>
+                  <Ionicons
+                    name="arrow-forward-circle-outline"
+                    size={24}
+                    color="white"
+                  />
+                </Pressable>
+              ) : null}
+              {!startWorkout ? (
+                <Pressable
+                  style={{
+                    backgroundColor: "#157AFF",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    borderRadius: 40,
+                    marginVertical: 20,
+                  }}
+                  onPress={() => handleStartWorkout()}
+                >
+                  <Text
+                    style={{
+                      color: "white",
+                      fontSize: 18,
+                      fontWeight: "bold",
+                      marginRight: 10,
+                    }}
+                  >
+                    Start Workout
                   </Text>
                   <Ionicons
                     name="arrow-forward-circle-outline"
@@ -472,13 +693,25 @@ export default function WorkoutInProgress({ route, navigation }) {
                 style={{
                   color: "white",
                   fontSize: 20,
-                  marginBottom: 20,
                   paddingLeft: 20,
+                  marginBottom: 5,
                   alignSelf: "flex-start",
                   fontWeight: "bold",
                 }}
               >
-                Lift queue:
+                Exercise Queue:
+              </Text>
+              <Text
+                style={{
+                  color: "#a0a0a0",
+                  fontSize: 12,
+                  marginBottom: 20,
+                  fontStyle: "italic",
+                  alignSelf: "flex-start",
+                  paddingLeft: 20,
+                }}
+              >
+                Drag and drop to reorder exercises
               </Text>
               <View
                 style={{
@@ -489,7 +722,7 @@ export default function WorkoutInProgress({ route, navigation }) {
                   alignItems: "center",
                 }}
               >
-                {exerciseQueue.length === 0 ? (
+                {exerciseQueue && exerciseQueue.length === 0 ? (
                   <Text
                     style={{
                       color: "white",
@@ -525,7 +758,7 @@ export default function WorkoutInProgress({ route, navigation }) {
                   fontWeight: "bold",
                 }}
               >
-                Finished lifts:
+                Finished exercises:
               </Text>
               <View
                 style={{
@@ -549,47 +782,86 @@ export default function WorkoutInProgress({ route, navigation }) {
                   </Text>
                 ) : (
                   currentWorkoutInfo.map((exercise, index) => {
-                    return (
-                      <View
-                        key={index}
-                        style={{
-                          display: "flex",
-                          backgroundColor: "#0b0b0b",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          width: "100%",
-                          paddingHorizontal: 20,
-                          paddingVertical: 10,
-                          borderRadius: 24,
-                          marginVertical: 8,
-                        }}
-                      >
-                        <Text
+                    if (cardioExercises.has(exercise.exerciseName)) {
+                      return (
+                        <View
+                          key={index}
                           style={{
-                            color: "#fff",
-                            fontSize: 18,
-                            fontStyle: "italic",
+                            display: "flex",
+                            backgroundColor: "#0b0b0b",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            width: "100%",
+                            paddingHorizontal: 20,
+                            paddingVertical: 10,
+                            borderRadius: 24,
+                            marginVertical: 8,
                           }}
                         >
-                          {exercise.exerciseName}
-                        </Text>
-                        <Text
+                          <Text
+                            style={{
+                              color: "#fff",
+                              fontSize: 18,
+                              fontStyle: "italic",
+                            }}
+                          >
+                            {exercise.exerciseName}
+                          </Text>
+                          <Text
+                            style={{
+                              color: "#fff",
+                              fontSize: 18,
+                              fontStyle: "italic",
+                            }}
+                          >
+                            {exercise.exerciseTime} min
+                          </Text>
+                        </View>
+                      );
+                    } else {
+                      return (
+                        <View
+                          key={index}
                           style={{
-                            color: "#fff",
-                            fontSize: 18,
-                            fontStyle: "italic",
+                            display: "flex",
+                            backgroundColor: "#0b0b0b",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            width: "100%",
+                            paddingHorizontal: 20,
+                            paddingVertical: 10,
+                            borderRadius: 24,
+                            marginVertical: 8,
                           }}
                         >
-                          {exercise.exerciseSets} x {exercise.exerciseReps} x{" "}
-                          {exercise.exerciseWeight}
-                        </Text>
-                      </View>
-                    );
+                          <Text
+                            style={{
+                              color: "#fff",
+                              fontSize: 18,
+                              fontStyle: "italic",
+                            }}
+                          >
+                            {exercise.exerciseName}
+                          </Text>
+                          <Text
+                            style={{
+                              color: "#fff",
+                              fontSize: 18,
+                              fontStyle: "italic",
+                            }}
+                          >
+                            {exercise.exerciseSets} x {exercise.exerciseReps} x{" "}
+                            {exercise.exerciseWeight}
+                          </Text>
+                        </View>
+                      );
+                    }
                   })
                 )}
               </View>
-              {loading ? (
+              {startWorkout && loading ? (
                 <ActivityIndicator size="small" color="white" />
               ) : (
                 <Pressable
@@ -616,13 +888,15 @@ export default function WorkoutInProgress({ route, navigation }) {
                       marginRight: 10,
                     }}
                   >
-                    End Workout
+                    {startWorkout ? "End Workout" : "Go Back"}
                   </Text>
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={24}
-                    color="white"
-                  />
+                  {startWorkout ? (
+                    <Ionicons
+                      name="checkmark-circle-outline"
+                      size={24}
+                      color="white"
+                    />
+                  ) : null}
                 </Pressable>
               )}
               <View style={{ height: 60 }} />

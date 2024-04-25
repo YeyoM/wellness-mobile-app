@@ -18,7 +18,7 @@ export default async function getSpecificDays(daysIds, image, routineName) {
       const dayDocSnap = await getDoc(dayDocRef);
       const dayDocData = dayDocSnap.data();
       dayDocData.image = image;
-      dayDocData.dayId = id;
+      dayDocData.id = id;
       dayDocData.routineName = routineName;
       days.push(dayDocData);
     }
