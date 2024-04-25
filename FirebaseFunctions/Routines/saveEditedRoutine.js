@@ -44,6 +44,14 @@ export default async function saveEditedRoutine(routine) {
     throw new Error("Exercises is required!");
   }
 
+  if (routine.days.some((day) => !day.cardioExercises)) {
+    routine.days.forEach((day) => {
+      if (!day.cardioExercises) {
+        day.cardioExercises = [];
+      }
+    });
+  }
+
   // Getting all the refs for the documents to update
   const routineRef = doc(FIRESTORE, "routines", routine.id);
   const daysRefs = routine.days.map((day) => doc(FIRESTORE, "days", day.id));
@@ -73,6 +81,7 @@ export default async function saveEditedRoutine(routine) {
           totalCalories: day.totalCalories,
           totalSets: day.totalSets,
           totalDuration: day.totalDuration,
+          cardioExercises: day.cardioExercises,
         });
       }
       console.log("DAYS UPDATE WRITTEN TO TRANSACTION");

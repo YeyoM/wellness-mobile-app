@@ -1,6 +1,13 @@
 import { FIRESTORE, FIREBASE_AUTH } from "../../firebaseConfig.js";
 import { runTransaction, doc, collection } from "firebase/firestore";
 
+const cardioExercises = new Set([
+  "Treadmill",
+  "Elliptical",
+  "Stationary Bike",
+  "Rowing Machine",
+]);
+
 /**
  * SaveWorkout
  * @param {Object} workout
@@ -62,10 +69,14 @@ export default async function SaveWorkout({
   // Create references for the documents we are going to update/modify
   const userRef = doc(FIRESTORE, "users", userId);
   const newWorkoutRef = doc(collection(FIRESTORE, "workouts"));
-  const exerciseRefs = workout.map((exercise) => {
-    const exerciseId = exercise.exerciseId;
-    return doc(FIRESTORE, "exercises", exerciseId);
-  });
+  const exerciseRefs = [];
+  const exercisesWithoutCardio = [];
+  for (let i = 0; i < workout.length; i++) {
+    if (!cardioExercises.has(workout[i].exerciseName)) {
+      exerciseRefs.push(doc(FIRESTORE, "exercises", workout[i].exerciseId));
+      exercisesWithoutCardio.push(workout[i]);
+    }
+  }
 
   if (!userRef) {
     throw new Error("User does not exist!");
@@ -73,10 +84,6 @@ export default async function SaveWorkout({
 
   if (!exerciseRefs) {
     throw new Error("Exercises do not exist!");
-  }
-
-  if (exerciseRefs.length !== workout.length) {
-    throw new Error("Some exercises do not exist!");
   }
 
   if (!newWorkoutRef) {
@@ -112,7 +119,7 @@ export default async function SaveWorkout({
           const weightHistory = exercisesDocs[index].data().weightRecord;
           const newWeightHistory = {
             date: new Date(),
-            weight: workout[index].exerciseWeight,
+            weight: exercisesWithoutCardio[index].exerciseWeight,
           };
           weightHistory.push(newWeightHistory);
           transaction.update(exerciseRef, {

@@ -42,19 +42,10 @@ export const AppContextProvider = ({ children }) => {
   const [workouts, setWorkouts] = useState([]);
   const [days, setDays] = useState([]);
   const [routines, setRoutines] = useState([]);
+  const [cardioExercises, setCardioExercises] = useState([]); // these are default exercises
 
   // Miscellanous objects
   const [favoriteRoutine, setFavoriteRoutine] = useState(null);
-
-  useEffect(() => {
-    console.log("Days refreshed");
-    console.log(days);
-  }, [days]);
-
-  useEffect(() => {
-    console.log("Routines refreshed");
-    console.log(routines);
-  }, [routines]);
 
   // FIREBASE USER METHODS AND LISTENERS
   useEffect(() => {
@@ -229,10 +220,10 @@ export const AppContextProvider = ({ children }) => {
     const ids = new Set();
 
     for (const day of routine.days) {
-      ids.add(day.dayId);
+      ids.add(day.id);
     }
 
-    const notRefreshedDays = days.filter((day) => !ids.has(day.dayId));
+    const notRefreshedDays = days.filter((day) => !ids.has(day.id));
     const refreshedRoutine = routines.find((r) => r.id === routine.id);
 
     const refreshedDays = refreshedRoutine.days;
@@ -245,16 +236,10 @@ export const AppContextProvider = ({ children }) => {
     const ids = new Set();
 
     for (const day of routine.days) {
-      if (day.dayId) {
-        ids.add(day.dayId);
-      } else if (day.id) {
-        ids.add(day.id);
-      }
+      ids.add(day.id);
     }
 
-    const updatedDays = days.filter(
-      (day) => !ids.has(day.dayId) && !ids.has(day.id),
-    );
+    const updatedDays = days.filter((day) => !ids.has(day.id));
     await updateDays(updatedDays);
     setDays(updatedDays);
   };
@@ -339,6 +324,45 @@ export const AppContextProvider = ({ children }) => {
     await deleteFavoriteRoutine();
   };
 
+  // CARDIO EXERCISES METHODS AND LISTENERS
+  useEffect(() => {
+    const cardioExercises = [
+      {
+        exerciseName: "Treadmill",
+        equipment: "Treadmill",
+        defaultDuration: 30,
+        defaultResistanceLevel: null,
+        defaultIncline: 1,
+        defaultSpeed: 5,
+      },
+      {
+        exerciseName: "Elliptical",
+        equipment: "Elliptical",
+        defaultDuration: 30,
+        defaultResistanceLevel: 1,
+        defaultIncline: null,
+        defaultSpeed: null,
+      },
+      {
+        exerciseName: "Stationary Bike",
+        equipment: "Stationary Bike",
+        defaultDuration: 30,
+        defaultResistanceLevel: 1,
+        defaultIncline: null,
+        defaultSpeed: null,
+      },
+      {
+        exerciseName: "Rowing Machine",
+        equipment: "Rowing Machine",
+        defaultDuration: 30,
+        defaultResistanceLevel: 1,
+        defaultIncline: null,
+        defaultSpeed: null,
+      },
+    ];
+    setCardioExercises(cardioExercises);
+  }, []);
+
   const resetContext = () => {
     setFirebaseUser(null);
     setUser(null);
@@ -383,6 +407,8 @@ export const AppContextProvider = ({ children }) => {
         setFavoriteRoutine,
         updateFavoriteRoutine,
         removeFavoriteRoutine,
+        cardioExercises,
+        setCardioExercises,
         resetContext,
       }}
     >

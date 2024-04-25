@@ -8,6 +8,7 @@ const Tab = createMaterialTopTabNavigator();
 
 import SavedLifts from "./SavedLifts.js";
 import SearchLift from "./SearchLift.js";
+import CardioExercises from "./CardioExercises.js";
 
 export default function AddLift({ navigation }) {
   return (
@@ -53,7 +54,7 @@ export default function AddLift({ navigation }) {
             >
               <Ionicons name="barbell-outline" size={36} color="white" />
             </View>
-            <Text style={styles.title}>Find a Lift</Text>
+            <Text style={styles.title}>Find an Exercise</Text>
           </View>
         </View>
         <View
@@ -79,7 +80,8 @@ export default function AddLift({ navigation }) {
             }}
           >
             <Tab.Screen name="Saved Lifts" component={SavedLifts} />
-            <Tab.Screen name="Search a Lift" component={SearchLift} />
+            <Tab.Screen name="Search Lifts" component={SearchLift} />
+            <Tab.Screen name="Cardio" component={CardioExercises} />
           </Tab.Navigator>
         </View>
       </View>

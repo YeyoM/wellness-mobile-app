@@ -41,7 +41,7 @@ export default async function getAllDays() {
         const dayDocSnap = await getDoc(dayDocRef);
         const dayDocData = dayDocSnap.data();
         dayDocData.image = image;
-        dayDocData.dayId = id;
+        dayDocData.id = id;
         dayDocData.routineName = routineName;
         days.push(dayDocData);
       }

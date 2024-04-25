@@ -15,6 +15,7 @@ export default function SwipeTimer({
   currentExerciseIndex,
   setShowTimer,
   restTime,
+  type,
 }) {
   const animationStyle = React.useCallback((value) => {
     "worklet";
@@ -55,6 +56,7 @@ export default function SwipeTimer({
               readableTime={readableTime}
               restTime={restTime}
               currentExerciseIndex={currentExerciseIndex}
+              type={type}
             />
           );
         }}
@@ -111,7 +113,7 @@ const WorkoutProgress = ({ readableTime, animationValue }) => {
   );
 };
 
-const Timer = ({ currentExerciseIndex, animationValue, restTime }) => {
+const Timer = ({ currentExerciseIndex, animationValue, restTime, type }) => {
   const maskStyle = useAnimatedStyle(() => {
     const backgroundColor = interpolateColor(
       animationValue.value,
@@ -231,7 +233,7 @@ const Timer = ({ currentExerciseIndex, animationValue, restTime }) => {
           </Pressable>
         )}
         <Text style={{ fontSize: 20, textAlign: "center", color: "white" }}>
-          Rest Timer
+          {type === "lift" ? "Rest Timer" : "Exercise Timer"}
         </Text>
         <Pressable onPress={handleResetTimer}>
           <Ionicons name="refresh-circle-outline" size={30} color="white" />
@@ -247,6 +249,7 @@ const CustomItem = ({
   animationValue,
   readableTime,
   restTime,
+  type,
 }) => {
   if (index === 0) {
     return (
@@ -261,6 +264,7 @@ const CustomItem = ({
         animationValue={animationValue}
         restTime={restTime}
         currentExerciseIndex={currentExerciseIndex}
+        type={type}
       />
     );
   }

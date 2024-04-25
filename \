@@ -68,12 +68,9 @@ export default function WorkoutInProgress({ route, navigation }) {
 
   const [currentExerciseTime, setCurrentExerciseTime] = useState(null);
   const [currentExerciseIncline, setCurrentExerciseIncline] = useState(null);
-  const [isInclineValid, setIsInclineValid] = useState(false);
   const [currentExerciseResistance, setCurrentExerciseResistance] =
     useState(null);
-  const [isResistanceValid, setIsResistanceValid] = useState(false);
   const [currentExerciseSpeed, setCurrentExerciseSpeed] = useState(null);
-  const [isSpeedValid, setIsSpeedValid] = useState(false);
 
   const [numberOfExercises] = useState(
     day.exercises.length + day.cardioExercises?.length,
@@ -153,13 +150,10 @@ export default function WorkoutInProgress({ route, navigation }) {
       setCurrentExerciseType("cardio");
       setCurrentExerciseTime(exercise.duration);
       setCurrentExerciseIncline(exercise.incline ? exercise.incline : 0);
-      setIsInclineValid(exercise.incline ? true : false);
       setCurrentExerciseResistance(
         exercise.resistanceLevel ? exercise.resistanceLevel : 0,
       );
-      setIsResistanceValid(exercise.resistanceLevel ? true : false);
       setCurrentExerciseSpeed(exercise.speed ? exercise.speed : 0);
-      setIsSpeedValid(exercise.speed ? true : false);
     } else {
       setCurrentExerciseType("lift");
       setCurrentExerciseReps(exercise.numberOfReps);
@@ -243,11 +237,10 @@ export default function WorkoutInProgress({ route, navigation }) {
         ...currentWorkoutInfo,
         {
           exerciseName: currentExercise.exerciseName,
-          exerciseId: currentExercise.exerciseName,
-          exerciseTime: currentExerciseTime,
-          exerciseIncline: currentExerciseIncline || 0,
-          exerciseResistance: currentExerciseResistance || 0,
-          exerciseSpeed: currentExerciseSpeed || 0,
+          exerciseTime: currentExercise.duration,
+          exerciseIncline: currentExercise.incline || 0,
+          exerciseResistance: currentExercise.resistanceLevel || 0,
+          exerciseSpeed: currentExercise.speed || 0,
         },
       ];
     } else {
@@ -284,15 +277,15 @@ export default function WorkoutInProgress({ route, navigation }) {
 
     for (let i = 0; i < finalWorkoutInfo.length; i++) {
       if (cardioExercises.has(finalWorkoutInfo[i].exerciseName)) {
-        cardioDuration += parseFloat(finalWorkoutInfo[i].exerciseTime);
+        cardioDuration += finalWorkoutInfo[i].exerciseTime;
         caloriesCardio += calculateCaloriesCardioExercise(
           userWeight,
           userWeightUnit,
           finalWorkoutInfo[i].exerciseName,
-          parseFloat(finalWorkoutInfo[i].exerciseTime),
-          parseFloat(finalWorkoutInfo[i].exerciseResistance),
-          parseFloat(finalWorkoutInfo[i].exerciseIncline),
-          parseFloat(finalWorkoutInfo[i].exerciseSpeed),
+          finalWorkoutInfo[i].exerciseTime,
+          finalWorkoutInfo[i].exerciseResistance,
+          finalWorkoutInfo[i].exerciseIncline,
+          finalWorkoutInfo[i].exerciseSpeed,
         );
       }
     }
@@ -335,13 +328,15 @@ export default function WorkoutInProgress({ route, navigation }) {
         date: new Date(),
       });
 
+      console.log(savedWorkout);
+      // refresh the user's data (workouts) and save to async storage
       refreshNewWorkout(savedWorkout);
 
       setLoading(false);
       navigation.navigate("Workout Finished 1", {
         day: day,
-        totalCalories: Math.round(totalCalories),
-        totalWeight: Math.round(totalWeightExercise + currentTotalWeight),
+        totalCalories,
+        totalWeight: totalWeightExercise + currentTotalWeight,
         totalTime: readableTime,
       });
     } catch (error) {
@@ -385,15 +380,23 @@ export default function WorkoutInProgress({ route, navigation }) {
 
     // save the current exercise info to the currentWorkoutInfo state
     if (currentExerciseType === "cardio") {
+      console.log("Updating current workout info (cardio)");
+      console.log({
+        exerciseName: currentExercise.exerciseName,
+        exerciseTime: currentExercise.duration,
+        exerciseIncline: currentExercise.incline,
+        exerciseResistance: currentExercise.resistanceLevel,
+        exerciseSpeed: currentExercise.speed,
+      });
       setCurrentWorkoutInfo([
         ...currentWorkoutInfo,
         {
           exerciseName: currentExercise.exerciseName,
           exerciseId: currentExercise.exerciseName,
-          exerciseTime: currentExerciseTime,
-          exerciseIncline: currentExerciseIncline || 0,
-          exerciseResistance: currentExerciseResistance || 0,
-          exerciseSpeed: currentExerciseSpeed || 0,
+          exerciseTime: currentExercise.duration,
+          exerciseIncline: currentExercise.incline || 0,
+          exerciseResistance: currentExercise.resistanceLevel || 0,
+          exerciseSpeed: currentExercise.speed || 0,
         },
       ]);
     } else {
@@ -407,6 +410,14 @@ export default function WorkoutInProgress({ route, navigation }) {
       }
       meanReps /= currentSets.length;
       meanWeight /= currentSets.length;
+      console.log("Updating current workout info (lift)");
+      console.log({
+        exerciseName: currentExercise.exerciseName,
+        exerciseReps: meanReps,
+        exerciseSets: currentSets.length,
+        exerciseWeight: meanWeight,
+        exerciseId: currentExercise.exerciseId,
+      });
       setCurrentWorkoutInfo([
         ...currentWorkoutInfo,
         {
@@ -470,28 +481,8 @@ export default function WorkoutInProgress({ route, navigation }) {
           setCurrentSets(newSets);
         }
       }
-    } else if (startWorkout && currentExerciseType === "cardio") {
-      if (currentExerciseTime === "" || currentExerciseTime <= 0) {
-        setCurrentExerciseTime(1);
-      }
-      if (
-        (currentExerciseIncline === "" || currentExerciseIncline < 0) &&
-        isInclineValid
-      ) {
-        setCurrentExerciseIncline(1);
-      }
-      if (
-        (currentExerciseResistance === "" || currentExerciseResistance < 0) &&
-        isResistanceValid
-      ) {
-        setCurrentExerciseResistance(1);
-      }
-      if (
-        (currentExerciseSpeed === "" || currentExerciseSpeed <= 0) &&
-        isSpeedValid
-      ) {
-        setCurrentExerciseSpeed(1);
-      }
+    } else {
+      return;
     }
     // Dismiss the keyboard
     Keyboard.dismiss();
@@ -635,16 +626,18 @@ export default function WorkoutInProgress({ route, navigation }) {
                 <CardioTable
                   duration={currentExerciseTime}
                   setDuration={setCurrentExerciseTime}
-                  isDurationValid={true}
+                  isDurationValid={currentExerciseTime ? true : false}
                   incline={currentExerciseIncline}
                   setIncline={setCurrentExerciseIncline}
-                  isInclineValid={isInclineValid}
+                  isInclineValid={currentExerciseIncline === 0 ? false : true}
                   resistance={currentExerciseResistance}
                   setResistance={setCurrentExerciseResistance}
-                  isResistanceValid={isResistanceValid}
+                  isResistanceValid={
+                    currentExerciseResistance === 0 ? false : true
+                  }
                   speed={currentExerciseSpeed}
                   setSpeed={setCurrentExerciseSpeed}
-                  isSpeedValid={isSpeedValid}
+                  isSpeedValid={currentExerciseSpeed === 0 ? false : true}
                 />
               ) : null}
               {startWorkout && currentExerciseIndex < numberOfExercises - 1 ? (

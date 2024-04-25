@@ -50,6 +50,7 @@ export default async function cleanSharedRoutine(routine) {
           totalDuration: day.totalDuration,
           totalCalories: day.totalCalories,
           totalSets: day.totalSets,
+          cardioExercises: day.cardioExercises || [],
           exercises: await Promise.all(
             day.exercises.map(async (exercise) => {
               if (!exercise.muscle || !exercise.equipment || !exercise.type) {

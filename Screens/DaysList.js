@@ -68,7 +68,6 @@ export default function DaysList({ navigation, route }) {
       for (let i = 0; i < route.params.routine.days.length; i++) {
         let day = route.params.routine.days[i];
         day.image = route.params.routine.image;
-        day.dayId = day.id;
         days.push(day);
       }
       setRoutine(route.params.routine);

@@ -32,8 +32,8 @@ export default async function DeleteUserTransaction() {
         }
         for (const routineDoc of routinesDocs) {
           if (routineDoc.data()?.days.length > 0) {
-            for (const dayId of routineDoc.data()?.days) {
-              const dayRef = doc(FIRESTORE, "days", dayId);
+            for (const id of routineDoc.data()?.days) {
+              const dayRef = doc(FIRESTORE, "days", id);
               transaction.delete(dayRef);
             }
           }
