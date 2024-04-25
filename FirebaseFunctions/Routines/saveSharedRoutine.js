@@ -105,8 +105,10 @@ export default async function saveSharedRoutine(
   const newDays = [];
   const newDaysRefs = [];
   for (let i = 0; i < routine.numberOfDays; i++) {
+    console.log(routine.days[i]);
     const newDay = {
       dayName: `Day ${i + 1}`,
+      cardioExercises: routine.days[i].cardioExercises || [],
       routineId: newRoutineRef.id,
       totalDuration: routine.days[i].totalDuration,
       totalCalories: routine.days[i].totalCalories,
