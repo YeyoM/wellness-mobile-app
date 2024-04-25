@@ -34,11 +34,6 @@ export default async function SaveWorkout({
 }) {
   const userId = FIREBASE_AUTH.currentUser.uid;
 
-  console.log(workout);
-
-  console.log("hello?");
-  console.log(FIRESTORE);
-
   if (!userId) {
     throw new Error("User is not logged in!");
   }
@@ -66,7 +61,6 @@ export default async function SaveWorkout({
   if (!totalTime) {
     throw new Error("Total time is missing!");
   }
-  console.log("hello?");
 
   if (!date) {
     throw new Error("Date is missing!");
@@ -76,9 +70,11 @@ export default async function SaveWorkout({
   const userRef = doc(FIRESTORE, "users", userId);
   const newWorkoutRef = doc(collection(FIRESTORE, "workouts"));
   const exerciseRefs = [];
+  const exercisesWithoutCardio = [];
   for (let i = 0; i < workout.length; i++) {
     if (!cardioExercises.has(workout[i].exerciseName)) {
       exerciseRefs.push(doc(FIRESTORE, "exercises", workout[i].exerciseId));
+      exercisesWithoutCardio.push(workout[i]);
     }
   }
 
@@ -123,7 +119,7 @@ export default async function SaveWorkout({
           const weightHistory = exercisesDocs[index].data().weightRecord;
           const newWeightHistory = {
             date: new Date(),
-            weight: workout[index].exerciseWeight,
+            weight: exercisesWithoutCardio[index].exerciseWeight,
           };
           weightHistory.push(newWeightHistory);
           transaction.update(exerciseRef, {
