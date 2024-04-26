@@ -39,7 +39,7 @@ export default function CurrentCapacity({ percentage, capacity, timestamp }) {
           <Text
             style={{
               color: "#fff",
-              fontSize: 16,
+              fontSize: 18,
               textAlign: "center",
               marginBottom: 5,
             }}

@@ -52,7 +52,7 @@ export default function DailyCapacity({ capacityDataForGraph }) {
 
   return (
     <View style={styles.container}>
-      <Text style={{ color: "#fff", fontSize: 16, padding: 20 }}>
+      <Text style={{ color: "#fff", fontSize: 18, padding: 20 }}>
         {dayString}'s Usual Capacity
       </Text>
       {capacityDataForGraph ? (
