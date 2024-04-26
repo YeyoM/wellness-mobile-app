@@ -28,26 +28,31 @@ import { WELLNESS_CROWDMETER_HISTORY_ENDPOINT } from "@env";
 const FULL_CAPACITY = 400;
 
 export default async function getCapacityDataForGraph() {
-  const response = await fetch(WELLNESS_CROWDMETER_HISTORY_ENDPOINT, {
-    method: "GET",
-    headers: {
-      apikey: WELLNESS_CROWDMETER_API_KEY,
-    },
-  });
-  const data = await response.json();
+  try {
+    const response = await fetch(WELLNESS_CROWDMETER_HISTORY_ENDPOINT, {
+      method: "GET",
+      headers: {
+        apikey: WELLNESS_CROWDMETER_API_KEY,
+      },
+    });
+    const data = await response.json();
 
-  if (!data || data.length === 0) {
-    throw new Error("No data found");
+    if (!data || data.length === 0) {
+      throw new Error("No data found");
+    }
+
+    const capacityData = data.map((capacity) => {
+      return {
+        label: capacity.label,
+        value: (capacity.value / FULL_CAPACITY) * 100,
+        labelWidth: 30,
+        labelTextStyle: { color: "gray" },
+      };
+    });
+
+    return capacityData;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching capacity data for graph");
   }
-
-  const capacityData = data.map((capacity) => {
-    return {
-      label: capacity.label,
-      value: (capacity.value / FULL_CAPACITY) * 100,
-      labelWidth: 30,
-      labelTextStyle: { color: "gray" },
-    };
-  });
-
-  return capacityData;
 }
