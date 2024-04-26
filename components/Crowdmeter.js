@@ -15,7 +15,6 @@ import getCurrentCapacity from "../Utils/crowdmeterFunctions/getCurrentCapacity"
 import getCapacityDataForGraph from "../Utils/crowdmeterFunctions/getCapacityDataForGraph";
 
 export default function Crowdmeter() {
-  //const [location, setLocation] = useState(null);
   const [location, setLocation] = useState(true);
 
   const [percentage, setPercentage] = useState(null);
@@ -26,23 +25,6 @@ export default function Crowdmeter() {
 
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
-
-  /**
-  useEffect(() => {
-    const getLocation = async () => {
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          setLocation(null);
-        }
-      } catch (error) {
-        setLocation(null);
-      }
-    };
-
-    getLocation();
-  }, []);
-  */
 
   useEffect(() => {
     const onRefresh = async () => {
@@ -57,7 +39,8 @@ export default function Crowdmeter() {
         setCapacityDataForGraph(capacityData);
         setRefreshing(false);
       } catch (error) {
-        setError(error);
+        console.log(error);
+        setError("Something went wrong. Please try again later.");
         setRefreshing(false);
       }
     };
@@ -77,7 +60,7 @@ export default function Crowdmeter() {
       setCapacityDataForGraph(capacityData);
       setRefreshing(false);
     } catch (error) {
-      setError(error);
+      setError("Something went wrong. Please try again later.");
       setRefreshing(false);
     }
   }, []);
@@ -107,7 +90,11 @@ export default function Crowdmeter() {
               <EnableLocation />
             ) : error ? (
               <Text style={{ color: "#fff" }}>{error}</Text>
-            ) : !refreshing && percentage && capacity && timestamp ? (
+            ) : !refreshing &&
+              percentage &&
+              capacity &&
+              timestamp &&
+              capacityDataForGraph ? (
               <View>
                 <CurrentCapacity
                   percentage={percentage}
@@ -140,4 +127,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
 });
-
