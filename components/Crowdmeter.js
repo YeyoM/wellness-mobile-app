@@ -1,49 +1,143 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import EnableLocation from './EnableLocation';
-import CurrentCapacity from './CurrentCapacity';
-import DailyCapacity from './DailyCapacity';
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  Text,
+} from "react-native";
+
+import EnableLocation from "./EnableLocation";
+import CurrentCapacity from "./CurrentCapacity";
+import DailyCapacity from "./DailyCapacity";
+
+import getCurrentCapacity from "../Utils/crowdmeterFunctions/getCurrentCapacity";
+import getCapacityDataForGraph from "../Utils/crowdmeterFunctions/getCapacityDataForGraph";
 
 export default function Crowdmeter() {
+  //const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState(true);
 
-  const [date, setDate] = useState(new Date())
+  const [percentage, setPercentage] = useState(null);
+  const [capacity, setCapacity] = useState(null);
+  const [timestamp, setTimestamp] = useState(null);
 
-  const [location, setLocation] = useState(true)
+  const [capacityDataForGraph, setCapacityDataForGraph] = useState(null);
+
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState(null);
+
+  /**
+  useEffect(() => {
+    const getLocation = async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          setLocation(null);
+        }
+      } catch (error) {
+        setLocation(null);
+      }
+    };
+
+    getLocation();
+  }, []);
+  */
+
+  useEffect(() => {
+    const onRefresh = async () => {
+      try {
+        setRefreshing(true);
+        setError(null);
+        const currentCapacity = await getCurrentCapacity();
+        setPercentage(currentCapacity.percentage);
+        setCapacity(currentCapacity.capacity);
+        setTimestamp(currentCapacity.timestamp);
+        const capacityData = await getCapacityDataForGraph();
+        setCapacityDataForGraph(capacityData);
+        setRefreshing(false);
+      } catch (error) {
+        setError(error);
+        setRefreshing(false);
+      }
+    };
+
+    onRefresh();
+  }, []);
+
+  const onRefresh = useCallback(async () => {
+    try {
+      setRefreshing(true);
+      setError(null);
+      const currentCapacity = await getCurrentCapacity();
+      setPercentage(currentCapacity.percentage);
+      setCapacity(currentCapacity.capacity);
+      setTimestamp(currentCapacity.timestamp);
+      const capacityData = await getCapacityDataForGraph();
+      setCapacityDataForGraph(capacityData);
+      setRefreshing(false);
+    } catch (error) {
+      setError(error);
+      setRefreshing(false);
+    }
+  }, []);
 
   return (
     <View style={styles.container}>
-      <ScrollView style={{ width: "100%" }}>
+      <ScrollView
+        style={{ width: "100%" }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View style={styles.crowdmeter}>
-          <View style={{ flexDirection: 'column', marginTop: 20, width: '90%' }}>
-            {
-              location === null ?
-                <EnableLocation />
-                :
-                <View>
-                  <CurrentCapacity />
-                  <DailyCapacity />
-                </View>
-            }
+          <Text
+            style={{
+              color: "#a0a0a0",
+              fontSize: 13,
+              textAlign: "center",
+              marginTop: 40,
+              fontStyle: "italic",
+            }}
+          >
+            {refreshing ? "Refreshing..." : "Pull down to refresh"}
+          </Text>
+          <View style={{ flexDirection: "column", marginTop: 0, width: "90%" }}>
+            {location === null ? (
+              <EnableLocation />
+            ) : error ? (
+              <Text style={{ color: "#fff" }}>{error}</Text>
+            ) : !refreshing && percentage && capacity && timestamp ? (
+              <View>
+                <CurrentCapacity
+                  percentage={percentage}
+                  capacity={capacity}
+                  timestamp={timestamp}
+                />
+                <DailyCapacity capacityDataForGraph={capacityDataForGraph} />
+              </View>
+            ) : null}
           </View>
         </View>
       </ScrollView>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
-    alignItems: 'center'
+    backgroundColor: "#0b0b0b",
+    alignItems: "center",
   },
 
   crowdmeter: {
-    width: '100%',
-    backgroundColor: '#0b0b0b',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "100%",
+    backgroundColor: "#0b0b0b",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 60,
     paddingHorizontal: 16,
-  }
-})
+  },
+});
+

@@ -1,76 +1,121 @@
-import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import { BarChart } from 'react-native-chart-kit';
-import { useState } from 'react';
+import React, { useState, useEffect, useRef } from "react";
+import { View, Text, StyleSheet, Dimensions, Pressable } from "react-native";
 
-export default function DailyCapacity() {
+import { BarChart } from "react-native-gifted-charts";
 
-  // 90% of the screen 
-  const width = Dimensions.get('window').width * 0.8;
+export default function DailyCapacity({ capacityDataForGraph }) {
+  const width = Dimensions.get("window").width * 0.8;
 
-  // get the current day
-  const [day, setDay] = useState(new Date().getDay())
+  const [day, _setDay] = useState(new Date().getDay());
+  const [dayString, setDayString] = useState("");
+
+  const scrollViewRef = useRef();
+
+  useEffect(() => {
+    switch (day) {
+      case 0:
+        setDayString("Sunday");
+        break;
+      case 1:
+        setDayString("Monday");
+        break;
+      case 2:
+        setDayString("Tuesday");
+        break;
+      case 3:
+        setDayString("Wednesday");
+        break;
+      case 4:
+        setDayString("Thursday");
+        break;
+      case 5:
+        setDayString("Friday");
+        break;
+      case 6:
+        setDayString("Saturday");
+        break;
+    }
+  }, [day]);
+
+  useEffect(() => {
+    const currentHour = new Date().getHours();
+    const index = currentHour - 6;
+
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({
+        x: index * 80,
+        y: 0,
+        animated: true,
+      });
+    }
+  }, [scrollViewRef, width, day]);
 
   return (
     <View style={styles.container}>
-      <Text style={{ color: '#fff', fontSize: 16, padding: 20 }}>{day === 0 ? 'Sunday' : day === 1 ? 'Monday' : day === 2 ? 'Tuesday' : day === 3 ? 'Wednesday' : day === 4 ? 'Thursday' : day === 5 ? 'Friday' : 'Saturday'}'s Usual Capacity</Text>
+      <Text style={{ color: "#fff", fontSize: 18, padding: 20 }}>
+        {dayString}'s Usual Capacity
+      </Text>
+      {capacityDataForGraph ? (
         <BarChart
-          data={{
-            labels: ['7:00', '9:00', '11:00', '13:00', '15:00', '17:00', '19:00'],
-            datasets: [
-              {
-                data: [20, 25, 33, 50, 40, 33, 40]
-              }
-            ]
-          }}
+          scrollRef={scrollViewRef}
+          isAnimated
           width={width}
-          height={290}
-          chartConfig={{
-            backgroundColor: '#24262B',
-            backgroundGradientFrom: '#24262B',
-            backgroundGradientTo: '#24262B',
-            decimalPlaces: 0,
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            barPercentage: 0.6,
-          }}
-          verticalLabelRotation={90}
-          withHorizontalLabels={true}
-          yAxisSuffix='%'
-          fromZero={true}
-          withInnerLines={false}
-          style={{
-            borderRadius: 16,
-            marginLeft: -10,
-            marginVertical: 20,
-          }}
+          animationDuration={200}
+          data={capacityDataForGraph}
+          initialSpacing={20}
+          spacing={40}
+          barWidth={40}
+          hideRules
+          frontColor={"#0496FF"}
+          yAxisThickness={0}
+          yAxisTextStyle={{ color: "#fff" }}
+          yAxisLabelSuffix={"%"}
+          xAxisThickness={0}
+          xAxisTextStyle={{ color: "#fff" }}
+          barBorderRadius={4}
+          noOfSections={5}
         />
-      </View>
-  )
+      ) : (
+        <Text style={{ color: "#fff" }}>No data available</Text>
+      )}
+      <Text
+        style={{
+          color: "#a0a0a0",
+          fontSize: 13,
+          textAlign: "center",
+          marginTop: 20,
+          fontStyle: "italic",
+        }}
+      >
+        Scroll to see the capacity throughout the day
+      </Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#24262B',
-    borderRadius: 14,
-    overflow: 'hidden',
-    width: '100%',
+    backgroundColor: "#0b0b0b",
+    overflow: "hidden",
+    width: "100%",
     marginBottom: 20,
   },
 
   viewContainer: {
     padding: 10,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   buttonEnable: {
-    width: '30%',
-    backgroundColor: '#0496FF',
+    width: "30%",
+    backgroundColor: "#0496FF",
     height: 36,
     borderRadius: 90,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginVertical: 20,
   },
-})
+});
+
