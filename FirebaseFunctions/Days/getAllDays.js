@@ -1,5 +1,12 @@
 import { FIRESTORE, FIREBASE_AUTH } from "../../firebaseConfig";
-import { getDoc, doc } from "firebase/firestore";
+import {
+  getDoc,
+  doc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 
 /**
  * getAllDays
@@ -13,40 +20,56 @@ export default async function getAllDays() {
   if (!user) {
     throw new Error("No user logged in");
   }
+
+  const routineCollectionRef = collection(FIRESTORE, "routines");
+  const daysCollectionRef = collection(FIRESTORE, "days");
+
+  if (!routineCollectionRef || !daysCollectionRef) {
+    throw new Error("Error getting collection references");
+  }
+
   try {
     const userDocRef = doc(FIRESTORE, "users", user.uid);
     const userDocSnap = await getDoc(userDocRef);
     const userDocData = userDocSnap.data();
     const routineIds = userDocData.routines;
-    console.log("AFTER GETTING USER DATA");
+    console.log("GET ALL DAYS: AFTER GETTING USER DATA");
 
-    // Once we have the routine IDs, we can get the days ids, which are
-    // stored in each routine document, it is an array of strings
     const routines = [];
-    for (const id of routineIds) {
-      const routineDocRef = doc(FIRESTORE, "routines", id);
-      const routineDocSnap = await getDoc(routineDocRef);
-      const routineDocData = routineDocSnap.data();
+
+    const routineQuery = query(
+      routineCollectionRef,
+      where("__name__", "in", routineIds),
+    );
+
+    const routineQuerySnapshot = await getDocs(routineQuery);
+    routineQuerySnapshot.forEach((doc) => {
+      const routineDocData = doc.data();
       routines.push(routineDocData);
-    }
-    console.log("AFTER GETTING ROUTINES");
+    });
+    console.log("GET ALL DAYS: AFTER GETTING ROUTINES");
 
     const days = [];
     for (const routine of routines) {
       const dayIds = routine.days;
       const image = routine.image;
       const routineName = routine.routineName;
-      for (const id of dayIds) {
-        const dayDocRef = doc(FIRESTORE, "days", id);
-        const dayDocSnap = await getDoc(dayDocRef);
-        const dayDocData = dayDocSnap.data();
+
+      const dayQuery = query(
+        daysCollectionRef,
+        where("__name__", "in", dayIds),
+      );
+
+      const dayQuerySnapshot = await getDocs(dayQuery);
+      dayQuerySnapshot.forEach((doc) => {
+        const dayDocData = doc.data();
         dayDocData.image = image;
-        dayDocData.id = id;
+        dayDocData.id = doc.id;
         dayDocData.routineName = routineName;
         days.push(dayDocData);
-      }
+      });
     }
-    console.log("AFTER GETTING DAYS");
+    console.log("GET ALL DAYS: AFTER GETTING DAYS");
 
     return days;
   } catch (error) {

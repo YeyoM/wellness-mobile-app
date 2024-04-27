@@ -1,5 +1,5 @@
-import { FIRESTORE, FIREBASE_AUTH } from "../../firebaseConfig";
-import { getDoc, doc } from "firebase/firestore";
+import { FIRESTORE } from "../../firebaseConfig";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 /**
  * getSpecificDays
@@ -11,17 +11,25 @@ import { getDoc, doc } from "firebase/firestore";
  * @description - Get all days from Firestore database
  */
 export default async function getSpecificDays(daysIds, image, routineName) {
+  const daysCollectionRef = collection(FIRESTORE, "days");
+
+  if (!daysCollectionRef) {
+    throw new Error("Error getting collection references");
+  }
+
   try {
     const days = [];
-    for (const id of daysIds) {
-      const dayDocRef = doc(FIRESTORE, "days", id);
-      const dayDocSnap = await getDoc(dayDocRef);
-      const dayDocData = dayDocSnap.data();
+
+    const dayQuery = query(daysCollectionRef, where("__name__", "in", daysIds));
+    const dayQuerySnapshot = await getDocs(dayQuery);
+
+    dayQuerySnapshot.forEach((doc) => {
+      const dayDocData = doc.data();
+      dayDocData.id = doc.id;
       dayDocData.image = image;
-      dayDocData.id = id;
       dayDocData.routineName = routineName;
       days.push(dayDocData);
-    }
+    });
     console.log("AFTER GETTING DAYS");
 
     return days;

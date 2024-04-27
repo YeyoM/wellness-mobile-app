@@ -1,5 +1,12 @@
-import { doc, getDoc } from "firebase/firestore";
 import { FIRESTORE } from "../../firebaseConfig.js";
+import {
+  getDoc,
+  doc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 
 /**
  * getSavedRoutines
@@ -14,59 +21,66 @@ export const getSavedRoutines = async (userId) => {
     throw new Error("User id is required!");
   }
 
+  const routineCollectionRef = collection(FIRESTORE, "routines");
+  const daysCollectionRef = collection(FIRESTORE, "days");
+
+  if (!routineCollectionRef || !daysCollectionRef) {
+    throw new Error("Error getting collection references");
+  }
+
   try {
     const userDocRef = doc(FIRESTORE, "users", userId);
     const userDocSnap = await getDoc(userDocRef);
     const userDocData = userDocSnap.data();
     const userRoutinesIds = userDocData.routines;
+    console.log("GET SAVED ROUTINES: AFTER GETTING USER DATA");
 
     if (userRoutinesIds.length === 0) {
       return [];
     }
 
-    console.log("AFTER GETTING USER'S ROUTINES' IDS");
-    // after getting the ids, get the routines from the routines collection
-    // and store them in the state
     const routines = [];
 
-    for (const id of userRoutinesIds) {
-      const routineDocRef = doc(FIRESTORE, "routines", id);
-      const routineDocSnap = await getDoc(routineDocRef);
-      const routineDocData = routineDocSnap.data();
-      // create a new object with the id and the dayDocData
+    const routineQuery = query(
+      routineCollectionRef,
+      where("__name__", "in", userRoutinesIds),
+    );
+
+    const routineQuerySnapshot = await getDocs(routineQuery);
+    routineQuerySnapshot.forEach((doc) => {
+      const routineDocData = doc.data();
       const routine = {
-        id: id,
+        id: doc.id,
         ...routineDocData,
       };
       routines.push(routine);
-    }
+    });
+    console.log("GET SAVED ROUTINES: AFTER GETTING ROUTINES");
 
-    console.log("AFTER GETTING ROUTINES");
-    // after getting the routines, we need to get all the day's ids
-    // and then get the days from the days collection
     for (const routine of routines) {
       const days = [];
+      const daysIds = routine.days;
+      const image = routine.image;
+      const routineName = routine.routineName;
 
-      for (const id of routine.days) {
-        const dayDocRef = doc(FIRESTORE, "days", id);
-        const dayDocSnap = await getDoc(dayDocRef);
-        const dayDocData = dayDocSnap.data();
-        // create a new object with the id and the dayDocData
-        const day = {
-          id: id,
-          ...dayDocData,
-        };
-        days.push(day);
-      }
+      const dayQuery = query(
+        daysCollectionRef,
+        where("__name__", "in", daysIds),
+      );
+
+      const dayQuerySnapshot = await getDocs(dayQuery);
+      dayQuerySnapshot.forEach((doc) => {
+        const dayDocData = doc.data();
+        dayDocData.image = image;
+        dayDocData.id = doc.id;
+        dayDocData.routineName = routineName;
+        days.push(dayDocData);
+      });
 
       routine.days = days;
     }
+    console.log("GET SAVED ROUTINES: AFTER GETTING DAYS");
 
-    console.log("AFTER GETTING DAYS");
-
-    // after getting the days, we need to get all the exercise's ids
-    // and then get the exercises from the exercises collection
-    // and then add them to the days
     return routines;
   } catch (err) {
     console.error("Error getting routines", err);
