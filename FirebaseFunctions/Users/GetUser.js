@@ -16,7 +16,7 @@ export default async function GetUser(uid) {
     const docRef = doc(FIRESTORE, "users", uid);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      console.log("Document data:", docSnap.data());
+      console.log("GET USER: AFTER GETTING USER");
       return docSnap.data();
     } else {
       console.log("No such document!");

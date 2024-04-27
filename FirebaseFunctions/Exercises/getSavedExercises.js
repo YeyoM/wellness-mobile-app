@@ -1,5 +1,12 @@
-import { doc, getDoc } from "firebase/firestore";
 import { FIRESTORE } from "../../firebaseConfig.js";
+import {
+  getDoc,
+  doc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 
 /**
  * getSavedExercises
@@ -24,18 +31,28 @@ export const getSavedExercises = async (userId) => {
     }
 
     const exercises = [];
+    const exercisesCollectionRef = collection(FIRESTORE, "exercises");
 
-    for (const id of userExercisesIds) {
-      const exerciseDocRef = doc(FIRESTORE, "exercises", id);
-      const exerciseDocSnap = await getDoc(exerciseDocRef);
-      const exerciseDocData = exerciseDocSnap.data();
-      // create a new object with the id and the data
+    if (!exercisesCollectionRef) {
+      throw new Error("Error getting collection references");
+    }
+
+    const exerciseQuery = query(
+      exercisesCollectionRef,
+      where("__name__", "in", userExercisesIds),
+    );
+    const exerciseQuerySnapshot = await getDocs(exerciseQuery);
+
+    exerciseQuerySnapshot.forEach((doc) => {
+      const exerciseDocData = doc.data();
       const exercise = {
-        id: id,
+        id: doc.id,
         ...exerciseDocData,
       };
       exercises.push(exercise);
-    }
+    });
+
+    console.log("GET SAVED EXERCISES: AFTER GETTING EXERCISES");
 
     return exercises;
   } catch (err) {
