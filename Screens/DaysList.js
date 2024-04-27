@@ -169,7 +169,7 @@ export default function DaysList({ navigation, route }) {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <View>
+      <View style={{ backgroundColor: "#0B0B0B", height: "100%" }}>
         <ScrollView
           style={{ width: "100%", marginTop: Constants.statusBarHeight }}
         >
