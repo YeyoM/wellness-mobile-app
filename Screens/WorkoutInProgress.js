@@ -264,9 +264,9 @@ export default function WorkoutInProgress({ route, navigation }) {
         ...currentWorkoutInfo,
         {
           exerciseName: currentExercise.exerciseName,
-          exerciseReps: meanReps,
+          exerciseReps: meanReps || 0,
           exerciseSets: numberOfSetsFinished,
-          exerciseWeight: meanWeight,
+          exerciseWeight: meanWeight || 0,
           exerciseId: currentExercise.exerciseId,
         },
       ];

@@ -54,7 +54,7 @@ export default async function SaveWorkout({
     throw new Error("Total calories is missing!");
   }
 
-  if (!totalWeight) {
+  if (totalWeight === undefined) {
     throw new Error("Total weight is missing!");
   }
 
