@@ -23,7 +23,7 @@ export default function WorkoutFinished1({ route, navigation }) {
             color: "#fff",
             fontSize: 32,
             marginTop: 50,
-            marginBottom: 20,
+            marginBottom: 40,
             fontWeight: "bold",
           }}
         >
@@ -170,6 +170,7 @@ export default function WorkoutFinished1({ route, navigation }) {
             </View>
           </View>
         </View>
+        {/**
         <Text
           style={{
             color: "#fff",
@@ -205,6 +206,7 @@ export default function WorkoutFinished1({ route, navigation }) {
         >
           Chasing the pump
         </Text>
+        */}
         <Pressable
           style={{
             backgroundColor: "#157AFF",
@@ -214,10 +216,10 @@ export default function WorkoutFinished1({ route, navigation }) {
             justifyContent: "center",
             padding: 20,
             borderRadius: 20,
-            marginVertical: 40,
+            marginVertical: 80,
           }}
           onPress={() =>
-            navigation.navigate("Workout Finished 2", {
+            navigation.navigate("Share Workout", {
               day: day,
               totalCalories: totalCalories,
               totalWeight: totalWeight,
