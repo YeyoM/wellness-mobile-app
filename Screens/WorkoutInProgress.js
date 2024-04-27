@@ -264,9 +264,9 @@ export default function WorkoutInProgress({ route, navigation }) {
         ...currentWorkoutInfo,
         {
           exerciseName: currentExercise.exerciseName,
-          exerciseReps: meanReps,
+          exerciseReps: meanReps || 0,
           exerciseSets: numberOfSetsFinished,
-          exerciseWeight: meanWeight,
+          exerciseWeight: meanWeight || 0,
           exerciseId: currentExercise.exerciseId,
         },
       ];
@@ -516,7 +516,16 @@ export default function WorkoutInProgress({ route, navigation }) {
           }}
           onLongPress={drag}
         >
-          <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
+          <Text
+            style={{
+              color: "#fff",
+              fontSize: 18,
+              fontWeight: "bold",
+              width: "80%",
+              overflow: "hidden",
+            }}
+            numberOfLines={1}
+          >
             {item.exerciseName}
           </Text>
           <Ionicons name="reorder-three-outline" size={40} color="white" />

@@ -26,17 +26,24 @@ export default function SavedLifts({ route, navigation }) {
 
   const handleAddLift = async ({ lift }) => {
     const isAlreadyInList = routine.days[currentDay].exercises.find(
-      (exercise) => exercise.exerciseId === lift.id,
+      (exercise) => {
+        if (exercise.exerciseId) {
+          return (
+            exercise.exerciseId === lift.id ||
+            exercise.exerciseId === lift.exerciseId
+          );
+        } else {
+          return exercise.id === lift.id || exercise.id === lift.exerciseId;
+        }
+      },
     );
     if (isAlreadyInList) {
       Alert.alert("This lift is already in the list");
       return;
     }
 
-    console.log("LIFT: ", lift);
-
     const newLift = {
-      exerciseId: lift.exerciseId,
+      exerciseId: lift.exerciseId || lift.id,
       exerciseName: lift.exerciseName,
       numberOfSets: lift.defaultNumberOfSets,
       numberOfReps: lift.defaultNumberOfReps,
