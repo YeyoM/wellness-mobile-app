@@ -7,6 +7,7 @@ import {
   Pressable,
   Dimensions,
   ActivityIndicator,
+  Share,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -14,7 +15,7 @@ import readableTimeToMinutes from "../Utils/readableTimeToMinutes.js";
 import { AppContext } from "../context/AppContext.js";
 
 export default function Profile({ navigation }) {
-  const { user, workouts } = useContext(AppContext);
+  const { user, firebaseUser, workouts } = useContext(AppContext);
 
   const [isLoading, _setIsLoading] = useState(false);
   const [finishedWorkouts, setFinishedWorkouts] = useState(0);
@@ -31,6 +32,26 @@ export default function Profile({ navigation }) {
     setFinishedWorkouts(finished);
     setHoursTrained(Math.floor(time / 60));
   }, []);
+
+  const handleShareProfile = async () => {
+    const devLink = `exp://192.168.1.76:8081/?resource=profile&id=${firebaseUser.uid}`;
+    const prodLink = `wellness://?resource=profile&id=${firebaseUser.uid}`;
+
+    try {
+      const result = await Share.share({
+        message: `Check out my profile on the following link: ${devLink}, or here is my id: ${firebaseUser.uid}, just search for it in the app!`,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log("Shared with activity type of", result.activityType);
+        } else {
+          console.log("Shared");
+        }
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -110,7 +131,7 @@ export default function Profile({ navigation }) {
             >
               <Text style={{ color: "white" }}>Edit Profile</Text>
             </Pressable>
-            <Pressable style={styles.shareButton}>
+            <Pressable style={styles.shareButton} onPress={handleShareProfile}>
               <Text style={{ color: "white" }}>Share Profile</Text>
             </Pressable>
           </View>
