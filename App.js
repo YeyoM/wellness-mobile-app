@@ -36,6 +36,8 @@ import OneRepMaxList from "./Screens/OneRepMaxList";
 import EditOneRepMax from "./Screens/EditOneRepMax";
 
 import SharedRoutine from "./Screens/SharedRoutine";
+import SharedProfile from "./Screens/SharedProfile";
+import SharedProfileStats from "./Screens/SharedProfileStats";
 
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
@@ -79,13 +81,19 @@ export default function App() {
   const handleDeepLink = (event) => {
     const { queryParams } = parse(event.url);
 
-    if (queryParams.id && queryParams.resource) {
-      if (queryParams.resource === "routine") {
-        console.log("Routine ID: " + queryParams.id);
-        navigationRef.current.navigate("Shared Routine", {
-          routineId: queryParams.id,
-        });
-      }
+    if (!navigationRef.current || !navigationRef.current.navigate) {
+      console.log("navigationRef not ready");
+      return;
+    }
+
+    if (queryParams.resource === "routine" && queryParams.id) {
+      navigationRef.current.navigate("Shared Routine", {
+        routineId: queryParams.id,
+      });
+    } else if (queryParams.resource === "profile" && queryParams.id) {
+      navigationRef.current.navigate("Shared Profile", {
+        profileId: queryParams.id,
+      });
     }
   };
 
@@ -216,6 +224,16 @@ export default function App() {
                     <Stack.Screen
                       name="Shared Routine"
                       component={SharedRoutine}
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="Shared Profile"
+                      component={SharedProfile}
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="Shared Profile Stats"
+                      component={SharedProfileStats}
                       options={{ headerShown: false }}
                     />
                   </Stack.Group>
