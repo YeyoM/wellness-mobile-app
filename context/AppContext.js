@@ -42,7 +42,7 @@ export const AppContextProvider = ({ children }) => {
   const [workouts, setWorkouts] = useState([]);
   const [days, setDays] = useState([]);
   const [routines, setRoutines] = useState([]);
-  const [cardioExercises, setCardioExercises] = useState([]); // these are default exercises
+  const [cardioExercises, setCardioExercises] = useState([]);
 
   // Miscellanous objects
   const [favoriteRoutine, setFavoriteRoutine] = useState(null);

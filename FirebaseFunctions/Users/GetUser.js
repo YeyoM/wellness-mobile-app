@@ -1,5 +1,5 @@
 import { FIRESTORE } from "../../firebaseConfig.js";
-import { doc, getDoc, or } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 
 /**
  * Get user data from Firestore
