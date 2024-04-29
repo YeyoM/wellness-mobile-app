@@ -77,7 +77,15 @@ export default function OneRepMaxList({ navigation }) {
                       })
                     }
                   >
-                    <Text style={{ color: "white", fontSize: 20 }}>
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: 20,
+                        width: "80%",
+                        overflow: "hidden",
+                      }}
+                      numberOfLines={1}
+                    >
                       {exercise.exerciseName} - {exercise.oneRepMax}{" "}
                       {exercise.defaultWeightSystem}
                     </Text>
