@@ -1,3 +1,4 @@
+import React, { useState, useContext } from "react";
 import {
   Alert,
   StyleSheet,
@@ -6,12 +7,14 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import React, { useState, useContext } from "react";
-import TopNavigationBar from "../../components/TopNavigationBar";
+import { CommonActions } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+
+import TopNavigationBar from "../../components/TopNavigationBar";
+
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
-import { CommonActions } from "@react-navigation/native";
+import saveDefaultExercises from "../../FirebaseFunctions/Exercises/saveDefaultExercises";
 
 export default function UserInputFinishScreen({ navigation }) {
   const { registerInitialQuestionsFunction } = useContext(

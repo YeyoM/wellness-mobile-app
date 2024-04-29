@@ -2,6 +2,8 @@ import { FIRESTORE, FIREBASE_AUTH } from "../../firebaseConfig.js";
 import { doc, setDoc } from "firebase/firestore";
 import { updateProfile } from "firebase/auth";
 
+import saveDefaultExercises from "../Exercises/saveDefaultExercises.js";
+
 /**
  * @param {Object} questions - Object containing the user's answers to the initial questions
  * @returns {Promise<void>} - Promise that resolves when the user's answers are successfully registered
@@ -62,6 +64,7 @@ export const registerInitialQuestions = async (questions) => {
       gym: "",
       badges: [],
     });
+    await saveDefaultExercises(userId, []);
   } catch (error) {
     console.log(error);
     throw new Error("Error setting document: ", error);
