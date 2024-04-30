@@ -76,7 +76,7 @@ export default function WorkoutInProgress({ route, navigation }) {
   const [isSpeedValid, setIsSpeedValid] = useState(false);
 
   const [numberOfExercises] = useState(
-    day.exercises.length + day.cardioExercises?.length,
+    day.exercises.length + (day.cardioExercises?.length ?? 0),
   );
   const [exerciseQueue, setExerciseQueue] = useState([]);
   const [currentSets, setCurrentSets] = useState();
