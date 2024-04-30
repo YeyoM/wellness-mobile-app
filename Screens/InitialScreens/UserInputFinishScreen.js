@@ -11,10 +11,7 @@ import { CommonActions } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
 import TopNavigationBar from "../../components/TopNavigationBar";
-
 import { InitialScreensContext } from "../../context/InitialScreensContext";
-
-import saveDefaultExercises from "../../FirebaseFunctions/Exercises/saveDefaultExercises";
 
 export default function UserInputFinishScreen({ navigation }) {
   const { registerInitialQuestionsFunction } = useContext(
@@ -48,6 +45,7 @@ export default function UserInputFinishScreen({ navigation }) {
       navigation.getParent().dispatch(
         CommonActions.navigate({
           name: "Main Tabs",
+          params: { questionaireCompleted: true },
         }),
       );
     } catch (error) {
