@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { useIsFocused } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
 import Home from "../Screens/Home";
@@ -24,7 +23,7 @@ import { AppContext } from "../context/AppContext.js";
 
 const Tab = createBottomTabNavigator();
 
-export default function MainTabs({ navigation }) {
+export default function MainTabs({ navigation, route }) {
   const { setUser, setDays, setExercises, setRoutines, setWorkouts } =
     useContext(AppContext);
 
@@ -33,6 +32,12 @@ export default function MainTabs({ navigation }) {
     useState(false);
 
   const [loadingScreen, setLoadingScreen] = useState(null);
+
+  useEffect(() => {
+    if (route.params && route.params.questionaireCompleted) {
+      setInitialQuestionsAnswered(true);
+    }
+  }, [route.params]);
 
   const setDataIsFetched = async (value) => {
     try {
