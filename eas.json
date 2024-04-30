@@ -8,8 +8,10 @@
       "distribution": "internal"
     },
     "preview": {
-			"buildType": "apk"
-		},
+      "android": {
+        "buildType": "apk"
+      }
+    },
     "production": {}
   },
   "submit": {
