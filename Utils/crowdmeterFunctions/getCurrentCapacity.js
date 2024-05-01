@@ -18,14 +18,14 @@
  * @description - gets the current capacity of the gym
  */
 
-import { WELLNESS_CROWDMETER_API_KEY } from "@env";
-import { WELLNESS_CROWDMETER_LIVE_ENDPOINT } from "@env";
+import { EXPO_PUBLIC_WELLNESS_CROWDMETER_API_KEY } from "@env";
+import { EXPO_PUBLIC_WELLNESS_CROWDMETER_LIVE_ENDPOINT } from "@env";
 
 export default async function getCurrentCapacity() {
-  const response = await fetch(WELLNESS_CROWDMETER_LIVE_ENDPOINT, {
+  const response = await fetch(EXPO_PUBLIC_WELLNESS_CROWDMETER_LIVE_ENDPOINT, {
     method: "GET",
     headers: {
-      apikey: WELLNESS_CROWDMETER_API_KEY,
+      apikey: EXPO_PUBLIC_WELLNESS_CROWDMETER_API_KEY,
     },
   });
   const data = await response.json();

@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-import { WELLNESS_NINJA_API_KEY } from "@env";
+import { EXPO_PUBLIC_WELLNESS_NINJA_API_KEY } from "@env";
 
 import addExerciseToUser from "../FirebaseFunctions/Exercises/addExerciseToUser.js";
 
@@ -48,7 +48,7 @@ export default function SearchLift({ navigation }) {
         {
           method: "GET",
           headers: {
-            "X-Api-Key": WELLNESS_NINJA_API_KEY,
+            "X-Api-Key": EXPO_PUBLIC_WELLNESS_NINJA_API_KEY,
           },
         },
       );
