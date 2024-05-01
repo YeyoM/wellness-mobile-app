@@ -19,8 +19,8 @@
  * @description - gets the capacity data for the graph
  */
 
-import { WELLNESS_CROWDMETER_API_KEY } from "@env";
-import { WELLNESS_CROWDMETER_HISTORY_ENDPOINT } from "@env";
+import { EXPO_PUBLIC_WELLNESS_CROWDMETER_API_KEY } from "@env";
+import { EXPO_PUBLIC_WELLNESS_CROWDMETER_HISTORY_ENDPOINT } from "@env";
 /** FULL_CAPACITY
  * @type {number}
  * @description - the full capacity of the gym
@@ -28,10 +28,10 @@ import { WELLNESS_CROWDMETER_HISTORY_ENDPOINT } from "@env";
 const FULL_CAPACITY = 400;
 
 export default async function getCapacityDataForGraph() {
-  const response = await fetch(WELLNESS_CROWDMETER_HISTORY_ENDPOINT, {
+  const response = await fetch(EXPO_PUBLIC_WELLNESS_CROWDMETER_HISTORY_ENDPOINT, {
     method: "GET",
     headers: {
-      apikey: WELLNESS_CROWDMETER_API_KEY,
+      apikey: EXPO_PUBLIC_WELLNESS_CROWDMETER_API_KEY,
     },
   });
   const data = await response.json();
