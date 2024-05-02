@@ -37,11 +37,9 @@ export default function CarouselDays() {
       }
     });
     if (filteredExercises.length === 4) {
-      console.log("Already saved exercises!");
       setAllowedExercises(filteredExercises);
       setLoading(false);
     } else {
-      console.log("Saving default exercises...");
       // in case the user has not saved the exercises yet, add those default exercises automatically
       saveDefaultExercises(firebaseUser.uid, exercises)
         .then((newExercises) => {
