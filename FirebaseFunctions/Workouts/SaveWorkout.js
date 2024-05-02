@@ -116,7 +116,7 @@ export default async function SaveWorkout({
         transaction.update(userRef, { workouts: userWorkouts });
         console.log("USER WORKOUTS UPDATE WRITTEN TO TRANSACTION");
         exerciseRefs.forEach((exerciseRef, index) => {
-          const weightHistory = exercisesDocs[index].data().weightRecord;
+          const weightHistory = exercisesDocs[index].data().weightRecord || [];
           const newWeightHistory = {
             date: new Date(),
             weight: exercisesWithoutCardio[index].exerciseWeight,
