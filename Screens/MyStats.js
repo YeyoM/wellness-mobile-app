@@ -74,6 +74,7 @@ export default function MyStats({ navigation }) {
         } = getUserWeightProgressDataForGraph({
           weightRecord,
         });
+        console.log(weightProgressData);
         setWeightLineData(weightProgressData);
         setWeightLineDataByWeek(weightProgressDataByWeekForGraph);
         setWeightLineDataByMonth(weightProgressDataByMonthForGraph);
@@ -98,6 +99,7 @@ export default function MyStats({ navigation }) {
         } = getUserTimeSpentProgressDataForGraph({
           timeRecord: stats.totalTimeRecord,
         });
+        console.log(timeProgressData);
         setTotalTimeSpent(totalTime);
         setTimeLineData(timeProgressData);
         setTimeLineDataByWeek(timeProgressDataByWeek);
@@ -110,6 +112,7 @@ export default function MyStats({ navigation }) {
         } = getUserWeightLiftedProgressDataForGraph({
           weightLiftedRecord: stats.weightLiftedRecord,
         });
+        console.log(weightLiftedProgressData);
         setWeightLiftedLineData(weightLiftedProgressData);
         setWeightLiftedLineDataByWeek(weightLiftedProgressDataByWeek);
         setWeightLiftedLineDataByMonth(weightLiftedProgressDataByMonth);
@@ -248,111 +251,185 @@ export default function MyStats({ navigation }) {
             </View>
             <View style={{ overflow: "hidden", width: "100%" }}>
               {!loading &&
-              weightLineData &&
-              weightLineData.length > 0 &&
+              weightLiftedLineData &&
+              weightLiftedLineData.length > 0 &&
               selectedCategory === "Weight Lifted" ? (
-                <LineChart
-                  hideDataPoints
-                  isAnimated
-                  animationDuration={1200}
-                  initialSpacing={30}
-                  data={weightLiftedLineData}
-                  spacing={40}
-                  thickness={3}
-                  yAxisTextStyle={{
-                    color: "#a0a0a0",
-                    fontSize: 10,
-                    marginRight: 10,
-                  }}
-                  xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
-                  yAxisThickness={0}
-                  rulesColor="#50535B"
-                  rulesType="solid"
-                  xAxisColor="#50535B"
-                  color="#157AFF"
-                  yAxisLabelSuffix={" kg"}
-                />
+                <View>
+                  {weightLiftedLineData.length > 3 ? (
+                    <LineChart
+                      hideDataPoints
+                      isAnimated
+                      animationDuration={1200}
+                      initialSpacing={40}
+                      data={weightLiftedLineData}
+                      spacing={40}
+                      thickness={3}
+                      yAxisTextStyle={{
+                        color: "#a0a0a0",
+                        fontSize: 10,
+                        marginRight: 10,
+                      }}
+                      xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
+                      yAxisThickness={0}
+                      rulesColor="#50535B"
+                      rulesType="solid"
+                      xAxisColor="#50535B"
+                      color="#157AFF"
+                      yAxisLabelSuffix={" kg"}
+                    />
+                  ) : (
+                    <Text
+                      style={{
+                        color: "white",
+                        height: 150,
+                        textAlign: "center",
+                        fontStyle: "italic",
+                        color: "#a0a0a0",
+                      }}
+                    >
+                      Not enough data, please complete at least a workout on 3
+                      different days to view your progress
+                    </Text>
+                  )}
+                </View>
               ) : !loading &&
                 weightLineData &&
                 weightLineData.length > 0 &&
                 selectedCategory === "User Weight" ? (
-                <LineChart
-                  hideDataPoints
-                  isAnimated
-                  animationDuration={1200}
-                  initialSpacing={30}
-                  data={weightLineData}
-                  spacing={40}
-                  thickness={3}
-                  yAxisTextStyle={{
-                    color: "#a0a0a0",
-                    fontSize: 10,
-                    marginRight: 10,
-                  }}
-                  xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
-                  yAxisThickness={0}
-                  rulesColor="#50535B"
-                  rulesType="solid"
-                  xAxisColor="#50535B"
-                  color="#157AFF"
-                  yAxisLabelSuffix={" kg"}
-                />
+                <View>
+                  {weightLineData.length > 3 ? (
+                    <LineChart
+                      hideDataPoints
+                      isAnimated
+                      animationDuration={1200}
+                      initialSpacing={30}
+                      data={weightLineData}
+                      spacing={40}
+                      thickness={3}
+                      yAxisTextStyle={{
+                        color: "#a0a0a0",
+                        fontSize: 10,
+                        marginRight: 10,
+                      }}
+                      xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
+                      yAxisThickness={0}
+                      rulesColor="#50535B"
+                      rulesType="solid"
+                      xAxisColor="#50535B"
+                      color="#157AFF"
+                      yAxisLabelSuffix={" kg"}
+                    />
+                  ) : (
+                    <Text
+                      style={{
+                        color: "white",
+                        height: 150,
+                        textAlign: "center",
+                        fontStyle: "italic",
+                        color: "#a0a0a0",
+                      }}
+                    >
+                      Not enough data, please complete at least a workout on 3
+                      different days to view your progress
+                    </Text>
+                  )}
+                </View>
               ) : !loading &&
                 caloriesLineData &&
                 caloriesLineData.length > 0 &&
                 selectedCategory === "Calories" ? (
-                <LineChart
-                  hideDataPoints
-                  isAnimated
-                  animationDuration={1200}
-                  initialSpacing={
-                    caloriesLineData && caloriesLineData.length > 10 ? 20 : 40
-                  }
-                  data={caloriesLineData}
-                  spacing={
-                    caloriesLineData && caloriesLineData.length > 10 ? 40 : 60
-                  }
-                  thickness={3}
-                  yAxisTextStyle={{
-                    color: "#a0a0a0",
-                    fontSize: 10,
-                    marginRight: 10,
-                  }}
-                  xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
-                  yAxisThickness={0}
-                  rulesColor="#50535B"
-                  rulesType="solid"
-                  xAxisColor="#50535B"
-                  color="#157AFF"
-                  yAxisLabelSuffix=" Kcal "
-                />
+                <View>
+                  {caloriesLineData.length > 3 ? (
+                    <LineChart
+                      hideDataPoints
+                      isAnimated
+                      animationDuration={1200}
+                      initialSpacing={
+                        caloriesLineData && caloriesLineData.length > 10
+                          ? 20
+                          : 40
+                      }
+                      data={caloriesLineData}
+                      spacing={
+                        caloriesLineData && caloriesLineData.length > 10
+                          ? 40
+                          : 60
+                      }
+                      thickness={3}
+                      yAxisTextStyle={{
+                        color: "#a0a0a0",
+                        fontSize: 10,
+                        marginRight: 10,
+                      }}
+                      xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
+                      yAxisThickness={0}
+                      rulesColor="#50535B"
+                      rulesType="solid"
+                      xAxisColor="#50535B"
+                      color="#157AFF"
+                      yAxisLabelSuffix=" Kcal "
+                    />
+                  ) : (
+                    <Text
+                      style={{
+                        color: "white",
+                        height: 150,
+                        textAlign: "center",
+                        fontStyle: "italic",
+                        color: "#a0a0a0",
+                      }}
+                    >
+                      Not enough data, please complete at least a workout on 3
+                      different days to view your progress
+                    </Text>
+                  )}
+                </View>
               ) : !loading &&
                 timeLineData &&
                 timeLineData.length > 0 &&
                 selectedCategory === "Time" ? (
-                <LineChart
-                  hideDataPoints
-                  isAnimated
-                  animationDuration={1200}
-                  initialSpacing={
-                    timeLineData && timeLineData.length > 10 ? 20 : 40
-                  }
-                  data={timeLineData}
-                  spacing={timeLineData && timeLineData.length > 10 ? 40 : 60}
-                  thickness={3}
-                  yAxisTextStyle={{
-                    color: "#a0a0a0",
-                    fontSize: 10,
-                    marginRight: 10,
-                  }}
-                  xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
-                  yAxisThickness={0}
-                  rulesColor="#50535B"
-                  rulesType="solid"
-                  xAxisColor="#50535B"
-                  color="#157AFF"
-                  yAxisLabelSuffix=" min"
-                />
+                <View>
+                  {timeLineData.length > 3 ? (
+                    <LineChart
+                      hideDataPoints
+                      isAnimated
+                      animationDuration={1200}
+                      initialSpacing={
+                        timeLineData && timeLineData.length > 10 ? 20 : 40
+                      }
+                      data={timeLineData}
+                      spacing={
+                        timeLineData && timeLineData.length > 10 ? 40 : 60
+                      }
+                      thickness={3}
+                      yAxisTextStyle={{
+                        color: "#a0a0a0",
+                        fontSize: 10,
+                        marginRight: 10,
+                      }}
+                      xAxisTextStyle={{ color: "#a0a0a0", fontSize: 10 }}
+                      yAxisThickness={0}
+                      rulesColor="#50535B"
+                      rulesType="solid"
+                      xAxisColor="#50535B"
+                      color="#157AFF"
+                      yAxisLabelSuffix=" min"
+                    />
+                  ) : (
+                    <Text
+                      style={{
+                        color: "white",
+                        height: 150,
+                        textAlign: "center",
+                        fontStyle: "italic",
+                        color: "#a0a0a0",
+                      }}
+                    >
+                      Not enough data, please complete at least a workout on 3
+                      different days to view your progress
+                    </Text>
+                  )}
+                </View>
               ) : loading ? (
                 <ActivityIndicator size="large" color="#157AFF" />
               ) : (
