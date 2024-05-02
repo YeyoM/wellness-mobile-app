@@ -14,6 +14,7 @@ const defaultExercises = [
     equipment: "Barbell",
     type: "Strength",
     oneRepMax: 0,
+    weightRecord: [],
   },
   {
     userId: null,
@@ -27,6 +28,7 @@ const defaultExercises = [
     equipment: "Barbell",
     type: "Strength",
     oneRepMax: 0,
+    weightRecord: [],
   },
   {
     userId: null,
@@ -40,6 +42,7 @@ const defaultExercises = [
     equipment: "Barbell",
     type: "Strength",
     oneRepMax: 0,
+    weightRecord: [],
   },
   {
     userId: null,
@@ -53,6 +56,7 @@ const defaultExercises = [
     equipment: "Barbell",
     type: "Strength",
     oneRepMax: 0,
+    weightRecord: [],
   },
 ];
 
