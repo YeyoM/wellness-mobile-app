@@ -29,13 +29,19 @@ export default function Search({ navigation }) {
 
   const handleSearch = async () => {
     console.log("searching");
+    console.log(searchQuery);
   };
 
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.searchContainer}>
-          <TextInput style={styles.searchBar} placeholder="Search" />
+          <TextInput
+            style={styles.searchBar}
+            placeholder="Search"
+            value={searchQuery}
+            onChangeText={(text) => setSearchQuery(text)}
+          />
           <Pressable onPress={handleSearch}>
             <Ionicons name="search" size={24} color="white" />
           </Pressable>
