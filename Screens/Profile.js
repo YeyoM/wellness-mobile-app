@@ -8,8 +8,10 @@ import {
   Dimensions,
   ActivityIndicator,
   Share,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import * as Clipboard from "expo-clipboard";
 
 import readableTimeToMinutes from "../Utils/readableTimeToMinutes.js";
 import { AppContext } from "../context/AppContext.js";
@@ -39,7 +41,7 @@ export default function Profile({ navigation }) {
 
     try {
       const result = await Share.share({
-        message: `Check out my profile on the following link: ${devLink}, or here is my id: ${firebaseUser.uid}, just search for it in the app!`,
+        message: `Check out my profile on the following link: ${devLink}, or here is my id: profile/${firebaseUser.uid}, just search for it in the app!`,
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -51,6 +53,20 @@ export default function Profile({ navigation }) {
     } catch (error) {
       console.log(error.message);
     }
+  };
+
+  const handleCopyId = async () => {
+    await Clipboard.setStringAsync(`profile/${firebaseUser.uid}`);
+    Alert.alert(
+      "Your ID has been copied!",
+      "You can now share this ID with your friends!",
+      [
+        {
+          text: "Awesome!",
+          onPress: () => console.log("OK Pressed"),
+        },
+      ],
+    );
   };
 
   return (
@@ -135,6 +151,14 @@ export default function Profile({ navigation }) {
               <Text style={{ color: "white" }}>Share Profile</Text>
             </Pressable>
           </View>
+        </View>
+        <View style={styles.routineId}>
+          <Text style={styles.routeIdText} numberOfLines={1}>
+            My ID: {firebaseUser && firebaseUser.uid}
+          </Text>
+          <Pressable onPress={() => handleCopyId()}>
+            <Ionicons name="copy-outline" size={20} color="#007AC8" />
+          </Pressable>
         </View>
         <ScrollView style={styles.content}>
           <View style={styles.stats}>
@@ -367,5 +391,22 @@ const styles = StyleSheet.create({
 
   badges: {
     marginTop: 20,
+  },
+
+  routineId: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    alignSelf: "center",
+    width: "90%",
+    marginBottom: 20,
+  },
+
+  routeIdText: {
+    color: "#a0a0a0",
+    fontSize: 14,
+    width: "80%",
+    overflow: "hidden",
   },
 });
