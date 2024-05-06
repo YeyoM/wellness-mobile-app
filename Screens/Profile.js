@@ -41,7 +41,7 @@ export default function Profile({ navigation }) {
 
     try {
       const result = await Share.share({
-        message: `Check out my profile on the following link: ${devLink}, or here is my id: ${firebaseUser.uid}, just search for it in the app!`,
+        message: `Check out my profile on the following link: ${devLink}, or here is my id: profile/${firebaseUser.uid}, just search for it in the app!`,
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
