@@ -26,7 +26,7 @@ export default function getUserWeightProgressDataByMonthForGraph({
       const averageWeight = currentMonthWeightData / currentMonthDayCount;
       weightProgressDataByMonth.push({
         month: `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`,
-        value: Math.round(averageWeight),
+        value: Math.round(averageWeight) || 0,
         label: (
           <View style={{ width: 40, marginLeft: 20 }}>
             <Text
@@ -45,7 +45,7 @@ export default function getUserWeightProgressDataByMonthForGraph({
     const averageWeight = currentMonthWeightData / currentMonthDayCount;
     weightProgressDataByMonth.push({
       month: `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`,
-      value: Math.round(averageWeight),
+      value: Math.round(averageWeight) || 0,
       label: (
         <View style={{ width: 40, marginLeft: 20 }}>
           <Text

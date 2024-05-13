@@ -28,15 +28,25 @@ export default function getUserTimeSpentProgressDataForGraph({ timeRecord }) {
     };
   }
 
+  for (let i = 0; i < timeRecord.length; i++) {
+    timeRecord[i].date = firebasDateToDate(timeRecord[i].date);
+  }
+
+  timeRecord.sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return dateA - dateB;
+  });
+
   let timeProgressData = [];
   const today = new Date();
-  let currentDate = firebasDateToDate(timeRecord[0].date);
+  let currentDate = timeRecord[0].date;
   let currentTotalTime = timeRecord[0].time;
 
   let nextRecordIndex = 1;
   let nextRecordDate = null;
   if (nextRecordIndex < timeRecord.length) {
-    nextRecordDate = firebasDateToDate(timeRecord[nextRecordIndex].date);
+    nextRecordDate = timeRecord[nextRecordIndex].date;
   }
 
   let totalTime = 0;
@@ -72,7 +82,7 @@ export default function getUserTimeSpentProgressDataForGraph({ timeRecord }) {
       currentTotalTime = timeRecord[nextRecordIndex].time;
       nextRecordIndex++;
       if (nextRecordIndex < timeRecord.length) {
-        nextRecordDate = firebasDateToDate(timeRecord[nextRecordIndex].date);
+        nextRecordDate = timeRecord[nextRecordIndex].date;
       }
       // check if there are no more records with the same date
       while (
@@ -83,7 +93,7 @@ export default function getUserTimeSpentProgressDataForGraph({ timeRecord }) {
       ) {
         nextRecordIndex++;
         if (nextRecordIndex < timeRecord.length) {
-          nextRecordDate = firebasDateToDate(timeRecord[nextRecordIndex].date);
+          nextRecordDate = timeRecord[nextRecordIndex].date;
         } else {
           nextRecordDate = null;
         }
@@ -100,6 +110,8 @@ export default function getUserTimeSpentProgressDataForGraph({ timeRecord }) {
   const timeProgressDataByMonth = getUserTimeSpentProgressDataByMonthForGraph({
     timeProgressData,
   });
+
+  console.log(timeProgressDataByMonth);
 
   const readableTotalTime = minutesToReadableTime(totalTime);
   return {

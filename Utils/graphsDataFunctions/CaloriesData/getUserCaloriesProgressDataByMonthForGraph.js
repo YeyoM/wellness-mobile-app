@@ -26,7 +26,7 @@ export default function getUserCaloriesProgressDataByMonthForGraph({
     } else {
       caloriesProgressDataByMonth.push({
         month: `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`,
-        value: monthCalories,
+        value: monthCalories || 0,
         label: (
           <View style={{ width: 40, marginLeft: 20 }}>
             <Text
@@ -43,7 +43,7 @@ export default function getUserCaloriesProgressDataByMonthForGraph({
   if (monthCalories > 0) {
     caloriesProgressDataByMonth.push({
       month: `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`,
-      value: monthCalories,
+      value: monthCalories || 0,
       label: (
         <View style={{ width: 40, marginLeft: 20 }}>
           <Text

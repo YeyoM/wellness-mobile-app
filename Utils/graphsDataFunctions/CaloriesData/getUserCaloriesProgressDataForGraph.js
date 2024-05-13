@@ -20,20 +20,60 @@ export default function getUserCaloriesProgressDataForGraph({
   if (caloriesRecord.length === 0) {
     return [];
   }
+
+  for (let i = 0; i < caloriesRecord.length; i++) {
+    caloriesRecord[i].date = firebasDateToDate(caloriesRecord[i].date);
+  }
+
+  caloriesRecord.sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return dateA - dateB;
+  });
+
   let caloriesProgressData = [];
   const today = new Date();
-  let currentDate = firebasDateToDate(caloriesRecord[0].date);
+  let currentDate = caloriesRecord[0].date;
   let currentCalories = caloriesRecord[0].calories;
 
   let nextRecordIndex = 1;
   let nextRecordDate = null;
   if (nextRecordIndex < caloriesRecord.length) {
-    nextRecordDate = firebasDateToDate(caloriesRecord[nextRecordIndex].date);
+    nextRecordDate = caloriesRecord[nextRecordIndex].date;
   }
 
   let totalCalories = currentCalories;
 
   while (currentDate <= today) {
+    if (
+      nextRecordDate &&
+      currentDate.getFullYear() === nextRecordDate.getFullYear() &&
+      currentDate.getMonth() === nextRecordDate.getMonth() &&
+      currentDate.getDate() === nextRecordDate.getDate()
+    ) {
+      currentCalories = caloriesRecord[nextRecordIndex].calories;
+      totalCalories += currentCalories;
+      nextRecordIndex++;
+      if (nextRecordIndex < caloriesRecord.length) {
+        nextRecordDate = caloriesRecord[nextRecordIndex].date;
+      }
+      // check if there are no more records with the same date
+      while (
+        nextRecordDate &&
+        currentDate.getFullYear() === nextRecordDate.getFullYear() &&
+        currentDate.getMonth() === nextRecordDate.getMonth() &&
+        currentDate.getDate() === nextRecordDate.getDate()
+      ) {
+        nextRecordIndex++;
+        if (nextRecordIndex < caloriesRecord.length) {
+          nextRecordDate = caloriesRecord[nextRecordIndex].date;
+        } else {
+          nextRecordDate = null;
+        }
+      }
+    } else {
+      currentCalories = 0;
+    }
     caloriesProgressData.push({
       date: `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`,
       value: currentCalories,
@@ -46,39 +86,6 @@ export default function getUserCaloriesProgressDataForGraph({
       ),
     });
     currentDate.setDate(currentDate.getDate() + 1);
-    if (
-      nextRecordDate &&
-      currentDate.getFullYear() === nextRecordDate.getFullYear() &&
-      currentDate.getMonth() === nextRecordDate.getMonth() &&
-      currentDate.getDate() === nextRecordDate.getDate()
-    ) {
-      currentCalories = caloriesRecord[nextRecordIndex].calories;
-      totalCalories += currentCalories;
-      nextRecordIndex++;
-      if (nextRecordIndex < caloriesRecord.length) {
-        nextRecordDate = firebasDateToDate(
-          caloriesRecord[nextRecordIndex].date,
-        );
-      }
-      // check if there are no more records with the same date
-      while (
-        nextRecordDate &&
-        currentDate.getFullYear() === nextRecordDate.getFullYear() &&
-        currentDate.getMonth() === nextRecordDate.getMonth() &&
-        currentDate.getDate() === nextRecordDate.getDate()
-      ) {
-        nextRecordIndex++;
-        if (nextRecordIndex < caloriesRecord.length) {
-          nextRecordDate = firebasDateToDate(
-            caloriesRecord[nextRecordIndex].date,
-          );
-        } else {
-          nextRecordDate = null;
-        }
-      }
-    } else {
-      currentCalories = 0;
-    }
   }
 
   const caloriesProgressDataByWeek = getUserCaloriesProgressDataByWeekForGraph({

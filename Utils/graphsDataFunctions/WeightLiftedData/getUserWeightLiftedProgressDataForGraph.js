@@ -20,22 +20,62 @@ export default function getUserWeightLiftedProgressDataForGraph({
   if (weightLiftedRecord.length === 0) {
     return [];
   }
+
+  for (let i = 0; i < weightLiftedRecord.length; i++) {
+    weightLiftedRecord[i].date = firebasDateToDate(weightLiftedRecord[i].date);
+  }
+
+  weightLiftedRecord.sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return dateA - dateB;
+  });
+
+  console.log(weightLiftedRecord);
+
   let weightLiftedProgressData = [];
   const today = new Date();
-  let currentDate = firebasDateToDate(weightLiftedRecord[0].date);
+  let currentDate = weightLiftedRecord[0].date;
   let currentWeightLifted = weightLiftedRecord[0].weightLifted;
 
   let nextRecordIndex = 1;
   let nextRecordDate = null;
   if (nextRecordIndex < weightLiftedRecord.length) {
-    nextRecordDate = firebasDateToDate(
-      weightLiftedRecord[nextRecordIndex].date,
-    );
+    nextRecordDate = weightLiftedRecord[nextRecordIndex].date;
   }
 
   let totalWeightLifted = currentWeightLifted;
 
   while (currentDate <= today) {
+    // first check if the next date is the same as the current one
+    if (
+      nextRecordDate &&
+      currentDate.getFullYear() === nextRecordDate.getFullYear() &&
+      currentDate.getMonth() === nextRecordDate.getMonth() &&
+      currentDate.getDate() === nextRecordDate.getDate()
+    ) {
+      currentWeightLifted = weightLiftedRecord[nextRecordIndex].weightLifted;
+      totalWeightLifted += currentWeightLifted;
+      nextRecordIndex++;
+      if (nextRecordIndex < weightLiftedRecord.length) {
+        nextRecordDate = weightLiftedRecord[nextRecordIndex].date;
+      }
+      // check if there are no more records with the same date
+      while (
+        nextRecordDate &&
+        currentDate.getFullYear() === nextRecordDate.getFullYear() &&
+        currentDate.getMonth() === nextRecordDate.getMonth() &&
+        currentDate.getDate() === nextRecordDate.getDate()
+      ) {
+        nextRecordIndex++;
+        if (nextRecordIndex < weightLiftedRecord.length) {
+          nextRecordDate = weightLiftedRecord[nextRecordIndex].date;
+        } else {
+          nextRecordDate = null;
+        }
+      }
+    }
+    // at the end of the loop, add the current date and weight lifted to the progress data
     weightLiftedProgressData.push({
       date: `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`,
       value: currentWeightLifted,
@@ -47,40 +87,9 @@ export default function getUserWeightLiftedProgressDataForGraph({
         </View>
       ),
     });
+
     currentDate.setDate(currentDate.getDate() + 1);
-    if (
-      nextRecordDate &&
-      currentDate.getFullYear() === nextRecordDate.getFullYear() &&
-      currentDate.getMonth() === nextRecordDate.getMonth() &&
-      currentDate.getDate() === nextRecordDate.getDate()
-    ) {
-      currentWeightLifted = weightLiftedRecord[nextRecordIndex].weightLifted;
-      totalWeightLifted += currentWeightLifted;
-      nextRecordIndex++;
-      if (nextRecordIndex < weightLiftedRecord.length) {
-        nextRecordDate = firebasDateToDate(
-          weightLiftedRecord[nextRecordIndex].date,
-        );
-      }
-      // check if there are no more records with the same date
-      while (
-        nextRecordDate &&
-        currentDate.getFullYear() === nextRecordDate.getFullYear() &&
-        currentDate.getMonth() === nextRecordDate.getMonth() &&
-        currentDate.getDate() === nextRecordDate.getDate()
-      ) {
-        nextRecordIndex++;
-        if (nextRecordIndex < weightLiftedRecord.length) {
-          nextRecordDate = firebasDateToDate(
-            weightLiftedRecord[nextRecordIndex].date,
-          );
-        } else {
-          nextRecordDate = null;
-        }
-      }
-    } else {
-      currentWeightLifted = 0;
-    }
+    currentWeightLifted = 0;
   }
 
   const weightLiftedProgressDataByWeek =

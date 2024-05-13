@@ -27,7 +27,7 @@ export default function getUserTimeSpentProgressDataByMonthForGraph({
     } else {
       timeSpentProgressDataByMonth.push({
         month: `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`,
-        value: monthTotalTimeSpent,
+        value: monthTotalTimeSpent || 0,
         label: (
           <View style={{ width: 40, marginLeft: 20 }}>
             <Text
@@ -44,7 +44,7 @@ export default function getUserTimeSpentProgressDataByMonthForGraph({
   if (monthTotalTimeSpent > 0) {
     timeSpentProgressDataByMonth.push({
       month: `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`,
-      value: monthTotalTimeSpent,
+      value: monthTotalTimeSpent || 0,
       label: (
         <View style={{ width: 40, marginLeft: 20 }}>
           <Text

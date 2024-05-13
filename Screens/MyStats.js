@@ -74,7 +74,6 @@ export default function MyStats({ navigation }) {
         } = getUserWeightProgressDataForGraph({
           weightRecord,
         });
-        console.log(weightProgressData);
         setWeightLineData(weightProgressData);
         setWeightLineDataByWeek(weightProgressDataByWeekForGraph);
         setWeightLineDataByMonth(weightProgressDataByMonthForGraph);
@@ -99,7 +98,6 @@ export default function MyStats({ navigation }) {
         } = getUserTimeSpentProgressDataForGraph({
           timeRecord: stats.totalTimeRecord,
         });
-        console.log(timeProgressData);
         setTotalTimeSpent(totalTime);
         setTimeLineData(timeProgressData);
         setTimeLineDataByWeek(timeProgressDataByWeek);
@@ -112,7 +110,6 @@ export default function MyStats({ navigation }) {
         } = getUserWeightLiftedProgressDataForGraph({
           weightLiftedRecord: stats.weightLiftedRecord,
         });
-        console.log(weightLiftedProgressData);
         setWeightLiftedLineData(weightLiftedProgressData);
         setWeightLiftedLineDataByWeek(weightLiftedProgressDataByWeek);
         setWeightLiftedLineDataByMonth(weightLiftedProgressDataByMonth);
