@@ -39,6 +39,8 @@ import SharedRoutine from "./Screens/SharedRoutine";
 import SharedProfile from "./Screens/SharedProfile";
 import SharedProfileStats from "./Screens/SharedProfileStats";
 
+import Tutorial from "./Screens/Tutorial";
+
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { FIREBASE_AUTH } from "./firebaseConfig";
@@ -234,6 +236,11 @@ export default function App() {
                     <Stack.Screen
                       name="Shared Profile Stats"
                       component={SharedProfileStats}
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="Tutorial"
+                      component={Tutorial}
                       options={{ headerShown: false }}
                     />
                   </Stack.Group>

@@ -309,7 +309,10 @@ export default function SearchLift({ navigation }) {
                     {lift.item.primaryMuscles.join(", ")}
                   </Text>
                 </View>
-                <View
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate("Tutorial", { lift: lift })
+                  }
                   style={{
                     display: "flex",
                     flexDirection: "column",
@@ -330,7 +333,7 @@ export default function SearchLift({ navigation }) {
                   >
                     Tutorial
                   </Text>
-                </View>
+                </Pressable>
               </View>
             ))}
         </View>
