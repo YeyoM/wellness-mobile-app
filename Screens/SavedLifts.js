@@ -52,7 +52,13 @@ export default function SavedLifts({ route, navigation }) {
       restTime: lift.defaultRestTime,
       equipment: lift.equipment,
       muscle: lift.muscle,
-      type: lift.type,
+      // type: lift.type DEPRECATED
+      level: lift.level || "",
+      category: lift.category || lift.type || "",
+      images: lift.images || [],
+      instructions: lift.instructions || [],
+      mechanic: lift.mechanic || "",
+      force: lift.force || "",
     };
 
     // get the user's weight from the async storage
