@@ -202,22 +202,31 @@ export default function SavedLifts({ route, navigation }) {
                     alignItems: "center",
                   }}
                 >
-                  <Pressable onPress={() => navigation.navigate("Workout")}>
-                    <Ionicons
-                      name="play-circle-outline"
-                      size={32}
-                      color="white"
-                    />
-                  </Pressable>
-                  <Text
+                  <Pressable
+                    onPress={() =>
+                      navigation.navigate("Tutorial", { lift: lift })
+                    }
                     style={{
-                      color: "#a0a0a0",
-                      fontSize: 12,
-                      marginTop: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
                     }}
                   >
-                    Tutorial
-                  </Text>
+                    <Ionicons
+                      name="information-circle-outline"
+                      size={22}
+                      color="#a0a0a0"
+                    />
+                    <Text
+                      style={{
+                        color: "#a0a0a0",
+                        fontSize: 12,
+                        fontStyle: "italic",
+                      }}
+                    >
+                      Tutorial
+                    </Text>
+                  </Pressable>
                 </View>
               </View>
             ))}

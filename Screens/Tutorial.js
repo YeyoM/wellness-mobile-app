@@ -23,7 +23,7 @@ export default function Tutorial({ navigation, route }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (route.params && route.params.lift) {
+    if (route.params && route.params.lift && route.params.lift.item) {
       setLift(route.params.lift.item);
       setLiftName(route.params.lift.item.name);
       setTutorial(route.params.lift.item.instructions);
@@ -32,6 +32,20 @@ export default function Tutorial({ navigation, route }) {
           setImages((prev) => [
             ...prev,
             generateImageURL(route.params.lift.item.images[i]),
+          ]);
+        }
+      }
+    } else if (route.params && route.params.lift) {
+      setLift(route.params.lift);
+      setLiftName(route.params.lift.exerciseName);
+      if (route.params.lift.instructions) {
+        setTutorial(route.params.lift.instructions);
+      }
+      if (route.params.lift.images) {
+        for (let i = 0; i < route.params.lift.images.length; i++) {
+          setImages((prev) => [
+            ...prev,
+            generateImageURL(route.params.lift.images[i]),
           ]);
         }
       }
@@ -86,6 +100,12 @@ export default function Tutorial({ navigation, route }) {
             cachePolicy={"fetchFromCacheOrNetwork"}
           />
         )}
+        {images.length === 0 && (
+          <Text style={{ color: "#fff", fontSize: 16, marginBottom: 20 }}>
+            No images found for this exercise
+          </Text>
+        )}
+
         <View style={styles.instructions}>
           <Text
             style={{
@@ -114,6 +134,11 @@ export default function Tutorial({ navigation, route }) {
                 {index + 1}. {step}
               </Text>
             ))}
+          {tutorial.length === 0 && (
+            <Text style={{ color: "#fff", fontSize: 16 }}>
+              No instructions found for this exercise
+            </Text>
+          )}
         </View>
       </View>
     </ScrollView>
