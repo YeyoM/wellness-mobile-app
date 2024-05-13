@@ -65,7 +65,7 @@ export default function SearchLift({ navigation }) {
 
   const checkIfLiftExists = async (lift) => {
     const exists = exercises.find(
-      (exercise) => exercise.exerciseName === lift.exerciseName,
+      (exercise) => exercise.exerciseName === lift.item.name,
     );
     if (exists) {
       return true;
@@ -75,8 +75,6 @@ export default function SearchLift({ navigation }) {
   };
 
   const handleSaveLift = async ({ lift }) => {
-    console.log("Saving lift", lift);
-
     // check if the lift is already in the async storage
     // if it is, don't save it
     const exists = await checkIfLiftExists(lift);
@@ -106,23 +104,25 @@ export default function SearchLift({ navigation }) {
       defaultWeight = 40;
     }
 
-    console.log("Weight unit", weightUnit);
-    console.log("Default weight", defaultWeight);
-
     const userId = firebaseUser.uid;
-    console.log("Saving lift to user", userId);
 
     const exercise = {
       defaultNumberOfReps: 10,
       defaultNumberOfSets: 4,
       defaultWeight: defaultWeight,
-      exerciseName: lift.exerciseName,
+      exerciseName: lift.item.name,
       defaultRestTime: 60,
       defaultWeightSystem: weightUnit,
-      muscle: lift.muscle,
-      type: lift.type,
-      equipment: lift.equipment,
+      muscle: lift.item.primaryMuscles[0] || "",
+      // type: lift.type, DEPRECATED
+      equipment: lift.item.equipment || "",
       userId: userId,
+      images: lift.item.images || [],
+      instructions: lift.item.instructions || [],
+      level: lift.item.level || "",
+      category: lift.item.category || "",
+      mechanic: lift.item.mechanic || "",
+      force: lift.item.force || "",
       weightRecord: [],
       oneRepMax: 0,
     };

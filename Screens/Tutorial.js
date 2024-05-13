@@ -14,7 +14,6 @@ import { Ionicons } from "@expo/vector-icons";
 import generateImageURL from "../Utils/generateImageURL";
 
 export default function Tutorial({ navigation, route }) {
-  const [lift, setLift] = useState(null);
   const [liftName, setLiftName] = useState("");
   const [tutorial, setTutorial] = useState([]);
   const [images, setImages] = useState([]);
@@ -24,7 +23,6 @@ export default function Tutorial({ navigation, route }) {
 
   useEffect(() => {
     if (route.params && route.params.lift && route.params.lift.item) {
-      setLift(route.params.lift.item);
       setLiftName(route.params.lift.item.name);
       setTutorial(route.params.lift.item.instructions);
       if (route.params.lift.item.images) {
@@ -36,7 +34,6 @@ export default function Tutorial({ navigation, route }) {
         }
       }
     } else if (route.params && route.params.lift) {
-      setLift(route.params.lift);
       setLiftName(route.params.lift.exerciseName);
       if (route.params.lift.instructions) {
         setTutorial(route.params.lift.instructions);
