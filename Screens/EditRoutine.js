@@ -7,6 +7,7 @@ import {
   Pressable,
   TextInput,
   ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -183,7 +184,8 @@ export default function EditRoutine({ navigation }) {
         <View
           style={{
             width: "100%",
-            minHeight: 600,
+            height: "100%",
+            maxHeight: Dimensions.get("window").height - 140,
             backgroundColor: "#0B0B0B",
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
@@ -360,17 +362,15 @@ const styles = StyleSheet.create({
     width: "100%",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    minHeight: 600,
   },
 
   exercises: {
     width: "100%",
-    backgroundColor: "#0b0b0b",
+    backgroundColor: "#0B0B0B",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 120,
-    minHeight: 600,
+    minHeight: 500,
   },
 });

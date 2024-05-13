@@ -17,9 +17,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { EditRoutineContext } from "../context/EditRoutineContext";
 import { AppContext } from "../context/AppContext.js";
 
-import { FIRESTORE, FIREBASE_AUTH } from "../firebaseConfig.js";
-import { doc, getDoc } from "firebase/firestore";
-
 import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
 import calculateTimeLift from "../Utils/calculateTimeLift.js";
 
@@ -279,7 +276,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: "100%",
-    marginBottom: 100,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
