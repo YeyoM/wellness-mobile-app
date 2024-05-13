@@ -1,8 +1,10 @@
-import React from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import generateImageURL from "../Utils/generateImageURL";
 
 export default function CurrentExercise({
+  exerciseName,
   reps,
   sets,
   weight,
@@ -11,22 +13,67 @@ export default function CurrentExercise({
   incline,
   resistance,
   speed,
-  image,
+  images,
+  defaultImage,
+  instructions,
   navigation,
   type,
 }) {
+  const [lift, setLift] = useState({});
+  const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    setLift({
+      exerciseName: exerciseName,
+      reps: reps,
+      sets: sets,
+      weight: weight,
+      restTime: restTime,
+      time: time,
+      incline: incline,
+      resistance: resistance,
+      speed: speed,
+      images: images,
+      instructions: instructions,
+    });
+
+    setImage(null);
+  }, [
+    exerciseName,
+    reps,
+    sets,
+    weight,
+    restTime,
+    time,
+    incline,
+    resistance,
+    speed,
+    images,
+    instructions,
+  ]);
+
+  useEffect(() => {
+    if (images && images.length > 1) {
+      setImage(generateImageURL(images[0]));
+    } else {
+      setImage(defaultImage);
+    }
+  }, [exerciseName]);
+
   return (
     <View style={styles.container}>
       <View style={styles.top}>
-        <Image
-          source={{ uri: image }}
-          style={{
-            width: "100%",
-            height: 180,
-            borderRadius: 10,
-            objectFit: "cover",
-          }}
-        />
+        {image && (
+          <Image
+            source={{ uri: image }}
+            style={{
+              width: "100%",
+              height: 180,
+              borderRadius: 10,
+              objectFit: "cover",
+            }}
+          />
+        )}
       </View>
       <View style={styles.bottom}>
         {type === "lift" ? (
@@ -172,12 +219,32 @@ export default function CurrentExercise({
           </View>
         )}
         <View style={styles.right}>
-          <TouchableOpacity onPress={() => navigation.navigate("Workout")}>
-            <Ionicons name="play-circle-outline" size={32} color="white" />
-          </TouchableOpacity>
-          <Text style={{ color: "#a0a0a0", fontSize: 12, marginTop: 0 }}>
-            Tutorial
-          </Text>
+          <Pressable
+            onPress={() => {
+              navigation.navigate("Tutorial", { lift: lift });
+              console.log("Lift:", lift);
+            }}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Ionicons
+              name="information-circle-outline"
+              size={22}
+              color="#a0a0a0"
+            />
+            <Text
+              style={{
+                color: "#a0a0a0",
+                fontSize: 12,
+                fontStyle: "italic",
+              }}
+            >
+              Tutorial
+            </Text>
+          </Pressable>
         </View>
       </View>
     </View>

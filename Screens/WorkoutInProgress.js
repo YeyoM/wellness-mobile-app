@@ -61,6 +61,10 @@ export default function WorkoutInProgress({ route, navigation }) {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(null);
   const [currentExerciseType, setCurrentExerciseType] = useState(null);
 
+  const [currentExerciseImages, setCurrentExerciseImages] = useState([]);
+  const [currentExerciseInstructions, setCurrentExerciseInstructions] =
+    useState([]);
+
   const [currentExerciseReps, setCurrentExerciseReps] = useState(null);
   const [currentExerciseSets, setCurrentExerciseSets] = useState(null);
   const [currentExerciseWeight, setCurrentExerciseWeight] = useState(null);
@@ -160,12 +164,16 @@ export default function WorkoutInProgress({ route, navigation }) {
       setIsResistanceValid(exercise.resistanceLevel ? true : false);
       setCurrentExerciseSpeed(exercise.speed ? exercise.speed : 0);
       setIsSpeedValid(exercise.speed ? true : false);
+      setCurrentExerciseImages(exercise.images || [day.image]);
+      setCurrentExerciseInstructions(exercise.instructions || []);
     } else {
       setCurrentExerciseType("lift");
       setCurrentExerciseReps(exercise.numberOfReps);
       setCurrentExerciseSets(exercise.numberOfSets);
       setCurrentExerciseWeight(exercise.weight);
       setCurrentExerciseRestTime(exercise.restTime);
+      setCurrentExerciseImages(exercise.images || [day.image]);
+      setCurrentExerciseInstructions(exercise.instructions || []);
       const sets = exercise.numberOfSets;
       const weight = exercise.weight;
       const reps = exercise.numberOfReps;
@@ -431,6 +439,8 @@ export default function WorkoutInProgress({ route, navigation }) {
       setCurrentExerciseIncline(nextExercise.incline);
       setCurrentExerciseResistance(nextExercise.resistanceLevel);
       setCurrentExerciseSpeed(nextExercise.speed);
+      setCurrentExerciseImages(nextExercise.images || [day.image]);
+      setCurrentExerciseInstructions(nextExercise.instructions || []);
     } else {
       if (currentExerciseIndex < numberOfExercises - 1) {
         setCurrentExerciseType("lift");
@@ -441,6 +451,8 @@ export default function WorkoutInProgress({ route, navigation }) {
         setCurrentExerciseSets(nextExercise.numberOfSets);
         setCurrentExerciseWeight(nextExercise.weight);
         setCurrentExerciseRestTime(nextExercise.restTime);
+        setCurrentExerciseImages(nextExercise.images || [day.image]);
+        setCurrentExerciseInstructions(nextExercise.instructions || []);
         const sets = nextExercise.numberOfSets;
         const weight = nextExercise.weight;
         const reps = nextExercise.numberOfReps;
@@ -614,23 +626,27 @@ export default function WorkoutInProgress({ route, navigation }) {
               ) : null}
               {startWorkout && currentExerciseType === "lift" ? (
                 <CurrentExercise
-                  exercise={currentExercise.exerciseName}
+                  exerciseName={currentExercise.exerciseName}
                   reps={currentExerciseReps}
                   sets={currentExerciseSets}
                   weight={currentExerciseWeight}
                   restTime={currentExerciseRestTime}
-                  image={day.image}
+                  defaultImage={day.image}
+                  images={currentExerciseImages}
+                  instructions={currentExerciseInstructions}
                   navigation={navigation}
                   type="lift"
                 />
               ) : startWorkout && currentExerciseType === "cardio" ? (
                 <CurrentExercise
-                  exercise={currentExercise.exerciseName}
+                  exerciseName={currentExercise.exerciseName}
                   time={currentExerciseTime}
                   incline={currentExerciseIncline}
                   resistance={currentExerciseResistance}
                   speed={currentExerciseSpeed}
-                  image={day.image}
+                  defaultImage={day.image}
+                  images={currentExerciseImages}
+                  instructions={currentExerciseInstructions}
                   navigation={navigation}
                   type="cardio"
                 />

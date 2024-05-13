@@ -13,7 +13,12 @@ import { FIRESTORE } from "../../firebaseConfig.js";
  * @param {number} exercise.defaultRestTime - the exercise's default rest time
  * @param {string} exercise.muscle - the exercise's muscle
  * @param {string} exercise.equipment - the exercise's equipment
- * @param {string} exercise.type - the exercise's type
+ * @param {array} exercise.images - the exercise's images
+ * @param {array} exercise.instructions - the exercise's instructions
+ * @param {string} exercise.level - the exercise's level
+ * @param {string} exercise.category - the exercise's category
+ * @param {string} exercise.mechanic - the exercise's mechanic
+ * @param {string} exercise.force - the exercise's force
  * @param {string} exercise.oneRepMax - the exercise's one rep max
  * @param {string} exercise.userId - the exercise's user id
  * @returns {object} - the new exercise object
@@ -60,8 +65,28 @@ export default async function addExerciseToUser(userId, exercise) {
     throw new Error("No equipment provided");
   }
 
-  if (!exercise.type) {
-    throw new Error("No type provided");
+  if (!exercise.images) {
+    throw new Error("No images provided");
+  }
+
+  if (!exercise.instructions) {
+    throw new Error("No instructions provided");
+  }
+
+  if (!exercise.level) {
+    throw new Error("No level provided");
+  }
+
+  if (!exercise.category) {
+    throw new Error("No category provided");
+  }
+
+  if (!exercise.mechanic) {
+    throw new Error("No mechanic provided");
+  }
+
+  if (!exercise.force) {
+    throw new Error("No force provided");
   }
 
   // one rep max can be 0

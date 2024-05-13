@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-import { EXPO_PUBLIC_WELLNESS_NINJA_API_KEY } from "@env";
+import SearchExercise from "../Utils/searchExercise.js";
 
 import addExerciseToUser from "../FirebaseFunctions/Exercises/addExerciseToUser.js";
 
@@ -26,8 +26,6 @@ export default function SearchLift({ navigation }) {
   const [success, setSuccess] = useState(null);
 
   const [inputName, setInputName] = useState("");
-  const [inputType, _setInputType] = useState("strength");
-  const [inputMuscle, _setInputMuscle] = useState("chest");
 
   const scrollViewRef = useRef();
 
@@ -43,31 +41,17 @@ export default function SearchLift({ navigation }) {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `https://api.api-ninjas.com/v1/exercises?name=${text}&type=${inputType}&muscles=${inputMuscle}`,
-        {
-          method: "GET",
-          headers: {
-            "X-Api-Key": EXPO_PUBLIC_WELLNESS_NINJA_API_KEY,
-          },
-        },
-      );
-
-      const data = await response.json();
-
-      // get the name, muscle, type and equipment of each exercises
-      const exercises = data.map((exercise) => {
-        return {
-          exerciseName: exercise.name,
-          muscle: exercise.muscle,
-          type: exercise.type,
-          equipment: exercise.equipment,
-        };
-      });
-
-      console.log("Exercises", exercises);
-
-      setSearchedExercises(exercises);
+      const results = SearchExercise({ searchInput: text });
+      if (results.length === 0) {
+        setTimeout(() => {
+          setError(null);
+        }, 2000);
+        setLoading(false);
+        setError("No results found");
+        return;
+      }
+      console.log("Results", results[0]);
+      setSearchedExercises(results);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -81,7 +65,7 @@ export default function SearchLift({ navigation }) {
 
   const checkIfLiftExists = async (lift) => {
     const exists = exercises.find(
-      (exercise) => exercise.exerciseName === lift.exerciseName,
+      (exercise) => exercise.exerciseName === lift.item.name,
     );
     if (exists) {
       return true;
@@ -91,8 +75,6 @@ export default function SearchLift({ navigation }) {
   };
 
   const handleSaveLift = async ({ lift }) => {
-    console.log("Saving lift", lift);
-
     // check if the lift is already in the async storage
     // if it is, don't save it
     const exists = await checkIfLiftExists(lift);
@@ -122,23 +104,25 @@ export default function SearchLift({ navigation }) {
       defaultWeight = 40;
     }
 
-    console.log("Weight unit", weightUnit);
-    console.log("Default weight", defaultWeight);
-
     const userId = firebaseUser.uid;
-    console.log("Saving lift to user", userId);
 
     const exercise = {
       defaultNumberOfReps: 10,
       defaultNumberOfSets: 4,
       defaultWeight: defaultWeight,
-      exerciseName: lift.exerciseName,
+      exerciseName: lift.item.name,
       defaultRestTime: 60,
       defaultWeightSystem: weightUnit,
-      muscle: lift.muscle,
-      type: lift.type,
-      equipment: lift.equipment,
+      muscle: lift.item.primaryMuscles[0] || "",
+      // type: lift.type, DEPRECATED
+      equipment: lift.item.equipment || "",
       userId: userId,
+      images: lift.item.images || [],
+      instructions: lift.item.instructions || [],
+      level: lift.item.level || "",
+      category: lift.item.category || "",
+      mechanic: lift.item.mechanic || "",
+      force: lift.item.force || "",
       weightRecord: [],
       oneRepMax: 0,
     };
@@ -259,9 +243,10 @@ export default function SearchLift({ navigation }) {
                   marginBottom: 20,
                   backgroundColor: "#313231",
                   padding: 14,
+                  paddingRight: 24,
                   borderRadius: 20,
                 }}
-                key={lift.exerciseName}
+                key={lift.refIndex}
               >
                 <Pressable
                   style={{
@@ -295,7 +280,7 @@ export default function SearchLift({ navigation }) {
                 </Pressable>
                 <View
                   style={{
-                    width: "70%",
+                    width: "60%",
                     padding: 10,
                     display: "flex",
                     flexDirection: "column",
@@ -312,18 +297,43 @@ export default function SearchLift({ navigation }) {
                     }}
                     numberOfLines={2}
                   >
-                    {lift.exerciseName}
+                    {lift.item.name}
                   </Text>
                   <Text
                     style={{
-                      color: "#e0e0e0",
+                      color: "#a0a0a0",
                       fontSize: 14,
                       textAlign: "center",
                     }}
                   >
-                    {lift.muscle}
+                    {lift.item.primaryMuscles.join(", ")}
                   </Text>
                 </View>
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate("Tutorial", { lift: lift })
+                  }
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Ionicons
+                    name="information-circle-outline"
+                    size={22}
+                    color="#a0a0a0"
+                  />
+                  <Text
+                    style={{
+                      color: "#a0a0a0",
+                      fontSize: 12,
+                      fontStyle: "italic",
+                    }}
+                  >
+                    Tutorial
+                  </Text>
+                </Pressable>
               </View>
             ))}
         </View>
