@@ -36,7 +36,10 @@
     "react-native-swipeable-item": "^2.0.9",
     "expo-checkbox": "~3.0.0",
     "expo-linear-gradient": "~13.0.2",
-    "react-native-pager-view": "6.3.0"
+    "react-native-pager-view": "6.3.0",
+    "react-native-web": "~0.19.10",
+    "react-dom": "18.2.0",
+    "@expo/metro-runtime": "~3.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
