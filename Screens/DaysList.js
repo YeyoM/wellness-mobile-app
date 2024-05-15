@@ -172,13 +172,24 @@ export default function DaysList({ navigation, route }) {
     <GestureHandlerRootView style={styles.container}>
       <View style={{ backgroundColor: "#0B0B0B", height: "100%" }}>
         <ScrollView
-          style={{ width: "100%", marginTop: Constants.statusBarHeight }}
+          style={{ width: "100%", marginTop: Constants.statusBarHeight + 20 }}
         >
+          <Pressable
+            onPress={() => navigation.goBack()}
+            style={{
+              position: "absolute",
+              top: 10,
+              left: 20,
+              zIndex: 999,
+            }}
+          >
+            <Ionicons name="chevron-back-outline" size={36} color="white" />
+          </Pressable>
           <View
             style={{
               display: "flex",
               alignItems: "center",
-              marginTop: 20,
+              marginTop: 40,
               width: "100%",
             }}
           >
