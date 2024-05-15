@@ -1,12 +1,7 @@
 import React, { useState, useContext } from "react";
-import {
-  StyleSheet,
-  Alert,
-  Text,
-  Pressable,
-  View,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, Text, Pressable, View, Dimensions } from "react-native";
+
+import alert from "../../components/Alert";
 import TopNavigationBar from "../../components/TopNavigationBar";
 
 import { interpolate } from "react-native-reanimated";
@@ -30,7 +25,7 @@ export default function UserInputWeight({ navigation }) {
 
   const handleContinue = () => {
     if (weight_ === "") {
-      Alert.alert("Please enter your weight");
+      alert("Please enter your weight");
       return;
     }
     setWeight(weight_);

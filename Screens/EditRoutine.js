@@ -1,7 +1,6 @@
 import React, { useState, useRef, useContext } from "react";
 import {
   View,
-  Alert,
   Text,
   StyleSheet,
   Pressable,
@@ -16,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import CarouselDays from "../components/CarouselDays";
 import EditingRoutineExerciseList from "../components/EditingRoutineExerciseList";
+import alert from "../components/Alert.js";
 
 import { FIREBASE_AUTH } from "../firebaseConfig.js";
 import saveEditedRoutine from "../FirebaseFunctions/Routines/saveEditedRoutine.js";
@@ -81,7 +81,7 @@ export default function EditRoutine({ navigation }) {
       navigation.navigate("Saved Routines");
     } catch (err) {
       console.log(err);
-      Alert.alert("Couldn't save the routine");
+      alert("Couldn't save the routine");
       setLoading(false);
     }
   };

@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,9 +7,10 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Dimensions,
-  Alert,
 } from "react-native";
-import React, { useState } from "react";
+
+import alert from "../../components/Alert";
+
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 
@@ -18,7 +20,7 @@ export default function UpdateName({ route, navigation }) {
 
   const handleContinue = () => {
     if (name_ === "") {
-      Alert.alert("Please enter your name");
+      alert("Please enter your name");
       return;
     }
     setName(name_);

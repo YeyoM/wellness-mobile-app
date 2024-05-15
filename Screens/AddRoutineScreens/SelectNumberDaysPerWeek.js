@@ -1,7 +1,6 @@
 import React from "react";
 import {
   View,
-  Alert,
   Text,
   StyleSheet,
   Pressable,
@@ -11,6 +10,7 @@ import {
 import { useState, useContext } from "react";
 
 import TopNavigationBar from "../../components/TopNavigationBar";
+import alert from "../../components/Alert.js";
 import { CreateRoutineContext } from "../../context/CreateRoutineContext.js";
 import { EditRoutineContext } from "../../context/EditRoutineContext.js";
 import { AppContext } from "../../context/AppContext.js";
@@ -83,7 +83,7 @@ export default function SelectNumberDaysPerWeek({ route, navigation }) {
     } catch (error) {
       console.log(error);
       setLoading(false);
-      Alert.alert("Error", "Something went wrong, please try again later.");
+      alert("Error", "Something went wrong, please try again later.");
       navigation.navigate("Home");
       return;
     }

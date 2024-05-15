@@ -6,13 +6,14 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Image,
-  Alert,
   ActivityIndicator,
   Platform,
 } from "react-native";
 import React, { useState } from "react";
 import { FIREBASE_AUTH } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+
+import alert from "../components/Alert";
 
 export default function Signup({ navigation }) {
   const [email, setEmail] = useState("");
@@ -33,7 +34,7 @@ export default function Signup({ navigation }) {
 
     if (email === "") {
       setLoading(false);
-      Alert.alert("Please enter your email");
+      alert("Please enter your email");
       return;
     }
 
@@ -41,19 +42,19 @@ export default function Signup({ navigation }) {
     const emailRegex = /\S+@\S+\.\S+/;
     if (!emailRegex.test(email)) {
       setLoading(false);
-      Alert.alert("Please enter a valid email");
+      alert("Please enter a valid email");
       return;
     }
 
     if (password === "") {
       setLoading(false);
-      Alert.alert("Please enter your password");
+      alert("Please enter your password");
       return;
     }
 
     if (password.length < 8) {
       setLoading(false);
-      Alert.alert("Password must be at least 8 characters long");
+      alert("Password must be at least 8 characters long");
       return;
     }
 
@@ -63,7 +64,7 @@ export default function Signup({ navigation }) {
       navigation.navigate("User Input");
     } catch (error) {
       setLoading(false);
-      Alert.alert("There was an error signing up");
+      alert("There was an error signing up");
       return;
     }
   };

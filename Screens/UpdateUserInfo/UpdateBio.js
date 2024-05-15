@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   StyleSheet,
   Platform,
@@ -7,11 +8,12 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Dimensions,
-  Alert,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import React, { useState } from "react";
+
+import alert from "../../components/Alert";
+
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 
@@ -22,7 +24,7 @@ export default function UpdateBio({ route, navigation }) {
 
   const handleContinue = () => {
     if (bio_ === "") {
-      Alert.alert("Please enter your bio");
+      alert("Please enter your bio");
       return;
     }
     // transform multiline string to single line

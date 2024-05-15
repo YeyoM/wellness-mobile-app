@@ -10,13 +10,14 @@ import {
   View,
   Text,
   StyleSheet,
-  Alert,
   ScrollView,
   Pressable,
   Image,
   Share,
   Platform,
 } from "react-native";
+
+import alert from "../components/Alert.js";
 
 import * as Clipboard from "expo-clipboard";
 
@@ -93,16 +94,12 @@ export default function DaysList({ navigation, route }) {
 
   const handleCopyId = async () => {
     await Clipboard.setStringAsync(`routine/${routine.id}`);
-    Alert.alert(
-      "Routine ID Copied",
-      "You can now share this ID with your friends!",
-      [
-        {
-          text: "Awesome!",
-          onPress: () => console.log("OK Pressed"),
-        },
-      ],
-    );
+    alert("Routine ID Copied", "You can now share this ID with your friends!", [
+      {
+        text: "Awesome!",
+        onPress: () => console.log("OK Pressed"),
+      },
+    ]);
   };
 
   const handleShareLink = async () => {
@@ -127,45 +124,41 @@ export default function DaysList({ navigation, route }) {
 
   const handleDelete = async () => {
     console.log("delete");
-    Alert.alert(
-      "Delete Routine",
-      "Are you sure you want to delete this routine?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        {
-          text: "Delete",
-          onPress: async () => {
-            deleteFavoriteRoutine();
-            setFavoriteRoutine(null);
-            setLoading(true);
+    alert("Delete Routine", "Are you sure you want to delete this routine?", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      {
+        text: "Delete",
+        onPress: async () => {
+          deleteFavoriteRoutine();
+          setFavoriteRoutine(null);
+          setLoading(true);
+          setSuccess(false);
+          try {
+            await deleteRoutine(FIREBASE_AUTH.currentUser.uid, routine);
+            deleteRoutineState(routine);
+            deleteDaysState(routine);
+            setLoading(false);
+            setSuccess(true);
+            navigation.navigate("Saved Routines");
+          } catch (error) {
+            setLoading(false);
             setSuccess(false);
-            try {
-              await deleteRoutine(FIREBASE_AUTH.currentUser.uid, routine);
-              deleteRoutineState(routine);
-              deleteDaysState(routine);
-              setLoading(false);
-              setSuccess(true);
-              navigation.navigate("Saved Routines");
-            } catch (error) {
-              setLoading(false);
-              setSuccess(false);
-              Alert.alert("Error", "There was an error deleting the routine", [
-                {
-                  text: "OK",
-                  onPress: () => console.log("OK Pressed"),
-                },
-              ]);
-              console.log(error);
-            }
-          },
-          style: "destructive",
+            alert("Error", "There was an error deleting the routine", [
+              {
+                text: "OK",
+                onPress: () => console.log("OK Pressed"),
+              },
+            ]);
+            console.log(error);
+          }
         },
-      ],
-    );
+        style: "destructive",
+      },
+    ]);
   };
 
   return (

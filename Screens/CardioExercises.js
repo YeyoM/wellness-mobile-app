@@ -1,13 +1,8 @@
 import React, { useContext } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Pressable,
-  Alert,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
+import alert from "../components/Alert.js";
 
 import calculateCaloriesCardioExercise from "../Utils/calculateCaloriesCardioExercise.js";
 
@@ -32,7 +27,7 @@ export default function CardioExercises({ navigation }) {
     );
 
     if (isAlreadyInList) {
-      Alert.alert("This cardio exercise is already in the list");
+      alert("This cardio exercise is already in the list");
       return;
     }
 

@@ -1,13 +1,9 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Pressable,
-  Alert,
-  Dimensions,
-} from "react-native";
 import React, { useState, useContext } from "react";
+import { StyleSheet, Text, View, Pressable, Dimensions } from "react-native";
 import TopNavigationBar from "../../components/TopNavigationBar";
+
+import alert from "../../components/Alert";
+
 import { interpolate, Extrapolate } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
@@ -17,7 +13,7 @@ export default function UserInputAge({ navigation }) {
 
   const handleContinue = () => {
     if (age === "") {
-      Alert.alert("Please enter your age");
+      alert("Please enter your age");
       return;
     }
     navigation.navigate("About you (Weight Unit)");

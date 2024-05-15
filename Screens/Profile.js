@@ -8,10 +8,11 @@ import {
   Dimensions,
   ActivityIndicator,
   Share,
-  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
+
+import alert from "../components/Alert.js";
 
 import readableTimeToMinutes from "../Utils/readableTimeToMinutes.js";
 import { AppContext } from "../context/AppContext.js";
@@ -57,7 +58,7 @@ export default function Profile({ navigation }) {
 
   const handleCopyId = async () => {
     await Clipboard.setStringAsync(`profile/${firebaseUser.uid}`);
-    Alert.alert(
+    alert(
       "Your ID has been copied!",
       "You can now share this ID with your friends!",
       [

@@ -1,13 +1,9 @@
-import {
-  Alert,
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  Pressable,
-} from "react-native";
 import React, { useState, useContext } from "react";
+import { StyleSheet, Text, View, Pressable } from "react-native";
+
 import TopNavigationBar from "../../components/TopNavigationBar";
+import alert from "../../components/Alert";
+
 import { Ionicons } from "@expo/vector-icons";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
@@ -68,7 +64,7 @@ export default function UserInputTrainingHours({ navigation }) {
       !selectNight &&
       !selectWhenever
     ) {
-      Alert.alert("Please select an option");
+      alert("Please select an option");
     } else {
       if (selectEarly) {
         setTrainingHours("Early Bird");

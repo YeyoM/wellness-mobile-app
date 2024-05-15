@@ -7,9 +7,10 @@ import {
   Pressable,
   TextInput,
   RefreshControl,
-  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
+import alert from "../components/Alert.js";
 
 import calculateTimeLift from "../Utils/calculateTimeLift.js";
 import calculateCaloriesLift from "../Utils/calculateCaloriesLift.js";
@@ -38,7 +39,7 @@ export default function SavedLifts({ route, navigation }) {
       },
     );
     if (isAlreadyInList) {
-      Alert.alert("This lift is already in the list");
+      alert("This lift is already in the list");
       return;
     }
 

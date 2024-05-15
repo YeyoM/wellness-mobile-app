@@ -3,7 +3,6 @@ import {
   View,
   Text,
   ActivityIndicator,
-  Alert,
   StyleSheet,
   TextInput,
   ScrollView,
@@ -12,6 +11,8 @@ import {
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 import editOneRepMax from "../FirebaseFunctions/Exercises/editOneRepMax.js";
+
+import alert from "../components/Alert.js";
 
 import { AppContext } from "../context/AppContext.js";
 
@@ -82,7 +83,7 @@ export default function EditOneRepMax({ navigation, route }) {
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        Alert.alert("Error", "An error occurred while saving your 1RM");
+        alert("Error", "An error occurred while saving your 1RM");
         console.log(error);
       }
     }

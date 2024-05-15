@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Alert, Text, Pressable } from "react-native";
-import TopNavigationBar from "../../components/TopNavigationBar";
+import { StyleSheet, View, Text, Pressable } from "react-native";
+
+import alert from "../../components/Alert";
 
 export default function UpdateHeightUnit({ route, navigation }) {
   const { height, setHeight, heightUnit, setHeightUnit } = route.params;
@@ -20,7 +21,7 @@ export default function UpdateHeightUnit({ route, navigation }) {
 
   const handleContinue = () => {
     if (!selectCm && !selectIn) {
-      Alert.alert("Please select a height unit");
+      alert("Please select a height unit");
       return;
     }
     if (selectCm) {

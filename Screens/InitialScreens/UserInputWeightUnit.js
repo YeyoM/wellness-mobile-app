@@ -1,6 +1,8 @@
 import React, { useState, useContext } from "react";
-import { StyleSheet, View, Alert, Text, Pressable } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import TopNavigationBar from "../../components/TopNavigationBar";
+
+import alert from "../../components/Alert";
 
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
@@ -22,7 +24,7 @@ export default function UserInputWeightUnit({ navigation }) {
 
   const handleContinue = () => {
     if (!selectKg && !selectLb) {
-      Alert.alert("Please select a weight unit");
+      alert("Please select a weight unit");
       return;
     }
     if (selectKg) {

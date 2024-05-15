@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 import {
-  Alert,
   StyleSheet,
   Text,
   View,
@@ -11,6 +10,8 @@ import { CommonActions } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
 import TopNavigationBar from "../../components/TopNavigationBar";
+import alert from "../../components/Alert";
+
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputFinishScreen({ navigation }) {
@@ -36,7 +37,7 @@ export default function UserInputFinishScreen({ navigation }) {
 
   const handleContinue = async () => {
     if (!selectSeeIt && !selectLater) {
-      Alert.alert("Please select an option");
+      alert("Please select an option");
       return;
     }
     try {
@@ -50,7 +51,7 @@ export default function UserInputFinishScreen({ navigation }) {
       );
     } catch (error) {
       setError(error);
-      Alert.alert("Error", error);
+      alert("Error", error);
     } finally {
       setLoading(false);
     }
