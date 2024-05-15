@@ -9,19 +9,23 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/metro-runtime": "~3.2.1",
     "@gorhom/bottom-sheet": "^4.6.1",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/material-top-tabs": "^6.6.13",
     "@react-navigation/native-stack": "^6.9.26",
     "expo": "~51.0.2",
+    "expo-checkbox": "~3.0.0",
     "expo-clipboard": "~6.0.3",
     "expo-haptics": "~13.0.1",
+    "expo-linear-gradient": "~13.0.2",
     "expo-linking": "~6.3.1",
     "expo-status-bar": "~1.12.1",
     "firebase": "^10.11.1",
     "fuse.js": "^6.6.2",
     "react": "18.2.0",
+    "react-dom": "18.2.0",
     "react-native": "0.74.1",
     "react-native-awesome-slider": "^2.5.3",
     "react-native-circular-progress-indicator": "^4.4.2",
@@ -30,16 +34,13 @@
     "react-native-dropdown-select-list": "^2.0.5",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-gifted-charts": "^1.4.10",
+    "react-native-pager-view": "6.3.0",
     "react-native-progress": "^5.0.1",
     "react-native-reanimated": "~3.10.1",
     "react-native-reanimated-carousel": "^3.5.1",
     "react-native-swipeable-item": "^2.0.9",
-    "expo-checkbox": "~3.0.0",
-    "expo-linear-gradient": "~13.0.2",
-    "react-native-pager-view": "6.3.0",
     "react-native-web": "~0.19.10",
-    "react-dom": "18.2.0",
-    "@expo/metro-runtime": "~3.2.1"
+    "react-native-web-refresh-control": "^1.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

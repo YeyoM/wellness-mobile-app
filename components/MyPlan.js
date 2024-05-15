@@ -5,7 +5,10 @@ import {
   StyleSheet,
   ScrollView,
   RefreshControl,
+  Platform,
 } from "react-native";
+import { RefreshControl as WebRefreshControl } from "react-native-web-refresh-control";
+
 import PreviewWorkout from "./PreviewWorkout";
 
 import { AppContext } from "../context/AppContext.js";
@@ -37,7 +40,19 @@ export default function MyPlan({ navigation }) {
       <ScrollView
         style={{ width: "100%", marginTop: 20 }}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          Platform.OS === "web" ? (
+            <WebRefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#fff"
+            />
+          ) : (
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#fff"
+            />
+          )
         }
       >
         <View style={styles.plan}>
