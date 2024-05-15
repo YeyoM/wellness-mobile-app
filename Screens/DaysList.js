@@ -15,6 +15,7 @@ import {
   Pressable,
   Image,
   Share,
+  Platform,
 } from "react-native";
 
 import * as Clipboard from "expo-clipboard";
@@ -237,64 +238,130 @@ export default function DaysList({ navigation, route }) {
             </Pressable>
           </View>
         </ScrollView>
-        <BottomSheet
-          ref={bottomSheetRef}
-          index={-1}
-          snapPoints={["65%", "75%"]}
-          onChange={handleSheetChanges}
-          enablePanDownToClose={true}
-          backgroundStyle={{ backgroundColor: "#292929" }}
-          handleIndicatorStyle={{ backgroundColor: "#fff" }}
-        >
-          <BottomSheetView style={styles.shareContainer}>
-            <Pressable onPress={() => bottomSheetRef.current.close()}>
-              <Text style={{ color: "#007AC8", fontSize: 18 }}>Done</Text>
-            </Pressable>
-            {days && days[0] && days[0].image && (
-              <Image
-                source={{ uri: days[0].image }}
-                style={{
-                  width: "100%",
-                  height: 200,
-                  marginTop: 20,
-                  borderRadius: 16,
-                }}
-              />
-            )}
-            <View style={styles.routineInfo}>
-              <Text style={{ color: "#fff", fontSize: 24 }}>{routineName}</Text>
-              <Text style={{ color: "#a0a0a0", fontSize: 16 }}>
-                {days && days.length} Days
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => handleShareLink()}
-              style={styles.shareLink}
-            >
-              <Text style={{ color: "#fff", fontSize: 18 }}>Share Link</Text>
-            </Pressable>
-            <View style={styles.routineId}>
-              <Text style={styles.routeIdText} numberOfLines={1}>
-                Routine ID: {routine && `routine/${routine.id}`}
-              </Text>
-              <Pressable onPress={() => handleCopyId()}>
-                <Ionicons name="copy-outline" size={24} color="#007AC8" />
+        {Platform.OS === "web" ? (
+          <BottomSheet
+            ref={bottomSheetRef}
+            index={-1}
+            snapPoints={["90%"]}
+            onChange={handleSheetChanges}
+            enablePanDownToClose={false}
+            backgroundStyle={{ backgroundColor: "#292929" }}
+            enableDynamicSizing={false}
+            handleIndicatorStyle={{ backgroundColor: "#292929" }}
+          >
+            <BottomSheetView style={styles.shareContainer}>
+              <Pressable onPress={() => bottomSheetRef.current.close()}>
+                <Text style={{ color: "#007AC8", fontSize: 18 }}>Done</Text>
               </Pressable>
-            </View>
-            <Text
-              style={{
-                color: "#a0a0a0",
-                fontSize: 12,
-                marginTop: 10,
-                textAlign: "center",
-                fontStyle: "italic",
-              }}
-            >
-              Or share this routine ID with your friends and tell them to enter
-              it on the search page to find your routine.
-            </Text>
-          </BottomSheetView>
-        </BottomSheet>
+              {days && days[0] && days[0].image && (
+                <Image
+                  source={{ uri: days[0].image }}
+                  style={{
+                    width: "100%",
+                    height: 200,
+                    marginTop: 20,
+                    borderRadius: 16,
+                  }}
+                />
+              )}
+              <View style={styles.routineInfo}>
+                <Text style={{ color: "#fff", fontSize: 24 }}>
+                  {routineName}
+                </Text>
+                <Text style={{ color: "#a0a0a0", fontSize: 16 }}>
+                  {days && days.length} Days
+                </Text>
+              </View>
+              <Pressable
+                onPress={() => handleShareLink()}
+                style={styles.shareLink}
+              >
+                <Text style={{ color: "#fff", fontSize: 18 }}>Share Link</Text>
+              </Pressable>
+              <View style={styles.routineId}>
+                <Text style={styles.routeIdText} numberOfLines={1}>
+                  Routine ID: {routine && `routine/${routine.id}`}
+                </Text>
+                <Pressable onPress={() => handleCopyId()}>
+                  <Ionicons name="copy-outline" size={24} color="#007AC8" />
+                </Pressable>
+              </View>
+              <Text
+                style={{
+                  color: "#a0a0a0",
+                  fontSize: 12,
+                  marginTop: 10,
+                  textAlign: "center",
+                  fontStyle: "italic",
+                }}
+              >
+                Or share this routine ID with your friends and tell them to
+                enter it on the search page to find your routine.
+              </Text>
+            </BottomSheetView>
+          </BottomSheet>
+        ) : (
+          <BottomSheet
+            ref={bottomSheetRef}
+            index={-1}
+            snapPoints={["65%", "75%"]}
+            onChange={handleSheetChanges}
+            enablePanDownToClose={true}
+            backgroundStyle={{ backgroundColor: "#292929" }}
+            handleIndicatorStyle={{ backgroundColor: "#fff" }}
+          >
+            <BottomSheetView style={styles.shareContainer}>
+              <Pressable onPress={() => bottomSheetRef.current.close()}>
+                <Text style={{ color: "#007AC8", fontSize: 18 }}>Done</Text>
+              </Pressable>
+              {days && days[0] && days[0].image && (
+                <Image
+                  source={{ uri: days[0].image }}
+                  style={{
+                    width: "100%",
+                    height: 200,
+                    marginTop: 20,
+                    borderRadius: 16,
+                  }}
+                />
+              )}
+              <View style={styles.routineInfo}>
+                <Text style={{ color: "#fff", fontSize: 24 }}>
+                  {routineName}
+                </Text>
+                <Text style={{ color: "#a0a0a0", fontSize: 16 }}>
+                  {days && days.length} Days
+                </Text>
+              </View>
+              <Pressable
+                onPress={() => handleShareLink()}
+                style={styles.shareLink}
+              >
+                <Text style={{ color: "#fff", fontSize: 18 }}>Share Link</Text>
+              </Pressable>
+              <View style={styles.routineId}>
+                <Text style={styles.routeIdText} numberOfLines={1}>
+                  Routine ID: {routine && `routine/${routine.id}`}
+                </Text>
+                <Pressable onPress={() => handleCopyId()}>
+                  <Ionicons name="copy-outline" size={24} color="#007AC8" />
+                </Pressable>
+              </View>
+              <Text
+                style={{
+                  color: "#a0a0a0",
+                  fontSize: 12,
+                  marginTop: 10,
+                  textAlign: "center",
+                  fontStyle: "italic",
+                }}
+              >
+                Or share this routine ID with your friends and tell them to
+                enter it on the search page to find your routine.
+              </Text>
+            </BottomSheetView>
+          </BottomSheet>
+        )}
       </View>
     </GestureHandlerRootView>
   );
