@@ -36,7 +36,7 @@ export default async function getCapacityDataForGraph() {
   });
   const data = await response.json();
 
-  if (!data || data.length === 0) {
+  if (!data || await data.length === 0) {
     throw new Error("No data found");
   }
 
