@@ -79,7 +79,7 @@ export default function AddLift({ navigation }) {
               headerShown: false,
             }}
           >
-            <Tab.Screen name="Saved Lifts" component={SavedLifts} />
+            <Tab.Screen name="Saved Lifts" children={() => <SavedLifts />} />
             <Tab.Screen name="Search Lifts" component={SearchLift} />
             <Tab.Screen name="Cardio" component={CardioExercises} />
           </Tab.Navigator>

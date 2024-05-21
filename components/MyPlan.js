@@ -38,7 +38,7 @@ export default function MyPlan({ navigation }) {
   return (
     <View style={styles.container}>
       <ScrollView
-        style={{ width: "100%", marginTop: 20 }}
+        style={{ width: "100%", marginTop: 0 }}
         refreshControl={
           Platform.OS === "web" ? (
             <WebRefreshControl

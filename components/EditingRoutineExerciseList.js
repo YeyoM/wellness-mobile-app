@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   FlatList,
   Pressable,
+  Platform,
+  ScrollView,
 } from "react-native";
 
 import SwipeableItem, {
@@ -109,6 +111,84 @@ export default function EditingRoutineExerciseList({
     });
   };
 
+  const renderItemWeb = useCallback(({ item }) => {
+    return (
+      <View key={item.key}>
+        <View style={[styles.row, { height: 100 }]}>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Pressable
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                marginRight: 6,
+                marginLeft: 6,
+              }}
+            >
+              <Ionicons name="play-circle-outline" size={36} color="white" />
+              <Text style={{ color: "#9095A1", fontSize: 10 }}>Tutorial</Text>
+            </Pressable>
+            <View style={{ display: "flex", flexDirection: "column" }}>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontSize: 20,
+                  marginLeft: 16,
+                  maxWidth: 180,
+                }}
+                numberOfLines={2}
+                ellipsizeMode="tail"
+              >
+                {item.exercise.exerciseName}
+              </Text>
+              {item.key.includes("lift") ? (
+                <Text
+                  style={{ color: "#9095A1", fontSize: 12, marginLeft: 16 }}
+                >
+                  {item.exercise.numberOfSets} sets of {``}
+                  {item.exercise.numberOfReps} reps, {item.exercise.weight}
+                  {item.exercise.weightSystem}
+                </Text>
+              ) : (
+                <Text
+                  style={{ color: "#9095A1", fontSize: 12, marginLeft: 16 }}
+                >
+                  {item.exercise.duration} minutes
+                </Text>
+              )}
+            </View>
+          </View>
+          <View style={styles.buttonsContainer}>
+            <Pressable style={styles.editButton}>
+              <Ionicons
+                name="create-outline"
+                size={16}
+                color="white"
+                style={{ marginRight: 5 }}
+              />
+              <Text style={{ color: "white", fontSize: 14 }}>Edit</Text>
+            </Pressable>
+            <Pressable style={styles.deleteButton}>
+              <Ionicons
+                name="trash-outline"
+                size={16}
+                color="white"
+                style={{ marginRight: 5 }}
+              />
+              <Text style={{ color: "white", fontSize: 14 }}>Delete</Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
+    );
+  }, []);
+
   const renderItem = useCallback(({ item }) => {
     return (
       <SwipeableItem
@@ -194,17 +274,36 @@ export default function EditingRoutineExerciseList({
     );
   }, []);
 
-  return (
-    <View style={styles.container}>
-      <FlatList
-        keyExtractor={(item) => item.key}
-        data={initialData}
-        renderItem={renderItem}
-        style={{ width: "100%", height: "100%", marginBottom: 100 }}
-        extraData={routine}
-      />
-    </View>
-  );
+  if (Platform.OS === "ios" || Platform.OS === "android") {
+    return (
+      <View style={styles.container}>
+        <FlatList
+          keyExtractor={(item) => item.key}
+          data={initialData}
+          renderItem={renderItem}
+          style={{ width: "100%", height: "100%", marginBottom: 100 }}
+          extraData={routine}
+        />
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.container}>
+        <ScrollView style={{ width: "100%", marginTop: 0 }}>
+          <FlatList
+            keyExtractor={(item) => item.key}
+            data={initialData}
+            renderItem={renderItemWeb}
+            style={{ width: "100%", height: "100%", marginBottom: 100 }}
+            extraData={routine}
+            contentContainerStyle={{
+              flexGrow: 1,
+            }}
+          />
+        </ScrollView>
+      </View>
+    );
+  }
 }
 
 const UnderlayLeft = ({
@@ -275,6 +374,7 @@ const UnderlayLeft = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // flexGrow: 1,
     width: "100%",
     display: "flex",
     flexDirection: "column",
@@ -314,5 +414,36 @@ const styles = StyleSheet.create({
 
   underlayLeft: {
     flex: 1,
+  },
+
+  buttonsContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+
+  editButton: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#316ADA",
+    padding: 5,
+    borderRadius: 10,
+    marginBottom: 4,
+    width: "100%",
+  },
+
+  deleteButton: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FF0431",
+    padding: 5,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    marginTop: 4,
+    width: "100%",
   },
 });
