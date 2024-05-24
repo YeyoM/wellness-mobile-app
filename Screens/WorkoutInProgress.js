@@ -785,6 +785,7 @@ export default function WorkoutInProgress({ route, navigation }) {
                 ) : (
                   <NestableScrollContainer>
                     <DraggableFlatList
+                      activationDistance={1}
                       data={exerciseQueue}
                       renderItem={renderItem}
                       keyExtractor={(item) =>
