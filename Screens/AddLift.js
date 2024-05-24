@@ -59,8 +59,8 @@ export default function AddLift({ navigation }) {
         </View>
         <View
           style={{
+            flex: 1,
             width: "100%",
-            minHeight: 600,
             backgroundColor: "#0B0B0B",
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
@@ -79,7 +79,10 @@ export default function AddLift({ navigation }) {
               headerShown: false,
             }}
           >
-            <Tab.Screen name="Saved Lifts" children={() => <SavedLifts />} />
+            <Tab.Screen
+              name="Saved Lifts"
+              children={() => <SavedLifts navigation={navigation} />}
+            />
             <Tab.Screen name="Search Lifts" component={SearchLift} />
             <Tab.Screen name="Cardio" component={CardioExercises} />
           </Tab.Navigator>
@@ -94,13 +97,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#24262B",
     alignItems: "center",
-    paddingTop: Constants.statusBarHeight,
   },
 
   home: {
+    flex: 1,
     display: "flex",
     alignItems: "center",
     width: "100%",
+    backgroundColor: "#24262B",
   },
 
   topBar: {
@@ -121,24 +125,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#fff",
     textAlign: "center",
-  },
-
-  containerExercises: {
-    flex: 1,
-    backgroundColor: "#0B0B0B",
-    alignItems: "center",
-    width: "100%",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-
-  exercises: {
-    width: "100%",
-    backgroundColor: "#0b0b0b",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    marginBottom: 60,
-    padding: 20,
   },
 });

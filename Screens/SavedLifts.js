@@ -115,7 +115,7 @@ export default function SavedLifts({ route, navigation }) {
   return (
     <View style={styles.containerExercises}>
       <ScrollView
-        style={{ width: "100%", marginTop: 10 }}
+        style={{ width: "100%", marginTop: 20 }}
         refreshControl={
           Platform.OS === "web" ? (
             <WebRefreshControl
@@ -166,6 +166,7 @@ export default function SavedLifts({ route, navigation }) {
             exercises.map((lift) => (
               <View
                 style={{
+                  width: "100%",
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
@@ -174,6 +175,7 @@ export default function SavedLifts({ route, navigation }) {
                   backgroundColor: "#313231",
                   padding: 14,
                   borderRadius: 20,
+                  overflow: "hidden",
                 }}
                 key={lift.id}
               >
@@ -272,16 +274,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0B0B0B",
     alignItems: "center",
-    width: "100%",
   },
 
   exercises: {
     width: "100%",
     backgroundColor: "#0b0b0b",
-    display: "flex",
-    flexDirection: "column",
     justifyContent: "center",
+    alignItems: "center",
     marginBottom: 60,
-    padding: 20,
+    paddingHorizontal: 16,
   },
 });
