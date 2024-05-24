@@ -377,6 +377,7 @@ const styles = StyleSheet.create({
   },
 
   exercises: {
+    flex: 1,
     width: "100%",
     backgroundColor: "#0B0B0B",
     display: "flex",
