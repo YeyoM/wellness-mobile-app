@@ -165,7 +165,20 @@ export default function EditingRoutineExerciseList({
             </View>
           </View>
           <View style={styles.buttonsContainer}>
-            <Pressable style={styles.editButton}>
+            <Pressable
+              style={styles.editButton}
+              onPress={() => {
+                if (item.key.includes("lift")) {
+                  navigation.navigate("Edit Exercise", {
+                    exercise: item.exercise,
+                  });
+                } else {
+                  navigation.navigate("Edit Cardio Exercise", {
+                    exercise: item.exercise,
+                  });
+                }
+              }}
+            >
               <Ionicons
                 name="create-outline"
                 size={16}
@@ -174,7 +187,16 @@ export default function EditingRoutineExerciseList({
               />
               <Text style={{ color: "white", fontSize: 14 }}>Edit</Text>
             </Pressable>
-            <Pressable style={styles.deleteButton}>
+            <Pressable
+              style={styles.deleteButton}
+              onPress={() => {
+                if (item.key.includes("lift")) {
+                  deleteExercise(item.exercise.exerciseId, item.day);
+                } else {
+                  deleteCardioExercise(item.exercise.exerciseName, item.day);
+                }
+              }}
+            >
               <Ionicons
                 name="trash-outline"
                 size={16}
