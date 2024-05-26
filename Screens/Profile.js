@@ -8,6 +8,7 @@ import {
   Dimensions,
   ActivityIndicator,
   Share,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
@@ -184,7 +185,21 @@ export default function Profile({ navigation }) {
               </Text>
               <Pressable
                 onPress={() => {
-                  navigation.navigate("My Stats");
+                  if (Platform.OS === "web") {
+                    alert(
+                      "Coming soon...",
+                      "This feature is not available on the web version yet.",
+                      [
+                        {
+                          text: "OK",
+                          onPress: () => console.log("OK Pressed"),
+                        },
+                      ],
+                    );
+                    return;
+                  } else {
+                    navigation.navigate("My Stats");
+                  }
                 }}
               >
                 <Text

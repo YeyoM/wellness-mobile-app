@@ -27,6 +27,7 @@ export default function getUserWeightLiftedProgressDataByWeekForGraph({
       weightLiftedProgressDataByWeek.push({
         week: week[0].date,
         value: weekWeightLifted,
+        dataPointText: weekWeightLifted,
         label: (
           <View style={{ width: 40, marginLeft: 20 }}>
             <Text
@@ -49,6 +50,7 @@ export default function getUserWeightLiftedProgressDataByWeekForGraph({
     weightLiftedProgressDataByWeek.push({
       week: week[0].date,
       value: weekWeightLifted,
+      dataPointText: weekWeightLifted,
       label: (
         <View style={{ width: 40, marginLeft: 20 }}>
           <Text

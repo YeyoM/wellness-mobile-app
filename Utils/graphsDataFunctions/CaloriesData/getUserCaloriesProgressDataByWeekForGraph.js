@@ -27,6 +27,7 @@ export default function getUserCaloriesProgressDataByWeekForGraph({
       caloriesProgressDataByWeek.push({
         week: week[0].date,
         value: weekCalories,
+        dataPointText: weekCalories,
         label: (
           <View style={{ width: 40, marginLeft: 20 }}>
             <Text

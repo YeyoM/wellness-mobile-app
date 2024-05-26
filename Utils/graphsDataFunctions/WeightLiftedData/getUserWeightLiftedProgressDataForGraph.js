@@ -79,6 +79,7 @@ export default function getUserWeightLiftedProgressDataForGraph({
     weightLiftedProgressData.push({
       date: `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`,
       value: currentWeightLifted,
+      dataPointText: currentWeightLifted.toString(),
       label: (
         <View style={{ width: 20, marginLeft: 10 }}>
           <Text

@@ -27,6 +27,7 @@ export default function getUserWeightLiftedProgressDataByMonthForGraph({
       weightLiftedProgressDataByMonth.push({
         month: `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`,
         value: monthWeightLifted,
+        dataPointText: monthWeightLifted,
         label: (
           <View style={{ width: 40, marginLeft: 20 }}>
             <Text
@@ -44,6 +45,7 @@ export default function getUserWeightLiftedProgressDataByMonthForGraph({
     weightLiftedProgressDataByMonth.push({
       month: `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`,
       value: monthWeightLifted,
+      dataPointText: monthWeightLifted,
       label: (
         <View style={{ width: 40, marginLeft: 20 }}>
           <Text
