@@ -134,13 +134,19 @@ export default function EditingRoutineExerciseList({
               <Ionicons name="play-circle-outline" size={36} color="white" />
               <Text style={{ color: "#9095A1", fontSize: 10 }}>Tutorial</Text>
             </Pressable>
-            <View style={{ display: "flex", flexDirection: "column" }}>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                maxWidth: "70%",
+              }}
+            >
               <Text
                 style={{
                   color: "#fff",
                   fontSize: 20,
                   marginLeft: 16,
-                  maxWidth: 180,
+                  maxWidth: "70%",
                 }}
                 numberOfLines={2}
                 ellipsizeMode="tail"
@@ -311,7 +317,7 @@ export default function EditingRoutineExerciseList({
   } else {
     return (
       <View style={styles.container}>
-        <ScrollView style={{ width: "100%", marginTop: 0 }}>
+        <ScrollView style={{ width: "100%", marginTop: 0, marginBottom: 100 }}>
           <FlatList
             keyExtractor={(item) => item.key}
             data={initialData}
@@ -439,6 +445,7 @@ const styles = StyleSheet.create({
   },
 
   buttonsContainer: {
+    marginRight: 4,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
