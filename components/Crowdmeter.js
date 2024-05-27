@@ -5,7 +5,9 @@ import {
   ScrollView,
   RefreshControl,
   Text,
+  Platform,
 } from "react-native";
+import { RefreshControl as WebRefreshControl } from "react-native-web-refresh-control";
 
 import EnableLocation from "./EnableLocation";
 import CurrentCapacity from "./CurrentCapacity";
@@ -70,7 +72,15 @@ export default function Crowdmeter() {
       <ScrollView
         style={{ width: "100%" }}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          Platform.OS === "web" ? (
+            <WebRefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={["#fff"]}
+            />
+          ) : (
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          )
         }
       >
         <View style={styles.crowdmeter}>

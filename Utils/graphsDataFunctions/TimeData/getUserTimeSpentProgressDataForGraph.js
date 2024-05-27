@@ -63,6 +63,7 @@ export default function getUserTimeSpentProgressDataForGraph({ timeRecord }) {
     timeProgressData.push({
       date: `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`,
       value: time,
+      dataPointText: time,
       label: (
         <View style={{ width: 20, marginLeft: 10 }}>
           <Text

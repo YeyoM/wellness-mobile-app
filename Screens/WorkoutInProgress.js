@@ -11,10 +11,11 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert,
   AppState,
   Dimensions,
 } from "react-native";
+
+import alert from "../components/Alert.js";
 
 import {
   GestureHandlerRootView,
@@ -192,7 +193,7 @@ export default function WorkoutInProgress({ route, navigation }) {
 
   const handleEndWorkout = async () => {
     if (!firebaseUser) {
-      Alert.alert("Please log in to save the workout", "", [
+      alert("Please log in to save the workout", "", [
         {
           text: "Cancel",
           style: "cancel",
@@ -221,7 +222,7 @@ export default function WorkoutInProgress({ route, navigation }) {
     }
 
     if (!finishedExercises || !finishedSets) {
-      Alert.alert(
+      alert(
         "Are you sure you want to end the workout?",
         "You still have exercises or sets left, progress will be saved only for the finished exercises and sets",
         [
@@ -354,7 +355,7 @@ export default function WorkoutInProgress({ route, navigation }) {
       });
     } catch (error) {
       console.log(error);
-      Alert.alert("Error saving the workout", "Please try again later", [
+      alert("Error saving the workout", "Please try again later", [
         {
           text: "Cancel",
           style: "cancel",
@@ -376,7 +377,7 @@ export default function WorkoutInProgress({ route, navigation }) {
       }
     }
     if (!finished) {
-      Alert.alert(
+      alert(
         "Please finish the sets before moving to the next exercise",
         "You still have sets left",
         [
@@ -784,6 +785,7 @@ export default function WorkoutInProgress({ route, navigation }) {
                 ) : (
                   <NestableScrollContainer>
                     <DraggableFlatList
+                      activationDistance={1}
                       data={exerciseQueue}
                       renderItem={renderItem}
                       keyExtractor={(item) =>

@@ -6,8 +6,10 @@ import {
   ScrollView,
   Pressable,
   RefreshControl,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { RefreshControl as WebRefreshControl } from "react-native-web-refresh-control";
 
 import Constants from "expo-constants";
 import Accordion from "../components/AccordionWorkout";
@@ -65,7 +67,15 @@ export default function SavedRoutines({ navigation, route }) {
       <ScrollView
         style={{ width: "100%", marginTop: Constants.statusBarHeight }}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          Platform.OS === "web" ? (
+            <WebRefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={["#fff"]}
+            />
+          ) : (
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          )
         }
       >
         <View style={{ display: "flex", alignItems: "center", marginTop: 20 }}>

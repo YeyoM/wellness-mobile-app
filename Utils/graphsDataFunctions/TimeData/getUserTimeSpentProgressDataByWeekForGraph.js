@@ -28,6 +28,7 @@ export default function getUserTimeSpentProgressDataByWeekForGraph({
       timeSpentProgressDataByWeek.push({
         week: week[0].date,
         value: weekMinutes,
+        dataPointText: weekMinutes,
         label: (
           <View style={{ width: 40, marginLeft: 20 }}>
             <Text
@@ -50,6 +51,7 @@ export default function getUserTimeSpentProgressDataByWeekForGraph({
     timeSpentProgressDataByWeek.push({
       week: week[0].date,
       value: weekMinutes,
+      dataPointText: weekMinutes,
       label: (
         <View style={{ width: 40, marginLeft: 20 }}>
           <Text style={{ color: "#a0a0a0", fontSize: 10 }}>

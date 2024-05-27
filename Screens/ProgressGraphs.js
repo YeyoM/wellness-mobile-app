@@ -6,11 +6,13 @@ import {
   ScrollView,
   Pressable,
   Dimensions,
+  Platform,
 } from "react-native";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 
 import RenderProgressGraphs from "../components/RenderProgressGraphs";
+import RenderProgressGraphsWeb from "../components/RenderProgressGraphsWeb";
 
 export default function ProgressGraphs({ navigation, route }) {
   const [selectedCategory, setSelectedCategory] = React.useState("Calories");
@@ -254,22 +256,41 @@ export default function ProgressGraphs({ navigation, route }) {
             </View>
           </View>
           <View style={styles.graphContainer}>
-            <RenderProgressGraphs
-              category={selectedCategory}
-              selectedPeriod={selectedPeriod}
-              weightLineData={weightLineData}
-              weightLineDataByWeek={weightLineDataByWeek}
-              weightLineDataByMonth={weightLineDataByMonth}
-              caloriesLineData={caloriesLineData}
-              caloriesLineDataByWeek={caloriesLineDataByWeek}
-              caloriesLineDataByMonth={caloriesLineDataByMonth}
-              timeLineData={timeLineData}
-              timeLineDataByWeek={timeLineDataByWeek}
-              timeLineDataByMonth={timeLineDataByMonth}
-              weightLiftedLineData={weightLiftedLineData}
-              weightLiftedLineDataByWeek={weightLiftedLineDataByWeek}
-              weightLiftedLineDataByMonth={weightLiftedLineDataByMonth}
-            />
+            {Platform.OS === "web" ? (
+              <RenderProgressGraphsWeb
+                category={selectedCategory}
+                selectedPeriod={selectedPeriod}
+                weightLineData={weightLineData}
+                weightLineDataByWeek={weightLineDataByWeek}
+                weightLineDataByMonth={weightLineDataByMonth}
+                caloriesLineData={caloriesLineData}
+                caloriesLineDataByWeek={caloriesLineDataByWeek}
+                caloriesLineDataByMonth={caloriesLineDataByMonth}
+                timeLineData={timeLineData}
+                timeLineDataByWeek={timeLineDataByWeek}
+                timeLineDataByMonth={timeLineDataByMonth}
+                weightLiftedLineData={weightLiftedLineData}
+                weightLiftedLineDataByWeek={weightLiftedLineDataByWeek}
+                weightLiftedLineDataByMonth={weightLiftedLineDataByMonth}
+              />
+            ) : (
+              <RenderProgressGraphs
+                category={selectedCategory}
+                selectedPeriod={selectedPeriod}
+                weightLineData={weightLineData}
+                weightLineDataByWeek={weightLineDataByWeek}
+                weightLineDataByMonth={weightLineDataByMonth}
+                caloriesLineData={caloriesLineData}
+                caloriesLineDataByWeek={caloriesLineDataByWeek}
+                caloriesLineDataByMonth={caloriesLineDataByMonth}
+                timeLineData={timeLineData}
+                timeLineDataByWeek={timeLineDataByWeek}
+                timeLineDataByMonth={timeLineDataByMonth}
+                weightLiftedLineData={weightLiftedLineData}
+                weightLiftedLineDataByWeek={weightLiftedLineDataByWeek}
+                weightLiftedLineDataByMonth={weightLiftedLineDataByMonth}
+              />
+            )}
           </View>
           <View style={styles.info}>
             <Ionicons

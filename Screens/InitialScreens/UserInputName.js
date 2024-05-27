@@ -1,3 +1,4 @@
+import React, { useState, useContext } from "react";
 import {
   Platform,
   StyleSheet,
@@ -7,11 +8,10 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Dimensions,
-  Alert,
 } from "react-native";
-import React, { useState, useContext } from "react";
 
 import TopNavigationBar from "../../components/TopNavigationBar";
+import alert from "../../components/Alert";
 
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
@@ -20,7 +20,7 @@ export default function UserInputName({ navigation }) {
   const [name_, setName_] = useState("");
   const handleContinue = () => {
     if (name_ === "") {
-      Alert.alert("Please enter your name");
+      alert("Please enter your name");
       return;
     }
     setName(name_);

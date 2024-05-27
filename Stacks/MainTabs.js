@@ -12,6 +12,8 @@ import Loading2 from "../Screens/LoadingTransitionScreens/Loading2.js";
 import Loading3 from "../Screens/LoadingTransitionScreens/Loading3.js";
 import Loading4 from "../Screens/LoadingTransitionScreens/Loading4.js";
 
+import alert from "../components/Alert.js";
+
 import { FIREBASE_AUTH } from "../firebaseConfig";
 import { UserAnsweredInitialQuestions } from "../FirebaseFunctions/Users/UserAnsweredInitialQuestions";
 
@@ -85,7 +87,7 @@ export default function MainTabs({ navigation, route }) {
         })
         .catch((error) => {
           console.log(error);
-          Alert.alert("Error", "An error has occurred, try again later please");
+          alert("Error", "An error has occurred, try again later please");
         });
     } else {
       getDataIsFetched()
@@ -106,16 +108,13 @@ export default function MainTabs({ navigation, route }) {
               })
               .catch((error) => {
                 console.log("Error in MainTabs.js: ", error);
-                Alert.alert(
-                  "Error",
-                  "An error has occurred, try again later please",
-                );
+                alert("Error", "An error has occurred, try again later please");
                 setLoading(false);
               });
           }
         })
         .catch((error) => {
-          Alert.alert("Error", "An error has occurred, try again later please");
+          alert("Error", "An error has occurred, try again later please");
           console.log(error);
           setLoading(false);
         });

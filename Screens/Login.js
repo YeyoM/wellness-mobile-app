@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,12 +7,13 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Image,
-  Alert,
   ActivityIndicator,
   Dimensions,
   Platform,
 } from "react-native";
-import React, { useState } from "react";
+
+import alert from "../components/Alert";
+
 import { FIREBASE_AUTH } from "../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
@@ -35,7 +37,7 @@ export default function Signup({ navigation }) {
 
     if (email === "") {
       setLoading(false);
-      Alert.alert("Please enter your email");
+      alert("Please enter your email");
       return;
     }
 
@@ -43,13 +45,13 @@ export default function Signup({ navigation }) {
     const emailRegex = /\S+@\S+\.\S+/;
     if (!emailRegex.test(email)) {
       setLoading(false);
-      Alert.alert("Please enter a valid email");
+      alert("Please enter a valid email");
       return;
     }
 
     if (password === "") {
       setLoading(false);
-      Alert.alert("Please enter your password");
+      alert("Please enter your password");
       return;
     }
 
@@ -65,7 +67,7 @@ export default function Signup({ navigation }) {
         }, 3000);
       } else {
         setLoading(false);
-        Alert.alert("There was an error, please try again later");
+        alert("There was an error, please try again later");
       }
     }
   };

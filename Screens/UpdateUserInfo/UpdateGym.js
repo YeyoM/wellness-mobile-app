@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,10 +7,11 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Dimensions,
-  Alert,
   Platform,
 } from "react-native";
-import React, { useState } from "react";
+
+import alert from "../../components/Alert";
+
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 
@@ -19,7 +21,7 @@ export default function UpdateGym({ route, navigation }) {
 
   const handleContinue = () => {
     if (gym_ === "") {
-      Alert.alert("Please enter your gym");
+      alert("Please enter your gym");
       return;
     }
     setGym(gym_);

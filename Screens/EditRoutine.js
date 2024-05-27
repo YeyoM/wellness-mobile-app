@@ -1,13 +1,13 @@
 import React, { useState, useRef, useContext } from "react";
 import {
   View,
-  Alert,
   Text,
   StyleSheet,
   Pressable,
   TextInput,
   ActivityIndicator,
   Dimensions,
+  Platform,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -16,6 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import CarouselDays from "../components/CarouselDays";
 import EditingRoutineExerciseList from "../components/EditingRoutineExerciseList";
+import alert from "../components/Alert.js";
 
 import { FIREBASE_AUTH } from "../firebaseConfig.js";
 import saveEditedRoutine from "../FirebaseFunctions/Routines/saveEditedRoutine.js";
@@ -81,7 +82,7 @@ export default function EditRoutine({ navigation }) {
       navigation.navigate("Saved Routines");
     } catch (err) {
       console.log(err);
-      Alert.alert("Couldn't save the routine");
+      alert("Couldn't save the routine");
       setLoading(false);
     }
   };
@@ -209,13 +210,20 @@ export default function EditRoutine({ navigation }) {
             <View>
               <View
                 style={{
-                  alignItems: "center",
+                  alignItems: "flex-start",
                   display: "flex",
                   flexDirection: "row",
+                  maxWidth: "100%",
                 }}
               >
                 <TextInput
-                  style={{ color: "#fff", fontSize: 20, textAlign: "center" }}
+                  style={{
+                    color: "#fff",
+                    fontSize: 20,
+                    textAlign: "center",
+                    width: "auto",
+                    maxWidth: "60%",
+                  }}
                   value={daysNames[currentDay]}
                   ref={refInputDayName}
                   onChangeText={(text) => {
@@ -229,7 +237,7 @@ export default function EditRoutine({ navigation }) {
                     name="pencil-outline"
                     size={20}
                     color="white"
-                    style={{ marginLeft: 5 }}
+                    style={{ marginLeft: 5, width: "10%" }}
                   />
                 </Pressable>
               </View>
@@ -240,6 +248,8 @@ export default function EditRoutine({ navigation }) {
                   justifyContent: "space-between",
                   alignItems: "center",
                   marginTop: 10,
+                  width: "auto",
+                  maxWidth: "70%",
                 }}
               >
                 <Text
@@ -279,33 +289,35 @@ export default function EditRoutine({ navigation }) {
               </Text>
             </Pressable>
           </View>
-          <View
-            style={{
-              width: "90%",
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              marginBottom: 10,
-            }}
-          >
-            <Ionicons
-              name="information-circle-outline"
-              size={12}
-              color="#a0a0a0"
-            />
-            <Text
+          {Platform.OS === "ios" || Platform.OS === "android" ? (
+            <View
               style={{
-                color: "#a0a0a0",
-                fontSize: 12,
-                fontStyle: "italic",
-                alignSelf: "flex-end",
-                marginLeft: 2,
+                width: "90%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                marginBottom: 10,
               }}
             >
-              Swipe left to edit or delete a lift
-            </Text>
-          </View>
+              <Ionicons
+                name="information-circle-outline"
+                size={12}
+                color="#a0a0a0"
+              />
+              <Text
+                style={{
+                  color: "#a0a0a0",
+                  fontSize: 12,
+                  fontStyle: "italic",
+                  alignSelf: "flex-end",
+                  marginLeft: 2,
+                }}
+              >
+                Swipe left to edit or delete a lift
+              </Text>
+            </View>
+          ) : null}
           <View style={styles.containerExercises}>
             <View style={styles.exercises}>
               <EditingRoutineExerciseList
@@ -365,6 +377,7 @@ const styles = StyleSheet.create({
   },
 
   exercises: {
+    flex: 1,
     width: "100%",
     backgroundColor: "#0B0B0B",
     display: "flex",

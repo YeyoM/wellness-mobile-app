@@ -25,13 +25,14 @@ export default function getUserCaloriesProgressDataByMonthForGraph({
       monthCalories += caloriesProgressData[i].value;
     } else {
       caloriesProgressDataByMonth.push({
-        month: `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`,
+        month: `${currentMonth + 1}/${currentDate.getFullYear()}`,
         value: monthCalories || 0,
+        dataPointText: monthCalories || 0,
         label: (
           <View style={{ width: 40, marginLeft: 20 }}>
             <Text
               style={{ color: "#a0a0a0", fontSize: 10 }}
-            >{`${currentMonth + 1}/${currentDate.getFullYear()}`}</Text>
+            >{`${currentMonth + 1} / ${currentDate.getFullYear()}`}</Text>
           </View>
         ),
       });
@@ -44,6 +45,7 @@ export default function getUserCaloriesProgressDataByMonthForGraph({
     caloriesProgressDataByMonth.push({
       month: `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`,
       value: monthCalories || 0,
+      dataPointText: monthCalories || 0,
       label: (
         <View style={{ width: 40, marginLeft: 20 }}>
           <Text

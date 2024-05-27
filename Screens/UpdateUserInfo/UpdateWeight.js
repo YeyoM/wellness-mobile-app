@@ -1,12 +1,7 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Alert,
-  Text,
-  Pressable,
-  View,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, Text, Pressable, View, Dimensions } from "react-native";
+
+import alert from "../../components/Alert";
 
 import { interpolate } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -29,7 +24,7 @@ export default function UpdateWeight({ route, navigation }) {
 
   const handleContinue = () => {
     if (weight_ === "") {
-      Alert.alert("Please enter your weight");
+      alert("Please enter your weight");
       return;
     }
     setWeight(weight_);

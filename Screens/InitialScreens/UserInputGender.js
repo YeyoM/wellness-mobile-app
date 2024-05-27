@@ -1,6 +1,9 @@
-import { StyleSheet, Alert, Text, View, Pressable } from "react-native";
 import React, { useState, useContext } from "react";
+import { StyleSheet, Text, View, Pressable } from "react-native";
+
 import TopNavigationBar from "../../components/TopNavigationBar";
+import alert from "../../components/Alert";
+
 import { Ionicons } from "@expo/vector-icons";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
@@ -22,7 +25,7 @@ export default function UserInputGender({ navigation }) {
 
   const handleContinue = () => {
     if (!selectMale && !selectFemale) {
-      Alert.alert("Please select at least one option");
+      alert("Please select at least one option");
       return;
     }
 

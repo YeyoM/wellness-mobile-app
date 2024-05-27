@@ -1,12 +1,7 @@
 import React, { useState, useContext } from "react";
-import {
-  Alert,
-  StyleSheet,
-  Text,
-  Pressable,
-  View,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, Text, Pressable, View, Dimensions } from "react-native";
+
+import alert from "../../components/Alert";
 import TopNavigationBar from "../../components/TopNavigationBar";
 
 import { interpolate } from "react-native-reanimated";
@@ -30,7 +25,7 @@ export default function UserInputHeight({ navigation }) {
 
   const handleContinue = () => {
     if (height_ === "") {
-      Alert.alert("Error", "Please select your height");
+      alert("Error", "Please select your height");
       return;
     }
     setHeight(height_);

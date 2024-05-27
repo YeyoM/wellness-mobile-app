@@ -8,10 +8,12 @@ import {
   Dimensions,
   ActivityIndicator,
   Share,
-  Alert,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
+
+import alert from "../components/Alert.js";
 
 import readableTimeToMinutes from "../Utils/readableTimeToMinutes.js";
 import { AppContext } from "../context/AppContext.js";
@@ -57,7 +59,7 @@ export default function Profile({ navigation }) {
 
   const handleCopyId = async () => {
     await Clipboard.setStringAsync(`profile/${firebaseUser.uid}`);
-    Alert.alert(
+    alert(
       "Your ID has been copied!",
       "You can now share this ID with your friends!",
       [
@@ -183,7 +185,21 @@ export default function Profile({ navigation }) {
               </Text>
               <Pressable
                 onPress={() => {
-                  navigation.navigate("My Stats");
+                  if (Platform.OS === "web") {
+                    alert(
+                      "Coming soon...",
+                      "This feature is not available on the web version yet.",
+                      [
+                        {
+                          text: "OK",
+                          onPress: () => console.log("OK Pressed"),
+                        },
+                      ],
+                    );
+                    return;
+                  } else {
+                    navigation.navigate("My Stats");
+                  }
                 }}
               >
                 <Text

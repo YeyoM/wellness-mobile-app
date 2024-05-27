@@ -1,13 +1,8 @@
-import {
-  Alert,
-  StyleSheet,
-  Text,
-  Dimensions,
-  Pressable,
-  Image,
-} from "react-native";
 import React, { useState, useContext } from "react";
+import { StyleSheet, Text, Dimensions, Pressable, Image } from "react-native";
+
 import TopNavigationBar from "../../components/TopNavigationBar";
+import alert from "../../components/Alert";
 
 import { useSharedValue } from "react-native-reanimated";
 import { Slider, HapticModeEnum } from "react-native-awesome-slider";
@@ -27,7 +22,7 @@ export default function UserInputFitnessLevel({ navigation }) {
 
   const handleContinue = () => {
     if (fitnessLevel === "") {
-      Alert.alert("Error", "Please select your fitness level");
+      alert("Error", "Please select your fitness level");
     } else {
       setFitnessLevel(fitnessLevel_);
       navigation.navigate("About you (Physical Limitations)");

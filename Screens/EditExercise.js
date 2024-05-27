@@ -185,6 +185,7 @@ export default function EditExercise({ route, navigation }) {
         </View>
         <View
           style={{
+            flex: 1,
             width: "100%",
             minHeight: 600,
             backgroundColor: "#0B0B0B",
@@ -195,7 +196,9 @@ export default function EditExercise({ route, navigation }) {
           }}
         >
           <View style={styles.containerExercises}>
-            <ScrollView style={{ width: "100%", minHeight: 600 }}>
+            <ScrollView
+              style={{ width: "100%", minHeight: 600, paddingBottom: 60 }}
+            >
               <View style={styles.exercises}>
                 {/**Aqui van los sliders */}
                 <View
@@ -666,6 +669,7 @@ const styles = StyleSheet.create({
   },
 
   home: {
+    flex: 1,
     display: "flex",
     alignItems: "center",
     width: "100%",

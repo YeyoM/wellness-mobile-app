@@ -77,6 +77,7 @@ export default function getUserCaloriesProgressDataForGraph({
     caloriesProgressData.push({
       date: `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`,
       value: currentCalories,
+      dataPointText: currentCalories.toString(),
       label: (
         <View style={{ width: 20, marginLeft: 10 }}>
           <Text

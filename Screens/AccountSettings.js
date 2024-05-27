@@ -1,3 +1,4 @@
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -5,12 +6,12 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
-  Alert,
 } from "react-native";
-import React, { useState, useContext } from "react";
 import { FIREBASE_AUTH } from "../firebaseConfig";
 import { signOut } from "firebase/auth";
 import Constants from "expo-constants";
+
+import alert from "../components/Alert";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -65,7 +66,7 @@ export default function AccountSettings({ route, navigation }) {
 
   const handleDeleteAccount = async () => {
     // promt the user for confirmation
-    Alert.alert(
+    alert(
       "Delete Account",
       "Are you sure you want to delete your account? This action is irreversible.",
       [

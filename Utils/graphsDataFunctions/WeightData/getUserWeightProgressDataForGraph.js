@@ -32,6 +32,7 @@ export default function getUserWeightProgressDataForGraph({ weightRecord }) {
     weightProgressData.push({
       date: `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`,
       value: currentWeight,
+      dataPointText: currentWeight,
       label: (
         <View style={{ width: 20, marginLeft: 10 }}>
           <Text

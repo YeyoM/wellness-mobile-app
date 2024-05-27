@@ -1,8 +1,14 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { initializeAuth, getReactNativePersistence } from "firebase/auth";
+import {
+  initializeAuth,
+  getReactNativePersistence,
+  browserLocalPersistence,
+} from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import { getStorage } from "firebase/storage";
+
+import { Platform } from "react-native";
+
 import {
   EXPO_PUBLIC_WELLNESS_FIREBASE_API_KEY,
   EXPO_PUBLIC_WELLNESS_FIREBASE_MESSAGE_SENDER_ID,
@@ -22,6 +28,18 @@ const firebaseConfig = {
 
 export const FIREBASE_APP = initializeApp(firebaseConfig);
 export const FIRESTORE = getFirestore(FIREBASE_APP);
-export const FIREBASE_AUTH = initializeAuth(FIREBASE_APP, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-});
+let FIREBASE_AUTH;
+if (Platform.OS !== "web") {
+  try {
+    FIREBASE_AUTH = initializeAuth(FIREBASE_APP, {
+      persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+    });
+  } catch (error) {
+    console.log(error);
+  }
+} else {
+  FIREBASE_AUTH = initializeAuth(FIREBASE_APP, {
+    persistence: browserLocalPersistence,
+  });
+}
+export { FIREBASE_AUTH };

@@ -36,7 +36,7 @@ Our journey doesn't end here. The Wellness app is set to evolve with the integra
 
 To execute the app locally you need to have installed node and npm on your computer. If you have already installed them on your computer the next step is to clone the repository on on your computer and install the dependencies using
 
-```
+```bash
 npm install
 ```
 
@@ -52,7 +52,7 @@ Open it in the [Expo app](https://expo.io) on your phone to view it. It will rel
 
 Sometimes you may need to reset or clear the React Native packager's cache. To do so, you can pass the `--reset-cache` flag to the start script:
 
-```
+```bash
 npm start --reset-cache
 # or
 yarn start --reset-cache
@@ -72,6 +72,37 @@ Like `npm start`, but also attempts to open your app on a connected Android devi
 
 1. Make sure that you can run adb from your terminal.
 2. Open Genymotion and navigate to `Settings -> ADB`. Select “Use custom Android SDK tools” and update with your [Android SDK directory](https://stackoverflow.com/questions/25176594/android-sdk-location).
+
+### Delpoying to Vercel
+
+#### Building
+
+```bash
+npx expo export -p web
+```
+
+#### Preview
+
+First, if you need to get a preview of how the app would work on production, you can execute the following command once you have build the app
+
+```bash
+npx serve dist --single
+```
+
+#### Delpoy
+
+First, make sure you have vercel CLI installed, and have the correct vercel.json file
+
+```bash
+npm install -g vercel@latest
+```
+
+Then, just deploy...
+
+```bash
+vercel
+```
+
 
 ### Environment Variables
 
