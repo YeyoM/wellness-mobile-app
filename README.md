@@ -103,6 +103,26 @@ Then, just deploy...
 vercel
 ```
 
+### Build
+
+To make a build using eas, just run the following command
+
+```bash
+eas build
+```
+
+In our case, we are currenly just building for android
+
+```bash
+eas build -p android
+```
+
+Or run the build process in local
+
+```bash
+eas build -p android --local
+```
+
 
 ### Environment Variables
 
