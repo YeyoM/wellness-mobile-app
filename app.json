@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#0B0B0B"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.yeyom.wellness"
@@ -24,7 +22,7 @@
         "backgroundColor": "#0B0B0B"
       },
       "package": "com.yeyom.wellness",
-      "versionCode": 9
+      "versionCode": 12
     },
     "web": {
       "favicon": "./assets/favicon.png"
