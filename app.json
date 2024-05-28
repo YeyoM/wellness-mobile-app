@@ -24,7 +24,7 @@
         "backgroundColor": "#0B0B0B"
       },
       "package": "com.yeyom.wellness",
-      "versionCode": 8
+      "versionCode": 9
     },
     "web": {
       "favicon": "./assets/favicon.png"
