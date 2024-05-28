@@ -42,9 +42,8 @@ import SharedProfileStats from "./Screens/SharedProfileStats";
 import Tutorial from "./Screens/Tutorial";
 
 import { useState, useEffect } from "react";
-import { onAuthStateChanged } from "firebase/auth";
 import { FIREBASE_AUTH } from "./firebaseConfig";
-import { useURL, parse, addEventListener } from "expo-linking";
+import { parse, addEventListener } from "expo-linking";
 
 import { AppContextProvider } from "./context/AppContext";
 import { InitialScreensProvider } from "./context/InitialScreensContext";
@@ -66,7 +65,7 @@ export default function App() {
   }, [isNavigationReady]);
 
   useEffect(() => {
-    onAuthStateChanged(FIREBASE_AUTH, (user) => {
+    FIREBASE_AUTH.onAuthStateChanged((user) => {
       if (user) {
         setUser(user);
       } else {
