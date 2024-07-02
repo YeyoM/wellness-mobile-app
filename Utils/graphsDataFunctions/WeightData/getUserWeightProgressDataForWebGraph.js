@@ -3,9 +3,9 @@ import { View, Text } from "react-native";
 import firebasDateToDate from "../../firebasDateToDate";
 
 import getUserWeightProgressDataByWeekForWebGraph from "./getUserWeightProgressDataByWeekForWebGraph";
-import getUserWeightProgressDataByMonthForWebGraph from "./getUserWeightProgressDataByMonthForGraph";
+import getUserWeightProgressDataByMonthForWebGraph from "./getUserWeightProgressDataByMonthForWebGraph";
 
-/** getUserWeightProgressDataForGraph
+/** getUserWeightProgressDataForWebGraph
  * @param {object} weightRecord - the user's weight record object
  * @returns {array} - an array of objects that can be used to create a graph of the user's weight progress over time
  * @description - This function will take in the user's weight history (record) and return an array of
@@ -15,7 +15,7 @@ import getUserWeightProgressDataByMonthForWebGraph from "./getUserWeightProgress
  * The first record will have the same weight as the first record.
  * If the weight record is empty, the function should return an empty array.
  */
-export default function getUserWeightProgressDataForGraph({ weightRecord }) {
+export default function getUserWeightProgressDataForWebGraph({ weightRecord }) {
   if (weightRecord.length === 0) {
     return [];
   }
@@ -30,25 +30,21 @@ export default function getUserWeightProgressDataForGraph({ weightRecord }) {
   const currentDate = firstDate;
   while (currentDate <= today) {
     weightProgressData.push({
-      date: `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`,
-      value: currentWeight,
-      dataPointText: currentWeight,
-      label: (
-        <View style={{ width: 20, marginLeft: 10 }}>
-          <Text
-            style={{ color: "#a0a0a0", fontSize: 10 }}
-          >{`${currentDate.getMonth() + 1}/${currentDate.getDate()}`}</Text>
-        </View>
+      x: new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        currentDate.getDate(),
       ),
+      y: currentWeight,
     });
     currentDate.setDate(currentDate.getDate() + 1);
     if (currentDate > lastDate) {
       currentWeight = weightRecord[weightRecord.length - 1].weight;
     } else {
       for (let i = 0; i < weightRecord.length; i++) {
-        let currentDateCompare = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
-        let date_ = firebasDateToDate(weightRecord[i].date);
-        let compareDate = `${date_.getFullYear()}-${date_.getMonth() + 1}-${date_.getDate()}`;
+        const currentDateCompare = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
+        const date_ = firebasDateToDate(weightRecord[i].date);
+        const compareDate = `${date_.getFullYear()}-${date_.getMonth() + 1}-${date_.getDate()}`;
         if (currentDateCompare === compareDate) {
           currentWeight = weightRecord[i].weight;
         }

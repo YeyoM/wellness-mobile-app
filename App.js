@@ -31,6 +31,7 @@ import PersonalInfoSettings from "./Screens/PersonalInfoSettings";
 import DeleteAccount from "./Screens/DeleteAccount";
 
 import MyStats from "./Screens/MyStats";
+import MyStatsWeb from "./Screens/MyStatsWeb";
 import ProgressGraphs from "./Screens/ProgressGraphs";
 import OneRepMaxList from "./Screens/OneRepMaxList";
 import EditOneRepMax from "./Screens/EditOneRepMax";
@@ -185,6 +186,11 @@ export default function App() {
                     <Stack.Screen
                       name="My Stats"
                       component={MyStats}
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="My Stats Web"
+                      component={MyStatsWeb}
                       options={{ headerShown: false }}
                     />
                     <Stack.Screen
