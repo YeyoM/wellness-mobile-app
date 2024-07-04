@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  Dimensions,
+} from "react-native";
 
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,9 +23,12 @@ import getUserWeightLiftedProgressDataForGraph from "../Utils/graphsDataFunction
 import {
   VictoryChart,
   VictoryLine,
-  VictoryTheme,
-  VictoryLabel,
   VictoryAxis,
+  VictoryVoronoiContainer,
+  VictoryTooltip,
+  VictoryZoomContainer,
+  VictoryLabel,
+  createContainer,
 } from "victory";
 
 import { AppContext } from "../context/AppContext.js";
@@ -26,11 +36,15 @@ import { AppContext } from "../context/AppContext.js";
 export default function MyStatsWeb({ navigation }) {
   const { exercises } = useContext(AppContext);
 
+  const VictoryVornoiZoomContainer = createContainer("voronoi", "zoom");
+
   const [selectedCategory, setSelectedCategory] = useState("Calories");
 
   const [weightLineData, setWeightLineData] = useState([]);
   const [weightLineDataByWeek, setWeightLineDataByWeek] = useState([]);
   const [weightLineDataByMonth, setWeightLineDataByMonth] = useState([]);
+  const [maxWeight, setMaxWeight] = useState(0);
+  const [minWeight, setMinWeight] = useState(0);
 
   const [caloriesLineData, setCaloriesLineData] = useState([]);
   const [caloriesLineDataByWeek, setCaloriesLineDataByWeek] = useState([]);
@@ -54,6 +68,16 @@ export default function MyStatsWeb({ navigation }) {
 
   const [loading, setLoading] = useState(false);
 
+  const VictoryVoronoiZoomContainer = createContainer("voronoi", "zoom");
+
+  const handleZoom = (domain) => {
+    setZoomBrushState({ selectedDomain: domain });
+  };
+
+  const handleBrush = (domain) => {
+    setZoomBrushState({ zoomDomain: domain });
+  };
+
   useEffect(() => {
     setSelectedCategory("Calories");
 
@@ -66,14 +90,21 @@ export default function MyStatsWeb({ navigation }) {
           weightProgressDataByWeekForWebGraph,
           weightProgressDataByMonthForWebGraph,
           currentWeight,
+          maxWeight,
+          minWeight,
         } = getUserWeightProgressDataForWebGraph({
           weightRecord,
         });
-        console.log(weightProgressData);
         setWeightLineData(weightProgressData);
+        console.log(
+          "weightProgressDataByWeekForWebGraph",
+          weightProgressDataByWeekForWebGraph,
+        );
         setWeightLineDataByWeek(weightProgressDataByWeekForWebGraph);
         setWeightLineDataByMonth(weightProgressDataByMonthForWebGraph);
         setCurrentWeight(currentWeight);
+        setMaxWeight(maxWeight);
+        setMinWeight(minWeight);
         const {
           caloriesProgressData,
           totalCalories,
@@ -213,39 +244,254 @@ export default function MyStatsWeb({ navigation }) {
               Loading...
             </Text>
           ) : (
-            <VictoryChart
-              minDomain={{ y: 40 }}
-              maxDomain={{ y: 90 }}
-              scale={{ x: "time" }}
-            >
-              {/* y axis */}
-              <VictoryAxis
-                dependentAxis
+            <View style={{ marginBottom: 100 }}>
+              <VictoryChart
+                minDomain={{ y: minWeight - 5 }}
+                maxDomain={{ y: maxWeight + 5 }}
+                scale={{ x: "time" }}
+                height={Dimensions.get("window").height * 0.6}
+                width={Dimensions.get("window").width}
+                containerComponent={
+                  <VictoryVoronoiContainer
+                    voronoiDimension="x"
+                    labels={({ datum }) =>
+                      `${datum.y}kg on ${datum.x.getDate()}/${datum.x.getMonth() + 1}`
+                    }
+                    labelComponent={
+                      <VictoryTooltip
+                        cornerRadius={8}
+                        flyoutStyle={{
+                          fill: "#fff",
+                          stroke: "transparent",
+                        }}
+                      />
+                    }
+                  />
+                }
+              >
+                {/* y axis */}
+                <VictoryAxis
+                  dependentAxis
+                  style={{
+                    axis: { stroke: "transparent", fill: "transparent" },
+                    ticks: { stroke: "transparent", fill: "transparent" },
+                    grid: { stroke: "#a0a0a0" },
+                    tickLabels: { fill: "#fff" },
+                  }}
+                />
+                {/* x axis */}
+                <VictoryAxis
+                  style={{
+                    axis: { stroke: "transparent", fill: "transparent" },
+                    ticks: { stroke: "transparent", fill: "transparent" },
+                    grid: { stroke: "transparent" },
+                    tickLabels: { fill: "#fff" },
+                    labels: { fill: "#fff", fontSize: 16 },
+                  }}
+                />
+                <VictoryLine
+                  data={weightLineData}
+                  interpolation="natural"
+                  style={{
+                    data: {
+                      stroke: "#157AFF",
+                      strokeWidth: ({ active }) => (active ? 4 : 2),
+                    },
+                    labels: { fill: "#000", fontSize: 16, padding: 10 },
+                  }}
+                />
+              </VictoryChart>
+            </View>
+          )}
+          <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>
+            Per month
+          </Text>
+          {loading ? (
+            <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
+              Loading...
+            </Text>
+          ) : (
+            <View style={{ marginBottom: 100 }}>
+              <VictoryChart
+                minDomain={{ y: minWeight - 5 }}
+                maxDomain={{ y: maxWeight + 5 }}
+                scale={{ x: "time" }}
+                height={Dimensions.get("window").height * 0.6}
+                width={
+                  (Dimensions.get("window").width / 5) *
+                  weightLineDataByMonth.length
+                }
+                containerComponent={
+                  <VictoryVoronoiContainer
+                    voronoiDimension="x"
+                    labels={({ datum }) =>
+                      `${datum.y}kg on ${datum.x.toLocaleString("default", {
+                        month: "short",
+                      })}`
+                    }
+                    labelComponent={
+                      <VictoryTooltip
+                        cornerRadius={8}
+                        flyoutStyle={{
+                          fill: "#fff",
+                          stroke: "transparent",
+                        }}
+                      />
+                    }
+                  />
+                }
+              >
+                {/* y axis */}
+                <VictoryAxis
+                  dependentAxis
+                  style={{
+                    axis: { stroke: "transparent", fill: "transparent" },
+                    ticks: { stroke: "transparent", fill: "transparent" },
+                    grid: { stroke: "#a0a0a0" },
+                    tickLabels: { fill: "#fff" },
+                  }}
+                />
+                {/* x axis */}
+                <VictoryAxis
+                  style={{
+                    axis: { stroke: "transparent", fill: "transparent" },
+                    ticks: { stroke: "transparent", fill: "transparent" },
+                    grid: { stroke: "transparent" },
+                    tickLabels: { fill: "#fff" },
+                    labels: { fill: "#fff", fontSize: 16 },
+                  }}
+                />
+                <VictoryLine
+                  data={weightLineDataByMonth}
+                  interpolation="natural"
+                  style={{
+                    data: {
+                      stroke: "#157AFF",
+                      strokeWidth: ({ active }) => (active ? 4 : 2),
+                    },
+                    labels: { fill: "#000", fontSize: 16, padding: 10 },
+                  }}
+                />
+              </VictoryChart>
+            </View>
+          )}
+          <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>
+            Per week
+          </Text>
+          {loading ? (
+            <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
+              Loading...
+            </Text>
+          ) : (
+            <View style={{ marginBottom: 100 }}>
+              <VictoryChart
+                minDomain={{ y: minWeight - 5 }}
+                maxDomain={{ y: maxWeight + 5 }}
+                scale={{ x: "time" }}
+                height={Dimensions.get("window").height * 0.6}
+                width={Dimensions.get("window").width * 0.8}
                 style={{
-                  axis: { stroke: "transparent", fill: "transparent" },
-                  ticks: { stroke: "transparent", fill: "transparent" },
-                  grid: { stroke: "#a0a0a0" },
-                  tickLabels: { fill: "#fff" },
+                  overflow: "hidden",
                 }}
-              />
-              {/* x axis */}
-              <VictoryAxis
-                style={{
-                  axis: { stroke: "transparent", fill: "transparent" },
-                  ticks: { stroke: "transparent", fill: "transparent" },
-                  grid: { stroke: "transparent" },
-                  tickLabels: { fill: "#fff" },
-                }}
-              />
-              <VictoryLine
-                data={weightLineData}
-                interpolation="natural"
-                style={{
-                  data: { stroke: "#157AFF" },
-                  labels: { fill: "#157AFF" },
-                }}
-              />
-            </VictoryChart>
+                containerComponent={
+                  <VictoryVoronoiContainer
+                    voronoiDimension="x"
+                    labels={({ datum }) => `${datum.x}`}
+                    labelComponent={
+                      <VictoryTooltip
+                        cornerRadius={8}
+                        flyoutStyle={{
+                          fill: "#fff",
+                          stroke: "transparent",
+                        }}
+                      />
+                    }
+                  />
+                }
+              >
+                {/* y axis */}
+                <VictoryAxis
+                  dependentAxis
+                  style={{
+                    axis: { stroke: "transparent", fill: "transparent" },
+                    ticks: { stroke: "transparent", fill: "transparent" },
+                    grid: { stroke: "#a0a0a0" },
+                    tickLabels: { fill: "#fff" },
+                  }}
+                />
+                {/* x axis */}
+                <VictoryAxis
+                  style={{
+                    axis: { stroke: "transparent", fill: "transparent" },
+                    ticks: { stroke: "transparent", fill: "transparent" },
+                    grid: { stroke: "transparent" },
+                    tickLabels: { fill: "#fff" },
+                    labels: { fill: "#fff", fontSize: 16 },
+                  }}
+                />
+                <VictoryLine
+                  data={weightLineDataByWeek}
+                  interpolation="natural"
+                  style={{
+                    data: {
+                      stroke: "#157AFF",
+                      strokeWidth: ({ active }) => (active ? 4 : 2),
+                    },
+                    labels: { fill: "#000", fontSize: 16, padding: 10 },
+                  }}
+                />
+              </VictoryChart>
+              <VictoryChart
+                minDomain={{ y: minWeight - 5 }}
+                maxDomain={{ y: maxWeight + 5 }}
+                scale={{ x: "time" }}
+                height={Dimensions.get("window").height * 0.6}
+                width={Dimensions.get("window").width}
+                containerComponent={
+                  <VictoryZoomContainer
+                    zoomDimension="x"
+                    allowZoom={false}
+                    zoomDomain={{ x: [0, 2000000000] }}
+                  />
+                }
+              >
+                {/* y axis */}
+                <VictoryAxis
+                  dependentAxis
+                  style={{
+                    axis: { stroke: "transparent", fill: "transparent" },
+                    ticks: { stroke: "transparent", fill: "transparent" },
+                    grid: { stroke: "#a0a0a0" },
+                    tickLabels: { fill: "#fff" },
+                  }}
+                  fixLabelOverlap={true}
+                />
+                {/* x axis */}
+                <VictoryAxis
+                  style={{
+                    axis: { stroke: "transparent", fill: "transparent" },
+                    ticks: { stroke: "transparent", fill: "transparent" },
+                    grid: { stroke: "transparent" },
+                    tickLabels: { fill: "#fff" },
+                    labels: { fill: "#fff", fontSize: 16 },
+                  }}
+                  fixLabelOverlap={true}
+                />
+                <VictoryLine
+                  data={weightLineDataByWeek}
+                  interpolation="natural"
+                  style={{
+                    data: {
+                      stroke: "#157AFF",
+                      strokeWidth: ({ active }) => (active ? 4 : 2),
+                    },
+                    labels: { fill: "#fff", fontSize: 14 },
+                  }}
+                  labels={({ datum }) => `${datum.y}kg`}
+                  labelComponent={<VictoryLabel renderInPortal dy={-20} />}
+                />
+              </VictoryChart>
+            </View>
           )}
         </View>
       </ScrollView>

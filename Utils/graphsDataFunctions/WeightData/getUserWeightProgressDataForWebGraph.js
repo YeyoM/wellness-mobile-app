@@ -1,5 +1,3 @@
-import React from "react";
-import { View, Text } from "react-native";
 import firebasDateToDate from "../../firebasDateToDate";
 
 import getUserWeightProgressDataByWeekForWebGraph from "./getUserWeightProgressDataByWeekForWebGraph";
@@ -20,6 +18,9 @@ export default function getUserWeightProgressDataForWebGraph({ weightRecord }) {
     return [];
   }
 
+  let max = weightRecord[0].weight;
+  let min = weightRecord[0].weight;
+
   const today = new Date();
   const firstDate = firebasDateToDate(weightRecord[0].date);
   const lastDate = firebasDateToDate(
@@ -29,6 +30,14 @@ export default function getUserWeightProgressDataForWebGraph({ weightRecord }) {
   let currentWeight = weightRecord[0].weight;
   const currentDate = firstDate;
   while (currentDate <= today) {
+    if (currentWeight > max) {
+      max = currentWeight;
+    }
+
+    if (currentWeight < min) {
+      min = currentWeight;
+    }
+
     weightProgressData.push({
       x: new Date(
         currentDate.getFullYear(),
@@ -69,5 +78,7 @@ export default function getUserWeightProgressDataForWebGraph({ weightRecord }) {
     weightProgressDataByWeekForWebGraph,
     weightProgressDataByMonthForWebGraph,
     currentWeight,
+    maxWeight: max,
+    minWeight: min,
   };
 }

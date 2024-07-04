@@ -1,6 +1,3 @@
-import React from "react";
-import { View, Text } from "react-native";
-
 export default function getUserWeightProgressDataByMonthForGraph({
   weightProgressData,
 }) {
@@ -10,26 +7,31 @@ export default function getUserWeightProgressDataByMonthForGraph({
 
   const weightProgressDataByMonth = [];
 
-  let currentDate = new Date(weightProgressData[0].date);
+  let currentDate = new Date(weightProgressData[0].x);
   let currentMonth = currentDate.getMonth();
   let currentMonthWeightData = 0;
   let currentMonthDayCount = 0;
 
+  console.log("currentMonth", currentMonth);
+
   for (let i = 0; i < weightProgressData.length; i++) {
-    const date = new Date(weightProgressData[i].date);
+    const date = new Date(weightProgressData[i].x);
     if (date.getMonth() === currentMonth) {
-      if (weightProgressData[i].value > 0) {
+      if (weightProgressData[i].y > 0) {
         currentMonthDayCount++;
       }
-      currentMonthWeightData += weightProgressData[i].value;
+      currentMonthWeightData += weightProgressData[i].y;
     } else {
+      console.log("change month");
       const averageWeight = currentMonthWeightData / currentMonthDayCount;
       weightProgressDataByMonth.push({
-        y: currentDate,
-        x: Math.round(averageWeight) || 0,
+        x: currentDate,
+        y: Math.round(averageWeight) || 0,
       });
-      currentMonth = date.getMonth();
-      currentMonthWeightData = weightProgressData[i].value;
+      currentDate = date;
+      currentMonth = currentDate.getMonth();
+      console.log("currentMonth", currentMonth);
+      currentMonthWeightData = weightProgressData[i].y;
       currentMonthDayCount = 1;
     }
   }
@@ -37,8 +39,8 @@ export default function getUserWeightProgressDataByMonthForGraph({
   if (currentMonthWeightData > 0) {
     const averageWeight = currentMonthWeightData / currentMonthDayCount;
     weightProgressDataByMonth.push({
-      y: currentDate,
-      x: Math.round(averageWeight) || 0,
+      x: currentDate,
+      y: Math.round(averageWeight) || 0,
     });
   }
 

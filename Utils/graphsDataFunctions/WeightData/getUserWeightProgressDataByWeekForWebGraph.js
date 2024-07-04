@@ -9,17 +9,17 @@ export default function getUserWeightProgressDataByWeekForWebGraph({
   let week = [];
 
   for (let i = 0; i < weightProgressData.length; i++) {
-    week.push(weightProgressData[i].value);
+    week.push(weightProgressData[i].y);
     if (week.length === 7) {
       let weight = 0;
       for (let j = 0; j < week.length; j++) {
         weight += week[j];
       }
       const averageWeight = weight / week.length;
-      const weekDate = new Date(weightProgressData[i].date);
+      const weekDate = new Date(weightProgressData[i].x);
       weightProgressDataByWeek.push({
-        y: weekDate,
-        x: averageWeight,
+        x: weekDate,
+        y: Math.round(averageWeight * 10) / 10,
       });
       week = [];
     }
@@ -33,11 +33,11 @@ export default function getUserWeightProgressDataByWeekForWebGraph({
     }
     const averageWeight = weight / week.length;
     const weekDate = new Date(
-      weightProgressData[weightProgressData.length - 1].date,
+      weightProgressData[weightProgressData.length - 1].x,
     );
     weightProgressDataByWeek.push({
-      y: weekDate,
-      x: averageWeight,
+      x: weekDate,
+      y: Math.round(averageWeight * 10) / 10,
     });
   }
 
