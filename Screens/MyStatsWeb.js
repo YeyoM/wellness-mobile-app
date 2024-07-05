@@ -29,6 +29,7 @@ import {
   VictoryZoomContainer,
   VictoryLabel,
   createContainer,
+  VictoryScatter,
 } from "victory";
 
 import { AppContext } from "../context/AppContext.js";
@@ -36,7 +37,7 @@ import { AppContext } from "../context/AppContext.js";
 export default function MyStatsWeb({ navigation }) {
   const { exercises } = useContext(AppContext);
 
-  const VictoryVornoiZoomContainer = createContainer("voronoi", "zoom");
+  const [zoomState, setZoomState] = useState({ x: [0, 2000000000] });
 
   const [selectedCategory, setSelectedCategory] = useState("Calories");
 
@@ -68,14 +69,25 @@ export default function MyStatsWeb({ navigation }) {
 
   const [loading, setLoading] = useState(false);
 
-  const VictoryVoronoiZoomContainer = createContainer("voronoi", "zoom");
-
   const handleZoom = (domain) => {
-    setZoomBrushState({ selectedDomain: domain });
+    console.log("domain", domain);
+    setZoomState({ x: domain.x, y: domain.y });
   };
 
-  const handleBrush = (domain) => {
-    setZoomBrushState({ zoomDomain: domain });
+  const advanceOneWeek = () => {
+    const right_prevUnixTime = zoomState.x[0].getTime() / 1000;
+    const right_nextUnixTime = right_prevUnixTime + 604800;
+    const right_newDate = new Date(right_nextUnixTime * 1000);
+
+    const left_prevUnixTime = zoomState.x[1].getTime() / 1000;
+    const left_nextUnixTime = left_prevUnixTime + 604800;
+    const left_newDate = new Date(left_nextUnixTime * 1000);
+
+    const newDomain = {
+      x: [right_newDate, left_newDate],
+    };
+
+    setZoomState({ x: newDomain.x, y: zoomState.y });
   };
 
   useEffect(() => {
@@ -178,7 +190,7 @@ export default function MyStatsWeb({ navigation }) {
           style={{
             display: "flex",
             alignItems: "center",
-            paddingHorizontal: 22,
+            paddingHorizontal: 0,
           }}
         >
           <Pressable
@@ -384,115 +396,79 @@ export default function MyStatsWeb({ navigation }) {
             </Text>
           ) : (
             <View style={{ marginBottom: 100 }}>
-              <VictoryChart
-                minDomain={{ y: minWeight - 5 }}
-                maxDomain={{ y: maxWeight + 5 }}
-                scale={{ x: "time" }}
-                height={Dimensions.get("window").height * 0.6}
-                width={Dimensions.get("window").width * 0.8}
-                style={{
-                  overflow: "hidden",
-                }}
-                containerComponent={
-                  <VictoryVoronoiContainer
-                    voronoiDimension="x"
-                    labels={({ datum }) => `${datum.x}`}
-                    labelComponent={
-                      <VictoryTooltip
-                        cornerRadius={8}
-                        flyoutStyle={{
-                          fill: "#fff",
-                          stroke: "transparent",
-                        }}
-                      />
-                    }
+              <View style={styles.graphContainer}>
+                <VictoryChart
+                  minDomain={{ y: minWeight - 5 }}
+                  maxDomain={{ y: maxWeight + 5 }}
+                  scale={{ x: "time" }}
+                  height={Dimensions.get("window").height * 0.6}
+                  width={Dimensions.get("window").width}
+                  containerComponent={
+                    <VictoryZoomContainer
+                      zoomDimension="x"
+                      allowZoom={false}
+                      zoomDomain={zoomState}
+                      onZoomDomainChange={handleZoom}
+                    />
+                  }
+                >
+                  {/* y axis */}
+                  <VictoryAxis
+                    dependentAxis
+                    style={{
+                      axis: { stroke: "transparent", fill: "transparent" },
+                      ticks: { stroke: "transparent", fill: "transparent" },
+                      grid: { stroke: "#a0a0a0" },
+                      tickLabels: { fill: "#fff" },
+                    }}
+                    fixLabelOverlap={true}
                   />
-                }
-              >
-                {/* y axis */}
-                <VictoryAxis
-                  dependentAxis
-                  style={{
-                    axis: { stroke: "transparent", fill: "transparent" },
-                    ticks: { stroke: "transparent", fill: "transparent" },
-                    grid: { stroke: "#a0a0a0" },
-                    tickLabels: { fill: "#fff" },
-                  }}
-                />
-                {/* x axis */}
-                <VictoryAxis
-                  style={{
-                    axis: { stroke: "transparent", fill: "transparent" },
-                    ticks: { stroke: "transparent", fill: "transparent" },
-                    grid: { stroke: "transparent" },
-                    tickLabels: { fill: "#fff" },
-                    labels: { fill: "#fff", fontSize: 16 },
-                  }}
-                />
-                <VictoryLine
-                  data={weightLineDataByWeek}
-                  interpolation="natural"
-                  style={{
-                    data: {
-                      stroke: "#157AFF",
-                      strokeWidth: ({ active }) => (active ? 4 : 2),
-                    },
-                    labels: { fill: "#000", fontSize: 16, padding: 10 },
-                  }}
-                />
-              </VictoryChart>
-              <VictoryChart
-                minDomain={{ y: minWeight - 5 }}
-                maxDomain={{ y: maxWeight + 5 }}
-                scale={{ x: "time" }}
-                height={Dimensions.get("window").height * 0.6}
-                width={Dimensions.get("window").width}
-                containerComponent={
-                  <VictoryZoomContainer
-                    zoomDimension="x"
-                    allowZoom={false}
-                    zoomDomain={{ x: [0, 2000000000] }}
+                  {/* x axis */}
+                  <VictoryAxis
+                    style={{
+                      axis: { stroke: "transparent", fill: "transparent" },
+                      ticks: { stroke: "transparent", fill: "transparent" },
+                      grid: { stroke: "transparent" },
+                      tickLabels: { fill: "#fff" },
+                      labels: { fill: "#fff", fontSize: 16 },
+                    }}
+                    fixLabelOverlap={true}
                   />
-                }
-              >
-                {/* y axis */}
-                <VictoryAxis
-                  dependentAxis
-                  style={{
-                    axis: { stroke: "transparent", fill: "transparent" },
-                    ticks: { stroke: "transparent", fill: "transparent" },
-                    grid: { stroke: "#a0a0a0" },
-                    tickLabels: { fill: "#fff" },
-                  }}
-                  fixLabelOverlap={true}
-                />
-                {/* x axis */}
-                <VictoryAxis
-                  style={{
-                    axis: { stroke: "transparent", fill: "transparent" },
-                    ticks: { stroke: "transparent", fill: "transparent" },
-                    grid: { stroke: "transparent" },
-                    tickLabels: { fill: "#fff" },
-                    labels: { fill: "#fff", fontSize: 16 },
-                  }}
-                  fixLabelOverlap={true}
-                />
-                <VictoryLine
-                  data={weightLineDataByWeek}
-                  interpolation="natural"
-                  style={{
-                    data: {
-                      stroke: "#157AFF",
-                      strokeWidth: ({ active }) => (active ? 4 : 2),
-                    },
-                    labels: { fill: "#fff", fontSize: 14 },
-                  }}
-                  labels={({ datum }) => `${datum.y}kg`}
-                  labelComponent={<VictoryLabel renderInPortal dy={-20} />}
-                />
-              </VictoryChart>
+                  <VictoryLine
+                    data={weightLineDataByWeek}
+                    interpolation="natural"
+                    style={{
+                      data: {
+                        stroke: "#157AFF",
+                        strokeWidth: ({ active }) => (active ? 4 : 2),
+                      },
+                    }}
+                  />
+                  <VictoryScatter
+                    data={weightLineDataByWeek}
+                    size={5}
+                    style={{
+                      data: {
+                        fill: "#157AFF",
+                      },
+                      labels: { fill: "#fff", fontSize: 16, padding: 10 },
+                    }}
+                    labels={({ datum }) => `${datum.y}kg`}
+                  />
+                </VictoryChart>
+              </View>
             </View>
           )}
+          <Pressable
+            onPress={() => advanceOneWeek()}
+            style={{
+              backgroundColor: "#157AFF",
+            }}
+          >
+            <Text style={{ color: "white", fontSize: 20, padding: 10 }}>
+              Advance one week
+            </Text>
+          </Pressable>
         </View>
       </ScrollView>
     </View>
@@ -519,12 +495,12 @@ const styles = StyleSheet.create({
   },
 
   graphContainer: {
-    width: "100%",
+    width: "auto",
     marginTop: 20,
-    backgroundColor: "#24262B",
+    backgroundColor: "#0b0b0b",
     display: "flex",
     alignItems: "center",
-    padding: 20,
+    padding: 0,
     borderRadius: 20,
     overflow: "hidden",
   },
@@ -537,7 +513,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,
-    height: 40,
+    overflow: "hidden",
   },
 
   pickerContainer: {
