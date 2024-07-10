@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useContext } from "react";
 import {
   View,
@@ -20,7 +21,6 @@ import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/Ca
 import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/TimeData/getUserTimeSpentProgressDataForGraph.js";
 import getUserWeightLiftedProgressDataForGraph from "../Utils/graphsDataFunctions/WeightLiftedData/getUserWeightLiftedProgressDataForGraph.js";
 
-import RenderUserWeightAllTimeGraph from "../components/RenderGraphs/Web/UserWeight/RenderUserWeightAllTimeGraph.js";
 import RenderUserWeightDailyGraph from "../components/RenderGraphs/Web/UserWeight/RenderUserWeightDailyGraph.js";
 import RenderUserWeightWeeklyGraph from "../components/RenderGraphs/Web/UserWeight/RenderUserWeightWeeklyGraph.js";
 import RenderUserWeightMonthlyGraph from "../components/RenderGraphs/Web/UserWeight/RenderUserWeightMonthlyGraph.js";
@@ -262,14 +262,64 @@ export default function MyStatsWeb({ navigation }) {
             </Text>
           ) : (
             <View style={{ marginBottom: 100 }}>
-              <RenderUserWeightAllTimeGraph
-                weightLineData={weightLineData}
-                minWeight={minWeight}
-                maxWeight={maxWeight}
-              />
+              <VictoryChart
+                minDomain={{ y: minWeight - 5 }}
+                maxDomain={{ y: maxWeight + 5 }}
+                scale={{ x: "time" }}
+                height={Dimensions.get("window").height * 0.6}
+                width={Dimensions.get("window").width}
+                containerComponent={
+                  <VictoryVoronoiContainer
+                    voronoiDimension="x"
+                    labels={({ datum }) =>
+                      `${datum.y}kg on ${datum.x.getDate()}/${datum.x.getMonth() + 1}`
+                    }
+                    labelComponent={
+                      <VictoryTooltip
+                        cornerRadius={8}
+                        flyoutStyle={{
+                          fill: "#fff",
+                          stroke: "transparent",
+                        }}
+                      />
+                    }
+                  />
+                }
+              >
+                {/* y axis */}
+                <VictoryAxis
+                  dependentAxis
+                  style={{
+                    axis: { stroke: "transparent", fill: "transparent" },
+                    ticks: { stroke: "transparent", fill: "transparent" },
+                    grid: { stroke: "#a0a0a0" },
+                    tickLabels: { fill: "#fff" },
+                  }}
+                />
+                {/* x axis */}
+                <VictoryAxis
+                  style={{
+                    axis: { stroke: "transparent", fill: "transparent" },
+                    ticks: { stroke: "transparent", fill: "transparent" },
+                    grid: { stroke: "transparent" },
+                    tickLabels: { fill: "#fff" },
+                    labels: { fill: "#fff", fontSize: 16 },
+                  }}
+                />
+                <VictoryLine
+                  data={weightLineData}
+                  interpolation="natural"
+                  style={{
+                    data: {
+                      stroke: "#157AFF",
+                      strokeWidth: ({ active }) => (active ? 4 : 2),
+                    },
+                    labels: { fill: "#000", fontSize: 16, padding: 10 },
+                  }}
+                />
+              </VictoryChart>
             </View>
           )}
-
           <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>
             Per month
           </Text>
@@ -278,13 +328,70 @@ export default function MyStatsWeb({ navigation }) {
               Loading...
             </Text>
           ) : (
-            <RenderUserWeightMonthlyGraph
-              weightLineDataByMonth={weightLineDataByMonth}
-              minWeight={minWeight}
-              maxWeight={maxWeight}
-            />
+            <View style={{ marginBottom: 100 }}>
+              <VictoryChart
+                minDomain={{ y: minWeight - 5 }}
+                maxDomain={{ y: maxWeight + 5 }}
+                scale={{ x: "time" }}
+                height={Dimensions.get("window").height * 0.6}
+                width={
+                  (Dimensions.get("window").width / 5) *
+                  weightLineDataByMonth.length
+                }
+                containerComponent={
+                  <VictoryVoronoiContainer
+                    voronoiDimension="x"
+                    labels={({ datum }) =>
+                      `${datum.y}kg on ${datum.x.toLocaleString("default", {
+                        month: "short",
+                      })}`
+                    }
+                    labelComponent={
+                      <VictoryTooltip
+                        cornerRadius={8}
+                        flyoutStyle={{
+                          fill: "#fff",
+                          stroke: "transparent",
+                        }}
+                      />
+                    }
+                  />
+                }
+              >
+                {/* y axis */}
+                <VictoryAxis
+                  dependentAxis
+                  style={{
+                    axis: { stroke: "transparent", fill: "transparent" },
+                    ticks: { stroke: "transparent", fill: "transparent" },
+                    grid: { stroke: "#a0a0a0" },
+                    tickLabels: { fill: "#fff" },
+                  }}
+                />
+                {/* x axis */}
+                <VictoryAxis
+                  style={{
+                    axis: { stroke: "transparent", fill: "transparent" },
+                    ticks: { stroke: "transparent", fill: "transparent" },
+                    grid: { stroke: "transparent" },
+                    tickLabels: { fill: "#fff" },
+                    labels: { fill: "#fff", fontSize: 16 },
+                  }}
+                />
+                <VictoryLine
+                  data={weightLineDataByMonth}
+                  interpolation="natural"
+                  style={{
+                    data: {
+                      stroke: "#157AFF",
+                      strokeWidth: ({ active }) => (active ? 4 : 2),
+                    },
+                    labels: { fill: "#000", fontSize: 16, padding: 10 },
+                  }}
+                />
+              </VictoryChart>
+            </View>
           )}
-
           <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>
             Per week
           </Text>
@@ -293,27 +400,80 @@ export default function MyStatsWeb({ navigation }) {
               Loading...
             </Text>
           ) : (
-            <RenderUserWeightWeeklyGraph
-              weightLineDataByWeek={weightLineDataByWeek}
-              minWeight={minWeight}
-              maxWeight={maxWeight}
-            />
+            <View style={{ marginBottom: 100 }}>
+              <View style={styles.graphContainer}>
+                <VictoryChart
+                  minDomain={{ y: minWeight - 5 }}
+                  maxDomain={{ y: maxWeight + 5 }}
+                  scale={{ x: "time" }}
+                  height={Dimensions.get("window").height * 0.6}
+                  width={Dimensions.get("window").width}
+                  containerComponent={
+                    <VictoryZoomContainer
+                      zoomDimension="x"
+                      allowZoom={false}
+                      zoomDomain={zoomState}
+                      onZoomDomainChange={handleZoom}
+                    />
+                  }
+                >
+                  {/* y axis */}
+                  <VictoryAxis
+                    dependentAxis
+                    style={{
+                      axis: { stroke: "transparent", fill: "transparent" },
+                      ticks: { stroke: "transparent", fill: "transparent" },
+                      grid: { stroke: "#a0a0a0" },
+                      tickLabels: { fill: "#fff" },
+                    }}
+                    fixLabelOverlap={true}
+                  />
+                  {/* x axis */}
+                  <VictoryAxis
+                    style={{
+                      axis: { stroke: "transparent", fill: "transparent" },
+                      ticks: { stroke: "transparent", fill: "transparent" },
+                      grid: { stroke: "transparent" },
+                      tickLabels: { fill: "#fff" },
+                      labels: { fill: "#fff", fontSize: 16 },
+                    }}
+                    fixLabelOverlap={true}
+                  />
+                  <VictoryLine
+                    data={weightLineDataByWeek}
+                    interpolation="natural"
+                    style={{
+                      data: {
+                        stroke: "#157AFF",
+                        strokeWidth: ({ active }) => (active ? 4 : 2),
+                      },
+                    }}
+                  />
+                  <VictoryScatter
+                    data={weightLineDataByWeek}
+                    size={5}
+                    style={{
+                      data: {
+                        fill: "#157AFF",
+                      },
+                      labels: { fill: "#fff", fontSize: 16, padding: 10 },
+                    }}
+                    labels={({ datum }) => `${datum.y}kg`}
+                  />
+                </VictoryChart>
+              </View>
+            </View>
           )}
-
-          <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>
-            Per day
-          </Text>
-          {loading ? (
-            <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
-              Loading...
+          <Pressable
+            onPress={() => advanceOneWeek()}
+            style={{
+              backgroundColor: "#157AFF",
+            }}
+          >
+            <Text style={{ color: "white", fontSize: 20, padding: 10 }}>
+              Advance one week
             </Text>
-          ) : (
-            <RenderUserWeightDailyGraph
-              weightLineDataByDay={weightLineData}
-              minWeight={minWeight}
-              maxWeight={maxWeight}
-            />
-          )}
+          </Pressable>
         </View>
       </ScrollView>
     </View>
