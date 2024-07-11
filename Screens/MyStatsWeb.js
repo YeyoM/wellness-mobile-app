@@ -1,12 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Pressable,
-  Dimensions,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
@@ -25,24 +18,10 @@ import RenderUserWeightDailyGraph from "../components/RenderGraphs/Web/UserWeigh
 import RenderUserWeightWeeklyGraph from "../components/RenderGraphs/Web/UserWeight/RenderUserWeightWeeklyGraph.js";
 import RenderUserWeightMonthlyGraph from "../components/RenderGraphs/Web/UserWeight/RenderUserWeightMonthlyGraph.js";
 
-import {
-  VictoryChart,
-  VictoryLine,
-  VictoryAxis,
-  VictoryVoronoiContainer,
-  VictoryTooltip,
-  VictoryZoomContainer,
-  VictoryLabel,
-  createContainer,
-  VictoryScatter,
-} from "victory";
-
 import { AppContext } from "../context/AppContext.js";
 
 export default function MyStatsWeb({ navigation }) {
   const { exercises } = useContext(AppContext);
-
-  const [zoomState, setZoomState] = useState({ x: [0, 2000000000] });
 
   const [selectedCategory, setSelectedCategory] = useState("Calories");
 
@@ -73,27 +52,6 @@ export default function MyStatsWeb({ navigation }) {
     useState([]);
 
   const [loading, setLoading] = useState(false);
-
-  const handleZoom = (domain) => {
-    console.log("domain", domain);
-    setZoomState({ x: domain.x, y: domain.y });
-  };
-
-  const advanceOneWeek = () => {
-    const right_prevUnixTime = zoomState.x[0].getTime() / 1000;
-    const right_nextUnixTime = right_prevUnixTime + 604800;
-    const right_newDate = new Date(right_nextUnixTime * 1000);
-
-    const left_prevUnixTime = zoomState.x[1].getTime() / 1000;
-    const left_nextUnixTime = left_prevUnixTime + 604800;
-    const left_newDate = new Date(left_nextUnixTime * 1000);
-
-    const newDomain = {
-      x: [right_newDate, left_newDate],
-    };
-
-    setZoomState({ x: newDomain.x, y: zoomState.y });
-  };
 
   useEffect(() => {
     setSelectedCategory("Calories");
