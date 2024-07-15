@@ -1,62 +1,62 @@
-import React, { useState, useEffect, useContext } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Pressable,
-  Dimensions,
-} from "react-native";
-
-import Constants from "expo-constants";
-import { Ionicons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, Pressable, Dimensions } from "react-native";
 
 import {
   VictoryChart,
   VictoryLine,
   VictoryAxis,
-  VictoryVoronoiContainer,
-  VictoryTooltip,
   VictoryZoomContainer,
-  VictoryLabel,
-  createContainer,
   VictoryScatter,
 } from "victory";
 
+import {
+  timeToMilliseconds,
+  MILLISECONDS_IN_A_WEEK,
+  MILLISECONDS_IN_A_MONTH,
+} from "../../../../Utils/dateToMilliseconds.js";
+
+import advanceOneWeek from "../../../../Utils/renderGraphsFunctions/advanceOneWeek.js";
+import retreatOneWeek from "../../../../Utils/renderGraphsFunctions/retreatOneWeek.js";
+
 export default function RenderWeightLiftedMonthlyGraph({
   weightLiftedLineDataByMonth,
+  minWeight,
+  maxWeight,
 }) {
-  const [zoomState, setZoomState] = useState({ x: [0, 13150080000] }); // this is equal to 6 months
+  const [zoomState, setZoomState] = useState({ x: [0, 0] });
+  const [maxDomain, setMaxDomain] = useState(0);
+  const [minDomain, setMinDomain] = useState(0);
 
-  const [weightLiftedLineDataByMonth, setWeightLiftedLineDataByMonth] =
-    useState(weightLiftedLineDataByMonth || []);
+  useEffect(() => {
+    if (weightLiftedLineDataByMonth.length) {
+      const leftDate = weightLiftedLineDataByMonth[0].x;
+      const rightDate =
+        weightLiftedLineDataByMonth[weightLiftedLineDataByMonth.length - 1].x;
+
+      let rightUnixTime = timeToMilliseconds(rightDate);
+      let leftUnixTime = timeToMilliseconds(leftDate);
+
+      setMaxDomain(rightUnixTime + MILLISECONDS_IN_A_WEEK);
+      setMinDomain(leftUnixTime - MILLISECONDS_IN_A_WEEK);
+
+      if (rightUnixTime - leftUnixTime > MILLISECONDS_IN_A_MONTH * 4) {
+        rightUnixTime = leftUnixTime + MILLISECONDS_IN_A_MONTH * 4;
+      }
+
+      const newDomain = {
+        x: [leftUnixTime - MILLISECONDS_IN_A_WEEK, rightUnixTime],
+      };
+
+      setZoomState({ x: newDomain.x, y: zoomState.y });
+    }
+  }, [weightLiftedLineDataByMonth]);
 
   const handleZoom = (domain) => {
-    console.log("domain", domain);
     setZoomState({ x: domain.x, y: domain.y });
-  };
-
-  const advanceOneWeek = () => {
-    const right_prevUnixTime = zoomState.x[0].getTime() / 1000;
-    const right_nextUnixTime = right_prevUnixTime + 604800;
-    const right_newDate = new Date(right_nextUnixTime * 1000);
-
-    const left_prevUnixTime = zoomState.x[1].getTime() / 1000;
-    const left_nextUnixTime = left_prevUnixTime + 604800;
-    const left_newDate = new Date(left_nextUnixTime * 1000);
-
-    const newDomain = {
-      x: [right_newDate, left_newDate],
-    };
-
-    setZoomState({ x: newDomain.x, y: zoomState.y });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>
-        Per week
-      </Text>
       {!weightLiftedLineDataByMonth.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
@@ -70,6 +70,7 @@ export default function RenderWeightLiftedMonthlyGraph({
               scale={{ x: "time" }}
               height={Dimensions.get("window").height * 0.6}
               width={Dimensions.get("window").width}
+              domainPadding={{ x: 20 }}
               containerComponent={
                 <VictoryZoomContainer
                   zoomDimension="x"
@@ -127,7 +128,17 @@ export default function RenderWeightLiftedMonthlyGraph({
         </View>
       )}
       <Pressable
-        onPress={() => advanceOneWeek()}
+        onPress={() => retreatOneWeek(zoomState, setZoomState, minDomain)}
+        style={{
+          backgroundColor: "#157AFF",
+        }}
+      >
+        <Text style={{ color: "white", fontSize: 20, padding: 10 }}>
+          Retreat one week
+        </Text>
+      </Pressable>
+      <Pressable
+        onPress={() => advanceOneWeek(zoomState, setZoomState, maxDomain)}
         style={{
           backgroundColor: "#157AFF",
         }}

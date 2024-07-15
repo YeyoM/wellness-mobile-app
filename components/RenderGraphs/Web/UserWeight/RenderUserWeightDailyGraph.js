@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable, Dimensions } from "react-native";
 
 import {
@@ -9,38 +9,53 @@ import {
   VictoryScatter,
 } from "victory";
 
+import {
+  timeToMilliseconds,
+  MILLISECONDS_IN_A_WEEK,
+  MILLISECONDS_IN_A_DAY,
+} from "../../../../Utils/dateToMilliseconds.js";
+
+import advanceOneWeek from "../../../../Utils/renderGraphsFunctions/advanceOneWeek.js";
+import retreatOneWeek from "../../../../Utils/renderGraphsFunctions/retreatOneWeek.js";
+
 export default function RenderUserWeightDailyGraph({
   weightLineDataByDay,
   minWeight,
   maxWeight,
 }) {
-  const [zoomState, setZoomState] = useState({ x: [0, 392000000] }); // this is equal to 7 days in milliseconds
+  const [zoomState, setZoomState] = useState({ x: [0, 0] });
+  const [maxDomain, setMaxDomain] = useState(0);
+  const [minDomain, setMinDomain] = useState(0);
+
+  useEffect(() => {
+    if (weightLineDataByDay.length) {
+      const leftDate = weightLineDataByDay[0].x;
+      const rightDate = weightLineDataByDay[weightLineDataByDay.length - 1].x;
+
+      let rightUnixTime = timeToMilliseconds(rightDate);
+      let leftUnixTime = timeToMilliseconds(leftDate);
+
+      setMaxDomain(rightUnixTime + MILLISECONDS_IN_A_DAY);
+      setMinDomain(leftUnixTime - MILLISECONDS_IN_A_DAY);
+
+      if (rightUnixTime - leftUnixTime > MILLISECONDS_IN_A_DAY * 4) {
+        rightUnixTime = leftUnixTime + MILLISECONDS_IN_A_DAY * 4;
+      }
+
+      const newDomain = {
+        x: [leftUnixTime - MILLISECONDS_IN_A_DAY, rightUnixTime],
+      };
+
+      setZoomState({ x: newDomain.x, y: zoomState.y });
+    }
+  }, [weightLineDataByDay]);
 
   const handleZoom = (domain) => {
     setZoomState({ x: domain.x, y: domain.y });
   };
 
-  const advanceOneWeek = () => {
-    const right_prevUnixTime = zoomState.x[0].getTime() / 1000;
-    const right_nextUnixTime = right_prevUnixTime + 604800;
-    const right_newDate = new Date(right_nextUnixTime * 1000);
-
-    const left_prevUnixTime = zoomState.x[1].getTime() / 1000;
-    const left_nextUnixTime = left_prevUnixTime + 604800;
-    const left_newDate = new Date(left_nextUnixTime * 1000);
-
-    const newDomain = {
-      x: [right_newDate, left_newDate],
-    };
-
-    setZoomState({ x: newDomain.x, y: zoomState.y });
-  };
-
   return (
     <View style={styles.container}>
-      <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>
-        Per day
-      </Text>
       {!weightLineDataByDay.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
@@ -54,6 +69,7 @@ export default function RenderUserWeightDailyGraph({
               scale={{ x: "time" }}
               height={Dimensions.get("window").height * 0.6}
               width={Dimensions.get("window").width}
+              domainPadding={{ x: 10 }}
               containerComponent={
                 <VictoryZoomContainer
                   zoomDimension="x"
@@ -111,7 +127,17 @@ export default function RenderUserWeightDailyGraph({
         </View>
       )}
       <Pressable
-        onPress={() => advanceOneWeek()}
+        onPress={() => retreatOneWeek(zoomState, setZoomState, minDomain)}
+        style={{
+          backgroundColor: "#157AFF",
+        }}
+      >
+        <Text style={{ color: "white", fontSize: 20, padding: 10 }}>
+          Retreat one week
+        </Text>
+      </Pressable>
+      <Pressable
+        onPress={() => advanceOneWeek(zoomState, setZoomState, maxDomain)}
         style={{
           backgroundColor: "#157AFF",
         }}

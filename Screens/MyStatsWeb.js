@@ -11,12 +11,12 @@ import getStatsData from "../AsyncStorageFunctions/getStatsData.js";
 import getUserWeightProgressDataForWebGraph from "../Utils/graphsDataFunctions/WeightData/getUserWeightProgressDataForWebGraph.js";
 import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/CaloriesData/getUserCaloriesProgressDataForGraph.js";
 import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/TimeData/getUserTimeSpentProgressDataForGraph.js";
-import getUserWeightLiftedProgressDataForGraph from "../Utils/graphsDataFunctions/WeightLiftedData/getUserWeightLiftedProgressDataForGraph.js";
+import getUserWeightLiftedProgressDataForWebGraph from "../Utils/graphsDataFunctions/WeightLiftedData/getUserWeightLiftedProgressDataForWebGraph.js";
 
-import RenderUserWeightAllTimeGraph from "../components/RenderGraphs/Web/UserWeight/RenderUserWeightAllTimeGraph.js";
-import RenderUserWeightDailyGraph from "../components/RenderGraphs/Web/UserWeight/RenderUserWeightDailyGraph.js";
-import RenderUserWeightWeeklyGraph from "../components/RenderGraphs/Web/UserWeight/RenderUserWeightWeeklyGraph.js";
-import RenderUserWeightMonthlyGraph from "../components/RenderGraphs/Web/UserWeight/RenderUserWeightMonthlyGraph.js";
+import RenderWeightLiftedAllTimeGraph from "../components/RenderGraphs/Web/WeightLifted/RenderWeightLiftedAllTimeGraph.js";
+import RenderWeightLiftedDailyGraph from "../components/RenderGraphs/Web/WeightLifted/RenderWeightLiftedDailyGraph.js";
+import RenderWeightLiftedWeeklyGraph from "../components/RenderGraphs/Web/WeightLifted/RenderWeightLiftedWeeklyGraph.js";
+import RenderWeightLiftedMonthlyGraph from "../components/RenderGraphs/Web/WeightLifted/RenderWeightLiftedMonthlyGraph.js";
 
 import { AppContext } from "../context/AppContext.js";
 
@@ -50,8 +50,12 @@ export default function MyStatsWeb({ navigation }) {
   );
   const [weightLiftedLineDataByMonth, setWeightLiftedLineDataByMonth] =
     useState([]);
+  const [maxWeightLiftedDaily, setMaxWeightLiftedDaily] = useState(0);
+  const [maxWeightLiftedWeekly, setMaxWeightLiftedWeekly] = useState(0);
+  const [maxWeightLiftedMonthly, setMaxWeightLiftedMonthly] = useState(0);
+  const [minWeightLifted, setMinWeightLifted] = useState(0);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setSelectedCategory("Calories");
@@ -71,10 +75,6 @@ export default function MyStatsWeb({ navigation }) {
           weightRecord,
         });
         setWeightLineData(weightProgressData);
-        console.log(
-          "weightProgressDataByWeekForWebGraph",
-          weightProgressDataByWeekForWebGraph,
-        );
         setWeightLineDataByWeek(weightProgressDataByWeekForWebGraph);
         setWeightLineDataByMonth(weightProgressDataByMonthForWebGraph);
         setCurrentWeight(currentWeight);
@@ -106,16 +106,23 @@ export default function MyStatsWeb({ navigation }) {
         setTimeLineDataByMonth(timeProgressDataByMonth);
         const {
           weightLiftedProgressData,
-          totalWeightLifted,
           weightLiftedProgressDataByWeek,
           weightLiftedProgressDataByMonth,
-        } = getUserWeightLiftedProgressDataForGraph({
+          totalWeightLifted,
+          maxWeightLiftedDaily,
+          maxWeightLiftedWeekly,
+          maxWeightLiftedMonthly,
+        } = getUserWeightLiftedProgressDataForWebGraph({
           weightLiftedRecord: stats.weightLiftedRecord,
         });
         setWeightLiftedLineData(weightLiftedProgressData);
         setWeightLiftedLineDataByWeek(weightLiftedProgressDataByWeek);
         setWeightLiftedLineDataByMonth(weightLiftedProgressDataByMonth);
         setTotalWeightLifted(totalWeightLifted);
+        setMaxWeightLiftedDaily(maxWeightLiftedDaily);
+        setMaxWeightLiftedWeekly(maxWeightLiftedWeekly);
+        setMaxWeightLiftedMonthly(maxWeightLiftedMonthly);
+        setMinWeightLifted(0);
         setLoading(false);
       })
       .catch((error) => {
@@ -220,10 +227,10 @@ export default function MyStatsWeb({ navigation }) {
             </Text>
           ) : (
             <View style={{ marginBottom: 100 }}>
-              <RenderUserWeightAllTimeGraph
-                weightLineData={weightLineData}
-                minWeight={minWeight}
-                maxWeight={maxWeight}
+              <RenderWeightLiftedAllTimeGraph
+                weightLiftedLineData={weightLiftedLineData}
+                minWeight={-50}
+                maxWeight={maxWeightLiftedDaily}
               />
             </View>
           )}
@@ -236,10 +243,10 @@ export default function MyStatsWeb({ navigation }) {
               Loading...
             </Text>
           ) : (
-            <RenderUserWeightMonthlyGraph
-              weightLineDataByMonth={weightLineDataByMonth}
-              minWeight={minWeight}
-              maxWeight={maxWeight}
+            <RenderWeightLiftedMonthlyGraph
+              weightLiftedLineDataByMonth={weightLiftedLineDataByMonth}
+              minWeight={-50}
+              maxWeight={maxWeightLiftedMonthly}
             />
           )}
 
@@ -251,10 +258,10 @@ export default function MyStatsWeb({ navigation }) {
               Loading...
             </Text>
           ) : (
-            <RenderUserWeightWeeklyGraph
-              weightLineDataByWeek={weightLineDataByWeek}
-              minWeight={minWeight}
-              maxWeight={maxWeight}
+            <RenderWeightLiftedWeeklyGraph
+              weightLiftedLineDataByWeek={weightLiftedLineDataByWeek}
+              minWeight={-50}
+              maxWeight={maxWeightLiftedWeekly}
             />
           )}
 
@@ -266,10 +273,10 @@ export default function MyStatsWeb({ navigation }) {
               Loading...
             </Text>
           ) : (
-            <RenderUserWeightDailyGraph
-              weightLineDataByDay={weightLineData}
-              minWeight={minWeight}
-              maxWeight={maxWeight}
+            <RenderWeightLiftedDailyGraph
+              weightLiftedLineDataByDay={weightLiftedLineData}
+              minWeight={-50}
+              maxWeight={maxWeightLiftedDaily}
             />
           )}
         </View>

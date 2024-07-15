@@ -44,7 +44,7 @@ export default function RenderUserWeightWeeklyGraph({
       }
 
       const newDomain = {
-        x: [leftUnixTime - MILLISECONDS_IN_A_DAY, rightUnixTime],
+        x: [leftUnixTime - MILLISECONDS_IN_A_WEEK, rightUnixTime],
       };
 
       setZoomState({ x: newDomain.x, y: zoomState.y });
