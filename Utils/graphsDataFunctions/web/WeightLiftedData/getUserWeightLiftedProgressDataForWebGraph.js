@@ -1,4 +1,4 @@
-import firebasDateToDate from "../../firebasDateToDate";
+import firebasDateToDate from "../../../firebasDateToDate";
 import getUserWeightLiftedProgressDataByWeekForWebGraph from "./getUserWeightLiftedProgressDataByWeekForWebGraph";
 import getUserWeightLiftedProgressDataByMonthForWebGraph from "./getUserWeightLiftedProgressDataByMonthForWebGraph";
 
@@ -94,20 +94,10 @@ export default function getUserWeightLiftedProgressDataForWebGraph({
       weightLiftedProgressData: weightLiftedProgressData,
     });
 
-  console.log("weightLiftedProgressDataByWeek", weightLiftedProgressDataByWeek);
-
   let { weightLiftedProgressDataByMonth, maxWeightLiftedMonthly } =
     getUserWeightLiftedProgressDataByMonthForWebGraph({
       weightLiftedProgressData: weightLiftedProgressData,
     });
-
-  console.log(
-    "weightLiftedProgressDataByMonth",
-    weightLiftedProgressDataByMonth,
-  );
-
-  console.log("MaxWeightLiftedWeekly", maxWeightLiftedWeekly);
-  console.log("MaxWeightLiftedMonthly", maxWeightLiftedMonthly);
 
   return {
     weightLiftedProgressData: weightLiftedProgressData,

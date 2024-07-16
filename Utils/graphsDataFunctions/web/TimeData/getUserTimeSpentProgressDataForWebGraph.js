@@ -1,12 +1,12 @@
 import React from "react";
 import { View, Text } from "react-native";
-import firebasDateToDate from "../../firebasDateToDate";
+import firebasDateToDate from "../../../firebasDateToDate";
 
-import readableTimeToMinutes from "../../readableTimeToMinutes";
-import minutesToReadableTime from "../../minutesToReadableTime";
+import readableTimeToMinutes from "../../../readableTimeToMinutes";
+import minutesToReadableTime from "../../../minutesToReadableTime";
 
-import getUserTimeSpentProgressDataByWeekForGraph from "./getUserTimeSpentProgressDataByWeekForGraph";
-import getUserTimeSpentProgressDataByMonthForGraph from "./getUserTimeSpentProgressDataByMonthForGraph";
+import getUserTimeSpentProgressDataByWeekForWebGraph from "./getUserTimeSpentProgressDataByWeekForWebGraph";
+import getUserTimeSpentProgressDataByMonthForWebGraph from "./getUserTimeSpentProgressDataByMonthForWebGraph";
 
 /** getUserTimeSpentProgressDataForGraph
  * @param {object} timeRecord - the user's time record object
@@ -104,13 +104,14 @@ export default function getUserTimeSpentProgressDataForGraph({ timeRecord }) {
     }
   }
 
-  const timeProgressDataByWeek = getUserTimeSpentProgressDataByWeekForGraph({
+  const timeProgressDataByWeek = getUserTimeSpentProgressDataByWeekForWebGraph({
     timeProgressData,
   });
 
-  const timeProgressDataByMonth = getUserTimeSpentProgressDataByMonthForGraph({
-    timeProgressData,
-  });
+  const timeProgressDataByMonth =
+    getUserTimeSpentProgressDataByMonthForWebGraph({
+      timeProgressData,
+    });
 
   console.log(timeProgressDataByMonth);
 

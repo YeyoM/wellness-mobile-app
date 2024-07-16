@@ -8,15 +8,15 @@ import { Ionicons } from "@expo/vector-icons";
 
 import getStatsData from "../AsyncStorageFunctions/getStatsData.js";
 
-import getUserWeightProgressDataForWebGraph from "../Utils/graphsDataFunctions/WeightData/getUserWeightProgressDataForWebGraph.js";
-import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/CaloriesData/getUserCaloriesProgressDataForGraph.js";
-import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/TimeData/getUserTimeSpentProgressDataForGraph.js";
-import getUserWeightLiftedProgressDataForWebGraph from "../Utils/graphsDataFunctions/WeightLiftedData/getUserWeightLiftedProgressDataForWebGraph.js";
+import getUserWeightProgressDataForWebGraph from "../Utils/graphsDataFunctions/web/WeightData/getUserWeightProgressDataForWebGraph.js";
+import getUserCaloriesProgressDataForWebGraph from "../Utils/graphsDataFunctions/web/CaloriesData/getUserCaloriesProgressDataForWebGraph.js";
+import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/web/TimeData/getUserTimeSpentProgressDataForWebGraph.js";
+import getUserWeightLiftedProgressDataForWebGraph from "../Utils/graphsDataFunctions/web/WeightLiftedData/getUserWeightLiftedProgressDataForWebGraph.js";
 
-import RenderWeightLiftedAllTimeGraph from "../components/RenderGraphs/Web/WeightLifted/RenderWeightLiftedAllTimeGraph.js";
-import RenderWeightLiftedDailyGraph from "../components/RenderGraphs/Web/WeightLifted/RenderWeightLiftedDailyGraph.js";
-import RenderWeightLiftedWeeklyGraph from "../components/RenderGraphs/Web/WeightLifted/RenderWeightLiftedWeeklyGraph.js";
-import RenderWeightLiftedMonthlyGraph from "../components/RenderGraphs/Web/WeightLifted/RenderWeightLiftedMonthlyGraph.js";
+import RenderCaloriesAllTimeGraph from "../components/RenderGraphs/Web/Calories/RenderCaloriesAllTimeGraph.js";
+import RenderCaloriesDailyGraph from "../components/RenderGraphs/Web/Calories/RenderCaloriesDailyGraph.js";
+import RenderCaloriesWeeklyGraph from "../components/RenderGraphs/Web/Calories/RenderCaloriesWeeklyGraph.js";
+import RenderCaloriesMonthlyGraph from "../components/RenderGraphs/Web/Calories/RenderCaloriesMonthlyGraph.js";
 
 import { AppContext } from "../context/AppContext.js";
 
@@ -34,6 +34,9 @@ export default function MyStatsWeb({ navigation }) {
   const [caloriesLineData, setCaloriesLineData] = useState([]);
   const [caloriesLineDataByWeek, setCaloriesLineDataByWeek] = useState([]);
   const [caloriesLineDataByMonth, setCaloriesLineDataByMonth] = useState([]);
+  const [maxCaloriesDaily, setMaxCaloriesDaily] = useState(0);
+  const [maxCaloriesWeekly, setMaxCaloriesWeekly] = useState(0);
+  const [maxCaloriesMonthly, setMaxCaloriesMonthly] = useState(0);
 
   const [timeLineData, setTimeLineData] = useState([]);
   const [timeLineDataByWeek, setTimeLineDataByWeek] = useState([]);
@@ -82,16 +85,22 @@ export default function MyStatsWeb({ navigation }) {
         setMinWeight(minWeight);
         const {
           caloriesProgressData,
-          totalCalories,
           caloriesProgressDataByWeek,
           caloriesProgressDataByMonth,
-        } = getUserCaloriesProgressDataForGraph({
+          totalCalories,
+          maxCaloriesDaily,
+          maxCaloriesWeekly,
+          maxCaloriesMonthly,
+        } = getUserCaloriesProgressDataForWebGraph({
           caloriesRecord: stats.caloriesRecord,
         });
-        setTotalCalories(totalCalories);
         setCaloriesLineData(caloriesProgressData);
         setCaloriesLineDataByWeek(caloriesProgressDataByWeek);
         setCaloriesLineDataByMonth(caloriesProgressDataByMonth);
+        setTotalCalories(totalCalories);
+        setMaxCaloriesDaily(maxCaloriesDaily);
+        setMaxCaloriesWeekly(maxCaloriesWeekly);
+        setMaxCaloriesMonthly(maxCaloriesMonthly);
         const {
           timeProgressData,
           totalTime,
@@ -227,14 +236,13 @@ export default function MyStatsWeb({ navigation }) {
             </Text>
           ) : (
             <View style={{ marginBottom: 100 }}>
-              <RenderWeightLiftedAllTimeGraph
-                weightLiftedLineData={weightLiftedLineData}
-                minWeight={-50}
-                maxWeight={maxWeightLiftedDaily}
+              <RenderCaloriesAllTimeGraph
+                caloriesLineData={caloriesLineData}
+                minCalories={0}
+                maxCalories={maxCaloriesDaily}
               />
             </View>
           )}
-
           <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>
             Per month
           </Text>
@@ -243,10 +251,10 @@ export default function MyStatsWeb({ navigation }) {
               Loading...
             </Text>
           ) : (
-            <RenderWeightLiftedMonthlyGraph
-              weightLiftedLineDataByMonth={weightLiftedLineDataByMonth}
-              minWeight={-50}
-              maxWeight={maxWeightLiftedMonthly}
+            <RenderCaloriesMonthlyGraph
+              caloriesLineDataByMonth={caloriesLineDataByMonth}
+              minCalories={0}
+              maxCalories={maxCaloriesMonthly}
             />
           )}
 
@@ -258,10 +266,10 @@ export default function MyStatsWeb({ navigation }) {
               Loading...
             </Text>
           ) : (
-            <RenderWeightLiftedWeeklyGraph
-              weightLiftedLineDataByWeek={weightLiftedLineDataByWeek}
-              minWeight={-50}
-              maxWeight={maxWeightLiftedWeekly}
+            <RenderCaloriesWeeklyGraph
+              caloriesLineDataByWeek={caloriesLineDataByWeek}
+              minCalories={0}
+              maxCalories={maxCaloriesWeekly}
             />
           )}
 
@@ -273,10 +281,10 @@ export default function MyStatsWeb({ navigation }) {
               Loading...
             </Text>
           ) : (
-            <RenderWeightLiftedDailyGraph
-              weightLiftedLineDataByDay={weightLiftedLineData}
-              minWeight={-50}
-              maxWeight={maxWeightLiftedDaily}
+            <RenderCaloriesDailyGraph
+              caloriesLineDataByDay={caloriesLineData}
+              minCalories={0}
+              maxCalories={maxCaloriesDaily}
             />
           )}
         </View>

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
-import firebasDateToDate from "../../firebasDateToDate";
+import firebasDateToDate from "../../../firebasDateToDate";
 import getUserWeightLiftedProgressDataByWeekForGraph from "./getUserWeightLiftedProgressDataByWeekForGraph";
 import getUserWeightLiftedProgressDataByMonthForGraph from "./getUserWeightLiftedProgressDataByMonthForGraph";
 

@@ -17,10 +17,10 @@ import CarouselRepsMaxes from "../components/CarouselRepsMaxes";
 import getSharedStatsData from "../AsyncStorageFunctions/getSharedStatsData.js";
 import getSpecificWorkouts from "../FirebaseFunctions/Workouts/GetSpecificWorkouts.js";
 
-import getUserWeightProgressDataForGraph from "../Utils/graphsDataFunctions/WeightData/getUserWeightProgressDataForGraph.js";
-import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/CaloriesData/getUserCaloriesProgressDataForGraph.js";
-import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/TimeData/getUserTimeSpentProgressDataForGraph.js";
-import getUserWeightLiftedProgressDataForGraph from "../Utils/graphsDataFunctions/WeightLiftedData/getUserWeightLiftedProgressDataForGraph.js";
+import getUserWeightProgressDataForGraph from "../Utils/graphsDataFunctions/mobile/WeightData/getUserWeightProgressDataForGraph.js";
+import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/mobile/CaloriesData/getUserCaloriesProgressDataForGraph.js";
+import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/mobile/TimeData/getUserTimeSpentProgressDataForGraph.js";
+import getUserWeightLiftedProgressDataForGraph from "../Utils/graphsDataFunctions/mobile/WeightLiftedData/getUserWeightLiftedProgressDataForGraph.js";
 
 export default function SharedProfileStats({ navigation, route }) {
   const { profile, workoutsIds } = route.params;

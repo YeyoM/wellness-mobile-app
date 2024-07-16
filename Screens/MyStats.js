@@ -14,10 +14,10 @@ import { SelectList } from "react-native-dropdown-select-list";
 import CarouselRepsMaxes from "../components/CarouselRepsMaxes";
 import getStatsData from "../AsyncStorageFunctions/getStatsData.js";
 
-import getUserWeightProgressDataForGraph from "../Utils/graphsDataFunctions/WeightData/getUserWeightProgressDataForGraph.js";
-import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/CaloriesData/getUserCaloriesProgressDataForGraph.js";
-import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/TimeData/getUserTimeSpentProgressDataForGraph.js";
-import getUserWeightLiftedProgressDataForGraph from "../Utils/graphsDataFunctions/WeightLiftedData/getUserWeightLiftedProgressDataForGraph.js";
+import getUserWeightProgressDataForGraph from "../Utils/graphsDataFunctions/mobile/WeightData/getUserWeightProgressDataForGraph.js";
+import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/mobile/CaloriesData/getUserCaloriesProgressDataForGraph.js";
+import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/mobile/TimeData/getUserTimeSpentProgressDataForGraph.js";
+import getUserWeightLiftedProgressDataForGraph from "../Utils/graphsDataFunctions/mobile/WeightLiftedData/getUserWeightLiftedProgressDataForGraph.js";
 
 import { AppContext } from "../context/AppContext.js";
 

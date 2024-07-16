@@ -12,8 +12,6 @@ export default function getUserWeightProgressDataByMonthForGraph({
   let currentMonthWeightData = 0;
   let currentMonthDayCount = 0;
 
-  console.log("currentMonth", currentMonth);
-
   for (let i = 0; i < weightProgressData.length; i++) {
     const date = new Date(weightProgressData[i].x);
     if (date.getMonth() === currentMonth) {
@@ -22,7 +20,6 @@ export default function getUserWeightProgressDataByMonthForGraph({
       }
       currentMonthWeightData += weightProgressData[i].y;
     } else {
-      console.log("change month");
       const averageWeight = currentMonthWeightData / currentMonthDayCount;
       weightProgressDataByMonth.push({
         x: currentDate,
@@ -30,7 +27,6 @@ export default function getUserWeightProgressDataByMonthForGraph({
       });
       currentDate = date;
       currentMonth = currentDate.getMonth();
-      console.log("currentMonth", currentMonth);
       currentMonthWeightData = weightProgressData[i].y;
       currentMonthDayCount = 1;
     }
