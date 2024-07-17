@@ -18,7 +18,14 @@ export default function RenderTimeAllTimeGraph({
 }) {
   return (
     <View style={styles.container}>
-      <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>
+      <Text
+        style={{
+          color: "white",
+          fontSize: 30,
+          fontWeight: "bold",
+          paddingHorizontal: 20,
+        }}
+      >
         All time
       </Text>
       {!timeLineData.length ? (

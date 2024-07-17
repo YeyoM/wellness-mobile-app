@@ -3,8 +3,7 @@ import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
-// import { SelectList } from "react-native-dropdown-select-list";
-// import CarouselRepsMaxes from "../components/CarouselRepsMaxes";
+import { SelectList } from "react-native-dropdown-select-list";
 
 import getStatsData from "../AsyncStorageFunctions/getStatsData.js";
 
@@ -14,14 +13,21 @@ import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/w
 import getUserWeightLiftedProgressDataForWebGraph from "../Utils/graphsDataFunctions/web/WeightLiftedData/getUserWeightLiftedProgressDataForWebGraph.js";
 
 import RenderTimeAllTimeGraph from "../components/RenderGraphs/Web/Time/RenderTimeAllTimeGraph.js";
-import RenderTimeDailyGraph from "../components/RenderGraphs/Web/Time/RenderTimeDailyGraph.js";
-import RenderTimeWeeklyGraph from "../components/RenderGraphs/Web/Time/RenderTimeWeeklyGraph.js";
-import RenderTimeMonthlyGraph from "../components/RenderGraphs/Web/Time/RenderTimeMonthlyGraph.js";
+import RenderCaloriesAllTimeGraph from "../components/RenderGraphs/Web/Calories/RenderCaloriesAllTimeGraph.js";
+import RenderUserWeightAllTimeGraph from "../components/RenderGraphs/Web/UserWeight/RenderUserWeightAllTimeGraph.js";
+import RenderWeightLiftedAllTimeGraph from "../components/RenderGraphs/Web/WeightLifted/RenderWeightLiftedAllTimeGraph.js";
 
 import { AppContext } from "../context/AppContext.js";
 
 export default function MyStatsWeb({ navigation }) {
   const { exercises } = useContext(AppContext);
+
+  const data = [
+    { key: "1", value: "Calories" },
+    { key: "2", value: "Weight Lifted" },
+    { key: "3", value: "Time" },
+    { key: "4", value: "User Weight" },
+  ];
 
   const [selectedCategory, setSelectedCategory] = useState("Calories");
 
@@ -64,8 +70,6 @@ export default function MyStatsWeb({ navigation }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setSelectedCategory("Calories");
-
     setLoading(true);
     getStatsData()
       .then((stats) => {
@@ -146,6 +150,7 @@ export default function MyStatsWeb({ navigation }) {
       .catch((error) => {
         console.log(error);
       });
+    setLoading(false);
   }, []);
 
   const onPressDetailedView = () => {
@@ -153,19 +158,29 @@ export default function MyStatsWeb({ navigation }) {
       weightLineData,
       weightLineDataByWeek,
       weightLineDataByMonth,
+      maxWeight,
+      currentWeight,
       caloriesLineData,
       caloriesLineDataByWeek,
       caloriesLineDataByMonth,
+      totalCalories,
+      maxCaloriesDaily,
+      maxCaloriesWeekly,
+      maxCaloriesMonthly,
       timeLineData,
       timeLineDataByWeek,
       timeLineDataByMonth,
+      totalTimeSpent,
+      maxTimeDaily,
+      maxTimeWeekly,
+      maxTimeMonthly,
       weightLiftedLineData,
       weightLiftedLineDataByWeek,
       weightLiftedLineDataByMonth,
-      currentWeight,
-      totalCalories,
-      totalTimeSpent,
       totalWeightLifted,
+      maxWeightLiftedDaily,
+      maxWeightLiftedWeekly,
+      maxWeightLiftedMonthly,
     });
   };
 
@@ -174,129 +189,86 @@ export default function MyStatsWeb({ navigation }) {
       <ScrollView
         style={{ width: "100%", marginTop: Constants.statusBarHeight }}
       >
-        <View
-          style={{
-            display: "flex",
-            alignItems: "center",
-            paddingHorizontal: 0,
-          }}
-        >
+        <View style={styles.header}>
           <Pressable
             onPress={() => navigation.goBack()}
             style={styles.backButton}
           >
             <Ionicons name="chevron-back-outline" size={36} color="white" />
           </Pressable>
-          <Text
-            style={{
-              color: "white",
-              fontSize: 30,
-              marginTop: 20,
-              fontWeight: "bold",
-            }}
-          >
-            My Stats
-          </Text>
-          <View
-            style={{
-              width: "100%",
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginTop: 50,
-              marginBottom: -100,
-              height: 150,
-              zIndex: 999,
-            }}
-          >
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                marginTop: -10,
-              }}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 22,
-                  marginTop: 10,
-                }}
-              >
-                Progress Graphs
-              </Text>
-              <Pressable onPress={() => onPressDetailedView()}>
-                <Text
-                  style={{
-                    color: "#a0a0a0",
-                    fontSize: 14,
-                    fontStyle: "italic",
-                    textDecorationLine: "underline",
-                  }}
-                >
-                  Detailed view
-                </Text>
-              </Pressable>
-            </View>
+          <Text style={styles.headerText}>My Stats</Text>
+        </View>
+        <View style={styles.secondHeader}>
+          <View style={styles.left}>
+            <Text style={styles.progressGraphsText}>Progress Graphs</Text>
+            <Pressable onPress={() => onPressDetailedView()}>
+              <Text style={styles.detailedViewText}>Detailed view</Text>
+            </Pressable>
           </View>
-          {loading ? (
-            <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
-              Loading...
-            </Text>
-          ) : (
-            <View style={{ marginBottom: 100 }}>
+          <View style={styles.right}>
+            <SelectList
+              data={data}
+              save="value"
+              search={false}
+              defaultOption={{ key: "0", value: "Select" }}
+              setSelected={(value) => setSelectedCategory(value)}
+              onSelected={(value) => setSelectedCategory(value)}
+              boxStyles={{
+                backgroundColor: "#157AFF",
+                color: "white",
+                borderWidth: 0,
+                borderRadius: 20,
+                width: 120,
+              }}
+              dropdownStyles={{
+                backgroundColor: "#157AFF",
+                borderWidth: 0,
+                color: "white",
+                borderRadius: 20,
+              }}
+              dropdownItemStyles={{
+                backgroundColor: "#157AFF",
+                color: "white",
+              }}
+              dropdownTextStyles={{
+                color: "white",
+              }}
+            />
+          </View>
+        </View>
+        {loading ? (
+          <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
+            Loading...
+          </Text>
+        ) : (
+          <View style={{ marginBottom: 100 }}>
+            {selectedCategory === "Calories" ? (
+              <RenderCaloriesAllTimeGraph
+                caloriesLineData={caloriesLineData}
+                minCalories={0}
+                maxCalories={maxCaloriesDaily}
+              />
+            ) : selectedCategory === "Time" ? (
               <RenderTimeAllTimeGraph
                 timeLineData={timeLineData}
                 minTime={0}
                 maxTime={maxTimeDaily}
               />
-            </View>
-          )}
-          <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>
-            Per month
-          </Text>
-          {loading ? (
-            <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
-              Loading...
-            </Text>
-          ) : (
-            <RenderTimeMonthlyGraph
-              timeLineDataByMonth={timeLineDataByMonth}
-              minTime={0}
-              maxTime={maxTimeMonthly}
-            />
-          )}
-
-          <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>
-            Per week
-          </Text>
-          {loading ? (
-            <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
-              Loading...
-            </Text>
-          ) : (
-            <RenderTimeWeeklyGraph
-              timeLineDataByWeek={timeLineDataByWeek}
-              minTime={0}
-              maxTime={maxTimeWeekly}
-            />
-          )}
-
-          <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>
-            Per day
-          </Text>
-          {loading ? (
-            <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
-              Loading...
-            </Text>
-          ) : (
-            <RenderTimeDailyGraph
-              timeLineDataByDay={timeLineData}
-              minTime={0}
-              maxTime={maxTimeDaily}
-            />
-          )}
-        </View>
+            ) : selectedCategory === "User Weight" ? (
+              <RenderUserWeightAllTimeGraph
+                weightLineData={weightLineData}
+                minWeight={minWeight}
+                maxWeight={maxWeight}
+              />
+            ) : selectedCategory === "Weight Lifted" ? (
+              <RenderWeightLiftedAllTimeGraph
+                weightLiftedLineData={weightLiftedLineData}
+                minWeight={0}
+                maxWeight={maxWeightLiftedDaily}
+              />
+            ) : null}
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -319,6 +291,59 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  header: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 40,
+  },
+
+  headerText: {
+    color: "white",
+    fontSize: 30,
+    fontWeight: "bold",
+    marginTop: 20,
+  },
+
+  secondHeader: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "baseline",
+    marginTop: 20,
+    padding: 20,
+  },
+
+  left: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+
+  right: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-end",
+    overflow: "hidden",
+  },
+
+  progressGraphsText: {
+    color: "white",
+    fontSize: 26,
+    fontWeight: "normal",
+  },
+
+  detailedViewText: {
+    color: "#a0a0a0",
+    fontSize: 12,
+    fontWeight: "thin",
+    fontStyle: "italic",
+    textDeorationLine: "underline",
   },
 
   graphContainer: {
