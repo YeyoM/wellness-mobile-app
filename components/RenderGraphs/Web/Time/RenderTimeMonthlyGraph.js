@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable, Dimensions } from "react-native";
 
 import {
@@ -12,35 +12,34 @@ import {
 import {
   timeToMilliseconds,
   MILLISECONDS_IN_A_WEEK,
-  MILLISECONDS_IN_A_DAY,
+  MILLISECONDS_IN_A_MONTH,
 } from "../../../../Utils/dateToMilliseconds.js";
 
 import advanceOneWeek from "../../../../Utils/renderGraphsFunctions/advanceOneWeek.js";
 import retreatOneWeek from "../../../../Utils/renderGraphsFunctions/retreatOneWeek.js";
 
-export default function RenderTimeWeeklyGraph({
-  timeLineDataByWeek,
+export default function RenderTimeMonthlyGraph({
+  timeLineDataByMonth,
   minTime,
   maxTime,
 }) {
-  const [zoomState, setZoomState] = useState({ x: [0, 2000000000] });
+  const [zoomState, setZoomState] = useState({ x: [0, 0] });
   const [maxDomain, setMaxDomain] = useState(0);
   const [minDomain, setMinDomain] = useState(0);
 
   useEffect(() => {
-    if (timeLineDataByWeek.length) {
-      const leftDate = timeLineDataByWeek[0].x;
-      const rightDate = timeLineDataByWeek[timeLineDataByWeek.length - 1].x;
+    if (timeLineDataByMonth.length) {
+      const leftDate = timeLineDataByMonth[0].x;
+      const rightDate = timeLineDataByMonth[timeLineDataByMonth.length - 1].x;
 
       let rightUnixTime = timeToMilliseconds(rightDate);
       let leftUnixTime = timeToMilliseconds(leftDate);
 
-      setMaxDomain(rightUnixTime + MILLISECONDS_IN_A_DAY);
-      setMinDomain(leftUnixTime - MILLISECONDS_IN_A_DAY);
+      setMaxDomain(rightUnixTime + MILLISECONDS_IN_A_WEEK);
+      setMinDomain(leftUnixTime - MILLISECONDS_IN_A_WEEK);
 
-      if (rightUnixTime - leftUnixTime > MILLISECONDS_IN_A_WEEK * 4) {
-        console.log("hshh");
-        rightUnixTime = leftUnixTime + MILLISECONDS_IN_A_WEEK * 4;
+      if (rightUnixTime - leftUnixTime > MILLISECONDS_IN_A_MONTH * 4) {
+        rightUnixTime = leftUnixTime + MILLISECONDS_IN_A_MONTH * 4;
       }
 
       const newDomain = {
@@ -49,16 +48,15 @@ export default function RenderTimeWeeklyGraph({
 
       setZoomState({ x: newDomain.x, y: zoomState.y });
     }
-  }, [timeLineDataByWeek]);
+  }, [timeLineDataByMonth]);
 
   const handleZoom = (domain) => {
-    console.log("domain", domain);
     setZoomState({ x: domain.x, y: domain.y });
   };
 
   return (
     <View style={styles.container}>
-      {!timeLineDataByWeek.length ? (
+      {!timeLineDataByMonth.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
         </Text>
@@ -104,7 +102,7 @@ export default function RenderTimeWeeklyGraph({
                 fixLabelOverlap={true}
               />
               <VictoryLine
-                data={timeLineDataByWeek}
+                data={timeLineDataByMonth}
                 style={{
                   data: {
                     stroke: "#157AFF",
@@ -113,7 +111,7 @@ export default function RenderTimeWeeklyGraph({
                 }}
               />
               <VictoryScatter
-                data={timeLineDataByWeek}
+                data={timeLineDataByMonth}
                 size={5}
                 style={{
                   data: {

@@ -1,18 +1,11 @@
-import React from "react";
-import { View, Text } from "react-native";
-
-/** getUserTimeSpentProgressDataByWeekForGraph
- * @param {object} timeProgressData - the user's time progress data by day
- * @returns {array} - an array of objects that can be used to create a graph of the user's time progress over time grouped by week
- * @description - This function will take in the user's time progress data and return an array of
- * objects that can be used to create a graph of the user's time progress over time grouped by week.
- */
 export default function getUserTimeSpentProgressDataByWeekForGraph({
   timeProgressData,
 }) {
   if (!timeProgressData || timeProgressData.length === 0) {
     return [];
   }
+
+  let maxTimeSpentWeekly = 0;
 
   let timeSpentProgressDataByWeek = [];
   let week = [];
@@ -22,21 +15,16 @@ export default function getUserTimeSpentProgressDataByWeekForGraph({
     if (week.length === 7) {
       let weekMinutes = 0;
       for (let j = 0; j < week.length; j++) {
-        weekMinutes += week[j].value;
+        weekMinutes += week[j].y;
       }
-      const weekDate = new Date(week[0].date);
+      const weekDate = new Date(week[0].x);
       timeSpentProgressDataByWeek.push({
-        week: week[0].date,
-        value: weekMinutes,
-        dataPointText: weekMinutes,
-        label: (
-          <View style={{ width: 40, marginLeft: 20 }}>
-            <Text
-              style={{ color: "#a0a0a0", fontSize: 10 }}
-            >{`${weekDate.getMonth() + 1}/${weekDate.getDate()}`}</Text>
-          </View>
-        ),
+        x: weekDate,
+        y: weekMinutes,
       });
+      if (weekMinutes > maxTimeSpentWeekly) {
+        maxTimeSpentWeekly = weekMinutes;
+      }
       week = [];
     }
   }
@@ -45,22 +33,17 @@ export default function getUserTimeSpentProgressDataByWeekForGraph({
   if (remainingDays > 0) {
     let weekMinutes = 0;
     for (let j = 0; j < week.length; j++) {
-      weekMinutes += week[j].value;
+      weekMinutes += week[j].y;
     }
-    const weekDate = new Date(week[0].date);
+    const weekDate = new Date(week[0].x);
     timeSpentProgressDataByWeek.push({
-      week: week[0].date,
-      value: weekMinutes,
-      dataPointText: weekMinutes,
-      label: (
-        <View style={{ width: 40, marginLeft: 20 }}>
-          <Text style={{ color: "#a0a0a0", fontSize: 10 }}>
-            {`${weekDate.getMonth() + 1}/${weekDate.getDate()}`}
-          </Text>
-        </View>
-      ),
+      x: weekDate,
+      y: weekMinutes,
     });
+    if (weekMinutes > maxTimeSpentWeekly) {
+      maxTimeSpentWeekly = weekMinutes;
+    }
   }
 
-  return timeSpentProgressDataByWeek;
+  return { timeSpentProgressDataByWeek, maxTimeSpentWeekly };
 }

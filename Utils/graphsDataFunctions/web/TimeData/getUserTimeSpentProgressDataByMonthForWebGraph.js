@@ -1,12 +1,3 @@
-import React from "react";
-import { View, Text } from "react-native";
-
-/** getUserTimeSpentProgressDataByMonthForGraph
- * @param {object} timeProgressData - the user's time progress data
- * @returns {array} - an array of objects that can be used to create a graph of the user's time progress over time
- * @description - This function will take in the user's time progress data and return an array of
- * objects that can be used to create a graph of the user's time progress over time.
- */
 export default function getUserTimeSpentProgressDataByMonthForGraph({
   timeProgressData,
 }) {
@@ -14,48 +5,41 @@ export default function getUserTimeSpentProgressDataByMonthForGraph({
     return [];
   }
 
-  const timeSpentProgressDataByMonth = [];
+  let timeSpentProgressDataByMonth = [];
+  let maxTimeSpentMonthly = 0;
 
-  let currentDate = new Date(timeProgressData[0].date);
+  let currentDate = new Date(timeProgressData[0].x);
   let currentMonth = currentDate.getMonth();
   let monthTotalTimeSpent = 0;
 
   for (let i = 0; i < timeProgressData.length; i++) {
-    const date = new Date(timeProgressData[i].date);
+    const date = new Date(timeProgressData[i].x);
     if (date.getMonth() === currentMonth) {
-      monthTotalTimeSpent += timeProgressData[i].value;
+      monthTotalTimeSpent += timeProgressData[i].y;
     } else {
       timeSpentProgressDataByMonth.push({
-        month: `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`,
-        value: monthTotalTimeSpent || 0,
-        dataPointText: monthTotalTimeSpent || 0,
-        label: (
-          <View style={{ width: 40, marginLeft: 20 }}>
-            <Text
-              style={{ color: "#a0a0a0", fontSize: 10 }}
-            >{`${currentMonth + 1}/${currentDate.getFullYear()}`}</Text>
-          </View>
-        ),
+        x: date,
+        y: monthTotalTimeSpent,
       });
+      if (monthTotalTimeSpent > maxTimeSpentMonthly) {
+        maxTimeSpentMonthly = monthTotalTimeSpent;
+      }
       currentMonth = date.getMonth();
-      monthTotalTimeSpent = timeProgressData[i].timeSpent;
+      monthTotalTimeSpent = timeProgressData[i].y;
     }
   }
 
   if (monthTotalTimeSpent > 0) {
     timeSpentProgressDataByMonth.push({
-      month: `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`,
-      value: monthTotalTimeSpent || 0,
-      dataPointText: monthTotalTimeSpent || 0,
-      label: (
-        <View style={{ width: 40, marginLeft: 20 }}>
-          <Text
-            style={{ color: "#a0a0a0", fontSize: 10 }}
-          >{`${currentMonth + 1}/${currentDate.getFullYear()}`}</Text>
-        </View>
-      ),
+      x: currentDate,
+      y: monthTotalTimeSpent,
     });
+    if (monthTotalTimeSpent > maxTimeSpentMonthly) {
+      maxTimeSpentMonthly = monthTotalTimeSpent;
+    }
   }
 
-  return timeSpentProgressDataByMonth;
+  maxTimeSpentMonthly = maxTimeSpentMonthly + maxTimeSpentMonthly * 0.1;
+
+  return { timeSpentProgressDataByMonth, maxTimeSpentMonthly };
 }

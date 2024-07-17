@@ -13,10 +13,10 @@ import getUserCaloriesProgressDataForWebGraph from "../Utils/graphsDataFunctions
 import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/web/TimeData/getUserTimeSpentProgressDataForWebGraph.js";
 import getUserWeightLiftedProgressDataForWebGraph from "../Utils/graphsDataFunctions/web/WeightLiftedData/getUserWeightLiftedProgressDataForWebGraph.js";
 
-import RenderCaloriesAllTimeGraph from "../components/RenderGraphs/Web/Calories/RenderCaloriesAllTimeGraph.js";
-import RenderCaloriesDailyGraph from "../components/RenderGraphs/Web/Calories/RenderCaloriesDailyGraph.js";
-import RenderCaloriesWeeklyGraph from "../components/RenderGraphs/Web/Calories/RenderCaloriesWeeklyGraph.js";
-import RenderCaloriesMonthlyGraph from "../components/RenderGraphs/Web/Calories/RenderCaloriesMonthlyGraph.js";
+import RenderTimeAllTimeGraph from "../components/RenderGraphs/Web/Time/RenderTimeAllTimeGraph.js";
+import RenderTimeDailyGraph from "../components/RenderGraphs/Web/Time/RenderTimeDailyGraph.js";
+import RenderTimeWeeklyGraph from "../components/RenderGraphs/Web/Time/RenderTimeWeeklyGraph.js";
+import RenderTimeMonthlyGraph from "../components/RenderGraphs/Web/Time/RenderTimeMonthlyGraph.js";
 
 import { AppContext } from "../context/AppContext.js";
 
@@ -41,6 +41,9 @@ export default function MyStatsWeb({ navigation }) {
   const [timeLineData, setTimeLineData] = useState([]);
   const [timeLineDataByWeek, setTimeLineDataByWeek] = useState([]);
   const [timeLineDataByMonth, setTimeLineDataByMonth] = useState([]);
+  const [maxTimeDaily, setMaxTimeSpentDaily] = useState(0);
+  const [maxTimeWeekly, setMaxTimeSpentWeekly] = useState(0);
+  const [maxTimeMonthly, setMaxTimeSpentMonthly] = useState(0);
 
   const [totalCalories, setTotalCalories] = useState(0);
   const [totalTimeSpent, setTotalTimeSpent] = useState(0);
@@ -103,16 +106,22 @@ export default function MyStatsWeb({ navigation }) {
         setMaxCaloriesMonthly(maxCaloriesMonthly);
         const {
           timeProgressData,
-          totalTime,
           timeProgressDataByWeek,
           timeProgressDataByMonth,
+          totalTime,
+          maxTimeSpentDaily,
+          maxTimeSpentWeekly,
+          maxTimeSpentMonthly,
         } = getUserTimeSpentProgressDataForGraph({
           timeRecord: stats.totalTimeRecord,
         });
-        setTotalTimeSpent(totalTime);
         setTimeLineData(timeProgressData);
         setTimeLineDataByWeek(timeProgressDataByWeek);
         setTimeLineDataByMonth(timeProgressDataByMonth);
+        setTotalTimeSpent(totalTime);
+        setMaxTimeSpentDaily(maxTimeSpentDaily);
+        setMaxTimeSpentWeekly(maxTimeSpentWeekly);
+        setMaxTimeSpentMonthly(maxTimeSpentMonthly);
         const {
           weightLiftedProgressData,
           weightLiftedProgressDataByWeek,
@@ -236,10 +245,10 @@ export default function MyStatsWeb({ navigation }) {
             </Text>
           ) : (
             <View style={{ marginBottom: 100 }}>
-              <RenderCaloriesAllTimeGraph
-                caloriesLineData={caloriesLineData}
-                minCalories={0}
-                maxCalories={maxCaloriesDaily}
+              <RenderTimeAllTimeGraph
+                timeLineData={timeLineData}
+                minTime={0}
+                maxTime={maxTimeDaily}
               />
             </View>
           )}
@@ -251,10 +260,10 @@ export default function MyStatsWeb({ navigation }) {
               Loading...
             </Text>
           ) : (
-            <RenderCaloriesMonthlyGraph
-              caloriesLineDataByMonth={caloriesLineDataByMonth}
-              minCalories={0}
-              maxCalories={maxCaloriesMonthly}
+            <RenderTimeMonthlyGraph
+              timeLineDataByMonth={timeLineDataByMonth}
+              minTime={0}
+              maxTime={maxTimeMonthly}
             />
           )}
 
@@ -266,10 +275,10 @@ export default function MyStatsWeb({ navigation }) {
               Loading...
             </Text>
           ) : (
-            <RenderCaloriesWeeklyGraph
-              caloriesLineDataByWeek={caloriesLineDataByWeek}
-              minCalories={0}
-              maxCalories={maxCaloriesWeekly}
+            <RenderTimeWeeklyGraph
+              timeLineDataByWeek={timeLineDataByWeek}
+              minTime={0}
+              maxTime={maxTimeWeekly}
             />
           )}
 
@@ -281,10 +290,10 @@ export default function MyStatsWeb({ navigation }) {
               Loading...
             </Text>
           ) : (
-            <RenderCaloriesDailyGraph
-              caloriesLineDataByDay={caloriesLineData}
-              minCalories={0}
-              maxCalories={maxCaloriesDaily}
+            <RenderTimeDailyGraph
+              timeLineDataByDay={timeLineData}
+              minTime={0}
+              maxTime={maxTimeDaily}
             />
           )}
         </View>
