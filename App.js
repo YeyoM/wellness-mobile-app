@@ -33,6 +33,7 @@ import DeleteAccount from "./Screens/DeleteAccount";
 import MyStats from "./Screens/MyStats";
 import MyStatsWeb from "./Screens/MyStatsWeb";
 import ProgressGraphs from "./Screens/ProgressGraphs";
+import ProgressGraphsWeb from "./Screens/ProgressGraphsWeb";
 import OneRepMaxList from "./Screens/OneRepMaxList";
 import EditOneRepMax from "./Screens/EditOneRepMax";
 
@@ -196,6 +197,11 @@ export default function App() {
                     <Stack.Screen
                       name="Progress Graphs"
                       component={ProgressGraphs}
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="Progress Graphs Web"
+                      component={ProgressGraphsWeb}
                       options={{ headerShown: false }}
                     />
                     <Stack.Screen

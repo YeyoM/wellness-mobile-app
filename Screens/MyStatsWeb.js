@@ -154,11 +154,12 @@ export default function MyStatsWeb({ navigation }) {
   }, []);
 
   const onPressDetailedView = () => {
-    navigation.navigate("Progress Graphs", {
+    navigation.navigate("Progress Graphs Web", {
       weightLineData,
       weightLineDataByWeek,
       weightLineDataByMonth,
       maxWeight,
+      minWeight,
       currentWeight,
       caloriesLineData,
       caloriesLineDataByWeek,
