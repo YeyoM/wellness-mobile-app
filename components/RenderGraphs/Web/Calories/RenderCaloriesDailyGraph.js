@@ -27,11 +27,14 @@ export default function RenderCaloriesDailyGraph({
   const [maxDomain, setMaxDomain] = useState(0);
   const [minDomain, setMinDomain] = useState(0);
 
+  const [caloriesLineData, setCaloriesLineData] = useState([]);
+
   useEffect(() => {
     if (caloriesLineDataByDay.length) {
-      const leftDate = caloriesLineDataByDay[0].x;
-      const rightDate =
-        caloriesLineDataByDay[caloriesLineDataByDay.length - 1].x;
+      const leftDate = new Date(caloriesLineDataByDay[0].x);
+      const rightDate = new Date(
+        caloriesLineDataByDay[caloriesLineDataByDay.length - 1].x,
+      );
 
       let rightUnixTime = timeToMilliseconds(rightDate);
       let leftUnixTime = timeToMilliseconds(leftDate);
@@ -48,6 +51,15 @@ export default function RenderCaloriesDailyGraph({
       };
 
       setZoomState({ x: newDomain.x, y: zoomState.y });
+
+      setCaloriesLineData(
+        caloriesLineDataByDay.map((data) => {
+          return {
+            x: new Date(data.x),
+            y: data.y,
+          };
+        }),
+      );
     }
   }, [caloriesLineDataByDay]);
 
@@ -57,7 +69,7 @@ export default function RenderCaloriesDailyGraph({
 
   return (
     <View style={styles.container}>
-      {!caloriesLineDataByDay.length ? (
+      {!caloriesLineData.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
         </Text>
@@ -103,7 +115,7 @@ export default function RenderCaloriesDailyGraph({
                 fixLabelOverlap={true}
               />
               <VictoryLine
-                data={caloriesLineDataByDay}
+                data={caloriesLineData}
                 style={{
                   data: {
                     stroke: "#157AFF",
@@ -112,7 +124,7 @@ export default function RenderCaloriesDailyGraph({
                 }}
               />
               <VictoryScatter
-                data={caloriesLineDataByDay}
+                data={caloriesLineData}
                 size={5}
                 style={{
                   data: {

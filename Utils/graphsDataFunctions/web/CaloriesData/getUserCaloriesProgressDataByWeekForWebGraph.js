@@ -18,7 +18,7 @@ export default function getUserCaloriesProgressDataByWeekForWebGraph({
       }
       weekDate = new Date(week[0].x);
       caloriesProgressDataByWeek.push({
-        x: weekDate,
+        x: weekDate.toISOString(),
         y: weekCalories,
       });
       week = [];
@@ -36,7 +36,7 @@ export default function getUserCaloriesProgressDataByWeekForWebGraph({
     }
     const weekDate = new Date(week[0].x);
     caloriesProgressDataByWeek.push({
-      x: weekDate,
+      x: weekDate.toISOString(),
       y: weekCalories,
     });
     if (weekCalories > maxCaloriesWeekly) {

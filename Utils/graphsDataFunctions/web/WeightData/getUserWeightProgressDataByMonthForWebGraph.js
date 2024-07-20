@@ -22,7 +22,7 @@ export default function getUserWeightProgressDataByMonthForGraph({
     } else {
       const averageWeight = currentMonthWeightData / currentMonthDayCount;
       weightProgressDataByMonth.push({
-        x: currentDate,
+        x: currentDate.toISOString(),
         y: Math.round(averageWeight) || 0,
       });
       currentDate = date;
@@ -35,7 +35,7 @@ export default function getUserWeightProgressDataByMonthForGraph({
   if (currentMonthWeightData > 0) {
     const averageWeight = currentMonthWeightData / currentMonthDayCount;
     weightProgressDataByMonth.push({
-      x: currentDate,
+      x: currentDate.toISOString(),
       y: Math.round(averageWeight) || 0,
     });
   }

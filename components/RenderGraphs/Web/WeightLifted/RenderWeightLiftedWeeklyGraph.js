@@ -27,11 +27,14 @@ export default function RenderWeightLiftedWeeklyGraph({
   const [maxDomain, setMaxDomain] = useState(0);
   const [minDomain, setMinDomain] = useState(0);
 
+  const [weightLiftedLineData, setWeightLiftedLineData] = useState([]);
+
   useEffect(() => {
     if (weightLiftedLineDataByWeek.length) {
-      const leftDate = weightLiftedLineDataByWeek[0].x;
-      const rightDate =
-        weightLiftedLineDataByWeek[weightLiftedLineDataByWeek.length - 1].x;
+      const leftDate = new Date(weightLiftedLineDataByWeek[0].x);
+      const rightDate = new Date(
+        weightLiftedLineDataByWeek[weightLiftedLineDataByWeek.length - 1].x,
+      );
 
       let rightUnixTime = timeToMilliseconds(rightDate);
       let leftUnixTime = timeToMilliseconds(leftDate);
@@ -49,6 +52,15 @@ export default function RenderWeightLiftedWeeklyGraph({
       };
 
       setZoomState({ x: newDomain.x, y: zoomState.y });
+
+      setWeightLiftedLineData(
+        weightLiftedLineDataByWeek.map((data) => {
+          return {
+            x: new Date(data.x),
+            y: data.y,
+          };
+        }),
+      );
     }
   }, [weightLiftedLineDataByWeek]);
 
@@ -59,7 +71,7 @@ export default function RenderWeightLiftedWeeklyGraph({
 
   return (
     <View style={styles.container}>
-      {!weightLiftedLineDataByWeek.length ? (
+      {!weightLiftedLineData.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
         </Text>
@@ -105,7 +117,7 @@ export default function RenderWeightLiftedWeeklyGraph({
                 fixLabelOverlap={true}
               />
               <VictoryLine
-                data={weightLiftedLineDataByWeek}
+                data={weightLiftedLineData}
                 interpolation="natural"
                 style={{
                   data: {
@@ -115,7 +127,7 @@ export default function RenderWeightLiftedWeeklyGraph({
                 }}
               />
               <VictoryScatter
-                data={weightLiftedLineDataByWeek}
+                data={weightLiftedLineData}
                 size={5}
                 style={{
                   data: {

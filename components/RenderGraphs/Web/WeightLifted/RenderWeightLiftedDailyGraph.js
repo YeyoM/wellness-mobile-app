@@ -27,11 +27,14 @@ export default function RenderWeightLiftedDailyGraph({
   const [maxDomain, setMaxDomain] = useState(0);
   const [minDomain, setMinDomain] = useState(0);
 
+  const [weightLiftedLineData, setWeightLiftedLineData] = useState([]);
+
   useEffect(() => {
     if (weightLiftedLineDataByDay.length) {
-      const leftDate = weightLiftedLineDataByDay[0].x;
-      const rightDate =
-        weightLiftedLineDataByDay[weightLiftedLineDataByDay.length - 1].x;
+      const leftDate = new Date(weightLiftedLineDataByDay[0].x);
+      const rightDate = new Date(
+        weightLiftedLineDataByDay[weightLiftedLineDataByDay.length - 1].x,
+      );
 
       let rightUnixTime = timeToMilliseconds(rightDate);
       let leftUnixTime = timeToMilliseconds(leftDate);
@@ -48,6 +51,15 @@ export default function RenderWeightLiftedDailyGraph({
       };
 
       setZoomState({ x: newDomain.x, y: zoomState.y });
+
+      setWeightLiftedLineData(
+        weightLiftedLineDataByDay.map((data) => {
+          return {
+            x: new Date(data.x),
+            y: data.y,
+          };
+        }),
+      );
     }
   }, [weightLiftedLineDataByDay]);
 
@@ -57,7 +69,7 @@ export default function RenderWeightLiftedDailyGraph({
 
   return (
     <View style={styles.container}>
-      {!weightLiftedLineDataByDay.length ? (
+      {!weightLiftedLineData.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
         </Text>
@@ -103,7 +115,7 @@ export default function RenderWeightLiftedDailyGraph({
                 fixLabelOverlap={true}
               />
               <VictoryLine
-                data={weightLiftedLineDataByDay}
+                data={weightLiftedLineData}
                 interpolation="natural"
                 style={{
                   data: {
@@ -113,7 +125,7 @@ export default function RenderWeightLiftedDailyGraph({
                 }}
               />
               <VictoryScatter
-                data={weightLiftedLineDataByDay}
+                data={weightLiftedLineData}
                 size={5}
                 style={{
                   data: {

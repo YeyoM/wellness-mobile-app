@@ -43,7 +43,7 @@ export default function getUserWeightProgressDataForWebGraph({ weightRecord }) {
         currentDate.getFullYear(),
         currentDate.getMonth(),
         currentDate.getDate(),
-      ),
+      ).toISOString(),
       y: currentWeight,
     });
     currentDate.setDate(currentDate.getDate() + 1);

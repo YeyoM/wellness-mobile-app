@@ -27,10 +27,14 @@ export default function RenderTimeWeeklyGraph({
   const [maxDomain, setMaxDomain] = useState(0);
   const [minDomain, setMinDomain] = useState(0);
 
+  const [timeLineData, setTimeLineData] = useState([]);
+
   useEffect(() => {
     if (timeLineDataByWeek.length) {
-      const leftDate = timeLineDataByWeek[0].x;
-      const rightDate = timeLineDataByWeek[timeLineDataByWeek.length - 1].x;
+      const leftDate = new Date(timeLineDataByWeek[0].x);
+      const rightDate = new Date(
+        timeLineDataByWeek[timeLineDataByWeek.length - 1].x,
+      );
 
       let rightUnixTime = timeToMilliseconds(rightDate);
       let leftUnixTime = timeToMilliseconds(leftDate);
@@ -48,6 +52,12 @@ export default function RenderTimeWeeklyGraph({
       };
 
       setZoomState({ x: newDomain.x, y: zoomState.y });
+
+      setTimeLineData(
+        timeLineDataByWeek.map((data) => {
+          return { x: new Date(data.x), y: data.y };
+        }),
+      );
     }
   }, [timeLineDataByWeek]);
 
@@ -58,7 +68,7 @@ export default function RenderTimeWeeklyGraph({
 
   return (
     <View style={styles.container}>
-      {!timeLineDataByWeek.length ? (
+      {!timeLineData.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
         </Text>
@@ -104,7 +114,7 @@ export default function RenderTimeWeeklyGraph({
                 fixLabelOverlap={true}
               />
               <VictoryLine
-                data={timeLineDataByWeek}
+                data={timeLineData}
                 style={{
                   data: {
                     stroke: "#157AFF",
@@ -113,7 +123,7 @@ export default function RenderTimeWeeklyGraph({
                 }}
               />
               <VictoryScatter
-                data={timeLineDataByWeek}
+                data={timeLineData}
                 size={5}
                 style={{
                   data: {

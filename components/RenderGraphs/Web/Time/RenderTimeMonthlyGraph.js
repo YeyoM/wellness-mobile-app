@@ -27,10 +27,14 @@ export default function RenderTimeMonthlyGraph({
   const [maxDomain, setMaxDomain] = useState(0);
   const [minDomain, setMinDomain] = useState(0);
 
+  const [timeLineData, setTimeLineData] = useState([]);
+
   useEffect(() => {
     if (timeLineDataByMonth.length) {
-      const leftDate = timeLineDataByMonth[0].x;
-      const rightDate = timeLineDataByMonth[timeLineDataByMonth.length - 1].x;
+      const leftDate = new Date(timeLineDataByMonth[0].x);
+      const rightDate = new Date(
+        timeLineDataByMonth[timeLineDataByMonth.length - 1].x,
+      );
 
       let rightUnixTime = timeToMilliseconds(rightDate);
       let leftUnixTime = timeToMilliseconds(leftDate);
@@ -47,6 +51,12 @@ export default function RenderTimeMonthlyGraph({
       };
 
       setZoomState({ x: newDomain.x, y: zoomState.y });
+
+      setTimeLineData(
+        timeLineDataByMonth.map((data) => {
+          return { x: new Date(data.x), y: data.y };
+        }),
+      );
     }
   }, [timeLineDataByMonth]);
 
@@ -56,7 +66,7 @@ export default function RenderTimeMonthlyGraph({
 
   return (
     <View style={styles.container}>
-      {!timeLineDataByMonth.length ? (
+      {!timeLineData.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
         </Text>
@@ -102,7 +112,7 @@ export default function RenderTimeMonthlyGraph({
                 fixLabelOverlap={true}
               />
               <VictoryLine
-                data={timeLineDataByMonth}
+                data={timeLineData}
                 style={{
                   data: {
                     stroke: "#157AFF",
@@ -111,7 +121,7 @@ export default function RenderTimeMonthlyGraph({
                 }}
               />
               <VictoryScatter
-                data={timeLineDataByMonth}
+                data={timeLineData}
                 size={5}
                 style={{
                   data: {

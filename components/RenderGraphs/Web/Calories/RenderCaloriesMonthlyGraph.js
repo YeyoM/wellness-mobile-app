@@ -27,11 +27,14 @@ export default function RenderCaloriesMonthlyGraph({
   const [maxDomain, setMaxDomain] = useState(0);
   const [minDomain, setMinDomain] = useState(0);
 
+  const [caloriesLineData, setCaloriesLineData] = useState([]);
+
   useEffect(() => {
     if (caloriesLineDataByMonth.length) {
-      const leftDate = caloriesLineDataByMonth[0].x;
-      const rightDate =
-        caloriesLineDataByMonth[caloriesLineDataByMonth.length - 1].x;
+      const leftDate = new Date(caloriesLineDataByMonth[0].x);
+      const rightDate = new Date(
+        caloriesLineDataByMonth[caloriesLineDataByMonth.length - 1].x,
+      );
 
       let rightUnixTime = timeToMilliseconds(rightDate);
       let leftUnixTime = timeToMilliseconds(leftDate);
@@ -48,6 +51,15 @@ export default function RenderCaloriesMonthlyGraph({
       };
 
       setZoomState({ x: newDomain.x, y: zoomState.y });
+
+      setCaloriesLineData(
+        caloriesLineDataByMonth.map((data) => {
+          return {
+            x: new Date(data.x),
+            y: data.y,
+          };
+        }),
+      );
     }
   }, [caloriesLineDataByMonth]);
 
@@ -57,7 +69,7 @@ export default function RenderCaloriesMonthlyGraph({
 
   return (
     <View style={styles.container}>
-      {!caloriesLineDataByMonth.length ? (
+      {!caloriesLineData.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
         </Text>
@@ -103,7 +115,7 @@ export default function RenderCaloriesMonthlyGraph({
                 fixLabelOverlap={true}
               />
               <VictoryLine
-                data={caloriesLineDataByMonth}
+                data={caloriesLineData}
                 style={{
                   data: {
                     stroke: "#157AFF",
@@ -112,7 +124,7 @@ export default function RenderCaloriesMonthlyGraph({
                 }}
               />
               <VictoryScatter
-                data={caloriesLineDataByMonth}
+                data={caloriesLineData}
                 size={5}
                 style={{
                   data: {

@@ -27,10 +27,14 @@ export default function RenderUserWeightWeeklyGraph({
   const [maxDomain, setMaxDomain] = useState(0);
   const [minDomain, setMinDomain] = useState(0);
 
+  const [weightLineData, setWeightLineData] = useState([]);
+
   useEffect(() => {
     if (weightLineDataByWeek.length) {
-      const leftDate = weightLineDataByWeek[0].x;
-      const rightDate = weightLineDataByWeek[weightLineDataByWeek.length - 1].x;
+      const leftDate = new Date(weightLineDataByWeek[0].x);
+      const rightDate = new Date(
+        weightLineDataByWeek[weightLineDataByWeek.length - 1].x,
+      );
 
       let rightUnixTime = timeToMilliseconds(rightDate);
       let leftUnixTime = timeToMilliseconds(leftDate);
@@ -48,6 +52,15 @@ export default function RenderUserWeightWeeklyGraph({
       };
 
       setZoomState({ x: newDomain.x, y: zoomState.y });
+
+      setWeightLineData(
+        weightLineDataByWeek.map((data) => {
+          return {
+            x: new Date(data.x),
+            y: data.y,
+          };
+        }),
+      );
     }
   }, [weightLineDataByWeek]);
 
@@ -58,7 +71,7 @@ export default function RenderUserWeightWeeklyGraph({
 
   return (
     <View style={styles.container}>
-      {!weightLineDataByWeek.length ? (
+      {!weightLineData.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
         </Text>
@@ -104,7 +117,7 @@ export default function RenderUserWeightWeeklyGraph({
                 fixLabelOverlap={true}
               />
               <VictoryLine
-                data={weightLineDataByWeek}
+                data={weightLineData}
                 interpolation="natural"
                 style={{
                   data: {
@@ -114,7 +127,7 @@ export default function RenderUserWeightWeeklyGraph({
                 }}
               />
               <VictoryScatter
-                data={weightLineDataByWeek}
+                data={weightLineData}
                 size={5}
                 style={{
                   data: {

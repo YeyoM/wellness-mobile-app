@@ -44,40 +44,10 @@ export default function RenderProgressGraphsWeb({
   maxWeightLiftedWeekly,
   maxWeightLiftedMonthly,
 }) {
-  if (
-    !weightLineData ||
-    !weightLineDataByMonth ||
-    !weightLineDataByWeek ||
-    !maxWeight ||
-    !minWeight ||
-    !timeLineData ||
-    !timeLineDataByMonth ||
-    !timeLineDataByWeek ||
-    !maxTimeDaily ||
-    !maxTimeWeekly ||
-    !maxTimeMonthly ||
-    !caloriesLineData ||
-    !caloriesLineDataByMonth ||
-    !caloriesLineDataByWeek ||
-    !maxCaloriesDaily ||
-    !maxCaloriesWeekly ||
-    !maxCaloriesMonthly ||
-    !weightLiftedLineData ||
-    !weightLiftedLineDataByMonth ||
-    !weightLiftedLineDataByWeek ||
-    !maxWeightLiftedDaily ||
-    !maxWeightLiftedWeekly ||
-    !maxWeightLiftedMonthly
-  ) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>No data available</Text>
-      </View>
-    );
-  }
+  console.log("RenderProgressGraphsWeb", category, selectedPeriod);
 
   if (category === "Weight") {
-    if (selectedPeriod === "Daily") {
+    if (selectedPeriod === "Day") {
       return (
         <RenderUserWeightDailyGraph
           weightLineDataByDay={weightLineData}
@@ -85,7 +55,7 @@ export default function RenderProgressGraphsWeb({
           maxWeight={maxWeight}
         />
       );
-    } else if (selectedPeriod === "Weekly") {
+    } else if (selectedPeriod === "Week") {
       return (
         <RenderUserWeightWeeklyGraph
           weightLineDataByWeek={weightLineDataByWeek}
@@ -93,7 +63,7 @@ export default function RenderProgressGraphsWeb({
           maxWeight={maxWeight}
         />
       );
-    } else if (selectedPeriod === "Monthly") {
+    } else if (selectedPeriod === "Month") {
       return (
         <RenderUserWeightMonthlyGraph
           weightLineDataByMonth={weightLineDataByMonth}
@@ -101,84 +71,90 @@ export default function RenderProgressGraphsWeb({
           maxWeight={maxWeight}
         />
       );
-    } else if (category === "Weight Lifted") {
-      if (selectedPeriod === "Daily") {
-        return (
-          <RenderWeightLiftedDailyGraph
-            weightLiftedLineDataByDay={weightLiftedLineData}
-            minWeight={0}
-            maxWeight={maxWeightLiftedDaily}
-          />
-        );
-      } else if (selectedPeriod === "Weekly") {
-        return (
-          <RenderWeightLiftedWeeklyGraph
-            weightLiftedLineDataByWeek={weightLiftedLineDataByWeek}
-            minWeight={0}
-            maxWeight={maxWeightLiftedWeekly}
-          />
-        );
-      } else if (selectedPeriod === "Monthly") {
-        return (
-          <RenderWeightLiftedMonthlyGraph
-            weightLiftedLineDataByMonth={weightLiftedLineDataByMonth}
-            minWeight={0}
-            maxWeight={maxWeightLiftedMonthly}
-          />
-        );
-      }
-    } else if (category === "Time") {
-      if (selectedPeriod === "Daily") {
-        return (
-          <RenderTimeDailyGraph
-            timeLineDataByDay={timeLineData}
-            minTime={0}
-            maxTime={maxTimeDaily}
-          />
-        );
-      } else if (selectedPeriod === "Weekly") {
-        return (
-          <RenderTimeWeeklyGraph
-            timeLineDataByWeek={timeLineDataByWeek}
-            minTime={0}
-            maxTime={maxTimeWeekly}
-          />
-        );
-      } else if (selectedPeriod === "Monthly") {
-        return (
-          <RenderTimeMonthlyGraph
-            timeLineDataByMonth={timeLineDataByMonth}
-            minTime={0}
-            maxTime={maxTimeMonthly}
-          />
-        );
-      }
-    } else if (category === "Calories") {
-      if (selectedPeriod === "Daily") {
-        return (
-          <RenderCaloriesDailyGraph
-            caloriesLineDataByDay={caloriesLineData}
-            minCalories={0}
-            maxCalories={maxCaloriesDaily}
-          />
-        );
-      } else if (selectedPeriod === "Weekly") {
-        return (
-          <RenderCaloriesWeeklyGraph
-            caloriesLineDataByWeek={caloriesLineDataByWeek}
-            minCalories={0}
-            maxCalories={maxCaloriesWeekly}
-          />
-        );
-      } else if (selectedPeriod === "Monthly") {
-        return (
-          <RenderCaloriesMonthlyGraph
-            caloriesLineDataByMonth={caloriesLineDataByMonth}
-            minCalories={0}
-            maxCalories={maxCaloriesMonthly}
-          />
-        );
-      }
     }
+  } else if (category === "Weight Lifted") {
+    if (selectedPeriod === "Day") {
+      return (
+        <RenderWeightLiftedDailyGraph
+          weightLiftedLineDataByDay={weightLiftedLineData}
+          minWeight={0}
+          maxWeight={maxWeightLiftedDaily}
+        />
+      );
+    } else if (selectedPeriod === "Week") {
+      return (
+        <RenderWeightLiftedWeeklyGraph
+          weightLiftedLineDataByWeek={weightLiftedLineDataByWeek}
+          minWeight={0}
+          maxWeight={maxWeightLiftedWeekly}
+        />
+      );
+    } else if (selectedPeriod === "Month") {
+      return (
+        <RenderWeightLiftedMonthlyGraph
+          weightLiftedLineDataByMonth={weightLiftedLineDataByMonth}
+          minWeight={0}
+          maxWeight={maxWeightLiftedMonthly}
+        />
+      );
+    }
+  } else if (category === "Time") {
+    if (selectedPeriod === "Day") {
+      return (
+        <RenderTimeDailyGraph
+          timeLineDataByDay={timeLineData}
+          minTime={0}
+          maxTime={maxTimeDaily}
+        />
+      );
+    } else if (selectedPeriod === "Week") {
+      return (
+        <RenderTimeWeeklyGraph
+          timeLineDataByWeek={timeLineDataByWeek}
+          minTime={0}
+          maxTime={maxTimeWeekly}
+        />
+      );
+    } else if (selectedPeriod === "Month") {
+      return (
+        <RenderTimeMonthlyGraph
+          timeLineDataByMonth={timeLineDataByMonth}
+          minTime={0}
+          maxTime={maxTimeMonthly}
+        />
+      );
+    }
+  } else if (category === "Calories") {
+    if (selectedPeriod === "Day") {
+      return (
+        <RenderCaloriesDailyGraph
+          caloriesLineDataByDay={caloriesLineData}
+          minCalories={0}
+          maxCalories={maxCaloriesDaily}
+        />
+      );
+    } else if (selectedPeriod === "Week") {
+      return (
+        <RenderCaloriesWeeklyGraph
+          caloriesLineDataByWeek={caloriesLineDataByWeek}
+          minCalories={0}
+          maxCalories={maxCaloriesWeekly}
+        />
+      );
+    } else if (selectedPeriod === "Month") {
+      return (
+        <RenderCaloriesMonthlyGraph
+          caloriesLineDataByMonth={caloriesLineDataByMonth}
+          minCalories={0}
+          maxCalories={maxCaloriesMonthly}
+        />
+      );
+    }
+  } else {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>No data available</Text>
+      </View>
+    );
   }
 }

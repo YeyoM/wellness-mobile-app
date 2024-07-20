@@ -19,7 +19,7 @@ export default function getUserTimeSpentProgressDataByWeekForGraph({
       }
       const weekDate = new Date(week[0].x);
       timeSpentProgressDataByWeek.push({
-        x: weekDate,
+        x: weekDate.toISOString(),
         y: weekMinutes,
       });
       if (weekMinutes > maxTimeSpentWeekly) {
@@ -37,7 +37,7 @@ export default function getUserTimeSpentProgressDataByWeekForGraph({
     }
     const weekDate = new Date(week[0].x);
     timeSpentProgressDataByWeek.push({
-      x: weekDate,
+      x: weekDate.toISOString(),
       y: weekMinutes,
     });
     if (weekMinutes > maxTimeSpentWeekly) {

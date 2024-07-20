@@ -18,7 +18,7 @@ export default function getUserTimeSpentProgressDataByMonthForGraph({
       monthTotalTimeSpent += timeProgressData[i].y;
     } else {
       timeSpentProgressDataByMonth.push({
-        x: date,
+        x: date.toISOString(),
         y: monthTotalTimeSpent,
       });
       if (monthTotalTimeSpent > maxTimeSpentMonthly) {
@@ -31,7 +31,7 @@ export default function getUserTimeSpentProgressDataByMonthForGraph({
 
   if (monthTotalTimeSpent > 0) {
     timeSpentProgressDataByMonth.push({
-      x: currentDate,
+      x: currentDate.toISOString(),
       y: monthTotalTimeSpent,
     });
     if (monthTotalTimeSpent > maxTimeSpentMonthly) {

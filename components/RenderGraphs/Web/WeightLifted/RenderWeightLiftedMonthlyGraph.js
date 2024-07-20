@@ -27,11 +27,14 @@ export default function RenderWeightLiftedMonthlyGraph({
   const [maxDomain, setMaxDomain] = useState(0);
   const [minDomain, setMinDomain] = useState(0);
 
+  const [weightLiftedLineData, setWeightLiftedLineData] = useState([]);
+
   useEffect(() => {
     if (weightLiftedLineDataByMonth.length) {
-      const leftDate = weightLiftedLineDataByMonth[0].x;
-      const rightDate =
-        weightLiftedLineDataByMonth[weightLiftedLineDataByMonth.length - 1].x;
+      const leftDate = new Date(weightLiftedLineDataByMonth[0].x);
+      const rightDate = new Date(
+        weightLiftedLineDataByMonth[weightLiftedLineDataByMonth.length - 1].x,
+      );
 
       let rightUnixTime = timeToMilliseconds(rightDate);
       let leftUnixTime = timeToMilliseconds(leftDate);
@@ -48,6 +51,15 @@ export default function RenderWeightLiftedMonthlyGraph({
       };
 
       setZoomState({ x: newDomain.x, y: zoomState.y });
+
+      setWeightLiftedLineData(
+        weightLiftedLineDataByMonth.map((data) => {
+          return {
+            x: new Date(data.x),
+            y: data.y,
+          };
+        }),
+      );
     }
   }, [weightLiftedLineDataByMonth]);
 
@@ -57,7 +69,7 @@ export default function RenderWeightLiftedMonthlyGraph({
 
   return (
     <View style={styles.container}>
-      {!weightLiftedLineDataByMonth.length ? (
+      {!weightLiftedLineData.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
         </Text>
@@ -103,7 +115,7 @@ export default function RenderWeightLiftedMonthlyGraph({
                 fixLabelOverlap={true}
               />
               <VictoryLine
-                data={weightLiftedLineDataByMonth}
+                data={weightLiftedLineData}
                 interpolation="natural"
                 style={{
                   data: {
@@ -113,7 +125,7 @@ export default function RenderWeightLiftedMonthlyGraph({
                 }}
               />
               <VictoryScatter
-                data={weightLiftedLineDataByMonth}
+                data={weightLiftedLineData}
                 size={5}
                 style={{
                   data: {

@@ -17,7 +17,7 @@ export default function getUserCaloriesProgressDataByMonthForWebGraph({
       monthCalories += caloriesProgressData[i].y;
     } else {
       caloriesProgressDataByMonth.push({
-        x: date,
+        x: date.toISOString(),
         y: monthCalories,
       });
       currentMonth = date.getMonth();
@@ -30,7 +30,7 @@ export default function getUserCaloriesProgressDataByMonthForWebGraph({
 
   if (monthCalories > 0) {
     caloriesProgressDataByMonth.push({
-      x: currentDate,
+      x: currentDate.toISOString(),
       y: monthCalories,
     });
     if (monthCalories > maxCaloriesMonthly) {

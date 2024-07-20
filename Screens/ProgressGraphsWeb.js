@@ -7,6 +7,7 @@ import {
   Pressable,
   Dimensions,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,6 +15,8 @@ import { Ionicons } from "@expo/vector-icons";
 import RenderProgressGraphsWeb from "../components/RenderProgressGraphsWeb";
 
 export default function ProgressGraphsWeb({ navigation, route }) {
+  const [loading, setLoading] = React.useState(true);
+
   const [selectedCategory, setSelectedCategory] = React.useState("Calories");
   const [selectedPeriod, setSelectedPeriod] = React.useState("Day");
 
@@ -56,6 +59,7 @@ export default function ProgressGraphsWeb({ navigation, route }) {
   const [totalWeightLifted, setTotalWeightLifted] = React.useState(0);
 
   React.useEffect(() => {
+    setLoading(true);
     if (route.params) {
       if (route.params.weightLineData) {
         setWeightLineData(route.params.weightLineData);
@@ -141,6 +145,7 @@ export default function ProgressGraphsWeb({ navigation, route }) {
         setTotalWeightLifted(route.params.totalWeightLifted);
       }
     }
+    setLoading(false);
   }, [route.params]);
 
   const handleSelectCalories = () => {
@@ -299,33 +304,37 @@ export default function ProgressGraphsWeb({ navigation, route }) {
             </View>
           </View>
           <View style={styles.graphContainer}>
-            <RenderProgressGraphsWeb
-              category={selectedCategory}
-              selectedPeriod={selectedPeriod}
-              weightLineData={weightLineData}
-              weightLineDataByWeek={weightLineDataByWeek}
-              weightLineDataByMonth={weightLineDataByMonth}
-              maxWeight={maxWeight}
-              minWeight={minWeight}
-              caloriesLineData={caloriesLineData}
-              caloriesLineDataByWeek={caloriesLineDataByWeek}
-              caloriesLineDataByMonth={caloriesLineDataByMonth}
-              maxCaloriesDaily={maxCaloriesDaily}
-              maxCaloriesWeekly={maxCaloriesWeekly}
-              maxCaloriesMonthly={maxCaloriesMonthly}
-              timeLineData={timeLineData}
-              timeLineDataByWeek={timeLineDataByWeek}
-              timeLineDataByMonth={timeLineDataByMonth}
-              maxTimeDaily={maxTimeDaily}
-              maxTimeWeekly={maxTimeWeekly}
-              maxTimeMonthly={maxTimeMonthly}
-              weightLiftedLineData={weightLiftedLineData}
-              weightLiftedLineDataByWeek={weightLiftedLineDataByWeek}
-              weightLiftedLineDataByMonth={weightLiftedLineDataByMonth}
-              maxWeightLiftedDaily={maxWeightLiftedDaily}
-              maxWeightLiftedWeekly={maxWeightLiftedWeekly}
-              maxWeightLiftedMonthly={maxWeightLiftedMonthly}
-            />
+            {loading ? (
+              <ActivityIndicator size="large" color="white" />
+            ) : (
+              <RenderProgressGraphsWeb
+                category={selectedCategory}
+                selectedPeriod={selectedPeriod}
+                weightLineData={weightLineData}
+                weightLineDataByWeek={weightLineDataByWeek}
+                weightLineDataByMonth={weightLineDataByMonth}
+                maxWeight={maxWeight}
+                minWeight={minWeight}
+                caloriesLineData={caloriesLineData}
+                caloriesLineDataByWeek={caloriesLineDataByWeek}
+                caloriesLineDataByMonth={caloriesLineDataByMonth}
+                maxCaloriesDaily={maxCaloriesDaily}
+                maxCaloriesWeekly={maxCaloriesWeekly}
+                maxCaloriesMonthly={maxCaloriesMonthly}
+                timeLineData={timeLineData}
+                timeLineDataByWeek={timeLineDataByWeek}
+                timeLineDataByMonth={timeLineDataByMonth}
+                maxTimeDaily={maxTimeDaily}
+                maxTimeWeekly={maxTimeWeekly}
+                maxTimeMonthly={maxTimeMonthly}
+                weightLiftedLineData={weightLiftedLineData}
+                weightLiftedLineDataByWeek={weightLiftedLineDataByWeek}
+                weightLiftedLineDataByMonth={weightLiftedLineDataByMonth}
+                maxWeightLiftedDaily={maxWeightLiftedDaily}
+                maxWeightLiftedWeekly={maxWeightLiftedWeekly}
+                maxWeightLiftedMonthly={maxWeightLiftedMonthly}
+              />
+            )}
           </View>
           <View style={styles.info}>
             <Ionicons
@@ -498,8 +507,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    height: 300,
-    borderRadius: 20,
   },
 
   info: {

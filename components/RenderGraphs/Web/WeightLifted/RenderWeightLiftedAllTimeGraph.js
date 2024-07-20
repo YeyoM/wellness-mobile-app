@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Pressable, Dimensions } from "react-native";
 
 import {
@@ -16,6 +16,22 @@ export default function RenderWeightLiftedAllTimeGraph({
   minWeight,
   maxWeight,
 }) {
+  const [weightLiftedLineDataAllTime, setWeightLiftedLineDataAllTime] =
+    useState([]);
+
+  useEffect(() => {
+    if (weightLiftedLineData.length) {
+      setWeightLiftedLineDataAllTime(
+        weightLiftedLineData.map((data) => {
+          return {
+            x: new Date(data.x),
+            y: data.y,
+          };
+        }),
+      );
+    }
+  }, [weightLiftedLineData]);
+
   return (
     <View style={styles.container}>
       <Text
@@ -28,7 +44,7 @@ export default function RenderWeightLiftedAllTimeGraph({
       >
         All time
       </Text>
-      {!weightLiftedLineData.length ? (
+      {!weightLiftedLineDataAllTime.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
         </Text>
@@ -80,7 +96,7 @@ export default function RenderWeightLiftedAllTimeGraph({
                 }}
               />
               <VictoryLine
-                data={weightLiftedLineData}
+                data={weightLiftedLineDataAllTime}
                 interpolation="natural"
                 style={{
                   data: {

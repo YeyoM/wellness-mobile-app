@@ -74,7 +74,7 @@ export default function getUserWeightLiftedProgressDataForWebGraph({
 
     if (weightLiftedData.has(formattedDate)) {
       weightLiftedProgressData.push({
-        x: date,
+        x: date.toISOString(),
         y: weightLiftedData.get(formattedDate),
       });
 
@@ -83,7 +83,7 @@ export default function getUserWeightLiftedProgressDataForWebGraph({
       }
     } else {
       weightLiftedProgressData.push({
-        x: date,
+        x: date.toISOString(),
         y: 0,
       });
     }

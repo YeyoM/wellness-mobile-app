@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Pressable, Dimensions } from "react-native";
 
 import {
@@ -16,6 +16,21 @@ export default function RenderTimeAllTimeGraph({
   minTime,
   maxTime,
 }) {
+  const [timeLineDataAllTime, setTimeLineDataAllTime] = useState([]);
+
+  useEffect(() => {
+    if (timeLineData.length) {
+      setTimeLineDataAllTime(
+        timeLineData.map((data) => {
+          return {
+            x: new Date(data.x),
+            y: data.y,
+          };
+        }),
+      );
+    }
+  }, [timeLineData]);
+
   return (
     <View style={styles.container}>
       <Text
@@ -28,7 +43,7 @@ export default function RenderTimeAllTimeGraph({
       >
         All time
       </Text>
-      {!timeLineData.length ? (
+      {!timeLineDataAllTime.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
         </Text>
@@ -80,7 +95,7 @@ export default function RenderTimeAllTimeGraph({
                 }}
               />
               <VictoryLine
-                data={timeLineData}
+                data={timeLineDataAllTime}
                 style={{
                   data: {
                     stroke: "#157AFF",

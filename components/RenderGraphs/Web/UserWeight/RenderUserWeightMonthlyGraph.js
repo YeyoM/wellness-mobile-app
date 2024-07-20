@@ -27,11 +27,14 @@ export default function RenderUserWeightMonthlyGraph({
   const [maxDomain, setMaxDomain] = useState(0);
   const [minDomain, setMinDomain] = useState(0);
 
+  const [weightLineData, setWeightLineData] = useState([]);
+
   useEffect(() => {
     if (weightLineDataByMonth.length) {
-      const leftDate = weightLineDataByMonth[0].x;
-      const rightDate =
-        weightLineDataByMonth[weightLineDataByMonth.length - 1].x;
+      const leftDate = new Date(weightLineDataByMonth[0].x);
+      const rightDate = new Date(
+        weightLineDataByMonth[weightLineDataByMonth.length - 1].x,
+      );
 
       let rightUnixTime = timeToMilliseconds(rightDate);
       let leftUnixTime = timeToMilliseconds(leftDate);
@@ -48,6 +51,15 @@ export default function RenderUserWeightMonthlyGraph({
       };
 
       setZoomState({ x: newDomain.x, y: zoomState.y });
+
+      setWeightLineData(
+        weightLineDataByMonth.map((data) => {
+          return {
+            x: new Date(data.x),
+            y: data.y,
+          };
+        }),
+      );
     }
   }, [weightLineDataByMonth]);
 
@@ -57,7 +69,7 @@ export default function RenderUserWeightMonthlyGraph({
 
   return (
     <View style={styles.container}>
-      {!weightLineDataByMonth.length ? (
+      {!weightLineData.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
         </Text>
@@ -103,7 +115,7 @@ export default function RenderUserWeightMonthlyGraph({
                 fixLabelOverlap={true}
               />
               <VictoryLine
-                data={weightLineDataByMonth}
+                data={weightLineData}
                 interpolation="natural"
                 style={{
                   data: {
@@ -113,7 +125,7 @@ export default function RenderUserWeightMonthlyGraph({
                 }}
               />
               <VictoryScatter
-                data={weightLineDataByMonth}
+                data={weightLineData}
                 size={5}
                 style={{
                   data: {

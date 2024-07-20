@@ -27,10 +27,14 @@ export default function RenderTimeDailyGraph({
   const [maxDomain, setMaxDomain] = useState(0);
   const [minDomain, setMinDomain] = useState(0);
 
+  const [timeLineData, setTimeLineData] = useState([]);
+
   useEffect(() => {
     if (timeLineDataByDay.length) {
-      const leftDate = timeLineDataByDay[0].x;
-      const rightDate = timeLineDataByDay[timeLineDataByDay.length - 1].x;
+      const leftDate = new Date(timeLineDataByDay[0].x);
+      const rightDate = new Date(
+        timeLineDataByDay[timeLineDataByDay.length - 1].x,
+      );
 
       let rightUnixTime = timeToMilliseconds(rightDate);
       let leftUnixTime = timeToMilliseconds(leftDate);
@@ -47,6 +51,12 @@ export default function RenderTimeDailyGraph({
       };
 
       setZoomState({ x: newDomain.x, y: zoomState.y });
+
+      setTimeLineData(
+        timeLineDataByDay.map((data) => {
+          return { x: new Date(data.x), y: data.y };
+        }),
+      );
     }
   }, [timeLineDataByDay]);
 
@@ -56,7 +66,7 @@ export default function RenderTimeDailyGraph({
 
   return (
     <View style={styles.container}>
-      {!timeLineDataByDay.length ? (
+      {!timeLineData.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
         </Text>
@@ -102,7 +112,7 @@ export default function RenderTimeDailyGraph({
                 fixLabelOverlap={true}
               />
               <VictoryLine
-                data={timeLineDataByDay}
+                data={timeLineData}
                 style={{
                   data: {
                     stroke: "#157AFF",
@@ -111,7 +121,7 @@ export default function RenderTimeDailyGraph({
                 }}
               />
               <VictoryScatter
-                data={timeLineDataByDay}
+                data={timeLineData}
                 size={5}
                 style={{
                   data: {

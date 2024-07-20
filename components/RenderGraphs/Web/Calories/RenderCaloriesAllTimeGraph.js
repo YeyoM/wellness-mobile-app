@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable, Dimensions } from "react-native";
 
 import {
@@ -16,6 +16,21 @@ export default function RenderCaloriesAllTimeGraph({
   minCalories,
   maxCalories,
 }) {
+  const [caloriesLineDataAllTime, setCaloriesLineDataAllTime] = useState([]);
+
+  useEffect(() => {
+    if (caloriesLineData.length) {
+      setCaloriesLineDataAllTime(
+        caloriesLineData.map((data) => {
+          return {
+            x: new Date(data.x),
+            y: data.y,
+          };
+        }),
+      );
+    }
+  }, [caloriesLineData]);
+
   return (
     <View style={styles.container}>
       <Text
@@ -28,7 +43,7 @@ export default function RenderCaloriesAllTimeGraph({
       >
         All time
       </Text>
-      {!caloriesLineData.length ? (
+      {!caloriesLineDataAllTime.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
         </Text>
@@ -80,7 +95,7 @@ export default function RenderCaloriesAllTimeGraph({
                 }}
               />
               <VictoryLine
-                data={caloriesLineData}
+                data={caloriesLineDataAllTime}
                 style={{
                   data: {
                     stroke: "#157AFF",

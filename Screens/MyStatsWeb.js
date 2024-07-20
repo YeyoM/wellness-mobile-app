@@ -14,8 +14,8 @@ import getUserWeightLiftedProgressDataForWebGraph from "../Utils/graphsDataFunct
 
 import RenderTimeAllTimeGraph from "../components/RenderGraphs/Web/Time/RenderTimeAllTimeGraph.js";
 import RenderCaloriesAllTimeGraph from "../components/RenderGraphs/Web/Calories/RenderCaloriesAllTimeGraph.js";
-import RenderUserWeightAllTimeGraph from "../components/RenderGraphs/Web/UserWeight/RenderUserWeightAllTimeGraph.js";
 import RenderWeightLiftedAllTimeGraph from "../components/RenderGraphs/Web/WeightLifted/RenderWeightLiftedAllTimeGraph.js";
+import RenderUserWeightAllTimeGraph from "../components/RenderGraphs/Web/UserWeight/RenderUserWeightAllTimeGraph.js";
 
 import { AppContext } from "../context/AppContext.js";
 

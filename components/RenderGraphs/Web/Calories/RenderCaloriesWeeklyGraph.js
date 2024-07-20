@@ -27,11 +27,14 @@ export default function RenderCaloriesWeeklyGraph({
   const [maxDomain, setMaxDomain] = useState(0);
   const [minDomain, setMinDomain] = useState(0);
 
+  const [caloriesLineData, setCaloriesLineData] = useState([]);
+
   useEffect(() => {
     if (caloriesLineDataByWeek.length) {
-      const leftDate = caloriesLineDataByWeek[0].x;
-      const rightDate =
-        caloriesLineDataByWeek[caloriesLineDataByWeek.length - 1].x;
+      const leftDate = new Date(caloriesLineDataByWeek[0].x);
+      const rightDate = new Date(
+        caloriesLineDataByWeek[caloriesLineDataByWeek.length - 1].x,
+      );
 
       let rightUnixTime = timeToMilliseconds(rightDate);
       let leftUnixTime = timeToMilliseconds(leftDate);
@@ -49,6 +52,15 @@ export default function RenderCaloriesWeeklyGraph({
       };
 
       setZoomState({ x: newDomain.x, y: zoomState.y });
+
+      setCaloriesLineData(
+        caloriesLineDataByWeek.map((data) => {
+          return {
+            x: new Date(data.x),
+            y: data.y,
+          };
+        }),
+      );
     }
   }, [caloriesLineDataByWeek]);
 
@@ -59,7 +71,7 @@ export default function RenderCaloriesWeeklyGraph({
 
   return (
     <View style={styles.container}>
-      {!caloriesLineDataByWeek.length ? (
+      {!caloriesLineData.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
         </Text>
@@ -105,7 +117,7 @@ export default function RenderCaloriesWeeklyGraph({
                 fixLabelOverlap={true}
               />
               <VictoryLine
-                data={caloriesLineDataByWeek}
+                data={caloriesLineData}
                 style={{
                   data: {
                     stroke: "#157AFF",
@@ -114,7 +126,7 @@ export default function RenderCaloriesWeeklyGraph({
                 }}
               />
               <VictoryScatter
-                data={caloriesLineDataByWeek}
+                data={caloriesLineData}
                 size={5}
                 style={{
                   data: {

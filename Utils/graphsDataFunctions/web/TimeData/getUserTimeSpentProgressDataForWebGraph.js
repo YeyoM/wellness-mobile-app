@@ -75,7 +75,7 @@ export default function getUserTimeSpentProgressDataForWebGraph({
 
     if (timeData.has(formattedDate)) {
       timeProgressData.push({
-        x: date,
+        x: date.toISOString(),
         y: Math.round(timeData.get(formattedDate)),
       });
 
@@ -84,7 +84,7 @@ export default function getUserTimeSpentProgressDataForWebGraph({
       }
     } else {
       timeProgressData.push({
-        x: date,
+        x: date.toISOString(),
         y: 0,
       });
     }

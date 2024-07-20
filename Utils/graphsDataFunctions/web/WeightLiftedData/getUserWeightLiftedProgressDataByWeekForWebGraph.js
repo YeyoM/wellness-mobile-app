@@ -23,7 +23,7 @@ export default function getUserWeightLiftedProgressDataByWeekForWebGraph({
       }
       weekDate = new Date(week[0].x);
       weightLiftedProgressDataByWeek.push({
-        x: weekDate,
+        x: weekDate.toISOString(),
         y: weekWeightLifted,
       });
       if (weekWeightLifted > maxWeightLiftedWeekly) {
@@ -41,7 +41,7 @@ export default function getUserWeightLiftedProgressDataByWeekForWebGraph({
     }
     const weekDate = new Date(week[0].x);
     weightLiftedProgressDataByWeek.push({
-      x: weekDate,
+      x: weekDate.toISOString(),
       y: weekWeightLifted,
     });
     if (weekWeightLifted > maxWeightLiftedWeekly) {

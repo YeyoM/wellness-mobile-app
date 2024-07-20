@@ -27,10 +27,14 @@ export default function RenderUserWeightDailyGraph({
   const [maxDomain, setMaxDomain] = useState(0);
   const [minDomain, setMinDomain] = useState(0);
 
+  const [weightLineData, setWeightLineData] = useState([]);
+
   useEffect(() => {
     if (weightLineDataByDay.length) {
-      const leftDate = weightLineDataByDay[0].x;
-      const rightDate = weightLineDataByDay[weightLineDataByDay.length - 1].x;
+      const leftDate = new Date(weightLineDataByDay[0].x);
+      const rightDate = new Date(
+        weightLineDataByDay[weightLineDataByDay.length - 1].x,
+      );
 
       let rightUnixTime = timeToMilliseconds(rightDate);
       let leftUnixTime = timeToMilliseconds(leftDate);
@@ -47,6 +51,15 @@ export default function RenderUserWeightDailyGraph({
       };
 
       setZoomState({ x: newDomain.x, y: zoomState.y });
+
+      setWeightLineData(
+        weightLineDataByDay.map((data) => {
+          return {
+            x: new Date(data.x),
+            y: data.y,
+          };
+        }),
+      );
     }
   }, [weightLineDataByDay]);
 
@@ -56,7 +69,7 @@ export default function RenderUserWeightDailyGraph({
 
   return (
     <View style={styles.container}>
-      {!weightLineDataByDay.length ? (
+      {!weightLineData.length ? (
         <Text style={{ color: "white", fontSize: 20, marginTop: 20 }}>
           No data to display :(
         </Text>
@@ -102,7 +115,7 @@ export default function RenderUserWeightDailyGraph({
                 fixLabelOverlap={true}
               />
               <VictoryLine
-                data={weightLineDataByDay}
+                data={weightLineData}
                 interpolation="natural"
                 style={{
                   data: {
@@ -112,7 +125,7 @@ export default function RenderUserWeightDailyGraph({
                 }}
               />
               <VictoryScatter
-                data={weightLineDataByDay}
+                data={weightLineData}
                 size={5}
                 style={{
                   data: {

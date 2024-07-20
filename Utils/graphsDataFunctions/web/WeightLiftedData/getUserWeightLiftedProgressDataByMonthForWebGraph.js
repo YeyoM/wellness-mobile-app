@@ -29,7 +29,7 @@ export default function getUserWeightLiftedProgressDataByMonthForWebGraph({
       monthWeightLifted += weightLiftedProgressData[i].y;
     } else {
       weightLiftedProgressDataByMonth.push({
-        x: currentDate,
+        x: currentDate.toISOString(),
         y: monthWeightLifted,
       });
       if (monthWeightLifted > maxWeightLiftedMonthly) {
@@ -43,7 +43,7 @@ export default function getUserWeightLiftedProgressDataByMonthForWebGraph({
 
   if (monthWeightLifted > 0) {
     weightLiftedProgressDataByMonth.push({
-      x: currentDate,
+      x: currentDate.toISOString(),
       y: monthWeightLifted,
     });
   }

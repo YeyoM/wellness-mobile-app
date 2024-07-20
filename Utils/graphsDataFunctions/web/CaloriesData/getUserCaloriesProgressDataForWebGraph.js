@@ -61,7 +61,7 @@ export default function getUserCaloriesProgressDataForWebGraph({
 
     if (caloriesData.has(formattedDate)) {
       caloriesProgressData.push({
-        x: date,
+        x: date.toISOString(),
         y: Math.round(caloriesData.get(formattedDate)),
       });
 
@@ -70,7 +70,7 @@ export default function getUserCaloriesProgressDataForWebGraph({
       }
     } else {
       caloriesProgressData.push({
-        x: date,
+        x: date.toISOString(),
         y: 0,
       });
     }
