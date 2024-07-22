@@ -343,7 +343,7 @@ export default function ProgressGraphsWeb({ navigation, route }) {
               color="#a0a0a0"
             />
             <Text style={styles.infoText}>
-              Swipe left or right on the graph to see more data
+              Use the buttons above to advance or retreat on time
             </Text>
           </View>
           <View style={styles.info}>
@@ -353,7 +353,7 @@ export default function ProgressGraphsWeb({ navigation, route }) {
               color="#a0a0a0"
             />
             <Text style={styles.infoText}>
-              Tap and hold on each point to see more details
+              Swipe left or right on the graph to see more data
             </Text>
           </View>
           <View style={styles.categories}>

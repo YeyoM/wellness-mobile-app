@@ -11,12 +11,13 @@ import {
 
 import {
   timeToMilliseconds,
-  MILLISECONDS_IN_A_WEEK,
   MILLISECONDS_IN_A_DAY,
 } from "../../../../Utils/dateToMilliseconds.js";
 
 import advanceOneWeek from "../../../../Utils/renderGraphsFunctions/advanceOneWeek.js";
 import retreatOneWeek from "../../../../Utils/renderGraphsFunctions/retreatOneWeek.js";
+
+import AdvanceRetreatButtons from "../../../AdvanceRetreatButtons.js";
 
 export default function RenderCaloriesDailyGraph({
   caloriesLineDataByDay,
@@ -74,90 +75,76 @@ export default function RenderCaloriesDailyGraph({
           No data to display :(
         </Text>
       ) : (
-        <View style={{ marginBottom: 100 }}>
-          <View style={styles.graphContainer}>
-            <VictoryChart
-              minDomain={{ y: minCalories - 5 }}
-              maxDomain={{ y: maxCalories + 5 }}
-              scale={{ x: "time" }}
-              height={Dimensions.get("window").height * 0.6}
-              width={Dimensions.get("window").width}
-              domainPadding={{ x: 10 }}
-              containerComponent={
-                <VictoryZoomContainer
-                  zoomDimension="x"
-                  allowZoom={false}
-                  zoomDomain={zoomState}
-                  onZoomDomainChange={handleZoom}
-                />
-              }
-            >
-              {/* y axis */}
-              <VictoryAxis
-                dependentAxis
-                style={{
-                  axis: { stroke: "transparent", fill: "transparent" },
-                  ticks: { stroke: "transparent", fill: "transparent" },
-                  grid: { stroke: "#a0a0a0" },
-                  tickLabels: { fill: "#fff" },
-                }}
-                fixLabelOverlap={true}
+        <View style={styles.graphContainer}>
+          <VictoryChart
+            minDomain={{ y: minCalories - 5 }}
+            maxDomain={{ y: maxCalories + 5 }}
+            scale={{ x: "time" }}
+            height={Dimensions.get("window").height * 0.6}
+            width={Dimensions.get("window").width}
+            domainPadding={{ x: 10 }}
+            containerComponent={
+              <VictoryZoomContainer
+                zoomDimension="x"
+                allowZoom={false}
+                zoomDomain={zoomState}
+                onZoomDomainChange={handleZoom}
               />
-              {/* x axis */}
-              <VictoryAxis
-                style={{
-                  axis: { stroke: "transparent", fill: "transparent" },
-                  ticks: { stroke: "transparent", fill: "transparent" },
-                  grid: { stroke: "transparent" },
-                  tickLabels: { fill: "#fff" },
-                  labels: { fill: "#fff", fontSize: 16 },
-                }}
-                fixLabelOverlap={true}
-              />
-              <VictoryLine
-                data={caloriesLineData}
-                style={{
-                  data: {
-                    stroke: "#157AFF",
-                    strokeWidth: ({ active }) => (active ? 4 : 2),
-                  },
-                }}
-              />
-              <VictoryScatter
-                data={caloriesLineData}
-                size={5}
-                style={{
-                  data: {
-                    fill: "#157AFF",
-                  },
-                  labels: { fill: "#fff", fontSize: 16, padding: 10 },
-                }}
-                labels={({ datum }) => `${datum.y}kcal`}
-              />
-            </VictoryChart>
-          </View>
+            }
+          >
+            {/* y axis */}
+            <VictoryAxis
+              dependentAxis
+              style={{
+                axis: { stroke: "transparent", fill: "transparent" },
+                ticks: { stroke: "transparent", fill: "transparent" },
+                grid: { stroke: "#a0a0a0" },
+                tickLabels: { fill: "#fff" },
+              }}
+              fixLabelOverlap={true}
+            />
+            {/* x axis */}
+            <VictoryAxis
+              style={{
+                axis: { stroke: "transparent", fill: "transparent" },
+                ticks: { stroke: "transparent", fill: "transparent" },
+                grid: { stroke: "transparent" },
+                tickLabels: { fill: "#fff" },
+                labels: { fill: "#fff", fontSize: 16 },
+              }}
+              fixLabelOverlap={true}
+            />
+            <VictoryLine
+              data={caloriesLineData}
+              style={{
+                data: {
+                  stroke: "#157AFF",
+                  strokeWidth: ({ active }) => (active ? 4 : 2),
+                },
+              }}
+            />
+            <VictoryScatter
+              data={caloriesLineData}
+              size={5}
+              style={{
+                data: {
+                  fill: "#157AFF",
+                },
+                labels: { fill: "#fff", fontSize: 16, padding: 10 },
+              }}
+              labels={({ datum }) => `${datum.y}kcal`}
+            />
+          </VictoryChart>
         </View>
       )}
-      <Pressable
-        onPress={() => retreatOneWeek(zoomState, setZoomState, minDomain)}
-        style={{
-          backgroundColor: "#157AFF",
-        }}
-      >
-        <Text style={{ color: "white", fontSize: 20, padding: 10 }}>
-          Retreat one week
-        </Text>
-      </Pressable>
-      <Pressable
-        onPress={() => advanceOneWeek(zoomState, setZoomState, maxDomain)}
-        style={{
-          backgroundColor: "#157AFF",
-        }}
-      >
-        <Text style={{ color: "white", fontSize: 20, padding: 10 }}>
-          Advance one week
-        </Text>
-      </Pressable>
+      <AdvanceRetreatButtons
+        advanceFunction={() =>
+          advanceOneWeek(zoomState, setZoomState, maxDomain)
+        }
+        retreatFunction={() =>
+          retreatOneWeek(zoomState, setZoomState, minDomain)
+        }
+      />
     </View>
   );
 }
@@ -166,6 +153,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0B0B0B",
+    marginBottom: 40,
   },
 
   graphContainer: {
