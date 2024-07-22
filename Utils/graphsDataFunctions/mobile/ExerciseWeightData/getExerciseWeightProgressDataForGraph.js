@@ -1,4 +1,4 @@
-import firebasDateToDate from "../firebasDateToDate";
+import firebasDateToDate from "../../../firebasDateToDate";
 // This function will take in one of the user's exercises weight history (record) and return an array of
 // objects that can be used to create a graph of the exercise weight progress.
 

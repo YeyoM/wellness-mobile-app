@@ -1,9 +1,9 @@
 import React from "react";
 import { View, Text } from "react-native";
-import firebasDateToDate from "../../firebasDateToDate";
+import firebasDateToDate from "../../../firebasDateToDate";
 
-import readableTimeToMinutes from "../../readableTimeToMinutes";
-import minutesToReadableTime from "../../minutesToReadableTime";
+import readableTimeToMinutes from "../../../readableTimeToMinutes";
+import minutesToReadableTime from "../../../minutesToReadableTime";
 
 import getUserTimeSpentProgressDataByWeekForGraph from "./getUserTimeSpentProgressDataByWeekForGraph";
 import getUserTimeSpentProgressDataByMonthForGraph from "./getUserTimeSpentProgressDataByMonthForGraph";

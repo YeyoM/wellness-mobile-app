@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text } from "react-native";
-import firebasDateToDate from "../../firebasDateToDate";
-import getUserWeightLiftedProgressDataByMonthForGraph from "./getUserWeightLiftedProgressDataForGraphByMonth";
-import getUserWeightLiftedProgressDataByWeekForGraph from "./getUserWeightLiftedProgressDataForGraphByWeek";
+import firebasDateToDate from "../../../firebasDateToDate";
+import getUserWeightLiftedProgressDataByWeekForGraph from "./getUserWeightLiftedProgressDataByWeekForGraph";
+import getUserWeightLiftedProgressDataByMonthForGraph from "./getUserWeightLiftedProgressDataByMonthForGraph";
 
 /** getUserWeightLiftedProgressDataForGraph
  * @param {object} weightLiftedRecord - the user's weight lifted record object

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
-import firebasDateToDate from "../../firebasDateToDate";
+import firebasDateToDate from "../../../firebasDateToDate";
 
 import getUserWeightProgressDataByWeekForGraph from "./getUserWeightProgressDataByWeekForGraph";
 import getUserWeightProgressDataByMonthForGraph from "./getUserWeightProgressDataByMonthForGraph";
@@ -56,13 +56,13 @@ export default function getUserWeightProgressDataForGraph({ weightRecord }) {
     }
   }
 
-  const weightProgressDataByWeekForGraph =
-    getUserWeightProgressDataByWeekForGraph({
+  const weightProgressDataByWeekForWebGraph =
+    getUserWeightProgressDataByWeekForWebGraph({
       weightProgressData,
     });
 
-  const weightProgressDataByMonthForGraph =
-    getUserWeightProgressDataByMonthForGraph({
+  const weightProgressDataByMonthForWebGraph =
+    getUserWeightProgressDataByMonthForWebGraph({
       weightProgressData,
     });
 
@@ -70,8 +70,8 @@ export default function getUserWeightProgressDataForGraph({ weightRecord }) {
 
   return {
     weightProgressData,
-    weightProgressDataByWeekForGraph,
-    weightProgressDataByMonthForGraph,
+    weightProgressDataByWeekForWebGraph,
+    weightProgressDataByMonthForWebGraph,
     currentWeight,
   };
 }

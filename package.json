@@ -16,7 +16,8 @@
     "@react-navigation/material-top-tabs": "^6.6.13",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
-    "expo": "~51.0.9",
+    "@shopify/react-native-skia": "1.2.3",
+    "expo": "~51.0.17",
     "expo-checkbox": "~3.0.0",
     "expo-clipboard": "~6.0.3",
     "expo-haptics": "~13.0.1",
@@ -28,7 +29,7 @@
     "fuse.js": "^6.6.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native": "0.74.1",
+    "react-native": "0.74.2",
     "react-native-awesome-slider": "^2.5.3",
     "react-native-circular-progress-indicator": "^4.4.2",
     "react-native-dotenv": "^3.4.11",
@@ -36,6 +37,7 @@
     "react-native-dropdown-select-list": "^2.0.5",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-gifted-charts": "^1.4.10",
+    "react-native-haptic-feedback": "^2.2.0",
     "react-native-pager-view": "6.3.0",
     "react-native-progress": "^5.0.1",
     "react-native-reanimated": "~3.10.1",
@@ -46,7 +48,9 @@
     "react-native-swipeable-item": "^2.0.9",
     "react-native-tab-view": "^3.5.2",
     "react-native-web": "~0.19.10",
-    "react-native-web-refresh-control": "^1.1.2"
+    "react-native-web-refresh-control": "^1.1.2",
+    "victory": "^37.0.2",
+    "victory-native": "^41.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

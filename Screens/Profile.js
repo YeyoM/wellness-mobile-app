@@ -186,17 +186,8 @@ export default function Profile({ navigation }) {
               <Pressable
                 onPress={() => {
                   if (Platform.OS === "web") {
-                    alert(
-                      "Coming soon...",
-                      "This feature is not available on the web version yet.",
-                      [
-                        {
-                          text: "OK",
-                          onPress: () => console.log("OK Pressed"),
-                        },
-                      ],
-                    );
-                    return;
+                    console.log("web");
+                    navigation.navigate("My Stats Web");
                   } else {
                     navigation.navigate("My Stats");
                   }

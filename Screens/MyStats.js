@@ -14,12 +14,15 @@ import { SelectList } from "react-native-dropdown-select-list";
 import CarouselRepsMaxes from "../components/CarouselRepsMaxes";
 import getStatsData from "../AsyncStorageFunctions/getStatsData.js";
 
-import getUserWeightProgressDataForGraph from "../Utils/graphsDataFunctions/WeightData/getUserWeightProgressDataForGraph.js";
-import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/CaloriesData/getUserCaloriesProgressDataForGraph.js";
-import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/TimeData/getUserTimeSpentProgressDataForGraph.js";
-import getUserWeightLiftedProgressDataForGraph from "../Utils/graphsDataFunctions/WeightLiftedData/getUserWeightLiftedProgressDataForGraph.js";
+import getUserWeightProgressDataForGraph from "../Utils/graphsDataFunctions/mobile/WeightData/getUserWeightProgressDataForGraph.js";
+import getUserCaloriesProgressDataForGraph from "../Utils/graphsDataFunctions/mobile/CaloriesData/getUserCaloriesProgressDataForGraph.js";
+import getUserTimeSpentProgressDataForGraph from "../Utils/graphsDataFunctions/mobile/TimeData/getUserTimeSpentProgressDataForGraph.js";
+import getUserWeightLiftedProgressDataForGraph from "../Utils/graphsDataFunctions/mobile/WeightLiftedData/getUserWeightLiftedProgressDataForGraph.js";
 
 import { AppContext } from "../context/AppContext.js";
+
+////////////////////////////////////////// pruebas
+import { CartesianChart } from "victory-native";
 
 export default function MyStats({ navigation }) {
   const { exercises } = useContext(AppContext);
@@ -30,6 +33,11 @@ export default function MyStats({ navigation }) {
     { key: "3", value: "Time" },
     { key: "4", value: "User Weight" },
   ];
+
+  const exampleData = Array.from({ length: 31 }, (_, i) => ({
+    day: i,
+    highTmp: 40 + 30 * Math.random(),
+  }));
 
   const [selectedCategory, setSelectedCategory] = useState("Calories");
 

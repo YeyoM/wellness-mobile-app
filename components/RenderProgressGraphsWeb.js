@@ -1,6 +1,21 @@
-import { LineChart } from "react-native-gifted-charts";
 import React from "react";
 import { View, Text, Dimensions } from "react-native";
+
+import RenderCaloriesDailyGraph from "./RenderGraphs/Web/Calories/RenderCaloriesDailyGraph";
+import RenderCaloriesMonthlyGraph from "./RenderGraphs/Web/Calories/RenderCaloriesMonthlyGraph";
+import RenderCaloriesWeeklyGraph from "./RenderGraphs/Web/Calories/RenderCaloriesWeeklyGraph";
+
+import RenderUserWeightDailyGraph from "./RenderGraphs/Web/UserWeight/RenderUserWeightDailyGraph";
+import RenderUserWeightMonthlyGraph from "./RenderGraphs/Web/UserWeight/RenderUserWeightMonthlyGraph";
+import RenderUserWeightWeeklyGraph from "./RenderGraphs/Web/UserWeight/RenderUserWeightWeeklyGraph";
+
+import RenderTimeDailyGraph from "./RenderGraphs/Web/Time/RenderTimeDailyGraph";
+import RenderTimeMonthlyGraph from "./RenderGraphs/Web/Time/RenderTimeMonthlyGraph";
+import RenderTimeWeeklyGraph from "./RenderGraphs/Web/Time/RenderTimeWeeklyGraph";
+
+import RenderWeightLiftedDailyGraph from "./RenderGraphs/Web/WeightLifted/RenderWeightLiftedDailyGraph";
+import RenderWeightLiftedMonthlyGraph from "./RenderGraphs/Web/WeightLifted/RenderWeightLiftedMonthlyGraph";
+import RenderWeightLiftedWeeklyGraph from "./RenderGraphs/Web/WeightLifted/RenderWeightLiftedWeeklyGraph";
 
 export default function RenderProgressGraphsWeb({
   category,
@@ -8,281 +23,138 @@ export default function RenderProgressGraphsWeb({
   caloriesLineData,
   caloriesLineDataByMonth,
   caloriesLineDataByWeek,
+  maxCaloriesDaily,
+  maxCaloriesWeekly,
+  maxCaloriesMonthly,
   weightLineData,
   weightLineDataByMonth,
   weightLineDataByWeek,
+  maxWeight,
+  minWeight,
   timeLineData,
   timeLineDataByMonth,
   timeLineDataByWeek,
+  maxTimeDaily,
+  maxTimeWeekly,
+  maxTimeMonthly,
   weightLiftedLineData,
   weightLiftedLineDataByMonth,
   weightLiftedLineDataByWeek,
+  maxWeightLiftedDaily,
+  maxWeightLiftedWeekly,
+  maxWeightLiftedMonthly,
 }) {
-  if (
-    !caloriesLineData ||
-    !weightLineData ||
-    !weightLineDataByMonth ||
-    !weightLineDataByWeek ||
-    !timeLineData ||
-    !caloriesLineDataByMonth ||
-    !caloriesLineDataByWeek ||
-    !timeLineDataByMonth ||
-    !timeLineDataByWeek ||
-    !weightLiftedLineData ||
-    !weightLiftedLineDataByMonth ||
-    !weightLiftedLineDataByWeek
-  ) {
+  console.log("RenderProgressGraphsWeb", category, selectedPeriod);
+
+  if (category === "Weight") {
+    if (selectedPeriod === "Day") {
+      return (
+        <RenderUserWeightDailyGraph
+          weightLineDataByDay={weightLineData}
+          minWeight={minWeight}
+          maxWeight={maxWeight}
+        />
+      );
+    } else if (selectedPeriod === "Week") {
+      return (
+        <RenderUserWeightWeeklyGraph
+          weightLineDataByWeek={weightLineDataByWeek}
+          minWeight={minWeight}
+          maxWeight={maxWeight}
+        />
+      );
+    } else if (selectedPeriod === "Month") {
+      return (
+        <RenderUserWeightMonthlyGraph
+          weightLineDataByMonth={weightLineDataByMonth}
+          minWeight={minWeight}
+          maxWeight={maxWeight}
+        />
+      );
+    }
+  } else if (category === "Weight Lifted") {
+    if (selectedPeriod === "Day") {
+      return (
+        <RenderWeightLiftedDailyGraph
+          weightLiftedLineDataByDay={weightLiftedLineData}
+          minWeight={0}
+          maxWeight={maxWeightLiftedDaily}
+        />
+      );
+    } else if (selectedPeriod === "Week") {
+      return (
+        <RenderWeightLiftedWeeklyGraph
+          weightLiftedLineDataByWeek={weightLiftedLineDataByWeek}
+          minWeight={0}
+          maxWeight={maxWeightLiftedWeekly}
+        />
+      );
+    } else if (selectedPeriod === "Month") {
+      return (
+        <RenderWeightLiftedMonthlyGraph
+          weightLiftedLineDataByMonth={weightLiftedLineDataByMonth}
+          minWeight={0}
+          maxWeight={maxWeightLiftedMonthly}
+        />
+      );
+    }
+  } else if (category === "Time") {
+    if (selectedPeriod === "Day") {
+      return (
+        <RenderTimeDailyGraph
+          timeLineDataByDay={timeLineData}
+          minTime={0}
+          maxTime={maxTimeDaily}
+        />
+      );
+    } else if (selectedPeriod === "Week") {
+      return (
+        <RenderTimeWeeklyGraph
+          timeLineDataByWeek={timeLineDataByWeek}
+          minTime={0}
+          maxTime={maxTimeWeekly}
+        />
+      );
+    } else if (selectedPeriod === "Month") {
+      return (
+        <RenderTimeMonthlyGraph
+          timeLineDataByMonth={timeLineDataByMonth}
+          minTime={0}
+          maxTime={maxTimeMonthly}
+        />
+      );
+    }
+  } else if (category === "Calories") {
+    if (selectedPeriod === "Day") {
+      return (
+        <RenderCaloriesDailyGraph
+          caloriesLineDataByDay={caloriesLineData}
+          minCalories={0}
+          maxCalories={maxCaloriesDaily}
+        />
+      );
+    } else if (selectedPeriod === "Week") {
+      return (
+        <RenderCaloriesWeeklyGraph
+          caloriesLineDataByWeek={caloriesLineDataByWeek}
+          minCalories={0}
+          maxCalories={maxCaloriesWeekly}
+        />
+      );
+    } else if (selectedPeriod === "Month") {
+      return (
+        <RenderCaloriesMonthlyGraph
+          caloriesLineDataByMonth={caloriesLineDataByMonth}
+          minCalories={0}
+          maxCalories={maxCaloriesMonthly}
+        />
+      );
+    }
+  } else {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text>No data available</Text>
       </View>
-    );
-  }
-
-  if (category === "Weight") {
-    return (
-      <LineChart
-        isAnimated
-        width={Dimensions.get("window").width * 0.8}
-        animationDuration={1200}
-        initialSpacing={
-          selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
-        }
-        data={
-          selectedPeriod === "Month"
-            ? weightLineDataByMonth
-            : selectedPeriod === "Week"
-              ? weightLineDataByWeek
-              : weightLineData
-        }
-        spacing={
-          selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
-        }
-        yAxisThickness={0}
-        xAxisThickness={0}
-        yAxisTextStyle={{
-          color: "#0B0B0B",
-        }}
-        rulesColor="#0B0B0B"
-        rulesType="solid"
-        xAxisColor="#50535B"
-        color="#157AFF"
-        dataPointsColor="#157AFF"
-        pointerConfig={{
-          pointerStripUptoDataPoint: true,
-          pointerStripColor: "#0496FF",
-          pointerVanishDelay: 1000,
-          pointerStripWidth: 2,
-          pointerStripHeight: 160,
-          strokeDashArray: [2, 5],
-          pointerColor: "#0496FF",
-          radius: 5,
-          pointerLabelWidth: 100,
-          pointerLabelHeight: 40,
-          activatePointersOnLongPress: true,
-          pointerLabelComponent: (items) => {
-            return (
-              <View
-                style={{
-                  height: 18,
-                  marginTop: 22,
-                  width: 50,
-                  backgroundColor: "#0496FF",
-                  borderRadius: 4,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  zIndex: 999,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "white",
-                    fontWeight: "bold",
-                    fontSize: 11,
-                  }}
-                >
-                  {items[0].value.toFixed(2)} Kg
-                </Text>
-              </View>
-            );
-          },
-        }}
-      />
-    );
-  } else if (category === "Weight Lifted") {
-    return (
-      <LineChart
-        isAnimated
-        width={Dimensions.get("window").width * 0.8}
-        animationDuration={1200}
-        initialSpacing={
-          selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
-        }
-        data={
-          selectedPeriod === "Month"
-            ? weightLiftedLineDataByMonth
-            : selectedPeriod === "Week"
-              ? weightLiftedLineDataByWeek
-              : weightLiftedLineData
-        }
-        spacing={
-          selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
-        }
-        yAxisThickness={0}
-        xAxisThickness={0}
-        yAxisTextStyle={{
-          color: "#0B0B0B",
-        }}
-        rulesColor="#0B0B0B"
-        rulesType="solid"
-        xAxisColor="#50535B"
-        color="#157AFF"
-        dataPointsColor="#157AFF"
-        pointerConfig={{
-          pointerStripUptoDataPoint: false,
-          pointerStripColor: "#0496FF",
-          pointerVanishDelay: 1000,
-          pointerStripWidth: 2,
-          pointerStripHeight: 160,
-          strokeDashArray: [2, 5],
-          pointerColor: "#0496FF",
-          radius: 5,
-          pointerLabelWidth: 100,
-          pointerLabelHeight: 40,
-          activatePointersOnLongPress: true,
-          pointerLabelComponent: (items) => {
-            return (
-              <View
-                style={{
-                  height: 40,
-                  width: 50,
-                  backgroundColor: "#0496FF",
-                  borderRadius: 4,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  zIndex: 999,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "white",
-                    fontWeight: "bold",
-                    fontSize: 11,
-                  }}
-                >
-                  {items[0].value} Kg
-                </Text>
-              </View>
-            );
-          },
-        }}
-      />
-    );
-  } else if (category === "Time") {
-    return (
-      <LineChart
-        isAnimated
-        width={Dimensions.get("window").width * 0.8}
-        animationDuration={1200}
-        initialSpacing={
-          selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
-        }
-        data={
-          selectedPeriod === "Month"
-            ? timeLineDataByMonth
-            : selectedPeriod === "Week"
-              ? timeLineDataByWeek
-              : timeLineData
-        }
-        spacing={
-          selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
-        }
-        yAxisThickness={0}
-        yAxisTextStyle={{
-          color: "#0B0B0B",
-        }}
-        xAxisThickness={0}
-        rulesColor="#0B0B0B"
-        rulesType="solid"
-        xAxisColor="#50535B"
-        color="#157AFF"
-        dataPointsColor="#157AFF"
-        pointerConfig={{
-          pointerStripUptoDataPoint: true,
-          pointerVanishDelay: 1000,
-          pointerStripColor: "#0496FF",
-          pointerStripWidth: 2,
-          pointerStripHeight: 160,
-          strokeDashArray: [2, 5],
-          pointerColor: "#0496FF",
-          radius: 5,
-          pointerLabelWidth: 100,
-          pointerLabelHeight: 40,
-          activatePointersOnLongPress: true,
-          pointerLabelComponent: (items) => {
-            return (
-              <View
-                style={{
-                  height: 18,
-                  marginTop: 22,
-                  width: 50,
-                  backgroundColor: "#0496FF",
-                  borderRadius: 4,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  zIndex: 999,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "white",
-                    fontWeight: "bold",
-                    fontSize: 11,
-                  }}
-                >
-                  {items[0].value.toFixed(2)} min
-                </Text>
-              </View>
-            );
-          },
-        }}
-      />
-    );
-  } else if (category === "Calories") {
-    return (
-      <LineChart
-        isAnimated
-        width={Dimensions.get("window").width * 0.8}
-        animationDuration={1200}
-        initialSpacing={
-          selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
-        }
-        data={
-          selectedPeriod === "Month"
-            ? caloriesLineDataByMonth
-            : selectedPeriod === "Week"
-              ? caloriesLineDataByWeek
-              : caloriesLineData
-        }
-        spacing={
-          selectedPeriod === "Month" ? 80 : selectedPeriod === "Week" ? 60 : 40
-        }
-        yAxisThickness={0}
-        xAxisThickness={0}
-        rulesColor="#0B0B0B"
-        rulesType="solid"
-        xAxisColor="#0B0B0B"
-        color="#157AFF"
-        yAxisTextStyle={{
-          color: "#0B0B0B",
-        }}
-        dataPointsColor="#157AFF"
-        textColor1="white"
-        textShiftY={-8}
-        textShiftX={-10}
-        textFontSize={13}
-        thickness={2}
-      />
     );
   }
 }

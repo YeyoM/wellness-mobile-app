@@ -58,6 +58,15 @@ npm start --reset-cache
 yarn start --reset-cache
 ```
 
+In case of error, you can also try one of the following commands
+
+```bash
+watchman watch-del-all # to clear watchman cache
+rm -rf node_modules && npm install # to remove node_modules and install again
+
+npm start -- --reset-cache # to start the app
+```
+
 Once you run this command, in your terminal there should appear a couple options, for example to run it on a mobile device, to achieve this, just download the Expo Go app in your device and scan the qr code displayed when running the above command.
 
 #### `npm run ios`
@@ -122,7 +131,6 @@ Or run the build process in local
 ```bash
 eas build -p android --local
 ```
-
 
 ### Environment Variables
 
