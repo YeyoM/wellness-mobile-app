@@ -1,5 +1,4 @@
 import GetUser from "../FirebaseFunctions/Users/GetUser.js";
-import getAllDays from "../FirebaseFunctions/Days/getAllDays.js";
 import { getSavedExercises } from "../FirebaseFunctions/Exercises/getSavedExercises.js";
 import { getSavedRoutines } from "../FirebaseFunctions/Routines/getSavedRoutines.js";
 import getWorkouts from "../FirebaseFunctions/Workouts/GetWorkouts.js";
