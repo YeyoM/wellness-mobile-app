@@ -35,6 +35,11 @@ export default async function getAllDays() {
     const routineIds = userDocData.routines;
     console.log("GET ALL DAYS: AFTER GETTING USER DATA");
 
+    if (!routineIds || routineIds.length === 0) {
+      console.log("GET ALL DAYS: NO ROUTINES");
+      return [];
+    }
+
     const routines = [];
 
     const routineQuery = query(

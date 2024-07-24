@@ -76,8 +76,6 @@ export default function MyPlan({ navigation }) {
             style={{ flexDirection: "column", marginTop: 20, width: "95%" }}
           >
             {days && days.length > 0 && !refreshing ? (
-              // if there is a fav routine, just display the days in which
-              // day.routineId === favoriteRoutine.id, else display all days
               favoriteRoutine ? (
                 days.map((day, index) => {
                   if (day.routineId === favoriteRoutine.id) {
@@ -110,6 +108,11 @@ export default function MyPlan({ navigation }) {
                 Oops! Something went wrong. Please try again later.
               </Text>
             ) : null}
+            {days && days.length === 0 && !refreshing ? (
+              <Text style={styles.noWorkouts}>
+                You have no workouts planned for today.
+              </Text>
+            ) : null}
           </View>
         </View>
       </ScrollView>
@@ -131,5 +134,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 60,
     paddingHorizontal: 16,
+  },
+
+  noWorkouts: {
+    color: "#a0a0a0",
+    marginTop: 20,
+    textAlign: "center",
+    fontSize: 20,
+    fontStyle: "italic",
   },
 });
