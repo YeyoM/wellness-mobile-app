@@ -36,6 +36,7 @@ export const getSavedRoutines = async (userId) => {
     console.log("GET SAVED ROUTINES: AFTER GETTING USER DATA");
 
     if (userRoutinesIds.length === 0) {
+      console.log("GET SAVED ROUTINES: NO ROUTINES");
       return [];
     }
 
@@ -55,6 +56,7 @@ export const getSavedRoutines = async (userId) => {
       };
       routines.push(routine);
     });
+    console.log(routines);
     console.log("GET SAVED ROUTINES: AFTER GETTING ROUTINES");
 
     for (const routine of routines) {
@@ -76,6 +78,7 @@ export const getSavedRoutines = async (userId) => {
         dayDocData.routineName = routineName;
         days.push(dayDocData);
       });
+      console.log(days);
 
       routine.days = days;
     }
