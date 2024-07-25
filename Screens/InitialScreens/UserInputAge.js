@@ -1,5 +1,12 @@
 import React, { useState, useContext } from "react";
-import { StyleSheet, Text, View, Pressable, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  Dimensions,
+  Platform,
+} from "react-native";
 import TopNavigationBar from "../../components/TopNavigationBar";
 
 import alert from "../../components/Alert";
@@ -8,15 +15,40 @@ import { interpolate, Extrapolate } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
+import DatePicker from "react-datepicker";
+
 export default function UserInputAge({ navigation }) {
   const { age, setAge } = useContext(InitialScreensContext);
 
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
   const handleContinue = () => {
-    if (age === "") {
-      alert("Please enter your age");
-      return;
+    if (Platform.OS === "web") {
+      const today = new Date();
+      const birthDate = new Date(selectedDate);
+      if (birthDate > today) {
+        alert("Please enter a valid date");
+        return;
+      }
+      const age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      setAge(age);
+      navigation.navigate("About you (Weight Unit)");
+    } else {
+      if (age === "") {
+        alert("Please enter your age");
+        return;
+      }
+      navigation.navigate("About you (Weight Unit)");
     }
-    navigation.navigate("About you (Weight Unit)");
+  };
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    console.log(date);
   };
 
   const ref = React.useRef(null);
@@ -70,7 +102,11 @@ export default function UserInputAge({ navigation }) {
         currentStep={3}
         back={true}
       />
-      <Text style={styles.title}>What is your age?</Text>
+      {Platform.OS === "ios" ? (
+        <Text style={styles.title}>What is your age?</Text>
+      ) : (
+        <Text style={styles.title}>What is your age?</Text>
+      )}
       <View
         style={{
           height: PAGE_HEIGHT,
@@ -82,61 +118,65 @@ export default function UserInputAge({ navigation }) {
           marginTop: 20,
         }}
       >
-        <Carousel
-          loop
-          vertical
-          style={{
-            justifyContent: "center",
-            width: PAGE_WIDTH,
-            height: PAGE_HEIGHT,
-            marginBottom: 20,
-            alignItems: "center",
-            alignSelf: "center",
-          }}
-          ref={ref}
-          onSnapToItem={(index) => {
-            setAge(data[index]);
-          }}
-          width={ITEM_WIDTH}
-          pagingEnabled={false}
-          height={ITEM_HEIGHT}
-          data={data}
-          defaultIndex={5}
-          renderItem={({ index }) => {
-            return (
-              <View
-                key={index}
-                style={{
-                  flex: 1,
-                  padding: 10,
-                  backgroundColor: "#157AFF",
-                  borderRadius: 24,
-                  width: ITEM_WIDTH,
-                  marginVertical: 16,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderWidth: 2,
-                  borderColor: "#0496FF",
-                }}
-              >
-                <Text
-                  numberOfLines={1}
+        {Platform.OS !== "web" ? (
+          <Carousel
+            loop
+            vertical
+            style={{
+              justifyContent: "center",
+              width: PAGE_WIDTH,
+              height: PAGE_HEIGHT,
+              marginBottom: 20,
+              alignItems: "center",
+              alignSelf: "center",
+            }}
+            ref={ref}
+            onSnapToItem={(index) => {
+              setAge(data[index]);
+            }}
+            width={ITEM_WIDTH}
+            pagingEnabled={false}
+            height={ITEM_HEIGHT}
+            data={data}
+            defaultIndex={5}
+            renderItem={({ index }) => {
+              return (
+                <View
+                  key={index}
                   style={{
-                    maxWidth: "100%",
-                    color: "white",
-                    fontSize: 60,
-                    fontWeight: "bold",
+                    flex: 1,
+                    padding: 10,
+                    backgroundColor: "#157AFF",
+                    borderRadius: 24,
+                    width: ITEM_WIDTH,
+                    marginVertical: 16,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderWidth: 2,
+                    borderColor: "#0496FF",
                   }}
                 >
-                  {data[index]}
-                </Text>
-              </View>
-            );
-          }}
-          customAnimation={animationStyle}
-        />
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      maxWidth: "100%",
+                      color: "white",
+                      fontSize: 60,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {data[index]}
+                  </Text>
+                </View>
+              );
+            }}
+            customAnimation={animationStyle}
+          />
+        ) : (
+          <DatePicker selected={selectedDate} onChange={handleDateChange} />
+        )}
       </View>
       <Pressable style={styles.btn} onPress={handleContinue}>
         <Text style={styles.btnText}>Continue</Text>
