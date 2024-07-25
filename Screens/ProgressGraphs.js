@@ -6,13 +6,11 @@ import {
   ScrollView,
   Pressable,
   Dimensions,
-  Platform,
 } from "react-native";
 import Constants from "expo-constants";
 import { Ionicons } from "@expo/vector-icons";
 
 import RenderProgressGraphs from "../components/RenderProgressGraphs";
-import RenderProgressGraphsWeb from "../components/RenderProgressGraphsWeb";
 
 export default function ProgressGraphs({ navigation, route }) {
   const [selectedCategory, setSelectedCategory] = React.useState("Calories");
@@ -45,15 +43,20 @@ export default function ProgressGraphs({ navigation, route }) {
   const [currentWeight, setCurrentWeight] = React.useState(0);
   const [totalWeightLifted, setTotalWeightLifted] = React.useState(0);
 
+  const [loading, setLoading] = React.useState(true);
+
   React.useEffect(() => {
+    setLoading(true);
     if (route.params) {
       if (route.params.weightLineData) {
         setWeightLineData(route.params.weightLineData);
       }
       if (route.params.weightLineDataByWeek) {
+        console.log(route.params.weightLineDataByWeek);
         setWeightLineDataByWeek(route.params.weightLineDataByWeek);
       }
       if (route.params.weightLineDataByMonth) {
+        console.log(route.params.weightLineDataByMonth);
         setWeightLineDataByMonth(route.params.weightLineDataByMonth);
       }
       if (route.params.caloriesLineData) {
@@ -98,6 +101,7 @@ export default function ProgressGraphs({ navigation, route }) {
         setTotalWeightLifted(route.params.totalWeightLifted);
       }
     }
+    setLoading(false);
   }, [route.params]);
 
   const handleSelectCalories = () => {
@@ -256,24 +260,7 @@ export default function ProgressGraphs({ navigation, route }) {
             </View>
           </View>
           <View style={styles.graphContainer}>
-            {Platform.OS === "web" ? (
-              <RenderProgressGraphsWeb
-                category={selectedCategory}
-                selectedPeriod={selectedPeriod}
-                weightLineData={weightLineData}
-                weightLineDataByWeek={weightLineDataByWeek}
-                weightLineDataByMonth={weightLineDataByMonth}
-                caloriesLineData={caloriesLineData}
-                caloriesLineDataByWeek={caloriesLineDataByWeek}
-                caloriesLineDataByMonth={caloriesLineDataByMonth}
-                timeLineData={timeLineData}
-                timeLineDataByWeek={timeLineDataByWeek}
-                timeLineDataByMonth={timeLineDataByMonth}
-                weightLiftedLineData={weightLiftedLineData}
-                weightLiftedLineDataByWeek={weightLiftedLineDataByWeek}
-                weightLiftedLineDataByMonth={weightLiftedLineDataByMonth}
-              />
-            ) : (
+            {!loading && (
               <RenderProgressGraphs
                 category={selectedCategory}
                 selectedPeriod={selectedPeriod}

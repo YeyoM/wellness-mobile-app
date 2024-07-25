@@ -21,9 +21,6 @@ import getUserWeightLiftedProgressDataForGraph from "../Utils/graphsDataFunction
 
 import { AppContext } from "../context/AppContext.js";
 
-////////////////////////////////////////// pruebas
-import { CartesianChart } from "victory-native";
-
 export default function MyStats({ navigation }) {
   const { exercises } = useContext(AppContext);
 
@@ -33,11 +30,6 @@ export default function MyStats({ navigation }) {
     { key: "3", value: "Time" },
     { key: "4", value: "User Weight" },
   ];
-
-  const exampleData = Array.from({ length: 31 }, (_, i) => ({
-    day: i,
-    highTmp: 40 + 30 * Math.random(),
-  }));
 
   const [selectedCategory, setSelectedCategory] = useState("Calories");
 
@@ -106,7 +98,6 @@ export default function MyStats({ navigation }) {
         } = getUserTimeSpentProgressDataForGraph({
           timeRecord: stats.totalTimeRecord,
         });
-        console.log(caloriesProgressDataByMonth);
         setTotalTimeSpent(totalTime);
         setTimeLineData(timeProgressData);
         setTimeLineDataByWeek(timeProgressDataByWeek);
