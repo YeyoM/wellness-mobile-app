@@ -150,6 +150,20 @@ export default function WorkoutInProgress({ route, navigation }) {
   }, [startTime]);
 
   const handleStartWorkout = () => {
+    if (exerciseQueue.length === 0) {
+      alert(
+        "No exercises left",
+        "Please add exercises to the workout before starting",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+        ],
+      );
+      return;
+    }
+
     const exercise = exerciseQueue[0];
     setCurrentExercise(exercise);
     setCurrentExerciseIndex(0);
