@@ -42,6 +42,8 @@ export default function getUserWeightLiftedProgressDataForGraph({
     nextRecordDate = weightLiftedRecord[nextRecordIndex].date;
   }
 
+  let totalWeightLifted = currentWeightLifted;
+
   while (currentDate <= today) {
     // first check if the next date is the same as the current one
     if (
@@ -51,6 +53,7 @@ export default function getUserWeightLiftedProgressDataForGraph({
       currentDate.getDate() === nextRecordDate.getDate()
     ) {
       currentWeightLifted = weightLiftedRecord[nextRecordIndex].weightLifted;
+      totalWeightLifted += currentWeightLifted;
       nextRecordIndex++;
       if (nextRecordIndex < weightLiftedRecord.length) {
         nextRecordDate = weightLiftedRecord[nextRecordIndex].date;
@@ -88,14 +91,8 @@ export default function getUserWeightLiftedProgressDataForGraph({
     currentWeightLifted = 0;
   }
 
-  let totalWeightLifted = 0;
-
   weightLiftedProgressData.map((dataPoint) => {
-    if (!dataPoint.value) {
-      dataPoint.dataPointText = "0";
-      dataPoint.value = 0;
-    }
-    totalWeightLifted += dataPoint.value;
+    console.log(dataPoint);
   });
 
   const weightLiftedProgressDataByWeek =
