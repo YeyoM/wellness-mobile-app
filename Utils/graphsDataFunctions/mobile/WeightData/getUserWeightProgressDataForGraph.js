@@ -56,12 +56,12 @@ export default function getUserWeightProgressDataForGraph({ weightRecord }) {
     }
   }
 
-  const weightProgressDataByWeekForWebGraph =
+  const weightProgressDataByWeekForGraph =
     getUserWeightProgressDataByWeekForGraph({
       weightProgressData,
     });
 
-  const weightProgressDataByMonthForWebGraph =
+  const weightProgressDataByMonthForGraph =
     getUserWeightProgressDataByMonthForGraph({
       weightProgressData,
     });
@@ -70,8 +70,8 @@ export default function getUserWeightProgressDataForGraph({ weightRecord }) {
 
   return {
     weightProgressData,
-    weightProgressDataByWeekForWebGraph,
-    weightProgressDataByMonthForWebGraph,
+    weightProgressDataByWeekForGraph,
+    weightProgressDataByMonthForGraph,
     currentWeight,
   };
 }
