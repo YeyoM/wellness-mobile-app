@@ -105,7 +105,7 @@ export default function UserInputAge({ navigation }) {
       {Platform.OS === "ios" ? (
         <Text style={styles.title}>What is your age?</Text>
       ) : (
-        <Text style={styles.title}>What is your age?</Text>
+        <Text style={styles.title_}>What is your age?</Text>
       )}
       <View
         style={{
@@ -175,7 +175,16 @@ export default function UserInputAge({ navigation }) {
             customAnimation={animationStyle}
           />
         ) : (
-          <DatePicker selected={selectedDate} onChange={handleDateChange} />
+          <DatePicker
+            selected={selectedDate}
+            onChange={handleDateChange}
+            style={{
+              width: "100%",
+              backgroundColor: "#0B0B0B",
+              color: "white",
+              borderColor: "#0B0B0B",
+            }}
+          />
         )}
       </View>
       <Pressable style={styles.btn} onPress={handleContinue}>
@@ -203,11 +212,19 @@ const styles = StyleSheet.create({
     width: "85%",
   },
 
+  title_: {
+    fontSize: 32,
+    fontWeight: "semibold",
+    color: "white",
+    marginTop: 80,
+    textAlign: "center",
+    width: "85%",
+  },
+
   input: {
     width: "60%",
     height: 64,
     padding: 20,
-    paddingTop: 10,
     paddingBottom: 22,
     fontSize: 22,
     fontWeight: "normal",
