@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,6 +6,7 @@ import {
   Pressable,
   Dimensions,
   Platform,
+  TextInput,
 } from "react-native";
 import TopNavigationBar from "../../components/TopNavigationBar";
 
@@ -15,40 +16,15 @@ import { interpolate, Extrapolate } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
-import DatePicker from "react-datepicker";
-
 export default function UserInputAge({ navigation }) {
   const { age, setAge } = useContext(InitialScreensContext);
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
-
   const handleContinue = () => {
-    if (Platform.OS === "web") {
-      const today = new Date();
-      const birthDate = new Date(selectedDate);
-      if (birthDate > today) {
-        alert("Please enter a valid date");
-        return;
-      }
-      const age = today.getFullYear() - birthDate.getFullYear();
-      const m = today.getMonth() - birthDate.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-      setAge(age);
-      navigation.navigate("About you (Weight Unit)");
-    } else {
-      if (age === "") {
-        alert("Please enter your age");
-        return;
-      }
-      navigation.navigate("About you (Weight Unit)");
+    if (age === "" || age < 14 || age > 80) {
+      alert("Please enter your age");
+      return;
     }
-  };
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    console.log(date);
+    navigation.navigate("About you (Weight Unit)");
   };
 
   const ref = React.useRef(null);
@@ -175,16 +151,16 @@ export default function UserInputAge({ navigation }) {
             customAnimation={animationStyle}
           />
         ) : (
-          <DatePicker
-            selected={selectedDate}
-            onChange={handleDateChange}
-            style={{
-              width: "100%",
-              backgroundColor: "#0B0B0B",
-              color: "white",
-              borderColor: "#0B0B0B",
-            }}
-          />
+          <View style={styles.webInputContainer}>
+            <TextInput
+              style={styles.webInput}
+              value={age}
+              onChangeText={setAge}
+              keyboardType="numeric"
+              placeholderTextColor="#a0a0a0"
+              placeholder="0"
+            />
+          </View>
         )}
       </View>
       <Pressable style={styles.btn} onPress={handleContinue}>
@@ -256,5 +232,25 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "center",
     marginTop: 4,
+  },
+
+  webInputContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "85%",
+    marginVertical: 20,
+  },
+
+  webInput: {
+    width: "100%",
+    backgroundColor: "#24262B",
+    color: "white",
+    fontSize: 90,
+    fontWeight: "bold",
+    textAlign: "center",
+    paddingVertical: 16,
+    borderRadius: 16,
   },
 });

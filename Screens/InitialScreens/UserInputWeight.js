@@ -20,9 +20,9 @@ import Carousel from "react-native-reanimated-carousel";
 import { InitialScreensContext } from "../../context/InitialScreensContext";
 
 export default function UserInputWeight({ navigation }) {
-  const { setWeight, weightUnit } = useContext(InitialScreensContext);
+  const { weight, setWeight, weightUnit } = useContext(InitialScreensContext);
 
-  const [weight_, setWeight_] = useState(0);
+  const [weight_, setWeight_] = useState(Platform.OS === "web" ? "" : weight);
 
   const [data] = useState(
     weightUnit === "kg"
@@ -32,7 +32,7 @@ export default function UserInputWeight({ navigation }) {
   const [defaultIndex] = useState(weightUnit === "kg" ? 35 : 77);
 
   const handleContinue = () => {
-    if (weight_ === "") {
+    if (weight_ === "" || weight_ < 35 || weight_ > 1000) {
       alert("Please enter your weight");
       return;
     }
@@ -88,6 +88,7 @@ export default function UserInputWeight({ navigation }) {
             value={weight_}
             onChangeText={handleWeight}
             keyboardType="numeric"
+            placeholderTextColor="#a0a0a0"
             placeholder="0"
           />
         </View>
