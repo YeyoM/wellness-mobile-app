@@ -1,5 +1,13 @@
-import React, { useState, useContext } from "react";
-import { StyleSheet, Text, View, Pressable, Dimensions } from "react-native";
+import React, { useContext } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  Dimensions,
+  Platform,
+  TextInput,
+} from "react-native";
 import TopNavigationBar from "../../components/TopNavigationBar";
 
 import alert from "../../components/Alert";
@@ -12,7 +20,7 @@ export default function UserInputAge({ navigation }) {
   const { age, setAge } = useContext(InitialScreensContext);
 
   const handleContinue = () => {
-    if (age === "") {
+    if (age === "" || age < 14 || age > 80) {
       alert("Please enter your age");
       return;
     }
@@ -70,7 +78,11 @@ export default function UserInputAge({ navigation }) {
         currentStep={3}
         back={true}
       />
-      <Text style={styles.title}>What is your age?</Text>
+      {Platform.OS === "ios" ? (
+        <Text style={styles.title}>What is your age?</Text>
+      ) : (
+        <Text style={styles.title_}>What is your age?</Text>
+      )}
       <View
         style={{
           height: PAGE_HEIGHT,
@@ -82,61 +94,74 @@ export default function UserInputAge({ navigation }) {
           marginTop: 20,
         }}
       >
-        <Carousel
-          loop
-          vertical
-          style={{
-            justifyContent: "center",
-            width: PAGE_WIDTH,
-            height: PAGE_HEIGHT,
-            marginBottom: 20,
-            alignItems: "center",
-            alignSelf: "center",
-          }}
-          ref={ref}
-          onSnapToItem={(index) => {
-            setAge(data[index]);
-          }}
-          width={ITEM_WIDTH}
-          pagingEnabled={false}
-          height={ITEM_HEIGHT}
-          data={data}
-          defaultIndex={5}
-          renderItem={({ index }) => {
-            return (
-              <View
-                key={index}
-                style={{
-                  flex: 1,
-                  padding: 10,
-                  backgroundColor: "#157AFF",
-                  borderRadius: 24,
-                  width: ITEM_WIDTH,
-                  marginVertical: 16,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderWidth: 2,
-                  borderColor: "#0496FF",
-                }}
-              >
-                <Text
-                  numberOfLines={1}
+        {Platform.OS !== "web" ? (
+          <Carousel
+            loop
+            vertical
+            style={{
+              justifyContent: "center",
+              width: PAGE_WIDTH,
+              height: PAGE_HEIGHT,
+              marginBottom: 20,
+              alignItems: "center",
+              alignSelf: "center",
+            }}
+            ref={ref}
+            onSnapToItem={(index) => {
+              setAge(data[index]);
+            }}
+            width={ITEM_WIDTH}
+            pagingEnabled={false}
+            height={ITEM_HEIGHT}
+            data={data}
+            defaultIndex={5}
+            renderItem={({ index }) => {
+              return (
+                <View
+                  key={index}
                   style={{
-                    maxWidth: "100%",
-                    color: "white",
-                    fontSize: 60,
-                    fontWeight: "bold",
+                    flex: 1,
+                    padding: 10,
+                    backgroundColor: "#157AFF",
+                    borderRadius: 24,
+                    width: ITEM_WIDTH,
+                    marginVertical: 16,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderWidth: 2,
+                    borderColor: "#0496FF",
                   }}
                 >
-                  {data[index]}
-                </Text>
-              </View>
-            );
-          }}
-          customAnimation={animationStyle}
-        />
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      maxWidth: "100%",
+                      color: "white",
+                      fontSize: 60,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {data[index]}
+                  </Text>
+                </View>
+              );
+            }}
+            customAnimation={animationStyle}
+          />
+        ) : (
+          <View style={styles.webInputContainer}>
+            <TextInput
+              style={styles.webInput}
+              value={age}
+              onChangeText={setAge}
+              keyboardType="numeric"
+              placeholderTextColor="#a0a0a0"
+              placeholder="0"
+            />
+          </View>
+        )}
       </View>
       <Pressable style={styles.btn} onPress={handleContinue}>
         <Text style={styles.btnText}>Continue</Text>
@@ -163,11 +188,19 @@ const styles = StyleSheet.create({
     width: "85%",
   },
 
+  title_: {
+    fontSize: 32,
+    fontWeight: "semibold",
+    color: "white",
+    marginTop: 80,
+    textAlign: "center",
+    width: "85%",
+  },
+
   input: {
     width: "60%",
     height: 64,
     padding: 20,
-    paddingTop: 10,
     paddingBottom: 22,
     fontSize: 22,
     fontWeight: "normal",
@@ -199,5 +232,25 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "center",
     marginTop: 4,
+  },
+
+  webInputContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "85%",
+    marginVertical: 20,
+  },
+
+  webInput: {
+    width: "100%",
+    backgroundColor: "#24262B",
+    color: "white",
+    fontSize: 90,
+    fontWeight: "bold",
+    textAlign: "center",
+    paddingVertical: 16,
+    borderRadius: 16,
   },
 });

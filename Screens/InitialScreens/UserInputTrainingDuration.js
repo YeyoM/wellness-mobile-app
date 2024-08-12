@@ -1,5 +1,13 @@
 import React from "react";
-import { View, Text, StyleSheet, Pressable, Image } from "react-native";
+import {
+  Platform,
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Image,
+  TextInput,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSharedValue } from "react-native-reanimated";
 import { Slider, HapticModeEnum } from "react-native-awesome-slider";
@@ -16,9 +24,37 @@ export default function UserInputTrainingDuration({ navigation }) {
   const [realTime, setRealTime] = useState("1:15");
   const [type, setType] = useState("Minutes-Hours");
 
+  const [minutes, setMinutes] = useState(15);
+  const [hours, setHours] = useState(1);
+
   const progress = useSharedValue(1.25);
   const min = useSharedValue(0.25);
   const max = useSharedValue(3);
+
+  const handleHoursChange = (text) => {
+    setHours(text);
+  };
+
+  const handleMinutesChange = (text) => {
+    setMinutes(text);
+  };
+
+  const minutesAndHoursValid = (hours_, minutes_) => {
+    const hours = parseInt(hours_);
+    const minutes = parseInt(minutes_);
+
+    if (minutes < 0 || minutes > 59) {
+      alert("Error, Invalid minutes");
+      return false;
+    }
+
+    if (hours < 0) {
+      alert("Error, Invalid hours");
+      return false;
+    }
+
+    return true;
+  };
 
   const valueToTime = (value) => {
     const hours = Math.floor(value);
@@ -40,8 +76,17 @@ export default function UserInputTrainingDuration({ navigation }) {
   };
 
   const handleContinue = () => {
-    setTrainingDuration(realTime);
-    navigation.navigate("About you (Training Hours)");
+    if (Platform.OS !== "web") {
+      setTrainingDuration(realTime);
+      navigation.navigate("About you (Training Hours)");
+    } else {
+      if (!minutesAndHoursValid(hours, minutes)) {
+        return;
+      }
+      const trainingDuration = `${hours}:${minutes}`;
+      setTrainingDuration(trainingDuration);
+      navigation.navigate("About you (Training Hours)");
+    }
   };
 
   return (
@@ -65,160 +110,186 @@ export default function UserInputTrainingDuration({ navigation }) {
         >
           How long do you like your workouts to last?
         </Text>
-        <View
-          style={{
-            width: "80%",
-            marginBottom: 20,
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Ionicons name="help-circle-outline" size={18} color="#50535B" />
-          <Text
-            style={{
-              color: "#50535B",
-              fontSize: 13,
-              fontWeight: "bold",
-              textAlign: "justify",
-              marginLeft: 3,
-            }}
-          >
-            Drag to adjust
-          </Text>
-        </View>
-        <View
-          style={{
-            width: "80%",
-            marginBottom: 40,
-            height: 300,
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: 20,
-          }}
-        >
-          <View
-            style={{
-              transform: [{ rotate: "-90deg" }],
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "flex-start",
-              justifyContent: "space-between",
-              height: 0,
-              width: 240,
-              marginLeft: -110,
-            }}
-          >
-            <Slider
-              progress={progress}
-              minimumValue={min}
-              maximumValue={max}
-              step={11}
-              onHapticFeedback={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        {Platform.OS !== "web" ? (
+          <View>
+            <View
+              style={{
+                width: "80%",
+                marginBottom: 20,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
               }}
-              onSlidingComplete={(e) => {
-                onChangeText(e);
-                valueToTime(e);
+            >
+              <Ionicons name="help-circle-outline" size={18} color="#50535B" />
+              <Text
+                style={{
+                  color: "#50535B",
+                  fontSize: 13,
+                  fontWeight: "bold",
+                  textAlign: "justify",
+                  marginLeft: 3,
+                }}
+              >
+                Drag to adjust
+              </Text>
+            </View>
+            <View
+              style={{
+                width: "80%",
+                marginBottom: 40,
+                height: 300,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 20,
               }}
-              thumbWidth={70}
-              hapticMode={HapticModeEnum.STEP}
-              theme={{
-                disableMinTrackTintColor: "#157AFF",
-                maximumTrackTintColor: "#fff",
-                minimumTrackTintColor: "#157AFF",
-                cacheTrackTintColor: "#fff",
-                bubbleBackgroundColor: "#157AFF",
-              }}
-              markStyle={{
-                width: 1,
-                height: 10,
-                backgroundColor: "#fff",
-              }}
-              renderBubble={(props) => {
-                return;
-              }}
-              renderThumb={(props) => {
-                return (
-                  <Image
-                    source={require("../../assets/thumb.png")}
-                    style={{ width: 70, height: 70 }}
-                  />
-                );
-              }}
-              sliderHeight={10}
+            >
+              <View
+                style={{
+                  transform: [{ rotate: "-90deg" }],
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "flex-start",
+                  justifyContent: "space-between",
+                  height: 0,
+                  width: 240,
+                  marginLeft: -110,
+                }}
+              >
+                <Slider
+                  progress={progress}
+                  minimumValue={min}
+                  maximumValue={max}
+                  step={11}
+                  onHapticFeedback={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  }}
+                  onSlidingComplete={(e) => {
+                    onChangeText(e);
+                    valueToTime(e);
+                  }}
+                  thumbWidth={70}
+                  hapticMode={HapticModeEnum.STEP}
+                  theme={{
+                    disableMinTrackTintColor: "#157AFF",
+                    maximumTrackTintColor: "#fff",
+                    minimumTrackTintColor: "#157AFF",
+                    cacheTrackTintColor: "#fff",
+                    bubbleBackgroundColor: "#157AFF",
+                  }}
+                  markStyle={{
+                    width: 1,
+                    height: 10,
+                    backgroundColor: "#fff",
+                  }}
+                  renderBubble={() => {
+                    return;
+                  }}
+                  renderThumb={() => {
+                    return (
+                      <Image
+                        source={require("../../assets/thumb.png")}
+                        style={{ width: 70, height: 70 }}
+                      />
+                    );
+                  }}
+                  sliderHeight={10}
+                />
+              </View>
+              <View
+                style={{
+                  marginLeft: -110,
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-end",
+                }}
+              >
+                {type === "Minutes-Hours" ? (
+                  <>
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 100,
+                        fontWeight: "800",
+                        fontStyle: "italic",
+                        textAlign: "justify",
+                        alignSelf: "flex-end",
+                      }}
+                    >
+                      {" "}
+                      {realTime}
+                    </Text>
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 20,
+                        fontWeight: "bold",
+                        textAlign: "justify",
+                        alignSelf: "flex-end",
+                      }}
+                    >
+                      Minutes
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 160,
+                        fontWeight: "800",
+                        fontStyle: "italic",
+                        textAlign: "justify",
+                        alignSelf: "flex-end",
+                      }}
+                    >
+                      {" "}
+                      {realTime}
+                    </Text>
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 20,
+                        fontWeight: "bold",
+                        textAlign: "justify",
+                        alignSelf: "flex-end",
+                      }}
+                    >
+                      {type}
+                    </Text>
+                  </>
+                )}
+              </View>
+            </View>
+          </View>
+        ) : (
+          <View style={styles.webInputContainer}>
+            <TextInput
+              style={styles.webInput}
+              value={hours}
+              onChangeText={handleHoursChange}
+              keyboardType="numeric"
+              placeholderTextColor="#a0a0a0"
+              placeholder="00"
+            />
+            <Text style={{ color: "#fff", fontSize: 20, fontWeight: "bold" }}>
+              :
+            </Text>
+            <TextInput
+              style={styles.webInput}
+              value={minutes}
+              onChangeText={handleMinutesChange}
+              keyboardType="numeric"
+              placeholderTextColor="#a0a0a0"
+              placeholder="00"
             />
           </View>
-          <View
-            style={{
-              marginLeft: -110,
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-end",
-            }}
-          >
-            {type === "Minutes-Hours" ? (
-              <>
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontSize: 100,
-                    fontWeight: "800",
-                    fontStyle: "italic",
-                    textAlign: "justify",
-                    alignSelf: "flex-end",
-                  }}
-                >
-                  {" "}
-                  {realTime}
-                </Text>
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontSize: 20,
-                    fontWeight: "bold",
-                    textAlign: "justify",
-                    alignSelf: "flex-end",
-                  }}
-                >
-                  Minutes
-                </Text>
-              </>
-            ) : (
-              <>
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontSize: 160,
-                    fontWeight: "800",
-                    fontStyle: "italic",
-                    textAlign: "justify",
-                    alignSelf: "flex-end",
-                  }}
-                >
-                  {" "}
-                  {realTime}
-                </Text>
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontSize: 20,
-                    fontWeight: "bold",
-                    textAlign: "justify",
-                    alignSelf: "flex-end",
-                  }}
-                >
-                  {type}
-                </Text>
-              </>
-            )}
-          </View>
-        </View>
+        )}
         <Pressable style={styles.btnContinue} onPress={handleContinue}>
           <Text style={styles.btnContinueText}>Continue</Text>
         </Pressable>
@@ -232,6 +303,26 @@ const styles = StyleSheet.create({
     backgroundColor: "#0b0b0b",
     flex: 1,
     alignItems: "center",
+  },
+
+  webInputContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "85%",
+    marginVertical: 20,
+  },
+
+  webInput: {
+    width: "100%",
+    backgroundColor: "#24262B",
+    color: "white",
+    fontSize: 90,
+    fontWeight: "bold",
+    textAlign: "center",
+    paddingVertical: 16,
+    borderRadius: 16,
   },
 
   content: {
